@@ -45,19 +45,18 @@
 
 		</dependencies>
 	</dependencyManagement>
-	<build> <!-- temp for testing by others until on nexus -->
+	<build> 
 		<plugins>
+			<!-- temp for testing by others until on nexus 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<version>3.1.1</version>
-
 				<configuration>
 					<descriptorRefs>
 						<descriptorRef>jar-with-dependencies</descriptorRef>
 					</descriptorRefs>
 				</configuration>
-
 				<executions>
 					<execution>
 						<id>make-assembly</id>
@@ -67,8 +66,8 @@
 						</goals>
 					</execution>
 				</executions>
-
 			</plugin>
+			-->
 		</plugins>
 	</build>
 </project>
