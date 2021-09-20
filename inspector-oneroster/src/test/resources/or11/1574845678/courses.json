@@ -1,0 +1,2088 @@
+{
+    "courses": [
+        {
+            "sourcedId": "afe56d10-28c3-4fd9-a27a-f561d8c8081b",
+            "status": "active",
+            "dateLastModified": "2021-03-12T09:21:18.121Z",
+            "schoolYear": {
+                "href": "https://dev.1edtech.net/academicSessions/5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "sourcedId": "5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "type": "academicSession"
+            },
+            "title": "Geography",
+            "courseCode": "Y7GEOG",
+            "grades": [
+                "07"
+            ],
+            "org": {
+                "href": "https://dev.1edtech.net/orgs/d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "sourcedId": "d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "type": "org"
+            },
+            "subjects": [
+                "Particular Topics in Geography"
+            ],
+            "subjectCodes": [
+                "04002"
+            ]
+        },
+        {
+            "sourcedId": "c36d28c0-867e-45ba-b0e2-088ad082e72f",
+            "status": "active",
+            "dateLastModified": "2021-03-12T09:21:18.121Z",
+            "schoolYear": {
+                "href": "https://dev.1edtech.net/academicSessions/5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "sourcedId": "5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "type": "academicSession"
+            },
+            "title": "Physics",
+            "courseCode": "Y7PHY",
+            "grades": [
+                "07"
+            ],
+            "org": {
+                "href": "https://dev.1edtech.net/orgs/d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "sourcedId": "d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "type": "org"
+            },
+            "subjects": [
+                "Physics"
+            ],
+            "subjectCodes": [
+                "03151"
+            ]
+        },
+        {
+            "sourcedId": "9bbad776-d358-4e69-b8f6-8b246e306477",
+            "status": "active",
+            "dateLastModified": "2021-03-12T09:21:18.121Z",
+            "schoolYear": {
+                "href": "https://dev.1edtech.net/academicSessions/5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "sourcedId": "5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "type": "academicSession"
+            },
+            "title": "Religious Education",
+            "courseCode": "Y7RE",
+            "grades": [
+                "07"
+            ],
+            "org": {
+                "href": "https://dev.1edtech.net/orgs/d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "sourcedId": "d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "type": "org"
+            },
+            "subjects": [
+                "Particular Topics in Religion"
+            ],
+            "subjectCodes": [
+                "07018"
+            ]
+        },
+        {
+            "sourcedId": "b3180454-eb84-4728-852b-9326ebb8d5d1",
+            "status": "active",
+            "dateLastModified": "2021-03-12T09:21:18.121Z",
+            "schoolYear": {
+                "href": "https://dev.1edtech.net/academicSessions/5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "sourcedId": "5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "type": "academicSession"
+            },
+            "title": "Art",
+            "courseCode": "Y7ART",
+            "grades": [
+                "07"
+            ],
+            "org": {
+                "href": "https://dev.1edtech.net/orgs/d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "sourcedId": "d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "type": "org"
+            },
+            "subjects": [
+                "Visual Arts—Drawing/Painting"
+            ],
+            "subjectCodes": [
+                "05155"
+            ]
+        },
+        {
+            "sourcedId": "52242f2d-8b4b-47cd-b821-96c4d7a873cc",
+            "status": "active",
+            "dateLastModified": "2021-03-12T09:21:18.122Z",
+            "schoolYear": {
+                "href": "https://dev.1edtech.net/academicSessions/5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "sourcedId": "5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "type": "academicSession"
+            },
+            "title": "Biology",
+            "courseCode": "Y7BIO",
+            "grades": [
+                "07"
+            ],
+            "org": {
+                "href": "https://dev.1edtech.net/orgs/d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "sourcedId": "d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "type": "org"
+            },
+            "subjects": [
+                "Biology"
+            ],
+            "subjectCodes": [
+                "03051"
+            ]
+        },
+        {
+            "sourcedId": "540cf457-7009-4a16-898c-46cf437b923d",
+            "status": "active",
+            "dateLastModified": "2021-03-12T09:21:18.122Z",
+            "schoolYear": {
+                "href": "https://dev.1edtech.net/academicSessions/5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "sourcedId": "5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "type": "academicSession"
+            },
+            "title": "Mathematics",
+            "courseCode": "Y7MATH",
+            "grades": [
+                "07"
+            ],
+            "org": {
+                "href": "https://dev.1edtech.net/orgs/d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "sourcedId": "d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "type": "org"
+            },
+            "subjects": [
+                "Mathematics (grade 7)"
+            ],
+            "subjectCodes": [
+                "02037"
+            ]
+        },
+        {
+            "sourcedId": "dd412f27-5e81-48ce-a7b8-e3d9b8cf6bad",
+            "status": "active",
+            "dateLastModified": "2021-03-12T09:21:18.122Z",
+            "schoolYear": {
+                "href": "https://dev.1edtech.net/academicSessions/5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "sourcedId": "5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "type": "academicSession"
+            },
+            "title": "History",
+            "courseCode": "Y7HIST",
+            "grades": [
+                "07"
+            ],
+            "org": {
+                "href": "https://dev.1edtech.net/orgs/d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "sourcedId": "d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "type": "org"
+            },
+            "subjects": [
+                "Modern U.S. History"
+            ],
+            "subjectCodes": [
+                "04103"
+            ]
+        },
+        {
+            "sourcedId": "aa1b118f-3362-488e-adf7-187b2e7a67c5",
+            "status": "active",
+            "dateLastModified": "2021-03-12T09:21:18.122Z",
+            "schoolYear": {
+                "href": "https://dev.1edtech.net/academicSessions/5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "sourcedId": "5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "type": "academicSession"
+            },
+            "title": "English",
+            "courseCode": "Y7ENG",
+            "grades": [
+                "07"
+            ],
+            "org": {
+                "href": "https://dev.1edtech.net/orgs/d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "sourcedId": "d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "type": "org"
+            },
+            "subjects": [
+                "Writing (grade 7)",
+                "Reading (grade 7)"
+            ],
+            "subjectCodes": [
+                "01137",
+                "01047"
+            ]
+        },
+        {
+            "sourcedId": "756cb0bf-73d6-41c7-b439-91ff644ac997",
+            "status": "active",
+            "dateLastModified": "2021-03-12T09:21:18.122Z",
+            "schoolYear": {
+                "href": "https://dev.1edtech.net/academicSessions/5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "sourcedId": "5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "type": "academicSession"
+            },
+            "title": "French",
+            "courseCode": "Y7FR",
+            "grades": [
+                "07"
+            ],
+            "org": {
+                "href": "https://dev.1edtech.net/orgs/d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "sourcedId": "d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "type": "org"
+            },
+            "subjects": [
+                "French I"
+            ],
+            "subjectCodes": [
+                "24102"
+            ]
+        },
+        {
+            "sourcedId": "d6181aed-72e2-4411-9155-64702ab186c3",
+            "status": "active",
+            "dateLastModified": "2021-03-12T09:21:18.122Z",
+            "schoolYear": {
+                "href": "https://dev.1edtech.net/academicSessions/5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "sourcedId": "5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "type": "academicSession"
+            },
+            "title": "Music",
+            "courseCode": "Y7MUSIC",
+            "grades": [
+                "07"
+            ],
+            "org": {
+                "href": "https://dev.1edtech.net/orgs/d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "sourcedId": "d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "type": "org"
+            },
+            "subjects": [
+                "Music (grade 7)"
+            ],
+            "subjectCodes": [
+                "05137"
+            ]
+        },
+        {
+            "sourcedId": "81eeca9c-3a4b-4e5f-a25c-bfd34fbc9e48",
+            "status": "active",
+            "dateLastModified": "2021-03-12T09:21:18.123Z",
+            "schoolYear": {
+                "href": "https://dev.1edtech.net/academicSessions/5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "sourcedId": "5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "type": "academicSession"
+            },
+            "title": "Chemistry",
+            "courseCode": "Y7CHEM",
+            "grades": [
+                "07"
+            ],
+            "org": {
+                "href": "https://dev.1edtech.net/orgs/d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "sourcedId": "d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "type": "org"
+            },
+            "subjects": [
+                "Chemistry"
+            ],
+            "subjectCodes": [
+                "03101"
+            ]
+        },
+        {
+            "sourcedId": "49bbf9b8-a1c2-46d4-ad74-68c4a02fc5c7",
+            "status": "active",
+            "dateLastModified": "2021-03-12T09:21:18.123Z",
+            "schoolYear": {
+                "href": "https://dev.1edtech.net/academicSessions/5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "sourcedId": "5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "type": "academicSession"
+            },
+            "title": "CDT",
+            "courseCode": "Y7CDT",
+            "grades": [
+                "07"
+            ],
+            "org": {
+                "href": "https://dev.1edtech.net/orgs/d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "sourcedId": "d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "type": "org"
+            },
+            "subjects": [
+                "Crafts"
+            ],
+            "subjectCodes": [
+                "05165"
+            ]
+        },
+        {
+            "sourcedId": "2fd52143-66f4-4e96-8f1d-7fed035a31d8",
+            "status": "active",
+            "dateLastModified": "2021-03-12T09:21:18.123Z",
+            "schoolYear": {
+                "href": "https://dev.1edtech.net/academicSessions/5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "sourcedId": "5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "type": "academicSession"
+            },
+            "title": "Physical Education",
+            "courseCode": "Y7PE",
+            "grades": [
+                "07"
+            ],
+            "org": {
+                "href": "https://dev.1edtech.net/orgs/d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "sourcedId": "d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "type": "org"
+            },
+            "subjects": [
+                "Physical Education (grade 7)"
+            ],
+            "subjectCodes": [
+                "08037"
+            ]
+        },
+        {
+            "sourcedId": "a03e369a-21d0-470d-ac48-98cf4415b27c",
+            "status": "active",
+            "dateLastModified": "2021-03-12T09:21:18.123Z",
+            "schoolYear": {
+                "href": "https://dev.1edtech.net/academicSessions/5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "sourcedId": "5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "type": "academicSession"
+            },
+            "title": "Drama",
+            "courseCode": "Y7DRAMA",
+            "grades": [
+                "07"
+            ],
+            "org": {
+                "href": "https://dev.1edtech.net/orgs/d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "sourcedId": "d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "type": "org"
+            },
+            "subjects": [
+                "Drama (grade 7)"
+            ],
+            "subjectCodes": [
+                "05077"
+            ]
+        },
+        {
+            "sourcedId": "cbb673df-7bb8-4f6e-97ee-25d000661554",
+            "status": "active",
+            "dateLastModified": "2021-03-12T09:21:18.123Z",
+            "schoolYear": {
+                "href": "https://dev.1edtech.net/academicSessions/5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "sourcedId": "5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "type": "academicSession"
+            },
+            "title": "Information Technology",
+            "courseCode": "Y7IT",
+            "grades": [
+                "07"
+            ],
+            "org": {
+                "href": "https://dev.1edtech.net/orgs/d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "sourcedId": "d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "type": "org"
+            },
+            "subjects": [
+                "Introduction to Computer Technology"
+            ],
+            "subjectCodes": [
+                "10001"
+            ]
+        },
+        {
+            "sourcedId": "5dfe901a-4180-444d-bb2c-3ce041c4c7ba",
+            "status": "active",
+            "dateLastModified": "2021-03-12T09:21:18.124Z",
+            "schoolYear": {
+                "href": "https://dev.1edtech.net/academicSessions/5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "sourcedId": "5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "type": "academicSession"
+            },
+            "title": "Year 7 General",
+            "courseCode": "Y7",
+            "grades": [
+                "07"
+            ],
+            "org": {
+                "href": "https://dev.1edtech.net/orgs/d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "sourcedId": "d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "type": "org"
+            },
+            "subjects": [
+                "Grade 7"
+            ],
+            "subjectCodes": [
+                "23010"
+            ]
+        },
+        {
+            "sourcedId": "e9160e52-bc3b-440a-8ec0-ff91be007c7e",
+            "status": "active",
+            "dateLastModified": "2021-03-12T09:21:18.124Z",
+            "schoolYear": {
+                "href": "https://dev.1edtech.net/academicSessions/5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "sourcedId": "5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "type": "academicSession"
+            },
+            "title": "Geography",
+            "courseCode": "Y8GEOG",
+            "grades": [
+                "08"
+            ],
+            "org": {
+                "href": "https://dev.1edtech.net/orgs/d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "sourcedId": "d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "type": "org"
+            },
+            "subjects": [
+                "Particular Topics in Geography"
+            ],
+            "subjectCodes": [
+                "04002"
+            ]
+        },
+        {
+            "sourcedId": "756539b7-65bb-4cb7-a03b-e91a9b374a9b",
+            "status": "active",
+            "dateLastModified": "2021-03-12T09:21:18.124Z",
+            "schoolYear": {
+                "href": "https://dev.1edtech.net/academicSessions/5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "sourcedId": "5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "type": "academicSession"
+            },
+            "title": "Physics",
+            "courseCode": "Y8PHY",
+            "grades": [
+                "08"
+            ],
+            "org": {
+                "href": "https://dev.1edtech.net/orgs/d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "sourcedId": "d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "type": "org"
+            },
+            "subjects": [
+                "Physics"
+            ],
+            "subjectCodes": [
+                "03151"
+            ]
+        },
+        {
+            "sourcedId": "4f283af7-2c18-47c9-b207-41a907b5c11f",
+            "status": "active",
+            "dateLastModified": "2021-03-12T09:21:18.124Z",
+            "schoolYear": {
+                "href": "https://dev.1edtech.net/academicSessions/5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "sourcedId": "5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "type": "academicSession"
+            },
+            "title": "Religious Education",
+            "courseCode": "Y8RE",
+            "grades": [
+                "08"
+            ],
+            "org": {
+                "href": "https://dev.1edtech.net/orgs/d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "sourcedId": "d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "type": "org"
+            },
+            "subjects": [
+                "Particular Topics in Religion"
+            ],
+            "subjectCodes": [
+                "07018"
+            ]
+        },
+        {
+            "sourcedId": "52d96f3a-6fb8-4b53-ac19-c4990a99183e",
+            "status": "active",
+            "dateLastModified": "2021-03-12T09:21:18.124Z",
+            "schoolYear": {
+                "href": "https://dev.1edtech.net/academicSessions/5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "sourcedId": "5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "type": "academicSession"
+            },
+            "title": "Art",
+            "courseCode": "Y8ART",
+            "grades": [
+                "08"
+            ],
+            "org": {
+                "href": "https://dev.1edtech.net/orgs/d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "sourcedId": "d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "type": "org"
+            },
+            "subjects": [
+                "Visual Arts—Drawing/Painting"
+            ],
+            "subjectCodes": [
+                "05155"
+            ]
+        },
+        {
+            "sourcedId": "266814a4-cb26-40ce-9f34-1c912186da01",
+            "status": "active",
+            "dateLastModified": "2021-03-12T09:21:18.124Z",
+            "schoolYear": {
+                "href": "https://dev.1edtech.net/academicSessions/5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "sourcedId": "5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "type": "academicSession"
+            },
+            "title": "Biology",
+            "courseCode": "Y8BIO",
+            "grades": [
+                "08"
+            ],
+            "org": {
+                "href": "https://dev.1edtech.net/orgs/d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "sourcedId": "d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "type": "org"
+            },
+            "subjects": [
+                "Biology"
+            ],
+            "subjectCodes": [
+                "03051"
+            ]
+        },
+        {
+            "sourcedId": "6af8fa82-0cf3-4c0f-b2f0-fb728845276f",
+            "status": "active",
+            "dateLastModified": "2021-03-12T09:21:18.125Z",
+            "schoolYear": {
+                "href": "https://dev.1edtech.net/academicSessions/5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "sourcedId": "5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "type": "academicSession"
+            },
+            "title": "Mathematics",
+            "courseCode": "Y8MATH",
+            "grades": [
+                "08"
+            ],
+            "org": {
+                "href": "https://dev.1edtech.net/orgs/d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "sourcedId": "d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "type": "org"
+            },
+            "subjects": [
+                "Mathematics (grade 8)"
+            ],
+            "subjectCodes": [
+                "02038"
+            ]
+        },
+        {
+            "sourcedId": "885c7e1e-fc32-4cf7-b80c-53ff967fdfbe",
+            "status": "active",
+            "dateLastModified": "2021-03-12T09:21:18.125Z",
+            "schoolYear": {
+                "href": "https://dev.1edtech.net/academicSessions/5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "sourcedId": "5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "type": "academicSession"
+            },
+            "title": "History",
+            "courseCode": "Y8HIST",
+            "grades": [
+                "08"
+            ],
+            "org": {
+                "href": "https://dev.1edtech.net/orgs/d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "sourcedId": "d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "type": "org"
+            },
+            "subjects": [
+                "Modern U.S. History"
+            ],
+            "subjectCodes": [
+                "04103"
+            ]
+        },
+        {
+            "sourcedId": "1b52a930-350d-4a6d-9c37-c9d7e8278a83",
+            "status": "active",
+            "dateLastModified": "2021-03-12T09:21:18.125Z",
+            "schoolYear": {
+                "href": "https://dev.1edtech.net/academicSessions/5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "sourcedId": "5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "type": "academicSession"
+            },
+            "title": "English",
+            "courseCode": "Y8ENG",
+            "grades": [
+                "08"
+            ],
+            "org": {
+                "href": "https://dev.1edtech.net/orgs/d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "sourcedId": "d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "type": "org"
+            },
+            "subjects": [
+                "Reading (grade 8)",
+                "Writing (grade 8)"
+            ],
+            "subjectCodes": [
+                "01048",
+                "01138"
+            ]
+        },
+        {
+            "sourcedId": "13788a69-8f91-41e9-8f74-b5c28a3886e1",
+            "status": "active",
+            "dateLastModified": "2021-03-12T09:21:18.125Z",
+            "schoolYear": {
+                "href": "https://dev.1edtech.net/academicSessions/5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "sourcedId": "5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "type": "academicSession"
+            },
+            "title": "French",
+            "courseCode": "Y8FR",
+            "grades": [
+                "08"
+            ],
+            "org": {
+                "href": "https://dev.1edtech.net/orgs/d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "sourcedId": "d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "type": "org"
+            },
+            "subjects": [
+                "French II"
+            ],
+            "subjectCodes": [
+                "24103"
+            ]
+        },
+        {
+            "sourcedId": "a21358da-be1a-48f4-9ba7-93722e6631bc",
+            "status": "active",
+            "dateLastModified": "2021-03-12T09:21:18.125Z",
+            "schoolYear": {
+                "href": "https://dev.1edtech.net/academicSessions/5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "sourcedId": "5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "type": "academicSession"
+            },
+            "title": "Music",
+            "courseCode": "Y8MUSIC",
+            "grades": [
+                "08"
+            ],
+            "org": {
+                "href": "https://dev.1edtech.net/orgs/d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "sourcedId": "d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "type": "org"
+            },
+            "subjects": [
+                "Music (grade 8)"
+            ],
+            "subjectCodes": [
+                "05138"
+            ]
+        },
+        {
+            "sourcedId": "e9c552df-053e-4971-9f46-a8ed5a5fe0a7",
+            "status": "active",
+            "dateLastModified": "2021-03-12T09:21:18.126Z",
+            "schoolYear": {
+                "href": "https://dev.1edtech.net/academicSessions/5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "sourcedId": "5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "type": "academicSession"
+            },
+            "title": "Chemistry",
+            "courseCode": "Y8CHEM",
+            "grades": [
+                "08"
+            ],
+            "org": {
+                "href": "https://dev.1edtech.net/orgs/d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "sourcedId": "d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "type": "org"
+            },
+            "subjects": [
+                "Chemistry"
+            ],
+            "subjectCodes": [
+                "03101"
+            ]
+        },
+        {
+            "sourcedId": "0cea6f44-de65-46cc-ae90-1c819b93550f",
+            "status": "active",
+            "dateLastModified": "2021-03-12T09:21:18.126Z",
+            "schoolYear": {
+                "href": "https://dev.1edtech.net/academicSessions/5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "sourcedId": "5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "type": "academicSession"
+            },
+            "title": "CDT",
+            "courseCode": "Y8CDT",
+            "grades": [
+                "08"
+            ],
+            "org": {
+                "href": "https://dev.1edtech.net/orgs/d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "sourcedId": "d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "type": "org"
+            },
+            "subjects": [
+                "Crafts"
+            ],
+            "subjectCodes": [
+                "05165"
+            ]
+        },
+        {
+            "sourcedId": "148f86db-ed37-4adf-bf0b-60877eac4c8c",
+            "status": "active",
+            "dateLastModified": "2021-03-12T09:21:18.126Z",
+            "schoolYear": {
+                "href": "https://dev.1edtech.net/academicSessions/5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "sourcedId": "5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "type": "academicSession"
+            },
+            "title": "Physical Education",
+            "courseCode": "Y8PE",
+            "grades": [
+                "08"
+            ],
+            "org": {
+                "href": "https://dev.1edtech.net/orgs/d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "sourcedId": "d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "type": "org"
+            },
+            "subjects": [
+                "Physical Education (grade 8)"
+            ],
+            "subjectCodes": [
+                "08038"
+            ]
+        },
+        {
+            "sourcedId": "00614083-a6d7-47d0-a106-18b35dd40708",
+            "status": "active",
+            "dateLastModified": "2021-03-12T09:21:18.126Z",
+            "schoolYear": {
+                "href": "https://dev.1edtech.net/academicSessions/5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "sourcedId": "5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "type": "academicSession"
+            },
+            "title": "Drama",
+            "courseCode": "Y8DRAMA",
+            "grades": [
+                "08"
+            ],
+            "org": {
+                "href": "https://dev.1edtech.net/orgs/d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "sourcedId": "d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "type": "org"
+            },
+            "subjects": [
+                "Drama (grade 8)"
+            ],
+            "subjectCodes": [
+                "05078"
+            ]
+        },
+        {
+            "sourcedId": "e2368c92-463d-42ae-8dfa-6af4cb33da8c",
+            "status": "active",
+            "dateLastModified": "2021-03-12T09:21:18.126Z",
+            "schoolYear": {
+                "href": "https://dev.1edtech.net/academicSessions/5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "sourcedId": "5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "type": "academicSession"
+            },
+            "title": "Information Technology",
+            "courseCode": "Y8IT",
+            "grades": [
+                "08"
+            ],
+            "org": {
+                "href": "https://dev.1edtech.net/orgs/d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "sourcedId": "d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "type": "org"
+            },
+            "subjects": [
+                "Computer and Information Technology"
+            ],
+            "subjectCodes": [
+                "10003"
+            ]
+        },
+        {
+            "sourcedId": "1e8a7779-50d4-468b-8a71-3d76bfe11890",
+            "status": "active",
+            "dateLastModified": "2021-03-12T09:21:18.126Z",
+            "schoolYear": {
+                "href": "https://dev.1edtech.net/academicSessions/5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "sourcedId": "5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "type": "academicSession"
+            },
+            "title": "Year 8 General",
+            "courseCode": "Y8",
+            "grades": [
+                "08"
+            ],
+            "org": {
+                "href": "https://dev.1edtech.net/orgs/d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "sourcedId": "d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "type": "org"
+            },
+            "subjects": [
+                "Grade 8"
+            ],
+            "subjectCodes": [
+                "23011"
+            ]
+        },
+        {
+            "sourcedId": "aa55b04a-8bfc-4936-adfa-5248192d3e71",
+            "status": "active",
+            "dateLastModified": "2021-03-12T09:21:18.209Z",
+            "schoolYear": {
+                "href": "https://dev.1edtech.net/academicSessions/5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "sourcedId": "5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "type": "academicSession"
+            },
+            "title": "Geography",
+            "courseCode": "Y9GEOG",
+            "grades": [
+                "09"
+            ],
+            "org": {
+                "href": "https://dev.1edtech.net/orgs/d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "sourcedId": "d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "type": "org"
+            },
+            "subjects": [
+                "Particular Topics in Geography"
+            ],
+            "subjectCodes": [
+                "04002"
+            ]
+        },
+        {
+            "sourcedId": "302cdfb4-84fc-40f5-8b0d-793aef3ca5b9",
+            "status": "active",
+            "dateLastModified": "2021-03-12T09:21:18.210Z",
+            "schoolYear": {
+                "href": "https://dev.1edtech.net/academicSessions/5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "sourcedId": "5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "type": "academicSession"
+            },
+            "title": "Physics",
+            "courseCode": "Y9PHY",
+            "grades": [
+                "09"
+            ],
+            "org": {
+                "href": "https://dev.1edtech.net/orgs/d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "sourcedId": "d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "type": "org"
+            },
+            "subjects": [
+                "Physics"
+            ],
+            "subjectCodes": [
+                "03151"
+            ]
+        },
+        {
+            "sourcedId": "1a76d975-75d2-4970-a43d-bfbd870073a0",
+            "status": "active",
+            "dateLastModified": "2021-03-12T09:21:18.210Z",
+            "schoolYear": {
+                "href": "https://dev.1edtech.net/academicSessions/5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "sourcedId": "5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "type": "academicSession"
+            },
+            "title": "Religious Education",
+            "courseCode": "Y9RE",
+            "grades": [
+                "09"
+            ],
+            "org": {
+                "href": "https://dev.1edtech.net/orgs/d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "sourcedId": "d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "type": "org"
+            },
+            "subjects": [
+                "Particular Topics in Religion"
+            ],
+            "subjectCodes": [
+                "07018"
+            ]
+        },
+        {
+            "sourcedId": "6d0b4c50-804b-4e96-a1b0-0fefe598da9c",
+            "status": "active",
+            "dateLastModified": "2021-03-12T09:21:18.212Z",
+            "schoolYear": {
+                "href": "https://dev.1edtech.net/academicSessions/5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "sourcedId": "5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "type": "academicSession"
+            },
+            "title": "Art",
+            "courseCode": "Y9ART",
+            "grades": [
+                "09"
+            ],
+            "org": {
+                "href": "https://dev.1edtech.net/orgs/d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "sourcedId": "d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "type": "org"
+            },
+            "subjects": [
+                "Visual Arts—Comprehensive"
+            ],
+            "subjectCodes": [
+                "05154"
+            ]
+        },
+        {
+            "sourcedId": "38768fec-e9bb-4089-8dc0-86ea35041519",
+            "status": "active",
+            "dateLastModified": "2021-03-12T09:21:18.218Z",
+            "schoolYear": {
+                "href": "https://dev.1edtech.net/academicSessions/5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "sourcedId": "5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "type": "academicSession"
+            },
+            "title": "Biology",
+            "courseCode": "Y9BIO",
+            "grades": [
+                "09"
+            ],
+            "org": {
+                "href": "https://dev.1edtech.net/orgs/d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "sourcedId": "d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "type": "org"
+            },
+            "subjects": [
+                "Biology"
+            ],
+            "subjectCodes": [
+                "03051"
+            ]
+        },
+        {
+            "sourcedId": "08ece5f2-eced-4172-b22d-a4abfc19c404",
+            "status": "active",
+            "dateLastModified": "2021-03-12T09:21:18.219Z",
+            "schoolYear": {
+                "href": "https://dev.1edtech.net/academicSessions/5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "sourcedId": "5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "type": "academicSession"
+            },
+            "title": "Mathematics",
+            "courseCode": "Y9MATH",
+            "grades": [
+                "09"
+            ],
+            "org": {
+                "href": "https://dev.1edtech.net/orgs/d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "sourcedId": "d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "type": "org"
+            },
+            "subjects": [
+                "Integrated Mathematics I"
+            ],
+            "subjectCodes": [
+                "02062"
+            ]
+        },
+        {
+            "sourcedId": "04f55e63-9ce6-4fad-be7f-44f8dd6f213c",
+            "status": "active",
+            "dateLastModified": "2021-03-12T09:21:18.220Z",
+            "schoolYear": {
+                "href": "https://dev.1edtech.net/academicSessions/5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "sourcedId": "5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "type": "academicSession"
+            },
+            "title": "History",
+            "courseCode": "Y9HIST",
+            "grades": [
+                "09"
+            ],
+            "org": {
+                "href": "https://dev.1edtech.net/orgs/d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "sourcedId": "d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "type": "org"
+            },
+            "subjects": [
+                "Modern U.S. History"
+            ],
+            "subjectCodes": [
+                "04103"
+            ]
+        },
+        {
+            "sourcedId": "8371915d-986a-4097-bbf9-cbc93b9e41dc",
+            "status": "active",
+            "dateLastModified": "2021-03-12T09:21:18.220Z",
+            "schoolYear": {
+                "href": "https://dev.1edtech.net/academicSessions/5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "sourcedId": "5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "type": "academicSession"
+            },
+            "title": "English",
+            "courseCode": "Y9ENG",
+            "grades": [
+                "09"
+            ],
+            "org": {
+                "href": "https://dev.1edtech.net/orgs/d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "sourcedId": "d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "type": "org"
+            },
+            "subjects": [
+                "English/Language Arts I (9th grade)"
+            ],
+            "subjectCodes": [
+                "01001"
+            ]
+        },
+        {
+            "sourcedId": "8ac83931-84c9-48fa-8971-17f125745246",
+            "status": "active",
+            "dateLastModified": "2021-03-12T09:21:18.220Z",
+            "schoolYear": {
+                "href": "https://dev.1edtech.net/academicSessions/5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "sourcedId": "5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "type": "academicSession"
+            },
+            "title": "French",
+            "courseCode": "Y9FR",
+            "grades": [
+                "09"
+            ],
+            "org": {
+                "href": "https://dev.1edtech.net/orgs/d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "sourcedId": "d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "type": "org"
+            },
+            "subjects": [
+                "French III"
+            ],
+            "subjectCodes": [
+                "24104"
+            ]
+        },
+        {
+            "sourcedId": "4f210918-9679-4438-a523-ca6eac173ddd",
+            "status": "active",
+            "dateLastModified": "2021-03-12T09:21:18.221Z",
+            "schoolYear": {
+                "href": "https://dev.1edtech.net/academicSessions/5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "sourcedId": "5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "type": "academicSession"
+            },
+            "title": "Music",
+            "courseCode": "Y9MUSIC",
+            "grades": [
+                "09"
+            ],
+            "org": {
+                "href": "https://dev.1edtech.net/orgs/d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "sourcedId": "d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "type": "org"
+            },
+            "subjects": [
+                "Music—General"
+            ],
+            "subjectCodes": [
+                "05139"
+            ]
+        },
+        {
+            "sourcedId": "f21fdfa4-9775-43d5-8dd0-c9158eaeed42",
+            "status": "active",
+            "dateLastModified": "2021-03-12T09:21:18.221Z",
+            "schoolYear": {
+                "href": "https://dev.1edtech.net/academicSessions/5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "sourcedId": "5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "type": "academicSession"
+            },
+            "title": "Chemistry",
+            "courseCode": "Y9CHEM",
+            "grades": [
+                "09"
+            ],
+            "org": {
+                "href": "https://dev.1edtech.net/orgs/d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "sourcedId": "d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "type": "org"
+            },
+            "subjects": [
+                "Chemistry"
+            ],
+            "subjectCodes": [
+                "03101"
+            ]
+        },
+        {
+            "sourcedId": "a5ffd55f-1472-4d16-86b5-64bd9eed52e5",
+            "status": "active",
+            "dateLastModified": "2021-03-12T09:21:18.222Z",
+            "schoolYear": {
+                "href": "https://dev.1edtech.net/academicSessions/5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "sourcedId": "5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "type": "academicSession"
+            },
+            "title": "CDT",
+            "courseCode": "Y9CDT",
+            "grades": [
+                "09"
+            ],
+            "org": {
+                "href": "https://dev.1edtech.net/orgs/d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "sourcedId": "d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "type": "org"
+            },
+            "subjects": [
+                "Crafts"
+            ],
+            "subjectCodes": [
+                "05165"
+            ]
+        },
+        {
+            "sourcedId": "25d0d8e7-8e1d-4917-b9a5-e2952afb37de",
+            "status": "active",
+            "dateLastModified": "2021-03-12T09:21:18.222Z",
+            "schoolYear": {
+                "href": "https://dev.1edtech.net/academicSessions/5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "sourcedId": "5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "type": "academicSession"
+            },
+            "title": "Physical Education",
+            "courseCode": "Y9PE",
+            "grades": [
+                "09"
+            ],
+            "org": {
+                "href": "https://dev.1edtech.net/orgs/d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "sourcedId": "d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "type": "org"
+            },
+            "subjects": [
+                "Physical Education—General"
+            ],
+            "subjectCodes": [
+                "08039"
+            ]
+        },
+        {
+            "sourcedId": "36d1644b-7b2d-41f4-afc7-8c0e3007e933",
+            "status": "active",
+            "dateLastModified": "2021-03-12T09:21:18.308Z",
+            "schoolYear": {
+                "href": "https://dev.1edtech.net/academicSessions/5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "sourcedId": "5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "type": "academicSession"
+            },
+            "title": "Drama",
+            "courseCode": "Y9DRAMA",
+            "grades": [
+                "09"
+            ],
+            "org": {
+                "href": "https://dev.1edtech.net/orgs/d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "sourcedId": "d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "type": "org"
+            },
+            "subjects": [
+                "Introduction to Theater"
+            ],
+            "subjectCodes": [
+                "05051"
+            ]
+        },
+        {
+            "sourcedId": "280e4814-0374-4e37-8b79-c7ab97eb7265",
+            "status": "active",
+            "dateLastModified": "2021-03-12T09:21:18.309Z",
+            "schoolYear": {
+                "href": "https://dev.1edtech.net/academicSessions/5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "sourcedId": "5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "type": "academicSession"
+            },
+            "title": "Information Technology",
+            "courseCode": "Y9IT",
+            "grades": [
+                "09"
+            ],
+            "org": {
+                "href": "https://dev.1edtech.net/orgs/d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "sourcedId": "d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "type": "org"
+            },
+            "subjects": [
+                "Computer and Information Technology"
+            ],
+            "subjectCodes": [
+                "10003"
+            ]
+        },
+        {
+            "sourcedId": "00db45c5-2f50-45d1-a87f-5fb15c207713",
+            "status": "active",
+            "dateLastModified": "2021-03-12T09:21:18.310Z",
+            "schoolYear": {
+                "href": "https://dev.1edtech.net/academicSessions/5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "sourcedId": "5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "type": "academicSession"
+            },
+            "title": "Year 9 General",
+            "courseCode": "Y9",
+            "grades": [
+                "09"
+            ],
+            "org": {
+                "href": "https://dev.1edtech.net/orgs/d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "sourcedId": "d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "type": "org"
+            },
+            "subjects": [
+                "Miscellaneous—Other"
+            ],
+            "subjectCodes": [
+                "22999"
+            ]
+        },
+        {
+            "sourcedId": "9e5a6bb5-f965-497c-bea1-03f5c624e199",
+            "status": "active",
+            "dateLastModified": "2021-03-12T09:21:18.310Z",
+            "schoolYear": {
+                "href": "https://dev.1edtech.net/academicSessions/5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "sourcedId": "5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "type": "academicSession"
+            },
+            "title": "Geography",
+            "courseCode": "Y10GEOG",
+            "grades": [
+                "10"
+            ],
+            "org": {
+                "href": "https://dev.1edtech.net/orgs/d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "sourcedId": "d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "type": "org"
+            },
+            "subjects": [
+                "Particular Topics in Geography"
+            ],
+            "subjectCodes": [
+                "04002"
+            ]
+        },
+        {
+            "sourcedId": "c292faf6-35a2-4b5f-bdcc-9933befcb387",
+            "status": "active",
+            "dateLastModified": "2021-03-12T09:21:18.310Z",
+            "schoolYear": {
+                "href": "https://dev.1edtech.net/academicSessions/5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "sourcedId": "5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "type": "academicSession"
+            },
+            "title": "Physics",
+            "courseCode": "Y10PHY",
+            "grades": [
+                "10"
+            ],
+            "org": {
+                "href": "https://dev.1edtech.net/orgs/d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "sourcedId": "d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "type": "org"
+            },
+            "subjects": [
+                "Physics"
+            ],
+            "subjectCodes": [
+                "03151"
+            ]
+        },
+        {
+            "sourcedId": "eb144ba8-b9ea-4222-8e49-ee1a8457a82d",
+            "status": "active",
+            "dateLastModified": "2021-03-12T09:21:18.311Z",
+            "schoolYear": {
+                "href": "https://dev.1edtech.net/academicSessions/5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "sourcedId": "5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "type": "academicSession"
+            },
+            "title": "Religious Education",
+            "courseCode": "Y10RE",
+            "grades": [
+                "10"
+            ],
+            "org": {
+                "href": "https://dev.1edtech.net/orgs/d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "sourcedId": "d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "type": "org"
+            },
+            "subjects": [
+                "Particular Topics in Religion"
+            ],
+            "subjectCodes": [
+                "07018"
+            ]
+        },
+        {
+            "sourcedId": "29256259-32f4-4102-bd70-af3d46f9b827",
+            "status": "active",
+            "dateLastModified": "2021-03-12T09:21:18.311Z",
+            "schoolYear": {
+                "href": "https://dev.1edtech.net/academicSessions/5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "sourcedId": "5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "type": "academicSession"
+            },
+            "title": "Art",
+            "courseCode": "Y10ART",
+            "grades": [
+                "10"
+            ],
+            "org": {
+                "href": "https://dev.1edtech.net/orgs/d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "sourcedId": "d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "type": "org"
+            },
+            "subjects": [
+                "Visual Arts—Comprehensive"
+            ],
+            "subjectCodes": [
+                "05154"
+            ]
+        },
+        {
+            "sourcedId": "12cccfaf-103b-425a-8268-a07612fe144d",
+            "status": "active",
+            "dateLastModified": "2021-03-12T09:21:18.311Z",
+            "schoolYear": {
+                "href": "https://dev.1edtech.net/academicSessions/5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "sourcedId": "5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "type": "academicSession"
+            },
+            "title": "Biology",
+            "courseCode": "Y10BIO",
+            "grades": [
+                "10"
+            ],
+            "org": {
+                "href": "https://dev.1edtech.net/orgs/d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "sourcedId": "d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "type": "org"
+            },
+            "subjects": [
+                "Biology"
+            ],
+            "subjectCodes": [
+                "03051"
+            ]
+        },
+        {
+            "sourcedId": "fc9c12c8-a498-409a-b4d1-6e9e23942baf",
+            "status": "active",
+            "dateLastModified": "2021-03-12T09:21:18.312Z",
+            "schoolYear": {
+                "href": "https://dev.1edtech.net/academicSessions/5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "sourcedId": "5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "type": "academicSession"
+            },
+            "title": "Mathematics",
+            "courseCode": "Y10MATH",
+            "grades": [
+                "10"
+            ],
+            "org": {
+                "href": "https://dev.1edtech.net/orgs/d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "sourcedId": "d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "type": "org"
+            },
+            "subjects": [
+                "Integrated Mathematics II"
+            ],
+            "subjectCodes": [
+                "02063"
+            ]
+        },
+        {
+            "sourcedId": "3b7086b8-449b-4f5b-a61f-904f2c99e79a",
+            "status": "active",
+            "dateLastModified": "2021-03-12T09:21:18.312Z",
+            "schoolYear": {
+                "href": "https://dev.1edtech.net/academicSessions/5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "sourcedId": "5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "type": "academicSession"
+            },
+            "title": "History",
+            "courseCode": "Y10HIST",
+            "grades": [
+                "10"
+            ],
+            "org": {
+                "href": "https://dev.1edtech.net/orgs/d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "sourcedId": "d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "type": "org"
+            },
+            "subjects": [
+                "Modern World History"
+            ],
+            "subjectCodes": [
+                "04053"
+            ]
+        },
+        {
+            "sourcedId": "7ab4fd59-e313-4db7-aa22-5ff07b692b5e",
+            "status": "active",
+            "dateLastModified": "2021-03-12T09:21:18.313Z",
+            "schoolYear": {
+                "href": "https://dev.1edtech.net/academicSessions/5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "sourcedId": "5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "type": "academicSession"
+            },
+            "title": "English",
+            "courseCode": "Y10ENG",
+            "grades": [
+                "10"
+            ],
+            "org": {
+                "href": "https://dev.1edtech.net/orgs/d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "sourcedId": "d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "type": "org"
+            },
+            "subjects": [
+                "English/Language Arts II (10th grade)"
+            ],
+            "subjectCodes": [
+                "01002"
+            ]
+        },
+        {
+            "sourcedId": "67ae3dec-7d5d-4b2f-ac2e-f5886341af02",
+            "status": "active",
+            "dateLastModified": "2021-03-12T09:21:18.313Z",
+            "schoolYear": {
+                "href": "https://dev.1edtech.net/academicSessions/5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "sourcedId": "5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "type": "academicSession"
+            },
+            "title": "French",
+            "courseCode": "Y10FR",
+            "grades": [
+                "10"
+            ],
+            "org": {
+                "href": "https://dev.1edtech.net/orgs/d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "sourcedId": "d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "type": "org"
+            },
+            "subjects": [
+                "French IV"
+            ],
+            "subjectCodes": [
+                "24105"
+            ]
+        },
+        {
+            "sourcedId": "099d3106-a648-41e0-94bc-915377874fce",
+            "status": "active",
+            "dateLastModified": "2021-03-12T09:21:18.313Z",
+            "schoolYear": {
+                "href": "https://dev.1edtech.net/academicSessions/5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "sourcedId": "5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "type": "academicSession"
+            },
+            "title": "Music",
+            "courseCode": "Y10MUSIC",
+            "grades": [
+                "10"
+            ],
+            "org": {
+                "href": "https://dev.1edtech.net/orgs/d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "sourcedId": "d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "type": "org"
+            },
+            "subjects": [
+                "Music—General"
+            ],
+            "subjectCodes": [
+                "05139"
+            ]
+        },
+        {
+            "sourcedId": "8e3ba058-4a0d-4343-a188-c388e7da8c51",
+            "status": "active",
+            "dateLastModified": "2021-03-12T09:21:18.314Z",
+            "schoolYear": {
+                "href": "https://dev.1edtech.net/academicSessions/5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "sourcedId": "5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "type": "academicSession"
+            },
+            "title": "Chemistry",
+            "courseCode": "Y10CHEM",
+            "grades": [
+                "10"
+            ],
+            "org": {
+                "href": "https://dev.1edtech.net/orgs/d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "sourcedId": "d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "type": "org"
+            },
+            "subjects": [
+                "Chemistry"
+            ],
+            "subjectCodes": [
+                "03101"
+            ]
+        },
+        {
+            "sourcedId": "21ade37b-1de6-478d-98ed-ae38304413db",
+            "status": "active",
+            "dateLastModified": "2021-03-12T09:21:18.314Z",
+            "schoolYear": {
+                "href": "https://dev.1edtech.net/academicSessions/5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "sourcedId": "5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "type": "academicSession"
+            },
+            "title": "CDT",
+            "courseCode": "Y10CDT",
+            "grades": [
+                "10"
+            ],
+            "org": {
+                "href": "https://dev.1edtech.net/orgs/d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "sourcedId": "d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "type": "org"
+            },
+            "subjects": [
+                "Crafts"
+            ],
+            "subjectCodes": [
+                "05165"
+            ]
+        },
+        {
+            "sourcedId": "963725f9-c9d6-4ac4-bcf8-f4c1b4a60dae",
+            "status": "active",
+            "dateLastModified": "2021-03-12T09:21:18.314Z",
+            "schoolYear": {
+                "href": "https://dev.1edtech.net/academicSessions/5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "sourcedId": "5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "type": "academicSession"
+            },
+            "title": "Physical Education",
+            "courseCode": "Y10PE",
+            "grades": [
+                "10"
+            ],
+            "org": {
+                "href": "https://dev.1edtech.net/orgs/d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "sourcedId": "d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "type": "org"
+            },
+            "subjects": [
+                "Physical Education—General"
+            ],
+            "subjectCodes": [
+                "08039"
+            ]
+        },
+        {
+            "sourcedId": "e7c67437-01f4-4d7c-a967-777d54ceb494",
+            "status": "active",
+            "dateLastModified": "2021-03-12T09:21:18.315Z",
+            "schoolYear": {
+                "href": "https://dev.1edtech.net/academicSessions/5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "sourcedId": "5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "type": "academicSession"
+            },
+            "title": "Drama",
+            "courseCode": "Y10DRAMA",
+            "grades": [
+                "10"
+            ],
+            "org": {
+                "href": "https://dev.1edtech.net/orgs/d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "sourcedId": "d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "type": "org"
+            },
+            "subjects": [
+                "Theater—Acting/Performance"
+            ],
+            "subjectCodes": [
+                "05055"
+            ]
+        },
+        {
+            "sourcedId": "5e9b7a21-426d-4eb6-b922-55f9b26fa119",
+            "status": "active",
+            "dateLastModified": "2021-03-12T09:21:18.316Z",
+            "schoolYear": {
+                "href": "https://dev.1edtech.net/academicSessions/5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "sourcedId": "5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "type": "academicSession"
+            },
+            "title": "Information Technology",
+            "courseCode": "Y10IT",
+            "grades": [
+                "10"
+            ],
+            "org": {
+                "href": "https://dev.1edtech.net/orgs/d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "sourcedId": "d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "type": "org"
+            },
+            "subjects": [
+                "Computer and Information Technology"
+            ],
+            "subjectCodes": [
+                "10003"
+            ]
+        },
+        {
+            "sourcedId": "2a043920-fb07-47c2-a8bf-60824cfa5bac",
+            "status": "active",
+            "dateLastModified": "2021-03-12T09:21:18.316Z",
+            "schoolYear": {
+                "href": "https://dev.1edtech.net/academicSessions/5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "sourcedId": "5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "type": "academicSession"
+            },
+            "title": "Year 10 General",
+            "courseCode": "Y10",
+            "grades": [
+                "10"
+            ],
+            "org": {
+                "href": "https://dev.1edtech.net/orgs/d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "sourcedId": "d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "type": "org"
+            },
+            "subjects": [
+                "Miscellaneous—Other"
+            ],
+            "subjectCodes": [
+                "22999"
+            ]
+        },
+        {
+            "sourcedId": "f26bdf86-59d3-4645-8428-bf9c08e7b0cc",
+            "status": "active",
+            "dateLastModified": "2021-03-12T09:21:18.316Z",
+            "schoolYear": {
+                "href": "https://dev.1edtech.net/academicSessions/5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "sourcedId": "5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "type": "academicSession"
+            },
+            "title": "Geography",
+            "courseCode": "Y11GEOG",
+            "grades": [
+                "11"
+            ],
+            "org": {
+                "href": "https://dev.1edtech.net/orgs/d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "sourcedId": "d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "type": "org"
+            },
+            "subjects": [
+                "Particular Topics in Geography"
+            ],
+            "subjectCodes": [
+                "04002"
+            ]
+        },
+        {
+            "sourcedId": "d5119506-2a08-4d58-8d5e-a8852a1052ba",
+            "status": "active",
+            "dateLastModified": "2021-03-12T09:21:18.317Z",
+            "schoolYear": {
+                "href": "https://dev.1edtech.net/academicSessions/5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "sourcedId": "5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "type": "academicSession"
+            },
+            "title": "Physics",
+            "courseCode": "Y11PHY",
+            "grades": [
+                "11"
+            ],
+            "org": {
+                "href": "https://dev.1edtech.net/orgs/d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "sourcedId": "d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "type": "org"
+            },
+            "subjects": [
+                "Physics"
+            ],
+            "subjectCodes": [
+                "03151"
+            ]
+        },
+        {
+            "sourcedId": "acc8acf6-c51c-4d28-a25e-d238168ed702",
+            "status": "active",
+            "dateLastModified": "2021-03-12T09:21:18.317Z",
+            "schoolYear": {
+                "href": "https://dev.1edtech.net/academicSessions/5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "sourcedId": "5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "type": "academicSession"
+            },
+            "title": "Religious Education",
+            "courseCode": "Y11RE",
+            "grades": [
+                "11"
+            ],
+            "org": {
+                "href": "https://dev.1edtech.net/orgs/d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "sourcedId": "d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "type": "org"
+            },
+            "subjects": [
+                "Particular Topics in Religion"
+            ],
+            "subjectCodes": [
+                "07018"
+            ]
+        },
+        {
+            "sourcedId": "df2bdc45-5de1-4a18-80e2-ea2e179c73a0",
+            "status": "active",
+            "dateLastModified": "2021-03-12T09:21:18.318Z",
+            "schoolYear": {
+                "href": "https://dev.1edtech.net/academicSessions/5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "sourcedId": "5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "type": "academicSession"
+            },
+            "title": "Art",
+            "courseCode": "Y11ART",
+            "grades": [
+                "11"
+            ],
+            "org": {
+                "href": "https://dev.1edtech.net/orgs/d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "sourcedId": "d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "type": "org"
+            },
+            "subjects": [
+                "Visual Arts—Comprehensive"
+            ],
+            "subjectCodes": [
+                "05154"
+            ]
+        },
+        {
+            "sourcedId": "287ecbd2-a75f-4e59-9be9-559ccff54932",
+            "status": "active",
+            "dateLastModified": "2021-03-12T09:21:18.318Z",
+            "schoolYear": {
+                "href": "https://dev.1edtech.net/academicSessions/5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "sourcedId": "5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "type": "academicSession"
+            },
+            "title": "Biology",
+            "courseCode": "Y11BIO",
+            "grades": [
+                "11"
+            ],
+            "org": {
+                "href": "https://dev.1edtech.net/orgs/d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "sourcedId": "d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "type": "org"
+            },
+            "subjects": [
+                "Biology"
+            ],
+            "subjectCodes": [
+                "03051"
+            ]
+        },
+        {
+            "sourcedId": "303ffc9c-6d7a-437b-a804-083310a53172",
+            "status": "active",
+            "dateLastModified": "2021-03-12T09:21:18.318Z",
+            "schoolYear": {
+                "href": "https://dev.1edtech.net/academicSessions/5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "sourcedId": "5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "type": "academicSession"
+            },
+            "title": "Mathematics",
+            "courseCode": "Y11MATH",
+            "grades": [
+                "11"
+            ],
+            "org": {
+                "href": "https://dev.1edtech.net/orgs/d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "sourcedId": "d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "type": "org"
+            },
+            "subjects": [
+                "College Mathematics Preparation"
+            ],
+            "subjectCodes": [
+                "02138"
+            ]
+        },
+        {
+            "sourcedId": "1f1d1c89-2d9f-40b0-ba01-9dd2f91064fc",
+            "status": "active",
+            "dateLastModified": "2021-03-12T09:21:18.319Z",
+            "schoolYear": {
+                "href": "https://dev.1edtech.net/academicSessions/5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "sourcedId": "5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "type": "academicSession"
+            },
+            "title": "History",
+            "courseCode": "Y11HIST",
+            "grades": [
+                "11"
+            ],
+            "org": {
+                "href": "https://dev.1edtech.net/orgs/d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "sourcedId": "d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "type": "org"
+            },
+            "subjects": [
+                "Modern World History"
+            ],
+            "subjectCodes": [
+                "04053"
+            ]
+        },
+        {
+            "sourcedId": "ecaab2c9-5f05-43d6-bd5f-3b6a0e3ad995",
+            "status": "active",
+            "dateLastModified": "2021-03-12T09:21:18.319Z",
+            "schoolYear": {
+                "href": "https://dev.1edtech.net/academicSessions/5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "sourcedId": "5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "type": "academicSession"
+            },
+            "title": "English",
+            "courseCode": "Y11ENG",
+            "grades": [
+                "11"
+            ],
+            "org": {
+                "href": "https://dev.1edtech.net/orgs/d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "sourcedId": "d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "type": "org"
+            },
+            "subjects": [
+                "English/Language Arts III (11th grade)"
+            ],
+            "subjectCodes": [
+                "01003"
+            ]
+        },
+        {
+            "sourcedId": "e2a10cd0-8a93-4136-a7de-0b193ea4ad56",
+            "status": "active",
+            "dateLastModified": "2021-03-12T09:21:18.320Z",
+            "schoolYear": {
+                "href": "https://dev.1edtech.net/academicSessions/5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "sourcedId": "5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "type": "academicSession"
+            },
+            "title": "French",
+            "courseCode": "Y11FR",
+            "grades": [
+                "11"
+            ],
+            "org": {
+                "href": "https://dev.1edtech.net/orgs/d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "sourcedId": "d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "type": "org"
+            },
+            "subjects": [
+                "French V"
+            ],
+            "subjectCodes": [
+                "24106"
+            ]
+        },
+        {
+            "sourcedId": "e03155c2-6d2d-4bd1-9c86-d88c501c6b4a",
+            "status": "active",
+            "dateLastModified": "2021-03-12T09:21:18.320Z",
+            "schoolYear": {
+                "href": "https://dev.1edtech.net/academicSessions/5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "sourcedId": "5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "type": "academicSession"
+            },
+            "title": "Music",
+            "courseCode": "Y11MUSIC",
+            "grades": [
+                "11"
+            ],
+            "org": {
+                "href": "https://dev.1edtech.net/orgs/d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "sourcedId": "d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "type": "org"
+            },
+            "subjects": [
+                "Music—General"
+            ],
+            "subjectCodes": [
+                "05139"
+            ]
+        },
+        {
+            "sourcedId": "ab18edb3-d07a-4170-ae65-1da098452f38",
+            "status": "active",
+            "dateLastModified": "2021-03-12T09:21:18.320Z",
+            "schoolYear": {
+                "href": "https://dev.1edtech.net/academicSessions/5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "sourcedId": "5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "type": "academicSession"
+            },
+            "title": "Chemistry",
+            "courseCode": "Y11CHEM",
+            "grades": [
+                "11"
+            ],
+            "org": {
+                "href": "https://dev.1edtech.net/orgs/d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "sourcedId": "d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "type": "org"
+            },
+            "subjects": [
+                "Chemistry"
+            ],
+            "subjectCodes": [
+                "03101"
+            ]
+        },
+        {
+            "sourcedId": "bb2dbac1-0d4b-4def-90d0-2c9481b3022c",
+            "status": "active",
+            "dateLastModified": "2021-03-12T09:21:18.409Z",
+            "schoolYear": {
+                "href": "https://dev.1edtech.net/academicSessions/5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "sourcedId": "5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "type": "academicSession"
+            },
+            "title": "CDT",
+            "courseCode": "Y11CDT",
+            "grades": [
+                "11"
+            ],
+            "org": {
+                "href": "https://dev.1edtech.net/orgs/d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "sourcedId": "d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "type": "org"
+            },
+            "subjects": [
+                "Crafts"
+            ],
+            "subjectCodes": [
+                "05165"
+            ]
+        },
+        {
+            "sourcedId": "19a63f2e-4cfa-4ef8-8040-16eb1b466d18",
+            "status": "active",
+            "dateLastModified": "2021-03-12T09:21:18.409Z",
+            "schoolYear": {
+                "href": "https://dev.1edtech.net/academicSessions/5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "sourcedId": "5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "type": "academicSession"
+            },
+            "title": "Physical Education",
+            "courseCode": "Y11PE",
+            "grades": [
+                "11"
+            ],
+            "org": {
+                "href": "https://dev.1edtech.net/orgs/d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "sourcedId": "d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "type": "org"
+            },
+            "subjects": [
+                "Physical Education—General"
+            ],
+            "subjectCodes": [
+                "08039"
+            ]
+        },
+        {
+            "sourcedId": "32264e66-6194-4a9f-8c19-7bd6de5a95d6",
+            "status": "active",
+            "dateLastModified": "2021-03-12T09:21:18.410Z",
+            "schoolYear": {
+                "href": "https://dev.1edtech.net/academicSessions/5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "sourcedId": "5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "type": "academicSession"
+            },
+            "title": "Drama",
+            "courseCode": "Y11DRAMA",
+            "grades": [
+                "11"
+            ],
+            "org": {
+                "href": "https://dev.1edtech.net/orgs/d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "sourcedId": "d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "type": "org"
+            },
+            "subjects": [
+                "Theater—Acting/Performance"
+            ],
+            "subjectCodes": [
+                "05055"
+            ]
+        },
+        {
+            "sourcedId": "6c799134-242a-406f-929f-c9af7211baeb",
+            "status": "active",
+            "dateLastModified": "2021-03-12T09:21:18.410Z",
+            "schoolYear": {
+                "href": "https://dev.1edtech.net/academicSessions/5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "sourcedId": "5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "type": "academicSession"
+            },
+            "title": "Information Technology",
+            "courseCode": "Y11IT",
+            "grades": [
+                "11"
+            ],
+            "org": {
+                "href": "https://dev.1edtech.net/orgs/d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "sourcedId": "d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "type": "org"
+            },
+            "subjects": [
+                "Computer and Information Technology"
+            ],
+            "subjectCodes": [
+                "10003"
+            ]
+        },
+        {
+            "sourcedId": "b43f3513-fb4a-4c38-88f9-77264a89890e",
+            "status": "active",
+            "dateLastModified": "2021-03-12T09:21:18.410Z",
+            "schoolYear": {
+                "href": "https://dev.1edtech.net/academicSessions/5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "sourcedId": "5d88e657-e1bb-45a6-8e16-6c1542f340ee",
+                "type": "academicSession"
+            },
+            "title": "Year 11 General",
+            "courseCode": "Y11",
+            "grades": [
+                "11"
+            ],
+            "org": {
+                "href": "https://dev.1edtech.net/orgs/d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "sourcedId": "d94f060a-dc3c-4db6-995d-2cca9bce3109",
+                "type": "org"
+            },
+            "subjects": [
+                "Miscellaneous—Other"
+            ],
+            "subjectCodes": [
+                "22999"
+            ]
+        }
+    ]
+}
