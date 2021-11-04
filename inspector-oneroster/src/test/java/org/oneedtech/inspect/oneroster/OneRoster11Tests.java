@@ -9,14 +9,7 @@ import static org.oneedtech.inspect.oneroster.OneRoster11Inspector.TransactionKe
 import static org.oneedtech.inspect.oneroster.Samples.OR11.AS678;
 import static org.oneedtech.inspect.oneroster.Samples.OR11.AS678I;
 import static org.oneedtech.inspect.oneroster.Samples.OR11.D198;
-import static org.oneedtech.inspect.testutil.Assertions.assertErrorCount;
-import static org.oneedtech.inspect.testutil.Assertions.assertFatalCount;
-import static org.oneedtech.inspect.testutil.Assertions.assertHasOnlyErrors;
-import static org.oneedtech.inspect.testutil.Assertions.assertInvalid;
-import static org.oneedtech.inspect.testutil.Assertions.assertNotRun;
-import static org.oneedtech.inspect.testutil.Assertions.assertNotRunCount;
-import static org.oneedtech.inspect.testutil.Assertions.assertValid;
-import static org.oneedtech.inspect.testutil.PrintHelper.print;
+import static org.oneedtech.inspect.testutil.Assertions.*;
 import static org.oneedtech.inspect.testutil.Sample.fieldsToList;
 import static org.oneedtech.inspect.util.net.HttpMethod.GET;
 
@@ -38,7 +31,6 @@ import org.oneedtech.inspect.core.probe.json.JsonPropertyPredicateProbe;
 import org.oneedtech.inspect.core.probe.json.JsonPropertyPresentProbe;
 import org.oneedtech.inspect.core.report.Report;
 import org.oneedtech.inspect.core.report.ReportItems;
-import org.oneedtech.inspect.testutil.PrintHelper;
 import org.oneedtech.inspect.testutil.Sample;
 import org.oneedtech.inspect.util.resource.Resource;
 import org.oneedtech.inspect.util.resource.StringResource;
