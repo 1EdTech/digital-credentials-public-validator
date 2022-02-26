@@ -9,8 +9,8 @@ import static org.oneedtech.inspect.oneroster.OneRoster11Inspector.TransactionKe
 import static org.oneedtech.inspect.oneroster.Samples.OR11.AS678;
 import static org.oneedtech.inspect.oneroster.Samples.OR11.AS678I;
 import static org.oneedtech.inspect.oneroster.Samples.OR11.D198;
-import static org.oneedtech.inspect.testutil.Assertions.*;
-import static org.oneedtech.inspect.testutil.Sample.fieldsToList;
+import static org.oneedtech.inspect.test.Assertions.*;
+import static org.oneedtech.inspect.test.Sample.fieldsToList;
 import static org.oneedtech.inspect.util.net.HttpMethod.GET;
 
 import java.util.Collection;
@@ -31,7 +31,7 @@ import org.oneedtech.inspect.core.probe.json.JsonPropertyPredicateProbe;
 import org.oneedtech.inspect.core.probe.json.JsonPropertyPresentProbe;
 import org.oneedtech.inspect.core.report.Report;
 import org.oneedtech.inspect.core.report.ReportItems;
-import org.oneedtech.inspect.testutil.Sample;
+import org.oneedtech.inspect.test.Sample;
 import org.oneedtech.inspect.util.resource.Resource;
 import org.oneedtech.inspect.util.resource.StringResource;
 

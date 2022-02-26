@@ -8,7 +8,7 @@ import static org.oneedtech.inspect.oneroster.OneRoster11Inspector.TransactionKe
 import static org.oneedtech.inspect.oneroster.OneRoster11Inspector.TransactionKeys.ORGS_GET_200;
 import static org.oneedtech.inspect.oneroster.OneRoster11Inspector.TransactionKeys.USERS_GET_200;
 
-import org.oneedtech.inspect.testutil.Sample;
+import org.oneedtech.inspect.test.Sample;
 
 public class Samples {
 
