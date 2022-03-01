@@ -5,11 +5,17 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.oneedtech.inspect.core.probe.Outcome.ERROR;
 import static org.oneedtech.inspect.core.probe.Outcome.WARNING;
-import static org.oneedtech.inspect.oneroster.OneRoster11Inspector.TransactionKeys.ACADEMIC_SESSIONS_GET_200;
+import static org.oneedtech.inspect.oneroster.OneRoster11Inspector.TransactionKeys.GET_ALL_ACADEMIC_SESSIONS_200;
 import static org.oneedtech.inspect.oneroster.Samples.OR11.AS678;
 import static org.oneedtech.inspect.oneroster.Samples.OR11.AS678I;
 import static org.oneedtech.inspect.oneroster.Samples.OR11.D198;
-import static org.oneedtech.inspect.test.Assertions.*;
+import static org.oneedtech.inspect.test.Assertions.assertErrorCount;
+import static org.oneedtech.inspect.test.Assertions.assertFatalCount;
+import static org.oneedtech.inspect.test.Assertions.assertHasOnlyErrors;
+import static org.oneedtech.inspect.test.Assertions.assertInvalid;
+import static org.oneedtech.inspect.test.Assertions.assertNotRun;
+import static org.oneedtech.inspect.test.Assertions.assertNotRunCount;
+import static org.oneedtech.inspect.test.Assertions.assertValid;
 import static org.oneedtech.inspect.test.Sample.fieldsToList;
 import static org.oneedtech.inspect.util.net.HttpMethod.GET;
 
@@ -17,6 +23,7 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
@@ -31,6 +38,7 @@ import org.oneedtech.inspect.core.probe.json.JsonPropertyPredicateProbe;
 import org.oneedtech.inspect.core.probe.json.JsonPropertyPresentProbe;
 import org.oneedtech.inspect.core.report.Report;
 import org.oneedtech.inspect.core.report.ReportItems;
+import org.oneedtech.inspect.core.schema.TransactionKey;
 import org.oneedtech.inspect.test.Sample;
 import org.oneedtech.inspect.util.resource.Resource;
 import org.oneedtech.inspect.util.resource.StringResource;
@@ -105,10 +113,19 @@ class OneRoster11Tests {
 	}
 	
 	@Test
+	void testTransactionKeys() throws Exception {
+		Collection<TransactionKey> coll = TransactionKey.toMap( OneRoster11Inspector.TransactionKeys.class).values();		
+		assertTrue(coll.size() > 0);
+		
+		List<String> strings = TransactionKey.toMap(OneRoster11Inspector.TransactionKeys.class).values().stream().map(k->k.toString()).toList();	
+		assertTrue(strings.size() > 0);
+	}
+	
+	@Test
 	void testAllSamples() throws Exception {
 		List<Sample> input = fieldsToList(Samples.OR11.class.getFields());
 				
-		for(Sample sample : input) {
+		for(Sample sample : input) {			
 			String body = sample.asString(); 
 			String endPoint = sample.getTransactionKey().orElseThrow().getEndpoint();
 			int code = sample.getTransactionKey().orElseThrow().getStatusCodes()[0];			
@@ -137,21 +154,21 @@ class OneRoster11Tests {
 				//.set(OneRoster11Inspector.TransactionKeys.ACADEMIC_SESSIONS_GET_200)
 				
 				//this one succeeds
-				.add(ACADEMIC_SESSIONS_GET_200, new JsonPropertyPresentProbe("$.academicSessions[*]", "status", 
+				.add(GET_ALL_ACADEMIC_SESSIONS_200, new JsonPropertyPresentProbe("$.academicSessions[*]", "status", 
 						 "You really should include status", WARNING))
 				//this one warns
-				.add(ACADEMIC_SESSIONS_GET_200, new JsonPropertyPresentProbe("$.academicSessions[*]", "foo", 
+				.add(GET_ALL_ACADEMIC_SESSIONS_200, new JsonPropertyPresentProbe("$.academicSessions[*]", "foo", 
 						 "Think again about including foo", WARNING))				
 				//this one errors
-				.add(ACADEMIC_SESSIONS_GET_200, new JsonPropertyPredicateProbe("$.academicSessions[*].status", 
+				.add(GET_ALL_ACADEMIC_SESSIONS_200, new JsonPropertyPredicateProbe("$.academicSessions[*].status", 
 						 JsonPredicates.valueEquals("foo"), 
 						 "The status field does not have expected value 'foo'", ERROR))
 				//this one warns
-				.add(ACADEMIC_SESSIONS_GET_200, new JsonPropertyPredicateProbe("$.academicSessions[*].type", 
+				.add(GET_ALL_ACADEMIC_SESSIONS_200, new JsonPropertyPredicateProbe("$.academicSessions[*].type", 
 						 JsonPredicates.valueMatches(Pattern.compile("(foo|bar)")), 
 						 "The type field should have either of the values 'foo' or 'bar'", WARNING))												
 				//this one succeeds
-				.add(ACADEMIC_SESSIONS_GET_200, new MyCustomTest())
+				.add(GET_ALL_ACADEMIC_SESSIONS_200, new MyCustomTest())
 				
 				.build();
 		
