@@ -78,7 +78,9 @@ public class OB30Inspector extends VCInspector {
 		List<ReportItems> accumulator = new ArrayList<>();
 		int probeCount = 0;
 		
-		try {							
+		try {				
+				//TODO turn into a loop once stable
+			
 				//detect type (png, svg, json, jwt) and extract json data
 				probeCount++;
 				accumulator.add(new CredentialTypeProbe().run(resource, ctx));				
