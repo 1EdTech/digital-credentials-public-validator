@@ -25,8 +25,9 @@ public class Credential extends GeneratedObject  {
 	final Resource resource;
 	final JsonNode jsonData;
 	final Credential.Type credentialType;
+	final String jwt;
 	
-	public Credential(Resource resource, JsonNode data) {
+	public Credential(Resource resource, JsonNode data, String jwt) {
 		super(ID, GeneratedObject.Type.INTERNAL);
 		checkNotNull(resource, resource.getType(), data);
 		ResourceType type = resource.getType();
@@ -34,10 +35,10 @@ public class Credential extends GeneratedObject  {
 				"Unrecognized payload type: " + type.getName());
 		this.resource = resource;
 		this.jsonData = data;
+		this.jwt = jwt;
 		
 		ArrayNode typeNode = (ArrayNode)jsonData.get("type");		
 		this.credentialType = Credential.Type.valueOf(typeNode);
-		
 	}
 		
 	public Resource getResource() {

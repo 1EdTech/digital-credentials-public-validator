@@ -147,8 +147,11 @@ public class OB30Inspector extends VCInspector {
 					EndorsementInspector subInspector = new EndorsementInspector.Builder().build();	
 					for(JsonNode endorsementNode : endorsements) {
 						probeCount++;
-						Credential endorsement = new Credential(resource, endorsementNode);
-						accumulator.add(subInspector.run(resource, Map.of(ENDORSEMENT_KEY, endorsement)));
+						//TODO: @Markus @Miles, need to refactor to detect as this can be an internal or external proof credential.
+						//This will LIKELY come from two distinct sources in which case we would detect the type by property name.
+						//Third param to constructor: Compact JWT -> add third param after decoding.  Internal Proof, null jwt string.
+						//Credential endorsement = new Credential(resource, endorsementNode);
+						//accumulator.add(subInspector.run(resource, Map.of(ENDORSEMENT_KEY, endorsement)));
 					}
 				}
 				
