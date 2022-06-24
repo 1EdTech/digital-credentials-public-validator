@@ -21,6 +21,10 @@ import org.springframework.util.Base64Utils;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.AlgorithmMismatchException;
+import com.auth0.jwt.exceptions.InvalidClaimException;
+import com.auth0.jwt.exceptions.SignatureVerificationException;
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -39,7 +43,7 @@ public class SignatureVerifierProbe extends Probe<Credential> {
 	@Override
 	public ReportItems run(Credential crd, RunContext ctx) throws Exception {
 		try {
-			testingSignatureValidationCode(crd);
+			verifySignature(crd);
 		} catch (Exception e) {
 			return fatal("Error verifying jwt signature: " + e.getMessage(), ctx);
 		}	
@@ -47,7 +51,7 @@ public class SignatureVerifierProbe extends Probe<Credential> {
 		return success(ctx);
 	}
 
-	private void testingSignatureValidationCode(Credential crd) throws Exception {
+	private void verifySignature(Credential crd) throws Exception {
         DecodedJWT decodedJwt = null;
 		String jwt = crd.getJwt();
 		if(isNullOrEmpty(jwt)) throw new IllegalArgumentException("invalid jwt");
@@ -90,7 +94,21 @@ public class SignatureVerifierProbe extends Probe<Credential> {
 		Algorithm algorithm = Algorithm.RSA256((RSAPublicKey)pub, null);
 		JWTVerifier verifier = JWT.require(algorithm)
 				.build(); //Reusable verifier instance
-		decodedJwt = verifier.verify(jwt);
+		try {
+			decodedJwt = verifier.verify(jwt);
+		}
+		catch(SignatureVerificationException ex){
+			throw new Exception("JWT Invalid signature", ex);
+		}
+		catch(AlgorithmMismatchException ex){
+			throw new Exception("JWT Algorithm mismatch", ex);
+		}
+		catch(TokenExpiredException ex){
+			throw new Exception("JWT Token expired", ex);
+		}
+		catch(InvalidClaimException ex){
+			throw new Exception("JWT, one or more claims are invalid", ex);
+		}
 	}
 	
 	public static final String ID = SignatureVerifierProbe.class.getSimpleName();

@@ -114,9 +114,12 @@ public class OB30Inspector extends VCInspector {
 				}
 				
 				//verify proofs TODO @Miles
-				probeCount++;
-				accumulator.add(new ProofVerifierProbe().run(crd, ctx));
-				if(broken(accumulator)) return abort(ctx, accumulator, probeCount);
+				//If this credential was not contained in a jwt it must have an internal proof.
+				if(isNullOrEmpty(crd.getJwt())){
+					probeCount++;
+					accumulator.add(new ProofVerifierProbe().run(crd, ctx));
+					if(broken(accumulator)) return abort(ctx, accumulator, probeCount);
+				}
 			
 				//check refresh service if we are not already refreshed
 				probeCount++;
