@@ -61,6 +61,10 @@ public class SignatureVerifierProbe extends Probe<Credential> {
     	JsonNode headerObj = mapper.readTree(joseHeader);
 
 		//MUST be "RS256"
+		JsonNode alg = headerObj.get("alg");
+		if(alg == null || !alg.textValue().equals("RS256")) { throw new Exception("alg must be present and must be 'RS256'"); }
+
+		//TODO: decoded jwt will check timestamps, but shall we explicitly break these out?
 
 		//Option 1, fetch directly from header
 		JsonNode jwk = headerObj.get("jwk");
@@ -68,7 +72,7 @@ public class SignatureVerifierProbe extends Probe<Credential> {
 		//Option 2, fetch from a hosting url
 		JsonNode kid = headerObj.get("kid");
 
-		if(jwk == null && kid == null) { throw new Exception("asdf"); }
+		if(jwk == null && kid == null) { throw new Exception("Key must present in either jwk or kid value."); }
 		if(kid != null){
 			//TODO @Miles load jwk JsonNode from url and do the rest the same below.  Need to set up testing.
 			String kidUrl = kid.textValue();
