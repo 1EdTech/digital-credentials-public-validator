@@ -52,6 +52,10 @@ public class Credential extends GeneratedObject  {
 	public Credential.Type getCredentialType() {
 		return credentialType;
 	}
+
+	public String getJwt() {
+		return jwt;
+	}
 	
 	/**
 	 * Get the canonical schema for this credential if such exists.

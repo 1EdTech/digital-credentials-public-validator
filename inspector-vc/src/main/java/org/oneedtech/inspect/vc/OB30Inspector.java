@@ -6,6 +6,7 @@ import static org.oneedtech.inspect.core.report.ReportUtil.onProbeException;
 import static org.oneedtech.inspect.util.json.ObjectMapperCache.Config.DEFAULT;
 import static org.oneedtech.inspect.vc.EndorsementInspector.ENDORSEMENT_KEY;
 import static org.oneedtech.inspect.vc.util.JsonNodeUtil.getEndorsements;
+import static com.google.common.base.Strings.isNullOrEmpty;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -105,10 +106,12 @@ public class OB30Inspector extends VCInspector {
 				probeCount++;
 				accumulator.add(new InlineJsonSchemaProbe().run(crd, ctx));
 				
-				//verify signatures TODO @Miles
-				probeCount++;
-				accumulator.add(new SignatureVerifierProbe().run(crd, ctx));
-				if(broken(accumulator)) return abort(ctx, accumulator, probeCount);
+				//If this credential was originally contained in a JWT we must validate the jwt and external proof.
+				if(!isNullOrEmpty(crd.getJwt())){
+					probeCount++;
+					accumulator.add(new SignatureVerifierProbe().run(crd, ctx));
+					if(broken(accumulator)) return abort(ctx, accumulator, probeCount);
+				}
 				
 				//verify proofs TODO @Miles
 				probeCount++;

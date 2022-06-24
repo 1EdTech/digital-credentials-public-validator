@@ -49,18 +49,13 @@ public class CredentialTypeProbe extends Probe<Resource> {
 			
 			if(type.isPresent()) {
 				resource.setType(type.get());
-				//TODO: Refactor to return the entire credential so we can include optional encoded JWT.
 				if(type.get() == ResourceType.PNG) {
-					//crd = new Credential(resource, fromPNG(resource, context));
 					crd = fromPNG(resource, context);
 				} else if(type.get() == ResourceType.SVG) {
-					//crd = new Credential(resource, fromSVG(resource, context));
 					crd = fromSVG(resource, context);
 				} else if(type.get() == ResourceType.JSON) {
-					//crd = new Credential(resource, fromJson(resource, context));
 					crd = fromJson(resource, context);
 				} else if(type.get() == ResourceType.JWT) {
-					//crd = new Credential(resource, fromJWT(resource, context));
 					crd = fromJWT(resource, context);
 				}
 			} 
