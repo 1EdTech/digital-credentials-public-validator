@@ -1,5 +1,9 @@
 package org.oneedtech.inspect.vc.probe;
 
+import static org.oneedtech.inspect.core.probe.RunContext.Key.JACKSON_OBJECTMAPPER;
+
+import java.io.ByteArrayOutputStream;
+import java.io.StringReader;
 import java.security.KeyFactory;
 import java.security.Security;
 import java.security.Signature;
@@ -15,6 +19,18 @@ import org.oneedtech.inspect.core.probe.RunContext;
 import org.oneedtech.inspect.core.report.ReportItems;
 import org.oneedtech.inspect.vc.Credential;
 
+import com.apicatalog.jsonld.JsonLd;
+import com.apicatalog.jsonld.StringUtils;
+import com.apicatalog.jsonld.document.JsonDocument;
+import com.apicatalog.jsonld.http.media.MediaType;
+import com.apicatalog.rdf.Rdf;
+import com.apicatalog.rdf.RdfDataset;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import io.setl.rdf.normalization.RdfNormalize;
+
 /**
  * A Probe that verifies credential proofs 
  * @author mlyon
@@ -27,13 +43,45 @@ public class ProofVerifierProbe extends Probe<Credential> {
 	
 	@Override
 	public ReportItems run(Credential crd, RunContext ctx) throws Exception {
-
-		//TODO @Miles -- if proofs fail, report OutCome.Fatal
-								
+		
+		try {
+			String canonical = canonicalize(crd, C14n.URDNA2015, MediaType.N_QUADS, ctx);
+			//System.out.println(canonical);
+			
+			//TODO if proofs fail, report OutCome.Fatal
+			//return fatal("msg", ctx);
+			
+		} catch (Exception e) {
+			return exception(e.getMessage(), crd.getResource());
+		}										
 		return success(ctx);
 	}
 
-	public boolean validate(String pubkey, String signature, String timestamp, String message) throws Exception {
+	private String canonicalize(Credential crd, C14n algo, MediaType mediaType, RunContext ctx) throws Exception {
+		
+		//clone the incoming credential object so we can modify it freely
+		ObjectMapper mapper = (ObjectMapper)ctx.get(JACKSON_OBJECTMAPPER);
+		JsonNode copy = mapper.readTree(crd.asJson().toString());
+		
+		//remove proof
+		((ObjectNode)copy).remove("proof");
+				
+		//create JSON-P Json-LD instance
+		JsonDocument jsonLdDoc = JsonDocument.of(new StringReader(copy.toString()));
+				
+		//create rdf and normalize
+		RdfDataset dataSet = JsonLd.toRdf(jsonLdDoc).ordered(true).get();
+		RdfDataset normalized = RdfNormalize.normalize(dataSet);
+		
+		//serialize to string
+		ByteArrayOutputStream os = new ByteArrayOutputStream();
+        Rdf.createWriter(mediaType, os).write(normalized);
+        String result = StringUtils.stripTrailing(os.toString());
+                
+		return result;
+	}
+
+	private boolean validate(String pubkey, String signature, String timestamp, String message) throws Exception {
 		//TODO: continue this implementation.
 		//Pulled in bouncy castle library and made sure this sample compiled only.
 		final var provider = new BouncyCastleProvider();
@@ -48,6 +96,10 @@ public class ProofVerifierProbe extends Probe<Credential> {
 		signedData.update(timestamp.getBytes());
 		signedData.update(message.getBytes());
 		return signedData.verify(Hex.decode(signature));
+	}
+	
+	private enum C14n {
+		URDNA2015
 	}
 
 	public static final String ID = ProofVerifierProbe.class.getSimpleName();
