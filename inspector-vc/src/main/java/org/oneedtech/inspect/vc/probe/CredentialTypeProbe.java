@@ -2,12 +2,16 @@ package org.oneedtech.inspect.vc.probe;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Base64;
 import java.util.Base64.Decoder;
 import java.util.List;
 import java.util.Optional;
 
+import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.imageio.metadata.IIOMetadata;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.events.Attribute;
@@ -22,6 +26,8 @@ import org.oneedtech.inspect.util.resource.ResourceType;
 import org.oneedtech.inspect.util.resource.detect.TypeDetector;
 import org.oneedtech.inspect.util.xml.XMLInputFactoryCache;
 import org.oneedtech.inspect.vc.Credential;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -44,13 +50,13 @@ public class CredentialTypeProbe extends Probe<Resource> {
 			if(type.isPresent()) {
 				resource.setType(type.get());
 				if(type.get() == ResourceType.PNG) {
-					crd = new Credential(resource, fromPNG(resource, context));
+					crd = fromPNG(resource, context);
 				} else if(type.get() == ResourceType.SVG) {
-					crd = new Credential(resource, fromSVG(resource, context));
+					crd = fromSVG(resource, context);
 				} else if(type.get() == ResourceType.JSON) {
-					crd = new Credential(resource, fromJson(resource, context));
+					crd = fromJson(resource, context);
 				} else if(type.get() == ResourceType.JWT) {
-					crd = new Credential(resource, fromJWT(resource, context));
+					crd = fromJWT(resource, context);
 				}
 			} 
 					
@@ -71,12 +77,39 @@ public class CredentialTypeProbe extends Probe<Resource> {
 	 * @param context 
 	 * @throws Exception 
 	 */
-	private JsonNode fromPNG(Resource resource, RunContext context) throws Exception {
-		//TODO @Miles - note: iTxt chunk is either plain json or jwt	
+	private Credential fromPNG(Resource resource, RunContext context) throws Exception {	
 		try(InputStream is = resource.asByteSource().openStream()) {
+			ImageReader imageReader = ImageIO.getImageReadersByFormatName("png").next();
+			imageReader.setInput(ImageIO.createImageInputStream(is), true);
+			IIOMetadata metadata = imageReader.getImageMetadata(0);
+
+			String credentialString = null;
+			String jwtString = null;
+			String formatSearch = null;
+			JsonNode credential = null;
+			String[] names = metadata.getMetadataFormatNames();
+			int length = names.length;
+			for (int i = 0; i < length; i++)
+			{
+				//Check all names rather than limiting to PNG format to remain malleable through any library changes.  (Could limit to "javax_imageio_png_1.0")
+				formatSearch = getOpenBadgeCredentialNodeText(metadata.getAsTree(names[i]));
+				if(formatSearch != null) { credentialString = formatSearch; }
+			}
+
+			if(credentialString == null) { throw new IllegalArgumentException("No credential inside PNG"); }
+
+			credentialString = credentialString.trim();
+			if(credentialString.charAt(0) != '{'){
+				//This is a jwt.  Fetch either the 'vc' out of the payload and save the string for signature verification.
+				jwtString = credentialString;
+				credential = decodeJWT(credentialString,context);
+			}
+			else {
+				credential = buildNodeFromString(credentialString, context);
+			}
 			
+			return new Credential(resource, credential, jwtString);
 		}
-		return null;
 	}
 	
 	/**
@@ -84,8 +117,10 @@ public class CredentialTypeProbe extends Probe<Resource> {
 	 * @param context 
 	 * @throws Exception 
 	 */
-	private JsonNode fromSVG(Resource resource, RunContext context) throws Exception {
+	private Credential fromSVG(Resource resource, RunContext context) throws Exception {
 		String json = null;
+		String jwtString = null;
+		JsonNode credential = null;;
 		try(InputStream is = resource.asByteSource().openStream()) {
 			XMLEventReader reader = XMLInputFactoryCache.getInstance().createXMLEventReader(is);
 			while(reader.hasNext()) {
@@ -93,7 +128,8 @@ public class CredentialTypeProbe extends Probe<Resource> {
 				if(ev.isStartElement() && ev.asStartElement().getName().equals(OB_CRED_ELEM)) {
 					Attribute verifyAttr = ev.asStartElement().getAttributeByName(OB_CRED_VERIFY_ATTR);
 					if(verifyAttr != null) {
-						json = decodeJWT(verifyAttr.getValue());
+						jwtString = verifyAttr.getValue();
+						credential = decodeJWT(verifyAttr.getValue(), context);
 						break;
 					} else {
 						while(reader.hasNext()) {
@@ -105,58 +141,90 @@ public class CredentialTypeProbe extends Probe<Resource> {
 								Characters chars = ev.asCharacters();
 								if(!chars.isWhiteSpace()) {
 									json = chars.getData();
+									credential = buildNodeFromString(json, context);
 									break;
 								}
 							}
-						}						
-					}					
-				}	
-				if(json!=null) break;
+						}					
+					}			
+				}
+				if(credential!=null) break;
 			}
 		}	
-		if(json == null) throw new IllegalArgumentException("No credential inside SVG");		
-		return fromString(json, context);
+		if(credential == null) throw new IllegalArgumentException("No credential inside SVG");	
+		return new Credential(resource, credential, jwtString);
 	}
 	
 	/**
-	 * Create a JsonNode object from a raw JSON resource.
+	 * Create a Credential object from a raw JSON resource.
 	 * @param context 
 	 */
-	private JsonNode fromJson(Resource resource, RunContext context) throws Exception {
-		return fromString(resource.asByteSource().asCharSource(UTF_8).read(), context);
+	private Credential fromJson(Resource resource, RunContext context) throws Exception {
+		return new Credential(resource, buildNodeFromString(resource.asByteSource().asCharSource(UTF_8).read(), context), null);
 	}
-		
+	
+	/**
+	 * Create a Credential object from a JWT resource.
+	 * @param context 
+	 */
+	private Credential fromJWT(Resource resource, RunContext context) throws Exception {
+		return new Credential(
+			resource, 
+			decodeJWT(
+				resource.asByteSource().asCharSource(UTF_8).read(),
+				context
+			)
+			, resource.asByteSource().asCharSource(UTF_8).read()
+		);
+	}
+
 	/**
 	 * Create a JsonNode object from a String.
 	 */
-	private JsonNode fromString(String json, RunContext context) throws Exception {
+	private JsonNode buildNodeFromString(String json, RunContext context) throws Exception {
 		return ((ObjectMapper)context.get(RunContext.Key.JACKSON_OBJECTMAPPER)).readTree(json);
-	}
-	
-	/**
-	 * Create a JsonNode object from a JWT resource.
-	 * @param context 
-	 */
-	private JsonNode fromJWT(Resource resource, RunContext context) throws Exception {
-		return fromString(decodeJWT(resource.asByteSource().asCharSource(UTF_8).read()), context);
 	}
 	
 	/**
 	 * Decode as per https://www.imsglobal.org/spec/ob/v3p0/#jwt-proof
 	 * @return The decoded JSON String
 	 */
-	private String decodeJWT(String jwt) {
+	private JsonNode decodeJWT(String jwt, RunContext context) throws Exception {
 		List<String> parts = Splitter.on('.').splitToList(jwt);
 		if(parts.size() != 3) throw new IllegalArgumentException("invalid jwt");
 		
 		final Decoder decoder = Base64.getUrlDecoder();
-		String joseHeader = new String(decoder.decode(parts.get(0)));
+		//For this step we are only deserializing the stored badge out of the payload.  The entire jwt is stored separately for
+		//signature verification later.
 		String jwtPayload = new String(decoder.decode(parts.get(1)));
-		String jwsSignature = new String(decoder.decode(parts.get(2)));
-				
-		//TODO @Miles
-		
-		return null;	
+
+		//Deserialize and fetch the 'vc' node from the object
+		JsonNode outerPayload = buildNodeFromString(jwtPayload, context);
+		JsonNode vcNode = outerPayload.get("vc");
+
+		return vcNode;
+	}
+
+	private String getOpenBadgeCredentialNodeText(Node node){
+        NamedNodeMap attributes = node.getAttributes();
+
+		//If this node is labeled with the attribute keyword: 'openbadgecredential' it is the right one.
+		if(attributes.getNamedItem("keyword") != null && attributes.getNamedItem("keyword").getNodeValue().equals("openbadgecredential")){
+			Node textAttribute = attributes.getNamedItem("text");
+			if(textAttribute != null) { return textAttribute.getNodeValue(); }
+		}
+
+		//iterate over all children depth first and search for the credential node.
+		Node child = node.getFirstChild();
+		while (child != null)
+        {
+            String nodeValue = getOpenBadgeCredentialNodeText(child);
+			if(nodeValue != null) { return nodeValue; }
+            child = child.getNextSibling();
+        }
+
+		//Return null if we haven't found anything at this recursive depth.
+		return null;
 	}
 	
 	private static final QName OB_CRED_ELEM = new QName("https://purl.imsglobal.org/ob/v3p0", "credential");

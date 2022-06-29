@@ -6,6 +6,7 @@ import static org.oneedtech.inspect.core.report.ReportUtil.onProbeException;
 import static org.oneedtech.inspect.util.json.ObjectMapperCache.Config.DEFAULT;
 import static org.oneedtech.inspect.vc.EndorsementInspector.ENDORSEMENT_KEY;
 import static org.oneedtech.inspect.vc.util.JsonNodeUtil.getEndorsements;
+import static com.google.common.base.Strings.isNullOrEmpty;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -105,15 +106,20 @@ public class OB30Inspector extends VCInspector {
 				probeCount++;
 				accumulator.add(new InlineJsonSchemaProbe().run(crd, ctx));
 				
-				//verify signatures TODO @Miles
-				probeCount++;
-				accumulator.add(new SignatureVerifierProbe().run(crd, ctx));
-				if(broken(accumulator)) return abort(ctx, accumulator, probeCount);
+				//If this credential was originally contained in a JWT we must validate the jwt and external proof.
+				if(!isNullOrEmpty(crd.getJwt())){
+					probeCount++;
+					accumulator.add(new SignatureVerifierProbe().run(crd, ctx));
+					if(broken(accumulator)) return abort(ctx, accumulator, probeCount);
+				}
 				
 				//verify proofs TODO @Miles
-				probeCount++;
-				accumulator.add(new ProofVerifierProbe().run(crd, ctx));
-				if(broken(accumulator)) return abort(ctx, accumulator, probeCount);
+				//If this credential was not contained in a jwt it must have an internal proof.
+				if(isNullOrEmpty(crd.getJwt())){
+					probeCount++;
+					accumulator.add(new ProofVerifierProbe().run(crd, ctx));
+					if(broken(accumulator)) return abort(ctx, accumulator, probeCount);
+				}
 			
 				//check refresh service if we are not already refreshed
 				probeCount++;
@@ -147,8 +153,11 @@ public class OB30Inspector extends VCInspector {
 					EndorsementInspector subInspector = new EndorsementInspector.Builder().build();	
 					for(JsonNode endorsementNode : endorsements) {
 						probeCount++;
-						Credential endorsement = new Credential(resource, endorsementNode);
-						accumulator.add(subInspector.run(resource, Map.of(ENDORSEMENT_KEY, endorsement)));
+						//TODO: @Markus @Miles, need to refactor to detect as this can be an internal or external proof credential.
+						//This will LIKELY come from two distinct sources in which case we would detect the type by property name.
+						//Third param to constructor: Compact JWT -> add third param after decoding.  Internal Proof, null jwt string.
+						//Credential endorsement = new Credential(resource, endorsementNode);
+						//accumulator.add(subInspector.run(resource, Map.of(ENDORSEMENT_KEY, endorsement)));
 					}
 				}
 				

@@ -32,7 +32,6 @@ public class OB30Tests {
 		});	
 	}
 	
-	@Disabled
 	@Test
 	void testSimplePNGPlainValid() {
 		assertDoesNotThrow(()->{
@@ -42,7 +41,6 @@ public class OB30Tests {
 		});	
 	}
 	
-	@Disabled
 	@Test
 	void testSimplePNGJWTValid() {
 		assertDoesNotThrow(()->{
