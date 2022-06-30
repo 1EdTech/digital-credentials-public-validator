@@ -61,7 +61,7 @@ public class ProofVerifierProbe extends Probe<Credential> {
 		
 		//clone the incoming credential object so we can modify it freely
 		ObjectMapper mapper = (ObjectMapper)ctx.get(JACKSON_OBJECTMAPPER);
-		JsonNode copy = mapper.readTree(crd.asJson().toString());
+		JsonNode copy = mapper.readTree(crd.getJson().toString());
 		
 		//remove proof
 		((ObjectNode)copy).remove("proof");
@@ -69,7 +69,7 @@ public class ProofVerifierProbe extends Probe<Credential> {
 		//create JSON-P Json-LD instance
 		JsonDocument jsonLdDoc = JsonDocument.of(new StringReader(copy.toString()));
 				
-		//create rdf and normalize
+		//create rdf and normalize //TODO add DocumentLoader to cache contexts
 		RdfDataset dataSet = JsonLd.toRdf(jsonLdDoc).ordered(true).get();
 		RdfDataset normalized = RdfNormalize.normalize(dataSet);
 		

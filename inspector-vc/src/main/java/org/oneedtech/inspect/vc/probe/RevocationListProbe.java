@@ -36,7 +36,7 @@ public class RevocationListProbe extends Probe<Credential> {
 		 *	report a warning, not an error.		
 		 */
 				
-		JsonNode credentialStatus = crd.asJson().get("credentialStatus");
+		JsonNode credentialStatus = crd.getJson().get("credentialStatus");
 		if(credentialStatus != null) {			
 			JsonNode type = credentialStatus.get("type");
 			if(type != null && type.asText().strip().equals("1EdTechRevocationList")) {
@@ -52,7 +52,7 @@ public class RevocationListProbe extends Probe<Credential> {
 					         * credential's id is in the list of revokedCredentials and the value of 
 					         * revoked is true or ommitted, the issuer has revoked the credential. */
 					        
-					        JsonNode crdID = crd.asJson().get("id");
+					        JsonNode crdID = crd.getJson().get("id"); //TODO these != checks sb removed (trigger warning)
 					        if(crdID != null) {
 					        	List<JsonNode> list = JsonNodeUtil.asNodeList(revocList.get("revokedCredentials"));
 					        	if(list != null) {

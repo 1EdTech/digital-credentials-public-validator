@@ -8,7 +8,6 @@ import java.util.Map;
 import org.oneedtech.inspect.core.SubInspector;
 import org.oneedtech.inspect.core.probe.GeneratedObject;
 import org.oneedtech.inspect.core.probe.RunContext;
-import org.oneedtech.inspect.core.probe.RunContext.Key;
 import org.oneedtech.inspect.core.probe.json.JsonPathEvaluator;
 import org.oneedtech.inspect.core.report.Report;
 import org.oneedtech.inspect.core.report.ReportItems;
@@ -18,7 +17,7 @@ import org.oneedtech.inspect.util.resource.Resource;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * An inspector for EndersementCredential objects. 
+ * An inspector for EndorsementCredential objects. 
  * @author mgylling
  */
 public class EndorsementInspector extends VCInspector implements SubInspector {
@@ -30,7 +29,7 @@ public class EndorsementInspector extends VCInspector implements SubInspector {
 	@Override
 	public Report run(Resource resource, Map<String, GeneratedObject> parentObjects) {
 		/*
-		 * resource is the top-level credential that embeds the endorsement, we
+		 * The resource param is the top-level credential that embeds the endorsement, we
 		 * expect parentObjects to provide a pointer to the JsonNode we should check
 		 */
 		Credential endorsement = (Credential) parentObjects.get(ENDORSEMENT_KEY);

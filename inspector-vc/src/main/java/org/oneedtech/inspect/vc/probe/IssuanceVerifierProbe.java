@@ -28,7 +28,7 @@ public class IssuanceVerifierProbe extends Probe<Credential> {
 		 */
 				
 		ZonedDateTime now = ZonedDateTime.now();				
-		JsonNode node = crd.asJson().get("issuanceDate");
+		JsonNode node = crd.getJson().get("issuanceDate");
 		if(node != null) {
 			ZonedDateTime issuanceDate = null;
 			try {
