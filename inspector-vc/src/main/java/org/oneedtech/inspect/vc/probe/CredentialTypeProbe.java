@@ -2,7 +2,6 @@ package org.oneedtech.inspect.vc.probe;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
-import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Base64;
 import java.util.Base64.Decoder;

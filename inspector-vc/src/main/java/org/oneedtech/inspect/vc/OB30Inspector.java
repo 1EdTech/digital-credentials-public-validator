@@ -22,6 +22,7 @@ import org.oneedtech.inspect.core.probe.json.JsonPredicates.JsonPredicateProbePa
 import org.oneedtech.inspect.core.probe.json.JsonSchemaProbe;
 import org.oneedtech.inspect.core.report.Report;
 import org.oneedtech.inspect.core.report.ReportItems;
+import org.oneedtech.inspect.core.report.ReportUtil;
 import org.oneedtech.inspect.schema.JsonSchemaCache;
 import org.oneedtech.inspect.schema.SchemaKey;
 import org.oneedtech.inspect.util.json.ObjectMapperCache;
@@ -121,8 +122,8 @@ public class OB30Inspector extends VCInspector {
 			
 				//check refresh service if we are not already refreshed
 				probeCount++;
-				if(resource.getContext().get(REFRESHED) != TRUE) {					
-					Optional<String> newID = checkRefreshService(crd, ctx); //TODO fail = invalid
+				if(resource.getContext().get(REFRESHED) != TRUE) {
+					Optional<String> newID = checkRefreshService(crd, ctx); 											
 					if(newID.isPresent()) {						
 						return this.run(
 							new UriResource(new URI(newID.get()))
@@ -179,7 +180,16 @@ public class OB30Inspector extends VCInspector {
 	 * the credential is invalid.
 	 */
 	private Optional<String> checkRefreshService(Credential crd, RunContext ctx) {
-		//TODO
+		JsonNode refreshServiceNode = crd.getJson().get("refreshService");		
+		if(refreshServiceNode != null) {
+			JsonNode serviceTypeNode = refreshServiceNode.get("type");
+			if(serviceTypeNode != null && serviceTypeNode.asText().equals("1EdTechCredentialRefresh")) {
+				JsonNode serviceURINode = refreshServiceNode.get("id");
+				if(serviceURINode != null) {
+					return Optional.of(serviceURINode.asText());
+				}
+			}	
+		}				
 		return Optional.empty();
 	}
 
