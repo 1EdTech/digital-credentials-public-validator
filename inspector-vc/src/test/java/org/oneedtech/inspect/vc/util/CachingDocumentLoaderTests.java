@@ -13,7 +13,7 @@ import com.google.common.io.Resources;
 public class CachingDocumentLoaderTests {
 
 	@Test
-	void testStaticCachedDocument() {
+	void testStaticCachedDocumentURI() {
 		Assertions.assertDoesNotThrow(()->{
 			DocumentLoader loader = new CachingDocumentLoader();
 			URI uri = Resources.getResource("contexts/did-v1.jsonld").toURI();
@@ -21,4 +21,16 @@ public class CachingDocumentLoaderTests {
 			Assertions.assertNotNull(doc);
 		});
 	}
+	
+	@Test
+	void testStaticCachedDocumentKey() {
+		Assertions.assertDoesNotThrow(()->{
+			DocumentLoader loader = new CachingDocumentLoader();
+			URI uri = new URI("https://www.w3.org/ns/did/v1");
+			Document doc = loader.loadDocument(uri, new DocumentLoaderOptions());
+			Assertions.assertNotNull(doc);
+		});
+	}
+	
+	
 }
