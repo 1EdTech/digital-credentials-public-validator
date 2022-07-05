@@ -22,7 +22,6 @@ import org.oneedtech.inspect.core.probe.json.JsonPredicates.JsonPredicateProbePa
 import org.oneedtech.inspect.core.probe.json.JsonSchemaProbe;
 import org.oneedtech.inspect.core.report.Report;
 import org.oneedtech.inspect.core.report.ReportItems;
-import org.oneedtech.inspect.core.report.ReportUtil;
 import org.oneedtech.inspect.schema.JsonSchemaCache;
 import org.oneedtech.inspect.schema.SchemaKey;
 import org.oneedtech.inspect.util.json.ObjectMapperCache;
