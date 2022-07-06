@@ -28,7 +28,7 @@ public class ExpirationVerifierProbe extends Probe<Credential> {
 		 */
 
 		ZonedDateTime now = ZonedDateTime.now();			
-		JsonNode node = crd.asJson().get("expirationDate");
+		JsonNode node = crd.getJson().get("expirationDate");
 		if(node != null) {
 			ZonedDateTime expirationDate = null;
 			try {

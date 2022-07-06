@@ -1,17 +1,15 @@
 package org.oneedtech.inspect.vc;
 
+import static com.google.common.base.Strings.isNullOrEmpty;
 import static java.lang.Boolean.TRUE;
 import static org.oneedtech.inspect.core.Inspector.Behavior.RESET_CACHES_ON_RUN;
 import static org.oneedtech.inspect.core.report.ReportUtil.onProbeException;
 import static org.oneedtech.inspect.util.json.ObjectMapperCache.Config.DEFAULT;
-import static org.oneedtech.inspect.vc.EndorsementInspector.ENDORSEMENT_KEY;
 import static org.oneedtech.inspect.vc.util.JsonNodeUtil.getEndorsements;
-import static com.google.common.base.Strings.isNullOrEmpty;
 
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import org.oneedtech.inspect.core.probe.Outcome;
@@ -92,15 +90,15 @@ public class OB30Inspector extends VCInspector {
 				
 				//validate the value of the type property
 				probeCount++;
-				accumulator.add(new JsonArrayProbe(vcType).run(crd.asJson(), ctx));
+				accumulator.add(new JsonArrayProbe(vcType).run(crd.getJson(), ctx));
 				probeCount++;	
-				accumulator.add(new JsonArrayProbe(obType).run(crd.asJson(), ctx));
+				accumulator.add(new JsonArrayProbe(obType).run(crd.getJson(), ctx));
 				if(broken(accumulator)) return abort(ctx, accumulator, probeCount);		
 				
 				//validate against the canonical schema	 	
 				SchemaKey canonical = crd.getSchemaKey().orElseThrow();
 				probeCount++;
-				accumulator.add(new JsonSchemaProbe(canonical).run(crd.asJson(), ctx));
+				accumulator.add(new JsonSchemaProbe(canonical).run(crd.getJson(), ctx));
 				
 				//validate against any inline schemas 	
 				probeCount++;
@@ -123,8 +121,8 @@ public class OB30Inspector extends VCInspector {
 			
 				//check refresh service if we are not already refreshed
 				probeCount++;
-				if(resource.getContext().get(REFRESHED) != TRUE) {					
-					Optional<String> newID = checkRefreshService(crd, ctx); //TODO fail = invalid
+				if(resource.getContext().get(REFRESHED) != TRUE) {
+					Optional<String> newID = checkRefreshService(crd, ctx); 											
 					if(newID.isPresent()) {						
 						return this.run(
 							new UriResource(new URI(newID.get()))
@@ -148,7 +146,7 @@ public class OB30Inspector extends VCInspector {
 				if(broken(accumulator)) return abort(ctx, accumulator, probeCount);
 				
 				//embedded endorsements 
-				List<JsonNode> endorsements = getEndorsements(crd.asJson(), jsonPath);
+				List<JsonNode> endorsements = getEndorsements(crd.getJson(), jsonPath);
 				if(endorsements.size() > 0) {
 					EndorsementInspector subInspector = new EndorsementInspector.Builder().build();	
 					for(JsonNode endorsementNode : endorsements) {
@@ -181,7 +179,16 @@ public class OB30Inspector extends VCInspector {
 	 * the credential is invalid.
 	 */
 	private Optional<String> checkRefreshService(Credential crd, RunContext ctx) {
-		//TODO
+		JsonNode refreshServiceNode = crd.getJson().get("refreshService");		
+		if(refreshServiceNode != null) {
+			JsonNode serviceTypeNode = refreshServiceNode.get("type");
+			if(serviceTypeNode != null && serviceTypeNode.asText().equals("1EdTechCredentialRefresh")) {
+				JsonNode serviceURINode = refreshServiceNode.get("id");
+				if(serviceURINode != null) {
+					return Optional.of(serviceURINode.asText());
+				}
+			}	
+		}				
 		return Optional.empty();
 	}
 

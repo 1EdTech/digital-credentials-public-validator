@@ -37,7 +37,7 @@ public class InlineJsonSchemaProbe extends Probe<Credential> {
 //		ArrayNode nodes = jsonPath.eval("$..*[?(@.credentialSchema)]", crd.getJson());
 // 		note - we dont get deep nested ones in e.g. EndorsementCredential 
 		
-		JsonNode credentialSchemaNode = crd.asJson().get("credentialSchema");
+		JsonNode credentialSchemaNode = crd.getJson().get("credentialSchema");
 		if(credentialSchemaNode == null) return success(ctx);
 		
 		ArrayNode schemas = (ArrayNode)	credentialSchemaNode; //TODO guard this cast
@@ -51,7 +51,7 @@ public class InlineJsonSchemaProbe extends Probe<Credential> {
 			if(ioErrors.contains(id)) continue;				
 			if(skipCanonical && equals(crd.getSchemaKey(), id)) continue;				
 			try {								
-				accumulator.add(new JsonSchemaProbe(id).run(crd.asJson(), ctx));
+				accumulator.add(new JsonSchemaProbe(id).run(crd.getJson(), ctx));
 			} catch (Exception e) {	
 				if(!ioErrors.contains(id)) {
 					ioErrors.add(id);

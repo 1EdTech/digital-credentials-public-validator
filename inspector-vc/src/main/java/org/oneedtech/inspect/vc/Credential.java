@@ -45,7 +45,7 @@ public class Credential extends GeneratedObject  {
 		return resource;
 	}
 	
-	public JsonNode asJson() {
+	public JsonNode getJson() {
 		return jsonData;
 	}
 

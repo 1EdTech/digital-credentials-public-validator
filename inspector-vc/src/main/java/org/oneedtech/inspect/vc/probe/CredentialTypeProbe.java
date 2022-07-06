@@ -2,7 +2,6 @@ package org.oneedtech.inspect.vc.probe;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
-import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Base64;
 import java.util.Base64.Decoder;
@@ -45,6 +44,9 @@ public class CredentialTypeProbe extends Probe<Resource> {
 		
 		Credential crd = null; 
 		try {
+			
+			//TODO: this reads from a URIResource twice. Cache the resource on first call. 
+			
 			Optional<ResourceType> type = TypeDetector.detect(resource, true);
 			
 			if(type.isPresent()) {
