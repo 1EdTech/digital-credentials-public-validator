@@ -7,10 +7,10 @@ import java.time.Duration;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.oneedtech.inspect.util.code.Closeables;
 import org.oneedtech.inspect.util.code.Tuple;
 
 import com.apicatalog.jsonld.JsonLdError;
+import com.apicatalog.jsonld.JsonLdErrorCode;
 import com.apicatalog.jsonld.document.Document;
 import com.apicatalog.jsonld.document.JsonDocument;
 import com.apicatalog.jsonld.loader.DocumentLoader;
@@ -34,11 +34,11 @@ public class CachingDocumentLoader implements DocumentLoader {
 			return documentCache.get(tpl);	
 		} catch (Exception e) {
 			logger.error("contextCache not able to load {}", url);
-		} 
-		return null;		
+			throw new JsonLdError(JsonLdErrorCode.INVALID_REMOTE_CONTEXT, e.getMessage());
+		} 						
 	}
 	
-	private static final ImmutableMap<String, URL> bundled = ImmutableMap.<String, URL>builder()			  
+	static final ImmutableMap<String, URL> bundled = ImmutableMap.<String, URL>builder()			  
 			  .put("https://www.w3.org/ns/did/v1", Resources.getResource("contexts/did-v1.jsonld"))
 			  .put("https://www.w3.org/ns/odrl.jsonld", Resources.getResource("contexts/odrl.jsonld"))
 			  .put("https://w3id.org/security/suites/ed25519-2020/v1", Resources.getResource("contexts/security-suites-ed25519-2020-v1.jsonld"))
@@ -46,7 +46,7 @@ public class CachingDocumentLoader implements DocumentLoader {
 			  .put("https://imsglobal.github.io/openbadges-specification/context.json", Resources.getResource("contexts/obv3.jsonld"))			  
 			  .build();
 	
-	private static final LoadingCache<Tuple<String, DocumentLoaderOptions>, Document> documentCache = CacheBuilder.newBuilder()
+	static final LoadingCache<Tuple<String, DocumentLoaderOptions>, Document> documentCache = CacheBuilder.newBuilder()
 			.initialCapacity(32)
 			.maximumSize(64)
 			.expireAfterAccess(Duration.ofHours(24))
@@ -60,5 +60,9 @@ public class CachingDocumentLoader implements DocumentLoader {
 				}
 			});
 
+	public static void reset() {
+		documentCache.invalidateAll();
+	}
+	
 	private static final Logger logger = LogManager.getLogger();
 }
