@@ -8,17 +8,17 @@ import org.junit.jupiter.api.Test;
 import com.apicatalog.jsonld.document.Document;
 import com.apicatalog.jsonld.loader.DocumentLoader;
 import com.apicatalog.jsonld.loader.DocumentLoaderOptions;
-import com.google.common.io.Resources;
 
 public class CachingDocumentLoaderTests {
 
 	@Test
-	void testStaticCachedDocumentURI() {
+	void testStaticCachedDocumentBundled() {
 		Assertions.assertDoesNotThrow(()->{
-			DocumentLoader loader = new CachingDocumentLoader();
-			URI uri = Resources.getResource("contexts/did-v1.jsonld").toURI();
-			Document doc = loader.loadDocument(uri, new DocumentLoaderOptions());
-			Assertions.assertNotNull(doc);
+			DocumentLoader loader = new CachingDocumentLoader();			
+			for(String id : CachingDocumentLoader.bundled.keySet()) {
+				Document doc = loader.loadDocument(new URI(id), new DocumentLoaderOptions());
+				Assertions.assertNotNull(doc);	
+			}						
 		});
 	}
 	
@@ -30,7 +30,5 @@ public class CachingDocumentLoaderTests {
 			Document doc = loader.loadDocument(uri, new DocumentLoaderOptions());
 			Assertions.assertNotNull(doc);
 		});
-	}
-	
-	
+	}	
 }
