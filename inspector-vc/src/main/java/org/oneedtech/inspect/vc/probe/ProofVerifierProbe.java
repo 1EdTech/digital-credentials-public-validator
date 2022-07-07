@@ -32,6 +32,7 @@ import org.oneedtech.inspect.core.probe.Probe;
 import org.oneedtech.inspect.core.probe.RunContext;
 import org.oneedtech.inspect.core.report.ReportItems;
 import org.oneedtech.inspect.vc.Credential;
+import org.oneedtech.inspect.vc.util.CachingDocumentLoader;
 
 import com.apicatalog.jsonld.JsonLd;
 import com.apicatalog.jsonld.StringUtils;
@@ -61,32 +62,9 @@ public class ProofVerifierProbe extends Probe<Credential> {
 	public ReportItems run(Credential crd, RunContext ctx) throws Exception {
 		
 		try {
-			//String document = fetchConanicalDocument(crd, C14n.URDNA2015, MediaType.N_QUADS, ctx);
-			String document = "";
+			String document = fetchConanicalDocument(crd, C14n.URDNA2015, MediaType.N_QUADS, ctx);
 			String proof = fetchConanicalProof(crd, C14n.URDNA2015, MediaType.N_QUADS, ctx);
 			//System.out.println(canonical);
-
-
-
-			/*
-			Encoder encoder1 = Base64.getEncoder();
-			String testSignature = "z3MUt2ZuU8Byqivxh6GphEM65AFYyNaGYibm97xLTafM7uGufZQLKvJR8itZwxKskvtFM3CUty46v26DZidMNoQnM";
-			String signature = encoder1.encodeToString(testSignature.getBytes());
-
-			Encoder encoder2 = Base64.getEncoder();
-			String testKey = "z6MkkUD3J14nkYzn46QeuaVSnp7dF85QJKwKvJvfsjx79aXj";
-			String key64 = encoder2.encodeToString(testKey.getBytes());
-			String keyHex = Hex.toHexString(testKey.getBytes());
-
-			boolean test = validate(
-				keyHex, 
-				signature, 
-				"", 
-				canonical
-			);
-			*/
-
-			
 
 			byte[] docHash = getBytes(document);
 			byte[] proofHash = getBytes(proof);
@@ -95,8 +73,6 @@ public class ProofVerifierProbe extends Probe<Credential> {
 
 			boolean test = testSigner(combined);
 			
-
-			boolean stophere = true;
 			//TODO if proofs fail, report OutCome.Fatal
 			//return fatal("msg", ctx);
 			
@@ -118,8 +94,8 @@ public class ProofVerifierProbe extends Probe<Credential> {
 		//create JSON-P Json-LD instance
 		JsonDocument jsonLdDoc = JsonDocument.of(new StringReader(copy.toString()));
 				
-		//create rdf and normalize //TODO add DocumentLoader to cache contexts
-		RdfDataset dataSet = JsonLd.toRdf(jsonLdDoc).ordered(true).get();
+		//create rdf and normalize
+		RdfDataset dataSet = JsonLd.toRdf(jsonLdDoc).loader(new CachingDocumentLoader()).ordered(true).get();
 		RdfDataset normalized = RdfNormalize.normalize(dataSet);
 		
 		//serialize to string
@@ -134,7 +110,7 @@ public class ProofVerifierProbe extends Probe<Credential> {
 		
 		//clone the incoming credential object so we can modify it freely
 		ObjectMapper mapper = (ObjectMapper)ctx.get(JACKSON_OBJECTMAPPER);
-		JsonNode copy = mapper.readTree(crd.asJson().toString());
+		JsonNode copy = mapper.readTree(crd.getJson().toString());
 
 		//Get the context node to stitch back in.
 		JsonNode context = copy.get("@context");
@@ -168,7 +144,8 @@ public class ProofVerifierProbe extends Probe<Credential> {
 		JsonDocument jsonLdDoc = JsonDocument.of(new StringReader(newNode.toString()));
 				
 		//create rdf and normalize
-		RdfDataset dataSet = JsonLd.toRdf(jsonLdDoc).ordered(true).get();
+		//RdfDataset dataSet = JsonLd.toRdf(jsonLdDoc).ordered(true).get();
+		RdfDataset dataSet = JsonLd.toRdf(jsonLdDoc).loader(new CachingDocumentLoader()).ordered(true).get();
 		RdfDataset normalized = RdfNormalize.normalize(dataSet);
 		
 		//serialize to string
@@ -179,50 +156,16 @@ public class ProofVerifierProbe extends Probe<Credential> {
 		return result;
 	}
 
-	private boolean validate(String pubkey, String signature, String timestamp, String message) throws Exception {
-		//TODO: continue this implementation.
-		//Pulled in bouncy castle library and made sure this sample compiled only.
-		final var provider = new BouncyCastleProvider();
-		Security.addProvider(provider);
-		final var byteKey = Hex.decode(pubkey);
-		final var pki = new SubjectPublicKeyInfo(new AlgorithmIdentifier(EdECObjectIdentifiers.id_Ed25519), byteKey);
-		final var pkSpec = new X509EncodedKeySpec(pki.getEncoded());
-		final var kf = KeyFactory.getInstance("ed25519", provider);
-		final var publicKey = kf.generatePublic(pkSpec);
-		final var signedData = Signature.getInstance("ed25519", provider);
-		signedData.initVerify(publicKey);
-		//Temporarily remove timestamp
-		signedData.update(timestamp.getBytes());
-		signedData.update(message.getBytes());
-		return signedData.verify(Hex.decode(signature));
-	}
-
 	private boolean testSigner(byte[] concatBytes) throws Exception {
 
 
 		final var provider = new BouncyCastleProvider();
 		Security.addProvider(provider);
 
-		//var publicKeyBytes = Base64.getUrlDecoder().decode("z6MkkUD3J14nkYzn46QeuaVSnp7dF85QJKwKvJvfsjx79aXj");
-		//var publicKeyBytes = Base64.getUrlDecoder().decode("6MkkUD3J14nkYzn46QeuaVSnp7dF85QJKwKvJvfsjx79aXj");
-
-
-		//var publicKeyBytes = Base58.decode("z6MkkUD3J14nkYzn46QeuaVSnp7dF85QJKwKvJvfsjx79aXj");
-		//Key with the first chracter stripped
-		//var publicKeyBytes = Base58.decode("6MkkUD3J14nkYzn46QeuaVSnp7dF85QJKwKvJvfsjx79aXj");
-
-
-		//A working sample key
-		//var publicKeyBytes = Base64.getUrlDecoder().decode("11qYAYKxCrfVS_7TyWQHOg7hcvPapiMlrwIaaPcHURo");
-
-
-
-
 		//Base 58 decode minus the z
 		var publicKeyBytes = Base58.decode("6MkkUD3J14nkYzn46QeuaVSnp7dF85QJKwKvJvfsjx79aXj");
 		//The slice out the first two array elements (???)
 		byte[] slicedArray = Arrays.copyOfRange(publicKeyBytes, 2, 34); 
-
 
 
 		final var pki = new SubjectPublicKeyInfo(new AlgorithmIdentifier(EdECObjectIdentifiers.id_Ed25519), slicedArray);
@@ -233,54 +176,13 @@ public class ProofVerifierProbe extends Probe<Credential> {
 		signedData.initVerify(publicKey);
 		signedData.update(concatBytes);
 
-		boolean whatever = true;
-
-
-		//Final step, add signature.
-
-		//Need to do this in java
-		//const signatureBytes = base58btc.decode(proofValue.substr(1));
-
-
 		var signatureBytes = Base58.decode("3MUt2ZuU8Byqivxh6GphEM65AFYyNaGYibm97xLTafM7uGufZQLKvJR8itZwxKskvtFM3CUty46v26DZidMNoQnM");
 
 		return signedData.verify(signatureBytes);
-
-
-
-
-/*
-		String hexEncodedPubKey = "z6MkkUD3J14nkYzn46QeuaVSnp7dF85QJKwKvJvfsjx79aXj";
-
-        // Convert to JCA format
-        byte[] pubKeyBytes = BaseEncoding.base16().lowerCase().decode(hexEncodedPubKey);
-        SubjectPublicKeyInfo pubKeyInfo = new SubjectPublicKeyInfo(
-                new AlgorithmIdentifier(EdECObjectIdentifiers.id_Ed25519), pubKeyBytes);
-
-
-		X509EncodedKeySpec keySpec = new X509EncodedKeySpec(pubKeyInfo.getEncoded());
-		KeyFactory keyFactory = KeyFactory.getInstance("Ed25519", provider);
-		PublicKey pk = keyFactory.generatePublic(keySpec);
-
-		
-*/
-
-
-
-
-		/*
-		var test = new RSADigestSigner(digest, digestOid)
-
-		test.verifySignature(signature);
-		*/
-
-
-		
-		
-		
 		
 	}
 
+	//An alternate path with bouncy castle
 	/*
 	private boolean testSigner3(String message, byte[] concateBytes) throws Exception {
 
