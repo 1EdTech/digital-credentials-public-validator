@@ -1,24 +1,24 @@
 package org.oneedtech.inspect.vc;
 
-import static com.google.common.base.Strings.isNullOrEmpty;
 import static java.lang.Boolean.TRUE;
 import static org.oneedtech.inspect.core.Inspector.Behavior.RESET_CACHES_ON_RUN;
 import static org.oneedtech.inspect.core.report.ReportUtil.onProbeException;
 import static org.oneedtech.inspect.util.json.ObjectMapperCache.Config.DEFAULT;
-import static org.oneedtech.inspect.vc.util.JsonNodeUtil.getEndorsements;
+import static org.oneedtech.inspect.vc.Credential.Type.OpenBadgeCredential;
+import static org.oneedtech.inspect.vc.EndorsementInspector.ENDORSEMENT_KEY;
+import static org.oneedtech.inspect.vc.payload.PayloadParser.fromJwt;
+import static org.oneedtech.inspect.vc.util.JsonNodeUtil.asNodeList;
 
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
-import org.oneedtech.inspect.core.probe.Outcome;
 import org.oneedtech.inspect.core.probe.Probe;
 import org.oneedtech.inspect.core.probe.RunContext;
 import org.oneedtech.inspect.core.probe.RunContext.Key;
-import org.oneedtech.inspect.core.probe.json.JsonArrayProbe;
 import org.oneedtech.inspect.core.probe.json.JsonPathEvaluator;
-import org.oneedtech.inspect.core.probe.json.JsonPredicates.JsonPredicateProbeParams;
 import org.oneedtech.inspect.core.probe.json.JsonSchemaProbe;
 import org.oneedtech.inspect.core.report.Report;
 import org.oneedtech.inspect.core.report.ReportItems;
@@ -30,14 +30,16 @@ import org.oneedtech.inspect.util.resource.ResourceType;
 import org.oneedtech.inspect.util.resource.UriResource;
 import org.oneedtech.inspect.util.resource.context.ResourceContext;
 import org.oneedtech.inspect.util.spec.Specification;
-import org.oneedtech.inspect.vc.probe.CredentialTypeProbe;
+import org.oneedtech.inspect.vc.probe.CredentialParseProbe;
 import org.oneedtech.inspect.vc.probe.ExpirationVerifierProbe;
 import org.oneedtech.inspect.vc.probe.InlineJsonSchemaProbe;
 import org.oneedtech.inspect.vc.probe.IssuanceVerifierProbe;
-import org.oneedtech.inspect.vc.probe.Predicates;
 import org.oneedtech.inspect.vc.probe.ProofVerifierProbe;
 import org.oneedtech.inspect.vc.probe.RevocationListProbe;
 import org.oneedtech.inspect.vc.probe.SignatureVerifierProbe;
+import org.oneedtech.inspect.vc.probe.TypePropertyProbe;
+import org.oneedtech.inspect.vc.util.CachingDocumentLoader;
+import org.oneedtech.inspect.vc.util.JsonNodeUtil;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -60,9 +62,12 @@ public class OB30Inspector extends VCInspector {
 	
 	@Override
 	public Report run(Resource resource) {		
-		super.check(resource);		
+		super.check(resource);	//TODO because URIs, this should be a fetch and cache
 		
-		if(getBehavior(RESET_CACHES_ON_RUN) == TRUE) JsonSchemaCache.reset();
+		if(getBehavior(RESET_CACHES_ON_RUN) == TRUE) {
+			JsonSchemaCache.reset();
+			CachingDocumentLoader.reset();
+		}
 				
 		ObjectMapper mapper = ObjectMapperCache.get(DEFAULT);
 		JsonPathEvaluator jsonPath = new JsonPathEvaluator(mapper);
@@ -77,88 +82,79 @@ public class OB30Inspector extends VCInspector {
 		List<ReportItems> accumulator = new ArrayList<>();
 		int probeCount = 0;
 		
-		try {				
-				//TODO turn into a loop once stable
-			
+		try {							
 				//detect type (png, svg, json, jwt) and extract json data
 				probeCount++;
-				accumulator.add(new CredentialTypeProbe().run(resource, ctx));				
+				accumulator.add(new CredentialParseProbe().run(resource, ctx));				
 				if(broken(accumulator)) return abort(ctx, accumulator, probeCount);
 				
 				//we expect the above to place a generated object in the context				
 				Credential crd = ctx.getGeneratedObject(Credential.ID);
-				
-				//validate the value of the type property
+						
+				//type property
 				probeCount++;
-				accumulator.add(new JsonArrayProbe(vcType).run(crd.getJson(), ctx));
-				probeCount++;	
-				accumulator.add(new JsonArrayProbe(obType).run(crd.getJson(), ctx));
-				if(broken(accumulator)) return abort(ctx, accumulator, probeCount);		
-				
-				//validate against the canonical schema	 	
-				SchemaKey canonical = crd.getSchemaKey().orElseThrow();
-				probeCount++;
-				accumulator.add(new JsonSchemaProbe(canonical).run(crd.getJson(), ctx));
-				
-				//validate against any inline schemas 	
-				probeCount++;
-				accumulator.add(new InlineJsonSchemaProbe().run(crd, ctx));
-				
-				//If this credential was originally contained in a JWT we must validate the jwt and external proof.
-				if(!isNullOrEmpty(crd.getJwt())){
+				accumulator.add(new TypePropertyProbe(OpenBadgeCredential).run(crd.getJson(), ctx));
+				if(broken(accumulator)) return abort(ctx, accumulator, probeCount);
+												
+				//canonical schema and inline schemata
+				SchemaKey schema = crd.getSchemaKey().orElseThrow();
+				for(Probe<JsonNode> probe : List.of(new JsonSchemaProbe(schema), new InlineJsonSchemaProbe(schema))) {					
 					probeCount++;
+					accumulator.add(probe.run(crd.getJson(), ctx));
+					if(broken(accumulator)) return abort(ctx, accumulator, probeCount);
+				}
+				
+				//signatures, proofs
+				probeCount++;
+				if(crd.getJwt().isPresent()){
+					//The credential originally contained in a JWT, validate the jwt and external proof.
 					accumulator.add(new SignatureVerifierProbe().run(crd, ctx));
-					if(broken(accumulator)) return abort(ctx, accumulator, probeCount);
+				} else {
+					//The credential not contained in a jwt, must have an internal proof.
+					accumulator.add(new ProofVerifierProbe().run(crd, ctx));					
 				}
-				
-				//verify proofs TODO @Miles
-				//If this credential was not contained in a jwt it must have an internal proof.
-				if(isNullOrEmpty(crd.getJwt())){
-					probeCount++;
-					accumulator.add(new ProofVerifierProbe().run(crd, ctx));
-					if(broken(accumulator)) return abort(ctx, accumulator, probeCount);
-				}
-			
+				if(broken(accumulator)) return abort(ctx, accumulator, probeCount);
+											
 				//check refresh service if we are not already refreshed
 				probeCount++;
 				if(resource.getContext().get(REFRESHED) != TRUE) {
 					Optional<String> newID = checkRefreshService(crd, ctx); 											
-					if(newID.isPresent()) {						
+					if(newID.isPresent()) {		
+						//TODO resource.type
 						return this.run(
 							new UriResource(new URI(newID.get()))
 								.setContext(new ResourceContext(REFRESHED, TRUE)));
 					}
 				}
-				
-				//check revocation status
-				probeCount++;
-				accumulator.add(new RevocationListProbe().run(crd, ctx));
-				if(broken(accumulator)) return abort(ctx, accumulator, probeCount);
-				
-				//check expiration
-				probeCount++;
-				accumulator.add(new ExpirationVerifierProbe().run(crd, ctx));
-				if(broken(accumulator)) return abort(ctx, accumulator, probeCount);
-				
-				//check issuance
-				probeCount++;
-				accumulator.add(new IssuanceVerifierProbe().run(crd, ctx));
-				if(broken(accumulator)) return abort(ctx, accumulator, probeCount);
-				
-				//embedded endorsements 
-				List<JsonNode> endorsements = getEndorsements(crd.getJson(), jsonPath);
-				if(endorsements.size() > 0) {
-					EndorsementInspector subInspector = new EndorsementInspector.Builder().build();	
-					for(JsonNode endorsementNode : endorsements) {
-						probeCount++;
-						//TODO: @Markus @Miles, need to refactor to detect as this can be an internal or external proof credential.
-						//This will LIKELY come from two distinct sources in which case we would detect the type by property name.
-						//Third param to constructor: Compact JWT -> add third param after decoding.  Internal Proof, null jwt string.
-						//Credential endorsement = new Credential(resource, endorsementNode);
-						//accumulator.add(subInspector.run(resource, Map.of(ENDORSEMENT_KEY, endorsement)));
-					}
+						
+				//revocation, expiration and issuance
+				for(Probe<Credential> probe : List.of(new RevocationListProbe(), 
+						new ExpirationVerifierProbe(), new IssuanceVerifierProbe())) {					
+					probeCount++;
+					accumulator.add(probe.run(crd, ctx));
+					if(broken(accumulator)) return abort(ctx, accumulator, probeCount);
 				}
+								
+				//embedded endorsements 
+				EndorsementInspector endorsementInspector = new EndorsementInspector.Builder().build();	
 				
+				List<JsonNode> endorsements = JsonNodeUtil.asNodeList(crd.getJson(), "$..endorsement", jsonPath);								
+				for(JsonNode node : endorsements) {
+					probeCount++;
+					Credential endorsement = new Credential(resource, node);
+					accumulator.add(endorsementInspector.run(resource, Map.of(ENDORSEMENT_KEY, endorsement)));
+				}	
+			
+				//embedded jwt endorsements 
+				endorsements = JsonNodeUtil.asNodeList(crd.getJson(), "$..endorsementJwt", jsonPath);				
+				for(JsonNode node : endorsements) {
+					probeCount++;
+					String jwt = node.asText();
+					JsonNode vcNode = fromJwt(jwt, ctx);
+					Credential endorsement = new Credential(resource, vcNode, jwt);
+					accumulator.add(endorsementInspector.run(resource, Map.of(ENDORSEMENT_KEY, endorsement)));
+				}
+											
 				//finally, run any user-added probes
 				for(Probe<Credential> probe : userProbes) {
 					probeCount++;
@@ -193,13 +189,7 @@ public class OB30Inspector extends VCInspector {
 	}
 
 	private static final String REFRESHED = "is.refreshed.credential";
-	
-	private static final JsonPredicateProbeParams obType = JsonPredicateProbeParams.of(
-			"$.type", Predicates.OB30.TypeProperty.value, Predicates.OB30.TypeProperty.msg, Outcome.FATAL);
-	
-	private static final JsonPredicateProbeParams vcType = JsonPredicateProbeParams.of(
-			"$.type", Predicates.VC.TypeProperty.value, Predicates.VC.TypeProperty.msg, Outcome.FATAL);
-	
+		
 	public static class Builder extends VCInspector.Builder<OB30Inspector.Builder> {
 		@SuppressWarnings("unchecked")
 		@Override

@@ -4,6 +4,7 @@ import static org.oneedtech.inspect.util.code.Defensives.*;
 import static org.oneedtech.inspect.util.resource.ResourceType.*;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.Optional;
 
 import org.oneedtech.inspect.core.probe.GeneratedObject;
@@ -29,18 +30,20 @@ public class Credential extends GeneratedObject  {
 	
 	public Credential(Resource resource, JsonNode data, String jwt) {
 		super(ID, GeneratedObject.Type.INTERNAL);
-		checkNotNull(resource, resource.getType(), data);
-		ResourceType type = resource.getType();
-		checkTrue(type == SVG || type == PNG || type == JSON || type == JWT, 
-				"Unrecognized payload type: " + type.getName());
-		this.resource = resource;
-		this.jsonData = data;
-		this.jwt = jwt;
-		
-		ArrayNode typeNode = (ArrayNode)jsonData.get("type");		
+		this.resource = checkNotNull(resource);
+		this.jsonData = checkNotNull(data);
+		this.jwt = jwt; //may be null
+				
+		checkTrue(RECOGNIZED_PAYLOAD_TYPES.contains(resource.getType()));
+				
+		ArrayNode typeNode = (ArrayNode)jsonData.get("type");
 		this.credentialType = Credential.Type.valueOf(typeNode);
 	}
-		
+	
+	public Credential(Resource resource, JsonNode data) {
+		this(resource, data, null);
+	}
+	
 	public Resource getResource() {
 		return resource;
 	}
@@ -53,8 +56,8 @@ public class Credential extends GeneratedObject  {
 		return credentialType;
 	}
 
-	public String getJwt() {
-		return jwt;
+	public Optional<String> getJwt() {
+		return Optional.ofNullable(jwt);
 	}
 	
 	/**
@@ -108,5 +111,6 @@ public class Credential extends GeneratedObject  {
 	}
 	
 	public static final String ID = Credential.class.getCanonicalName();
+	public static  final List<ResourceType> RECOGNIZED_PAYLOAD_TYPES = List.of(SVG, PNG, JSON, JWT);
 		
 }

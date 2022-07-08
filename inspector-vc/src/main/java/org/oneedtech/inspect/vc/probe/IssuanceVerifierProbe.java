@@ -34,7 +34,7 @@ public class IssuanceVerifierProbe extends Probe<Credential> {
 			try {
 				issuanceDate = ZonedDateTime.parse(node.textValue());
 				if (issuanceDate.isAfter(now)) {
-					return fatal("The credential is not yet valid (issuance date is " + node.asText() + ").", ctx);
+					return fatal("The credential is not yet issued (issuance date is " + node.asText() + ").", ctx);
 				} 
 			} catch (Exception e) {
 				return exception("Error while checking issuanceDate: " + e.getMessage(), ctx.getResource());

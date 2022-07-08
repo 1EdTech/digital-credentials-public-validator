@@ -20,16 +20,21 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
  * Detect inline schemas in a credential and run them. 
  * @author mgylling
  */
-public class InlineJsonSchemaProbe extends Probe<Credential> {
+public class InlineJsonSchemaProbe extends Probe<JsonNode> {
 	private static final Set<String> types = Set.of("1EdTechJsonSchemaValidator2019");
-	private final boolean skipCanonical = true;
-		
+	private SchemaKey skip;
+	
 	public InlineJsonSchemaProbe() {
 		super(ID);
 	}
 	
+	public InlineJsonSchemaProbe(SchemaKey skip) {
+		super(ID);
+		this.skip = skip;
+	}
+	
 	@Override
-	public ReportItems run(Credential crd, RunContext ctx) throws Exception {
+	public ReportItems run(JsonNode root, RunContext ctx) throws Exception {
 		List<ReportItems> accumulator = new ArrayList<>();
 		Set<String> ioErrors = new HashSet<>();		
 
@@ -37,7 +42,7 @@ public class InlineJsonSchemaProbe extends Probe<Credential> {
 //		ArrayNode nodes = jsonPath.eval("$..*[?(@.credentialSchema)]", crd.getJson());
 // 		note - we dont get deep nested ones in e.g. EndorsementCredential 
 		
-		JsonNode credentialSchemaNode = crd.getJson().get("credentialSchema");
+		JsonNode credentialSchemaNode = root.get("credentialSchema");
 		if(credentialSchemaNode == null) return success(ctx);
 		
 		ArrayNode schemas = (ArrayNode)	credentialSchemaNode; //TODO guard this cast
@@ -49,9 +54,9 @@ public class InlineJsonSchemaProbe extends Probe<Credential> {
 			if(idNode == null) continue;
 			String id = idNode.asText().strip();				
 			if(ioErrors.contains(id)) continue;				
-			if(skipCanonical && equals(crd.getSchemaKey(), id)) continue;				
+			if(equals(skip, id)) continue;				
 			try {								
-				accumulator.add(new JsonSchemaProbe(id).run(crd.getJson(), ctx));
+				accumulator.add(new JsonSchemaProbe(id).run(root, ctx));
 			} catch (Exception e) {	
 				if(!ioErrors.contains(id)) {
 					ioErrors.add(id);
@@ -63,8 +68,9 @@ public class InlineJsonSchemaProbe extends Probe<Credential> {
 		return new ReportItems(accumulator);
 	}
 	
-	private boolean equals(Optional<SchemaKey> key, String id) {
-		return key.isPresent() && key.get().getCanonicalURI().equals(id);					
+	private boolean equals(SchemaKey key, String id) {
+		if(key == null) return false;
+		return key.getCanonicalURI().equals(id);					
 	}
 	
 	public static final String ID = InlineJsonSchemaProbe.class.getSimpleName();

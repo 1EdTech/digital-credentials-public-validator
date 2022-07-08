@@ -22,7 +22,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.io.Resources;
 
 /**
- * A DocumentLoader with a threadsafe static cache.  
+ * A com.apicatalog DocumentLoader with a threadsafe static cache.  
  * @author mgylling
  */
 public class CachingDocumentLoader implements DocumentLoader {
@@ -33,7 +33,7 @@ public class CachingDocumentLoader implements DocumentLoader {
 		try {
 			return documentCache.get(tpl);	
 		} catch (Exception e) {
-			logger.error("contextCache not able to load {}", url);
+			logger.error("documentCache not able to load {}", url);
 			throw new JsonLdError(JsonLdErrorCode.INVALID_REMOTE_CONTEXT, e.getMessage());
 		} 						
 	}

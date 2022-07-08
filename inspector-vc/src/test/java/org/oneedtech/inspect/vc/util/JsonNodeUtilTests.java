@@ -1,6 +1,6 @@
 package org.oneedtech.inspect.vc.util;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.oneedtech.inspect.util.json.ObjectMapperCache.Config.DEFAULT;
 
 import java.util.List;
@@ -13,18 +13,31 @@ import org.oneedtech.inspect.vc.Samples;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 
 public class JsonNodeUtilTests {
 	static final ObjectMapper mapper = ObjectMapperCache.get(DEFAULT);
 	static final JsonPathEvaluator jsonPath = new JsonPathEvaluator(mapper);
 	
-	
 	@Test
-	void getEndorsementsTest() throws Exception {
-		assertDoesNotThrow(()->{
-			JsonNode root =  mapper.readTree(Samples.OB30.JSON.COMPLETE_JSON.asBytes());			
-			List<JsonNode> list = JsonNodeUtil.getEndorsements(root, jsonPath);
+	void testFlattenNodeList() {
+		Assertions.assertDoesNotThrow(()->{
+			String json = Samples.OB30.JSON.COMPLETE_JSON.asString();
+			JsonNode root = mapper.readTree(json);						
+			List<JsonNode> list = JsonNodeUtil.asNodeList(root, "$..endorsement", jsonPath);
 			Assertions.assertEquals(5, list.size());
-		});	
+			for(JsonNode node : list)  {
+				ArrayNode types = (ArrayNode) node.get("type");
+				boolean found = false;
+				for(JsonNode val : types) {
+					if(val.asText().equals("EndorsementCredential")) {
+						found = true;
+					}
+				}
+				assertTrue(found);
+			}
+					
+		});
 	}
+	
 }

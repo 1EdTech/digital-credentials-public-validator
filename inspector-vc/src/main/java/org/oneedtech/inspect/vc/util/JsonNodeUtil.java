@@ -11,27 +11,27 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
 /**
- * Node access utilities.
+ * Json node utilities.
  * @author mgylling
  */
 public class JsonNodeUtil {
 
-	/**
-	 * Get all embedded endorsement objects as a flat list.
-	 * @return a List that is never null but may be empty.
-	 */
-	public static List<JsonNode> getEndorsements(JsonNode root, JsonPathEvaluator jsonPath) {
+	public static List<JsonNode> asNodeList(JsonNode root, String jsonPath, JsonPathEvaluator evaluator) {
 		List<JsonNode> list = new ArrayList<>();		
-		ArrayNode endorsements = jsonPath.eval("$..endorsement", root);	
-		for(JsonNode endorsement : endorsements) {
-			ArrayNode values = (ArrayNode) endorsement;
-			for(JsonNode value : values) {
-				list.add(value);
+		ArrayNode array = evaluator.eval(jsonPath, root);	
+		for(JsonNode node : array) {
+			if(!(node instanceof ArrayNode)) {
+				list.add(node); 			
+			} else {
+				ArrayNode values = (ArrayNode) node;
+				for(JsonNode value : values) {
+					list.add(value);
+				}
 			}
 		}
 		return list;
 	}
-	
+			
 	public static List<String> asStringList(JsonNode node) {
 		if(!(node instanceof ArrayNode)) {
 			return List.of(node.asText());

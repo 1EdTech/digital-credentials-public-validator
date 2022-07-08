@@ -1,22 +1,22 @@
 package org.oneedtech.inspect.vc.probe;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
+import static org.oneedtech.inspect.util.code.Defensives.checkTrue;
 
 import java.math.BigInteger;
-import java.nio.charset.StandardCharsets;
 import java.security.KeyFactory;
 import java.security.PublicKey;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.RSAPublicKeySpec;
-import java.util.List;
 import java.util.Base64;
 import java.util.Base64.Decoder;
+import java.util.List;
 
 import org.oneedtech.inspect.core.probe.Probe;
 import org.oneedtech.inspect.core.probe.RunContext;
 import org.oneedtech.inspect.core.report.ReportItems;
+import org.oneedtech.inspect.util.code.Defensives;
 import org.oneedtech.inspect.vc.Credential;
-import org.springframework.util.Base64Utils;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
@@ -43,25 +43,27 @@ public class SignatureVerifierProbe extends Probe<Credential> {
 	@Override
 	public ReportItems run(Credential crd, RunContext ctx) throws Exception {
 		try {
-			verifySignature(crd);
+			verifySignature(crd, ctx);
 		} catch (Exception e) {
 			return fatal("Error verifying jwt signature: " + e.getMessage(), ctx);
-		}	
-					
+		}						
 		return success(ctx);
 	}
 
-	private void verifySignature(Credential crd) throws Exception {
-        DecodedJWT decodedJwt = null;
-		String jwt = crd.getJwt();
-		if(isNullOrEmpty(jwt)) throw new IllegalArgumentException("invalid jwt");
+	private void verifySignature(Credential crd, RunContext ctx) throws Exception {
+		checkTrue(crd.getJwt().isPresent(), "no jwt supplied");
+		checkTrue(crd.getJwt().get().length() > 0, "no jwt supplied");
+        
+		DecodedJWT decodedJwt = null;
+		String jwt = crd.getJwt().get();
+		
 		List<String> parts = Splitter.on('.').splitToList(jwt);
 		if(parts.size() != 3) throw new IllegalArgumentException("invalid jwt");
 
 		final Decoder decoder = Base64.getUrlDecoder();
 		String joseHeader = new String(decoder.decode(parts.get(0)));
 
-		ObjectMapper mapper = new ObjectMapper();
+		ObjectMapper mapper = ((ObjectMapper)ctx.get(RunContext.Key.JACKSON_OBJECTMAPPER));
     	JsonNode headerObj = mapper.readTree(joseHeader);
 
 		//MUST be "RS256"
@@ -86,9 +88,13 @@ public class SignatureVerifierProbe extends Probe<Credential> {
 		String modulusString = jwk.get("n").textValue();
 		String exponentString = jwk.get("e").textValue();
 
-		BigInteger modulus = new BigInteger(1, org.springframework.util.Base64Utils.decodeFromUrlSafeString(modulusString));
-		BigInteger exponent = new BigInteger(1, org.springframework.util.Base64Utils.decodeFromUrlSafeString(exponentString));
+//		BigInteger modulus = new BigInteger(1, org.springframework.util.Base64Utils.decodeFromUrlSafeString(modulusString));
+//		BigInteger exponent = new BigInteger(1, org.springframework.util.Base64Utils.decodeFromUrlSafeString(exponentString));
+//		mgy: use java util decoder instead of spring?
+		BigInteger modulus = new BigInteger(1, decoder.decode(modulusString));
+		BigInteger exponent = new BigInteger(1, decoder.decode(exponentString));
 
+		
 		PublicKey pub = KeyFactory.getInstance("RSA").generatePublic(new RSAPublicKeySpec(modulus, exponent));
 
 		Algorithm algorithm = Algorithm.RSA256((RSAPublicKey)pub, null);
