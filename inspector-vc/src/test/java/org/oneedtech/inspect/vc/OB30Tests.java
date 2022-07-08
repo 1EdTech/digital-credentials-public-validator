@@ -56,7 +56,6 @@ public class OB30Tests {
 		});	
 	}
 
-	@Disabled //TODO @Miles -- this needs update?
 	@Test
 	void testSimpleJsonSVGPlainValid() {
 		assertDoesNotThrow(()->{

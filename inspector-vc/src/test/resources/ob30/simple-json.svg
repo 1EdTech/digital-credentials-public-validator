@@ -32,10 +32,10 @@
         "proof": [
           {
             "type": "Ed25519Signature2020",
-            "created": "2022-06-09T22:56:28Z",
-            "verificationMethod": "https://example.edu/issuers/565049#key-1",
+            "created": "2022-06-28T16:28:36Z",
+            "verificationMethod": "did:key:z6MkkUD3J14nkYzn46QeuaVSnp7dF85QJKwKvJvfsjx79aXj",
             "proofPurpose": "assertionMethod",
-            "proofValue": "z58ieJCh4kN6eE2Vq4TyYURKSC4hWWEK7b75NNUL2taZMhKqwTteuByG1wRoGDdCqqNLW5Gq1diUi4qyZ63tQRtyN"
+            "proofValue": "z3MUt2ZuU8Byqivxh6GphEM65AFYyNaGYibm97xLTafM7uGufZQLKvJR8itZwxKskvtFM3CUty46v26DZidMNoQnM"
           }
         ]
       }
