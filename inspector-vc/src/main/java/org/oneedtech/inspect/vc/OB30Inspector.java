@@ -138,7 +138,7 @@ public class OB30Inspector extends VCInspector {
 				//embedded endorsements 
 				EndorsementInspector endorsementInspector = new EndorsementInspector.Builder().build();	
 				
-				List<JsonNode> endorsements = JsonNodeUtil.asNodeList(crd.getJson(), "$..endorsement", jsonPath);								
+				List<JsonNode> endorsements = asNodeList(crd.getJson(), "$..endorsement", jsonPath);								
 				for(JsonNode node : endorsements) {
 					probeCount++;
 					Credential endorsement = new Credential(resource, node);
@@ -146,7 +146,7 @@ public class OB30Inspector extends VCInspector {
 				}	
 			
 				//embedded jwt endorsements 
-				endorsements = JsonNodeUtil.asNodeList(crd.getJson(), "$..endorsementJwt", jsonPath);				
+				endorsements = asNodeList(crd.getJson(), "$..endorsementJwt", jsonPath);				
 				for(JsonNode node : endorsements) {
 					probeCount++;
 					String jwt = node.asText();

@@ -28,12 +28,14 @@
 			<artifactId>java-jwt</artifactId>
 			<version>3.10.3</version>
 		</dependency>
+		<!-- https://github.com/filip26/iron-verifiable-credentials -->
 		<dependency>
 			<groupId>com.apicatalog</groupId>
 			<artifactId>iron-verifiable-credentials-jre8</artifactId>
 			<version>0.7.0</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/com.apicatalog/titanium-json-ld  -->
+		<!--  https://github.com/filip26/titanium-json-ld -->
 		<dependency>
 			<groupId>com.apicatalog</groupId>
 			<artifactId>titanium-json-ld</artifactId>
