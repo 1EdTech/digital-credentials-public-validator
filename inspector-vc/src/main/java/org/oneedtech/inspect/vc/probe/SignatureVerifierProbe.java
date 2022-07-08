@@ -1,6 +1,5 @@
 package org.oneedtech.inspect.vc.probe;
 
-import static com.google.common.base.Strings.isNullOrEmpty;
 import static org.oneedtech.inspect.util.code.Defensives.checkTrue;
 
 import java.math.BigInteger;
@@ -12,10 +11,16 @@ import java.util.Base64;
 import java.util.Base64.Decoder;
 import java.util.List;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 import org.oneedtech.inspect.core.probe.Probe;
 import org.oneedtech.inspect.core.probe.RunContext;
 import org.oneedtech.inspect.core.report.ReportItems;
-import org.oneedtech.inspect.util.code.Defensives;
 import org.oneedtech.inspect.vc.Credential;
 
 import com.auth0.jwt.JWT;
@@ -80,21 +85,22 @@ public class SignatureVerifierProbe extends Probe<Credential> {
 
 		if(jwk == null && kid == null) { throw new Exception("Key must present in either jwk or kid value."); }
 		if(kid != null){
-			//TODO @Miles load jwk JsonNode from url and do the rest the same below.  Need to set up testing.
+			//Load jwk JsonNode from url and do the rest the same below.  
+			//TODO Consider additional testing.
 			String kidUrl = kid.textValue();
+			String jwkResponse = fetchJwk(kidUrl);
+			if(jwkResponse == null) { throw new Exception("Unable to retrieve jwk value from url specified in kid."); }
+
+			jwk = mapper.readTree(jwkResponse);
 		}
 
 		//Clean up may be required.  Currently need to cleanse extra double quoting.
 		String modulusString = jwk.get("n").textValue();
 		String exponentString = jwk.get("e").textValue();
 
-//		BigInteger modulus = new BigInteger(1, org.springframework.util.Base64Utils.decodeFromUrlSafeString(modulusString));
-//		BigInteger exponent = new BigInteger(1, org.springframework.util.Base64Utils.decodeFromUrlSafeString(exponentString));
-//		mgy: use java util decoder instead of spring?
 		BigInteger modulus = new BigInteger(1, decoder.decode(modulusString));
 		BigInteger exponent = new BigInteger(1, decoder.decode(exponentString));
 
-		
 		PublicKey pub = KeyFactory.getInstance("RSA").generatePublic(new RSAPublicKeySpec(modulus, exponent));
 
 		Algorithm algorithm = Algorithm.RSA256((RSAPublicKey)pub, null);
@@ -116,6 +122,29 @@ public class SignatureVerifierProbe extends Probe<Credential> {
 			throw new Exception("JWT, one or more claims are invalid", ex);
 		}
 	}
+
+	private String fetchJwk(String fetchUrl){
+        String responseString = null;
+
+        try {
+            CloseableHttpClient client = HttpClients.createDefault();
+            HttpGet httpGet = new HttpGet(fetchUrl);
+
+            CloseableHttpResponse response = client.execute(httpGet);
+
+            if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+                HttpEntity entity = response.getEntity();
+                responseString = EntityUtils.toString(entity, "UTF-8");
+            }
+
+            client.close();
+        }
+        catch(Exception ex){
+            responseString = null;
+        }
+
+        return responseString;
+    }
 	
 	public static final String ID = SignatureVerifierProbe.class.getSimpleName();
 
