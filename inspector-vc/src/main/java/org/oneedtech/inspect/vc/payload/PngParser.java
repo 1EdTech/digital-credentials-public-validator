@@ -39,10 +39,10 @@ public final class PngParser extends PayloadParser {
 			imageReader.setInput(ImageIO.createImageInputStream(is), true);
 			IIOMetadata metadata = imageReader.getImageMetadata(0);
 
-			String credentialString = null;
+			String vcString = null;
 			String jwtString = null;
 			String formatSearch = null;
-			JsonNode credential = null;
+			JsonNode vcNode = null;
 			
 			String[] names = metadata.getMetadataFormatNames();
 			int length = names.length;
@@ -50,25 +50,26 @@ public final class PngParser extends PayloadParser {
 				//Check all names rather than limiting to PNG format to remain malleable through any library changes.  (Could limit to "javax_imageio_png_1.0")
 				formatSearch = getOpenBadgeCredentialNodeText(metadata.getAsTree(names[i]));
 				if(formatSearch != null) { 
-					credentialString = formatSearch; 
+					vcString = formatSearch; 
+					break;
 				}
 			}
 
-			if(credentialString == null) { 
+			if(vcString == null) { 
 				throw new IllegalArgumentException("No credential inside PNG"); 
 			}
 
-			credentialString = credentialString.trim();
-			if(credentialString.charAt(0) != '{'){
+			vcString = vcString.trim();
+			if(vcString.charAt(0) != '{'){
 				//This is a jwt.  Fetch either the 'vc' out of the payload and save the string for signature verification.
-				jwtString = credentialString;
-				credential = fromJwt(credentialString, ctx);
+				jwtString = vcString;
+				vcNode = fromJwt(vcString, ctx);
 			}
 			else {
-				credential = fromString(credentialString, ctx);
+				vcNode = fromString(vcString, ctx);
 			}
 			
-			return new Credential(resource, credential, jwtString);
+			return new Credential(resource, vcNode, jwtString);
 		}
 	}
 	
