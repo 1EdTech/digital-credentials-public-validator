@@ -21,19 +21,16 @@ public class ExpirationVerifierProbe extends Probe<Credential> {
 	
 	@Override
 	public ReportItems run(Credential crd, RunContext ctx) throws Exception {
-
 		/*		
 		 *  If the AchievementCredential or EndorsementCredential has an “expirationDate” property 
 		 *	and the expiration date is prior to the current date, the credential has expired. 
-		 */
-
-		ZonedDateTime now = ZonedDateTime.now();			
+		 */		
+		System.err.println("ExpirationVerifierProbe");
 		JsonNode node = crd.getJson().get("expirationDate");
 		if(node != null) {
-			ZonedDateTime expirationDate = null;
 			try {
-				expirationDate = ZonedDateTime.parse(node.textValue());
-				if (now.isAfter(expirationDate)) {
+				ZonedDateTime expirationDate = ZonedDateTime.parse(node.textValue());
+				if (ZonedDateTime.now().isAfter(expirationDate)) {
 					return fatal("The credential has expired (expiration date was " + node.asText() + ").", ctx);
 				}	
 			} catch (Exception e) {

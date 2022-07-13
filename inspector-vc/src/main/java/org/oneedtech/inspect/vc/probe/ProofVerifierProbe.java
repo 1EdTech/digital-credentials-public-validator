@@ -11,6 +11,7 @@ import org.oneedtech.inspect.vc.util.CachingDocumentLoader;
 import com.apicatalog.jsonld.document.JsonDocument;
 import com.apicatalog.ld.DocumentError;
 import com.apicatalog.ld.signature.VerificationError;
+import com.apicatalog.ld.signature.VerificationError.Code;
 import com.apicatalog.vc.Vc;
 import com.apicatalog.vc.processor.StatusVerifier;
 
@@ -43,14 +44,22 @@ public class ProofVerifierProbe extends Probe<Credential> {
 			Vc.verify(json)
 				.loader(new CachingDocumentLoader())
 				.useBundledContexts(false) //we control the cache in the loader
-				//.statusVerifier(new NoopStatusVerifier()) 
+				.statusVerifier(new NoopStatusVerifier()) 
 				//.domain(...) 		
 				//.didResolver(...)									
 				.isValid();
 		} catch (DocumentError e) {
 			return error(e.getType() + " " + e.getSubject(), ctx);
 		} catch (VerificationError e) {
-			return error(e.getCode().name() + " " + e.getMessage(), ctx);
+			System.err.println(e.getCode());
+			if(e.getCode() == Code.Internal) {
+				return exception(e.getMessage(), ctx.getResource());	
+			} else if(e.getCode().equals(Code.Expired)) {
+				//handled by other probe	
+			} else {
+				return fatal(e.getCode().name() + " " + e.getMessage(), ctx);	
+			}
+			
 		}		
 		return success(ctx);
 	}	
