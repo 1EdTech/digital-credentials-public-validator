@@ -25,7 +25,6 @@ public class ExpirationVerifierProbe extends Probe<Credential> {
 		 *  If the AchievementCredential or EndorsementCredential has an “expirationDate” property 
 		 *	and the expiration date is prior to the current date, the credential has expired. 
 		 */		
-		System.err.println("ExpirationVerifierProbe");
 		JsonNode node = crd.getJson().get("expirationDate");
 		if(node != null) {
 			try {

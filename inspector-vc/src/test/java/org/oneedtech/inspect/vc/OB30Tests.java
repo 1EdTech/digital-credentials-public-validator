@@ -7,6 +7,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.oneedtech.inspect.core.Inspector.Behavior;
+import org.oneedtech.inspect.core.probe.json.JsonSchemaProbe;
 import org.oneedtech.inspect.core.report.Report;
 import org.oneedtech.inspect.test.PrintHelper;
 import org.oneedtech.inspect.vc.probe.ExpirationVerifierProbe;
@@ -105,6 +106,17 @@ public class OB30Tests {
 			if(verbose) PrintHelper.print(report, true);
 			assertInvalid(report);
 			assertHasProbeID(report, ExpirationVerifierProbe.ID, true);
+		});	
+	}
+	
+	@Test
+	void testSimpleJsonSchemaError() throws Exception {
+		//issuer removed
+		assertDoesNotThrow(()->{
+			Report report = validator.run(Samples.OB30.JSON.SIMPLE_JSON_ISSUER.asFileResource());
+			if(verbose) PrintHelper.print(report, true);
+			assertInvalid(report);
+			assertHasProbeID(report, JsonSchemaProbe.ID, true);			
 		});	
 	}
 	

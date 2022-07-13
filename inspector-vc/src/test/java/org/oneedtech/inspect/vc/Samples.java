@@ -16,6 +16,7 @@ public class Samples {
 			public final static Sample SIMPLE_JSON_PROOF_ERROR = new Sample("ob30/simple-proof-error.json", false);
 			public final static Sample SIMPLE_JSON_EXPIRED = new Sample("ob30/simple-expired.json", false);
 			public final static Sample SIMPLE_JSON_ISSUED = new Sample("ob30/simple-issued.json", false);
+			public final static Sample SIMPLE_JSON_ISSUER = new Sample("ob30/simple-issuer.json", false);
 		}
 		public static final class PNG {			
 			public final static Sample SIMPLE_JWT_PNG = new Sample("ob30/simple-jwt.png", true);
