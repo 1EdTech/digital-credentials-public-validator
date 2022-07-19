@@ -70,6 +70,8 @@ public class Credential extends GeneratedObject  {
 			return Optional.of(Catalog.OB_30_VERIFIABLEPRESENTATION_JSON);
 		} else if(credentialType == Credential.Type.EndorsementCredential) {
 			return Optional.of(Catalog.OB_30_ENDORSEMENTCREDENTIAL_JSON);
+		} else if(credentialType == Credential.Type.ClrCredential) {
+			return Optional.of(Catalog.CLR_20_CLRCREDENTIAL_JSON);
 		} 		
 		return Optional.empty();
 	}
@@ -77,6 +79,7 @@ public class Credential extends GeneratedObject  {
 	public enum Type {
 		AchievementCredential,
 		OpenBadgeCredential, 	//treated as an alias of AchievementCredential
+		ClrCredential, //NOT a duplicate of OB this does not use an alias and we ONLY use 'ClrCredential' as the base type
 		EndorsementCredential,
 		VerifiablePresentation,
 		VerifiableCredential,  //this is an underspecifier in our context
@@ -89,6 +92,8 @@ public class Credential extends GeneratedObject  {
 					String value = iter.next().asText();
 					if(value.equals("AchievementCredential") || value.equals("OpenBadgeCredential")) {
 						return AchievementCredential;
+					} else if(value.equals("ClrCredential")) {
+						return ClrCredential;
 					} else if(value.equals("VerifiablePresentation")) {
 						return VerifiablePresentation;
 					} else if(value.equals("EndorsementCredential")) {
