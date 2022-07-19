@@ -3,7 +3,6 @@ package org.oneedtech.inspect.vc;
 import org.oneedtech.inspect.test.Sample;
 
 public class Samples {
-
 	public static final class OB30 {					
 		public static final class SVG {			
 			public final static Sample SIMPLE_JSON_SVG = new Sample("ob30/simple-json.svg", true);
@@ -24,6 +23,12 @@ public class Samples {
 		}
 		public static final class JWT {			
 			public final static Sample SIMPLE_JWT = new Sample("ob30/simple.jwt", true);
+		}
+	}
+
+	public static final class CLR20 {					
+		public static final class JSON {			
+			public final static Sample SIMPLE_JSON = new Sample("clr20/simple.json", true);
 		}
 	}
 }

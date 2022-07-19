@@ -18,10 +18,6 @@
 					<artifactId>jackson-databind</artifactId>
 				</exclusion>
 				<exclusion>
-					<groupId>com.jayway.jsonpath</groupId>
-					<artifactId>json-path</artifactId>
-				</exclusion>
-				<exclusion>
 					<groupId>com.networknt</groupId>
 					<artifactId>json-schema-validator</artifactId>
 				</exclusion>
