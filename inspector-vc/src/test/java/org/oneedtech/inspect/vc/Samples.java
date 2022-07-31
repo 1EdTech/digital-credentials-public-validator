@@ -29,6 +29,7 @@ public class Samples {
 	public static final class CLR20 {					
 		public static final class JSON {			
 			public final static Sample SIMPLE_JSON = new Sample("clr20/simple.json", true);
+			public final static Sample SIMPLE_JWT = new Sample("clr20/simple.jwt", true);
 		}
 	}
 }
