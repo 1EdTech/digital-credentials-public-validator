@@ -8,6 +8,7 @@ import org.oneedtech.inspect.core.probe.Probe;
 import org.oneedtech.inspect.core.probe.RunContext;
 import org.oneedtech.inspect.core.report.ReportItems;
 import org.oneedtech.inspect.vc.Credential;
+import org.oneedtech.inspect.vc.Credential.Type;
 import org.oneedtech.inspect.vc.util.JsonNodeUtil;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -42,7 +43,14 @@ public class TypePropertyProbe extends Probe<JsonNode> {
 				return fatal(
 					"The type property does not contain one of 'OpenBadgeCredential' or 'AchievementCredential'",
 					ctx);
-			}			
+			}	
+		}
+		if(expected == Credential.Type.ClrCredential){
+			if(!values.contains("ClrCredential")) {
+				return fatal(
+					"The type property does not contain the entry 'ClrCredential'",
+					ctx);
+			}	
 		} else {
 			//TODO implement
 			throw new IllegalStateException(); 

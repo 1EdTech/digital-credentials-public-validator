@@ -12,16 +12,6 @@
 		<dependency>
 			<groupId>org.1edtech</groupId>
 			<artifactId>inspector-core</artifactId>
-			<exclusions>
-				<exclusion>
-					<groupId>com.fasterxml.jackson.core</groupId>
-					<artifactId>jackson-databind</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>com.networknt</groupId>
-					<artifactId>json-schema-validator</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>	
 		<dependency>
 			<groupId>com.auth0</groupId>
