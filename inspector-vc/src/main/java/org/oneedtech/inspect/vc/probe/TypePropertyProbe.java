@@ -45,7 +45,7 @@ public class TypePropertyProbe extends Probe<JsonNode> {
 					ctx);
 			}	
 		}
-		if(expected == Credential.Type.ClrCredential){
+		else if(expected == Credential.Type.ClrCredential){
 			if(!values.contains("ClrCredential")) {
 				return fatal(
 					"The type property does not contain the entry 'ClrCredential'",
