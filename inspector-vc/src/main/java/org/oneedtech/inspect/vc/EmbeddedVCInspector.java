@@ -4,6 +4,7 @@ import static java.lang.Boolean.TRUE;
 
 import static org.oneedtech.inspect.core.probe.RunContext.Key.*;
 import static org.oneedtech.inspect.util.json.ObjectMapperCache.Config.DEFAULT;
+import static org.oneedtech.inspect.core.report.ReportUtil.onProbeException;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -26,7 +27,10 @@ import org.oneedtech.inspect.util.resource.UriResource;
 import org.oneedtech.inspect.util.resource.context.ResourceContext;
 import org.oneedtech.inspect.vc.Credential.Type;
 import org.oneedtech.inspect.vc.probe.CredentialParseProbe;
+import org.oneedtech.inspect.vc.probe.ExpirationVerifierProbe;
 import org.oneedtech.inspect.vc.probe.InlineJsonSchemaProbe;
+import org.oneedtech.inspect.vc.probe.IssuanceVerifierProbe;
+import org.oneedtech.inspect.vc.probe.RevocationListProbe;
 import org.oneedtech.inspect.vc.probe.SignatureVerifierProbe;
 import org.oneedtech.inspect.vc.probe.TypePropertyProbe;
 
@@ -106,7 +110,7 @@ public class EmbeddedVCInspector extends VCInspector implements SubInspector {
 			}
 			if(broken(accumulator)) return abort(ctx, accumulator, probeCount);
 
-			//check refresh service if we are not already refreshed
+			//check refresh service if we are not already refreshed (check just like in external CLR)
 			probeCount++;
 			if(resource.getContext().get(REFRESHED) != TRUE) {
 				Optional<String> newID = checkRefreshService(crd, ctx); 											
@@ -117,10 +121,21 @@ public class EmbeddedVCInspector extends VCInspector implements SubInspector {
 							.setContext(new ResourceContext(REFRESHED, TRUE)));
 				}
 			}
+
+			//revocation, expiration and issuance (check just like in external CLR)
+			for(Probe<Credential> probe : List.of(new RevocationListProbe(), 
+				new ExpirationVerifierProbe(), new IssuanceVerifierProbe())) {					
+				probeCount++;
+				accumulator.add(probe.run(crd, ctx));
+				if(broken(accumulator)) return abort(ctx, accumulator, probeCount);
+			}
+
+			//TODO: verify embedded endorsements, I believe these are NOT on embedded credentials
+								
+			//TODO: verify if User Probes are relevant for embedded content
 		
 		} catch (Exception e) {
-			//TODO: Need to figure out the issue here.
-			//accumulator.add(onProbeException(Probe.ID.NO_UNCAUGHT_EXCEPTIONS, resource, e));
+			accumulator.add(onProbeException(Probe.ID.NO_UNCAUGHT_EXCEPTIONS, resource, e));
 		}
 
 		return new Report(ctx, new ReportItems(accumulator), probeCount);
