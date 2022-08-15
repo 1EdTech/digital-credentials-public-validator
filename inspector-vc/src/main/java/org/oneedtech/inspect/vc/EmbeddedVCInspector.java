@@ -130,10 +130,6 @@ public class EmbeddedVCInspector extends VCInspector implements SubInspector {
 				if(broken(accumulator)) return abort(ctx, accumulator, probeCount);
 			}
 
-			//TODO: verify embedded endorsements, I believe these are NOT on embedded credentials
-								
-			//TODO: verify if User Probes are relevant for embedded content
-		
 		} catch (Exception e) {
 			accumulator.add(onProbeException(Probe.ID.NO_UNCAUGHT_EXCEPTIONS, resource, e));
 		}
