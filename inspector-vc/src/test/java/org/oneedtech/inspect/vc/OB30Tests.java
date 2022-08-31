@@ -10,6 +10,7 @@ import org.oneedtech.inspect.core.Inspector.Behavior;
 import org.oneedtech.inspect.core.probe.json.JsonSchemaProbe;
 import org.oneedtech.inspect.core.report.Report;
 import org.oneedtech.inspect.test.PrintHelper;
+import org.oneedtech.inspect.vc.probe.ContextPropertyProbe;
 import org.oneedtech.inspect.vc.probe.ExpirationVerifierProbe;
 import org.oneedtech.inspect.vc.probe.InlineJsonSchemaProbe;
 import org.oneedtech.inspect.vc.probe.IssuanceVerifierProbe;
@@ -106,6 +107,17 @@ public class OB30Tests {
 			if(verbose) PrintHelper.print(report, true);
 			assertInvalid(report);
 			assertHasProbeID(report, ExpirationVerifierProbe.ID, true);
+		});	
+	}
+	
+	@Test
+	void testSimpleJsonContextError() {	
+		//removed one of the reqd context uris
+		assertDoesNotThrow(()->{
+			Report report = validator.run(Samples.OB30.JSON.SIMPLE_JSON_ERR_CONTEXT.asFileResource());
+			if(verbose) PrintHelper.print(report, true);
+			assertInvalid(report);
+			assertHasProbeID(report, ContextPropertyProbe.ID, true);
 		});	
 	}
 	
