@@ -39,7 +39,6 @@ import org.oneedtech.inspect.vc.probe.RevocationListProbe;
 import org.oneedtech.inspect.vc.probe.SignatureVerifierProbe;
 import org.oneedtech.inspect.vc.probe.TypePropertyProbe;
 import org.oneedtech.inspect.vc.util.CachingDocumentLoader;
-import org.oneedtech.inspect.vc.util.JsonNodeUtil;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -90,7 +89,11 @@ public class OB30Inspector extends VCInspector {
 				
 				//we expect the above to place a generated object in the context				
 				Credential crd = ctx.getGeneratedObject(Credential.ID);
-						
+				
+				//TODO check context IRIs? the schema doesnt do this 
+				
+				//TODO new check: that subject @id or IdentityObject is available (at least one is the req)
+				
 				//type property
 				probeCount++;
 				accumulator.add(new TypePropertyProbe(OpenBadgeCredential).run(crd.getJson(), ctx));
