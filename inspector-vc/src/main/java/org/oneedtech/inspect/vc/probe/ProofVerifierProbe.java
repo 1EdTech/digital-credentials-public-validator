@@ -51,7 +51,7 @@ public class ProofVerifierProbe extends Probe<Credential> {
 		} catch (DocumentError e) {
 			return error(e.getType() + " " + e.getSubject(), ctx);
 		} catch (VerificationError e) {
-			System.err.println(e.getCode());
+			//System.err.println(e.getCode() + " (ProofVerifierProbe)");
 			if(e.getCode() == Code.Internal) {
 				return exception(e.getMessage(), ctx.getResource());	
 			} else if(e.getCode().equals(Code.Expired)) {

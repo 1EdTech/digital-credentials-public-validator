@@ -15,49 +15,50 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
 /**
- * A Probe that verifies a credential's type property. 
+ * A Probe that verifies a credential's type property.
+ * 
  * @author mgylling
  */
 public class TypePropertyProbe extends Probe<JsonNode> {
 	private final Credential.Type expected;
-	
+
 	public TypePropertyProbe(Credential.Type expected) {
 		super(ID);
 		this.expected = checkNotNull(expected);
 	}
-	
+
 	@Override
 	public ReportItems run(JsonNode root, RunContext ctx) throws Exception {
 
-		ArrayNode typeNode = (ArrayNode)root.get("type");		
-		if(typeNode == null) return fatal("No type property", ctx);
-		
+		ArrayNode typeNode = (ArrayNode) root.get("type");
+		if (typeNode == null)
+			return fatal("No type property", ctx);
+
 		List<String> values = JsonNodeUtil.asStringList(typeNode);
-		
-		if(!values.contains("VerifiableCredential")) {
+
+		if (!values.contains("VerifiableCredential")) {
 			return fatal("The type property does not contain the entry 'VerifiableCredential'", ctx);
 		}
-		
-		if(expected == Credential.Type.OpenBadgeCredential) {
-			if(!values.contains("OpenBadgeCredential") && !values.contains("AchievementCredential")) {
-				return fatal(
-					"The type property does not contain one of 'OpenBadgeCredential' or 'AchievementCredential'",
-					ctx);
-			}	
-		}
-		else if(expected == Credential.Type.ClrCredential){
-			if(!values.contains("ClrCredential")) {
-				return fatal(
-					"The type property does not contain the entry 'ClrCredential'",
-					ctx);
-			}	
+
+		if (expected == Credential.Type.OpenBadgeCredential) {
+			if (!values.contains("OpenBadgeCredential") && !values.contains("AchievementCredential")) {
+				return fatal("The type property does not contain one of 'OpenBadgeCredential' or 'AchievementCredential'", ctx);
+			}
+		} else if (expected == Credential.Type.ClrCredential) {
+			if (!values.contains("ClrCredential")) {
+				return fatal("The type property does not contain the entry 'ClrCredential'", ctx);
+			}
+		} else if (expected == Credential.Type.EndorsementCredential) {
+			if (!values.contains("EndorsementCredential")) {
+				return fatal("The type property does not contain the entry 'EndorsementCredential'", ctx);
+			}
 		} else {
-			//TODO implement
-			throw new IllegalStateException(); 
+			// TODO implement
+			throw new IllegalStateException();
 		}
-		
+
 		return success(ctx);
 	}
-		
-	public static final String ID = TypePropertyProbe.class.getSimpleName(); 
+
+	public static final String ID = TypePropertyProbe.class.getSimpleName();
 }
