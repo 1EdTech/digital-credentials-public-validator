@@ -24,6 +24,7 @@ import org.oneedtech.inspect.util.resource.Resource;
 import org.oneedtech.inspect.util.resource.UriResource;
 import org.oneedtech.inspect.util.resource.context.ResourceContext;
 import org.oneedtech.inspect.vc.Credential.Type;
+import org.oneedtech.inspect.vc.probe.ContextPropertyProbe;
 import org.oneedtech.inspect.vc.probe.ExpirationVerifierProbe;
 import org.oneedtech.inspect.vc.probe.InlineJsonSchemaProbe;
 import org.oneedtech.inspect.vc.probe.IssuanceVerifierProbe;
@@ -71,12 +72,15 @@ public class EndorsementInspector extends VCInspector implements SubInspector {
 		List<ReportItems> accumulator = new ArrayList<>();
 		int probeCount = 0;
         try {
-						
-			//type property
-			probeCount++;
-			accumulator.add(new TypePropertyProbe(Type.EndorsementCredential).run(endorsement.getJson(), ctx));
-			if(broken(accumulator)) return abort(ctx, accumulator, probeCount);
-		
+								
+			//context and type properties
+			Credential.Type type = Type.EndorsementCredential;
+			for(Probe<JsonNode> probe : List.of(new ContextPropertyProbe(type), new TypePropertyProbe(type))) {					
+				probeCount++;
+				accumulator.add(probe.run(endorsement.getJson(), ctx));
+				if(broken(accumulator)) return abort(ctx, accumulator, probeCount);
+			}
+			
 			//inline schema (parent inspector has already validated against canonical)
 			accumulator.add(new InlineJsonSchemaProbe().run(endorsement.getJson(), ctx));
 									
