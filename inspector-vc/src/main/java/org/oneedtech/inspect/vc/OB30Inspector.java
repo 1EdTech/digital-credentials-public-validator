@@ -31,6 +31,7 @@ import org.oneedtech.inspect.util.resource.UriResource;
 import org.oneedtech.inspect.util.resource.context.ResourceContext;
 import org.oneedtech.inspect.util.spec.Specification;
 import org.oneedtech.inspect.vc.Credential.Type;
+import org.oneedtech.inspect.vc.probe.CredentialSubjectProbe;
 import org.oneedtech.inspect.vc.probe.ContextPropertyProbe;
 import org.oneedtech.inspect.vc.probe.CredentialParseProbe;
 import org.oneedtech.inspect.vc.probe.ExpirationVerifierProbe;
@@ -91,9 +92,7 @@ public class OB30Inspector extends VCInspector {
 				
 				//we expect the above to place a generated object in the context				
 				Credential crd = ctx.getGeneratedObject(Credential.ID);
-								
-				//TODO new check: that subject @id or IdentityObject is available (at least one is the req)
-								
+																				
 				//context and type properties
 				Credential.Type type = Type.OpenBadgeCredential;
 				for(Probe<JsonNode> probe : List.of(new ContextPropertyProbe(type), new TypePropertyProbe(type))) {					
@@ -109,6 +108,8 @@ public class OB30Inspector extends VCInspector {
 					accumulator.add(probe.run(crd.getJson(), ctx));
 					if(broken(accumulator)) return abort(ctx, accumulator, probeCount);
 				}
+				
+				accumulator.add(new CredentialSubjectProbe().run(crd.getJson(), ctx));
 				
 				//signatures, proofs
 				probeCount++;
