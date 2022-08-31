@@ -109,6 +109,7 @@ public class OB30Inspector extends VCInspector {
 					if(broken(accumulator)) return abort(ctx, accumulator, probeCount);
 				}
 				
+				//credentialSubject 
 				accumulator.add(new CredentialSubjectProbe().run(crd.getJson(), ctx));
 				
 				//signatures, proofs
