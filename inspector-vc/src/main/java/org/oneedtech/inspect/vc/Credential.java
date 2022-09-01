@@ -2,9 +2,11 @@ package org.oneedtech.inspect.vc;
 
 import static org.oneedtech.inspect.util.code.Defensives.*;
 import static org.oneedtech.inspect.util.resource.ResourceType.*;
+import static org.oneedtech.inspect.vc.Credential.Type.*;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.oneedtech.inspect.core.probe.GeneratedObject;
@@ -16,6 +18,7 @@ import org.oneedtech.inspect.util.resource.ResourceType;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.google.common.base.MoreObjects;
+import com.google.common.collect.ImmutableMap;
 
 /**
  * A wrapper object for a verifiable credential. This contains e.g. the origin resource 
@@ -65,20 +68,19 @@ public class Credential extends GeneratedObject  {
 		return ProofType.EXTERNAL;
 	}
 	
+	
+	private static final Map<Credential.Type, SchemaKey> schemas = new ImmutableMap.Builder<Credential.Type, SchemaKey>()
+			.put(AchievementCredential, Catalog.OB_30_ACHIEVEMENTCREDENTIAL_JSON)
+			.put(ClrCredential, Catalog.OB_30_ACHIEVEMENTCREDENTIAL_JSON)
+			.put(EndorsementCredential, Catalog.OB_30_ENDORSEMENTCREDENTIAL_JSON)
+			.put(VerifiablePresentation, Catalog.CLR_20_CLRCREDENTIAL_JSON)
+			.build();
+	
 	/**
 	 * Get the canonical schema for this credential if such exists.
 	 */
 	public Optional<SchemaKey> getSchemaKey() {
-		if(credentialType == Credential.Type.AchievementCredential) {
-			return Optional.of(Catalog.OB_30_ACHIEVEMENTCREDENTIAL_JSON);
-		} else if(credentialType == Credential.Type.VerifiablePresentation) {
-			return Optional.of(Catalog.OB_30_VERIFIABLEPRESENTATION_JSON);
-		} else if(credentialType == Credential.Type.EndorsementCredential) {
-			return Optional.of(Catalog.OB_30_ENDORSEMENTCREDENTIAL_JSON);
-		} else if(credentialType == Credential.Type.ClrCredential) {
-			return Optional.of(Catalog.CLR_20_CLRCREDENTIAL_JSON);
-		} 		
-		return Optional.empty();
+		return Optional.ofNullable(schemas.get(credentialType));		
 	}
 	
 	public enum Type {
