@@ -13,9 +13,9 @@ import com.fasterxml.jackson.databind.JsonNode;
  * A Probe that verifies a credential's issuance status 
  * @author mgylling
  */
-public class IssuanceVerifierProbe extends Probe<Credential> {
+public class IssuanceProbe extends Probe<Credential> {
 	
-	public IssuanceVerifierProbe() {
+	public IssuanceProbe() {
 		super(ID);
 	}
 	
@@ -39,5 +39,5 @@ public class IssuanceVerifierProbe extends Probe<Credential> {
 		return success(ctx);
 	}	
 				
-	public static final String ID = IssuanceVerifierProbe.class.getSimpleName(); 
+	public static final String ID = IssuanceProbe.class.getSimpleName(); 
 }

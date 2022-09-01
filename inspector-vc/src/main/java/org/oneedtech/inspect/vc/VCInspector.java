@@ -28,11 +28,15 @@ public abstract class VCInspector extends Inspector {
 	}
 	
 	protected boolean broken(List<ReportItems> accumulator) {
-		if(getBehavior(Inspector.Behavior.VALIDATOR_FAIL_FAST) == Boolean.FALSE) {
+		return broken(accumulator, false);
+	}
+	
+	protected boolean broken(List<ReportItems> accumulator, boolean force) {
+		if(!force && getBehavior(Inspector.Behavior.VALIDATOR_FAIL_FAST) == Boolean.FALSE) {
 			return false;
 		}
 		for(ReportItems items : accumulator) {
-			if(items.contains(Outcome.FATAL, Outcome.EXCEPTION, Outcome.NOT_RUN)) return true;
+			if(items.contains(Outcome.FATAL, Outcome.EXCEPTION)) return true;
 		}
 		return false;
 	}

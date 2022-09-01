@@ -11,10 +11,10 @@ import org.oneedtech.inspect.core.probe.json.JsonSchemaProbe;
 import org.oneedtech.inspect.core.report.Report;
 import org.oneedtech.inspect.test.PrintHelper;
 import org.oneedtech.inspect.vc.probe.ContextPropertyProbe;
-import org.oneedtech.inspect.vc.probe.ExpirationVerifierProbe;
+import org.oneedtech.inspect.vc.probe.ExpirationProbe;
 import org.oneedtech.inspect.vc.probe.InlineJsonSchemaProbe;
-import org.oneedtech.inspect.vc.probe.IssuanceVerifierProbe;
-import org.oneedtech.inspect.vc.probe.ProofVerifierProbe;
+import org.oneedtech.inspect.vc.probe.IssuanceProbe;
+import org.oneedtech.inspect.vc.probe.EmbeddedProofProbe;
 import org.oneedtech.inspect.vc.probe.TypePropertyProbe;
 
 import com.google.common.collect.Iterables;
@@ -96,7 +96,7 @@ public class OB30Tests {
 			if(verbose) PrintHelper.print(report, true);
 			assertInvalid(report);
 			assertErrorCount(report, 1);
-			assertHasProbeID(report, ProofVerifierProbe.ID, true);
+			assertHasProbeID(report, EmbeddedProofProbe.ID, true);
 		});	
 	}
 	
@@ -107,7 +107,7 @@ public class OB30Tests {
 			Report report = validator.run(Samples.OB30.JSON.SIMPLE_JSON_EXPIRED.asFileResource());
 			if(verbose) PrintHelper.print(report, true);
 			assertInvalid(report);
-			assertHasProbeID(report, ExpirationVerifierProbe.ID, true);
+			assertHasProbeID(report, ExpirationProbe.ID, true);
 		});	
 	}
 	
@@ -142,7 +142,7 @@ public class OB30Tests {
 			Report report = validator.run(Samples.OB30.JSON.SIMPLE_JSON_ISSUED.asFileResource());
 			if(verbose) PrintHelper.print(report, true);
 			assertInvalid(report);
-			assertHasProbeID(report, IssuanceVerifierProbe.ID, true);
+			assertHasProbeID(report, IssuanceProbe.ID, true);
 		});	
 	}
 	

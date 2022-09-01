@@ -5,6 +5,8 @@ import static org.oneedtech.inspect.core.probe.RunContext.Key.*;
 import static org.oneedtech.inspect.core.report.ReportUtil.onProbeException;
 import static org.oneedtech.inspect.util.code.Defensives.checkNotNull;
 import static org.oneedtech.inspect.util.json.ObjectMapperCache.Config.DEFAULT;
+import static org.oneedtech.inspect.vc.Credential.CREDENTIAL_KEY;
+import static org.oneedtech.inspect.vc.Credential.ProofType.EXTERNAL;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -25,12 +27,12 @@ import org.oneedtech.inspect.util.resource.UriResource;
 import org.oneedtech.inspect.util.resource.context.ResourceContext;
 import org.oneedtech.inspect.vc.Credential.Type;
 import org.oneedtech.inspect.vc.probe.ContextPropertyProbe;
-import org.oneedtech.inspect.vc.probe.ExpirationVerifierProbe;
+import org.oneedtech.inspect.vc.probe.EmbeddedProofProbe;
+import org.oneedtech.inspect.vc.probe.ExpirationProbe;
+import org.oneedtech.inspect.vc.probe.ExternalProofProbe;
 import org.oneedtech.inspect.vc.probe.InlineJsonSchemaProbe;
-import org.oneedtech.inspect.vc.probe.IssuanceVerifierProbe;
-import org.oneedtech.inspect.vc.probe.ProofVerifierProbe;
+import org.oneedtech.inspect.vc.probe.IssuanceProbe;
 import org.oneedtech.inspect.vc.probe.RevocationListProbe;
-import org.oneedtech.inspect.vc.probe.SignatureVerifierProbe;
 import org.oneedtech.inspect.vc.probe.TypePropertyProbe;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -58,7 +60,7 @@ public class EndorsementInspector extends VCInspector implements SubInspector {
 		 * 
 		 */
 		
-		Credential endorsement = (Credential) checkNotNull(parentObjects.get(ENDORSEMENT_KEY));
+		Credential endorsement = (Credential) checkNotNull(parentObjects.get(CREDENTIAL_KEY));
 				
 		ObjectMapper mapper = ObjectMapperCache.get(DEFAULT);
 		JsonPathEvaluator jsonPath = new JsonPathEvaluator(mapper);
@@ -86,12 +88,12 @@ public class EndorsementInspector extends VCInspector implements SubInspector {
 									
 			//signatures, proofs
 			probeCount++;
-			if(endorsement.getJwt().isPresent()){
+			if(endorsement.getProofType() == EXTERNAL){
 				//The credential originally contained in a JWT, validate the jwt and external proof.
-				accumulator.add(new SignatureVerifierProbe().run(endorsement, ctx));
+				accumulator.add(new ExternalProofProbe().run(endorsement, ctx));
 			} else {
 				//The credential not contained in a jwt, must have an internal proof.
-				accumulator.add(new ProofVerifierProbe().run(endorsement, ctx));		
+				accumulator.add(new EmbeddedProofProbe().run(endorsement, ctx));		
 				
 			}
 			if(broken(accumulator)) return abort(ctx, accumulator, probeCount);
@@ -110,7 +112,7 @@ public class EndorsementInspector extends VCInspector implements SubInspector {
 
 			//revocation, expiration and issuance
 			for(Probe<Credential> probe : List.of(new RevocationListProbe(), 
-				new ExpirationVerifierProbe(), new IssuanceVerifierProbe())) {					
+				new ExpirationProbe(), new IssuanceProbe())) {					
 				probeCount++;
 				accumulator.add(probe.run(endorsement, ctx));
 				if(broken(accumulator)) return abort(ctx, accumulator, probeCount);
@@ -135,7 +137,5 @@ public class EndorsementInspector extends VCInspector implements SubInspector {
 			return new EndorsementInspector(this);
 		}
 	}
-	
-	public static final String ENDORSEMENT_KEY = "ENDORSEMENT_KEY";
-   
+	   
 }

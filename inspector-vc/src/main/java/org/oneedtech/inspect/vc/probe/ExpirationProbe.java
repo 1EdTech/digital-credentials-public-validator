@@ -13,9 +13,9 @@ import com.fasterxml.jackson.databind.JsonNode;
  * A Probe that verifies a credential's expiration status 
  * @author mgylling
  */
-public class ExpirationVerifierProbe extends Probe<Credential> {
+public class ExpirationProbe extends Probe<Credential> {
 	
-	public ExpirationVerifierProbe() {
+	public ExpirationProbe() {
 		super(ID);
 	}
 	
@@ -39,5 +39,5 @@ public class ExpirationVerifierProbe extends Probe<Credential> {
 		return success(ctx);
 	}
 		
-	public static final String ID = ExpirationVerifierProbe.class.getSimpleName(); 
+	public static final String ID = ExpirationProbe.class.getSimpleName(); 
 }

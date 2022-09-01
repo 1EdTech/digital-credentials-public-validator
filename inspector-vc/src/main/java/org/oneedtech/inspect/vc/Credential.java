@@ -126,6 +126,7 @@ public class Credential extends GeneratedObject  {
 	}
 	
 	public static final String ID = Credential.class.getCanonicalName();
-	public static  final List<ResourceType> RECOGNIZED_PAYLOAD_TYPES = List.of(SVG, PNG, JSON, JWT);
+	public static final List<ResourceType> RECOGNIZED_PAYLOAD_TYPES = List.of(SVG, PNG, JSON, JWT);
+	public static final String CREDENTIAL_KEY = "CREDENTIAL_KEY";
 		
 }

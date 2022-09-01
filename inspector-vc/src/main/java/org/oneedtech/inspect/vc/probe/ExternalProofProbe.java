@@ -36,12 +36,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Splitter;
 
 /**
- * A Probe that verifies credential signatures 
+ * A Probe that verifies credential external proof (jwt) 
  * @author mlyon
  */
-public class SignatureVerifierProbe extends Probe<Credential> {
+public class ExternalProofProbe extends Probe<Credential> {
 	
-	public SignatureVerifierProbe() {
+	public ExternalProofProbe() {
 		super(ID);
 	}
 	
@@ -146,6 +146,6 @@ public class SignatureVerifierProbe extends Probe<Credential> {
         return responseString;
     }
 	
-	public static final String ID = SignatureVerifierProbe.class.getSimpleName();
+	public static final String ID = ExternalProofProbe.class.getSimpleName();
 
 }

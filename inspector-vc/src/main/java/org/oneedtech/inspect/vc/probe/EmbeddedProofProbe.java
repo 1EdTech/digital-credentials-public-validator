@@ -18,10 +18,10 @@ import com.apicatalog.vc.processor.StatusVerifier;
 import jakarta.json.JsonObject;
 
 /**
- * A Probe that verifies a credential's proof.
+ * A Probe that verifies a credential's embedded proof.
  * @author mgylling
  */
-public class ProofVerifierProbe extends Probe<Credential> {
+public class EmbeddedProofProbe extends Probe<Credential> {
 	
 	/*
 	 * Note: using com.apicatalog Iron, we get a generic VC verifier that
@@ -32,7 +32,7 @@ public class ProofVerifierProbe extends Probe<Credential> {
 	 * (aka is not a jwt). 
 	 */
 	
-	public ProofVerifierProbe() {
+	public EmbeddedProofProbe() {
 		super(ID);
 	}
 	
@@ -71,5 +71,5 @@ public class ProofVerifierProbe extends Probe<Credential> {
 		}		
 	}
 	
-	public static final String ID = ProofVerifierProbe.class.getSimpleName(); 
+	public static final String ID = EmbeddedProofProbe.class.getSimpleName(); 
 }

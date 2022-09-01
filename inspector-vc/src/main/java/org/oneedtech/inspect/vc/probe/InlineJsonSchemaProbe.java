@@ -38,10 +38,7 @@ public class InlineJsonSchemaProbe extends Probe<JsonNode> {
 		List<ReportItems> accumulator = new ArrayList<>();
 		Set<String> ioErrors = new HashSet<>();		
 
-//		JsonPathEvaluator jsonPath = ctx.get(RunContext.Key.JSONPATH_EVALUATOR);		
-//		ArrayNode nodes = jsonPath.eval("$..*[?(@.credentialSchema)]", crd.getJson());
-// 		note - we dont get deep nested ones in e.g. EndorsementCredential 
-		
+		//note - we don't get deep nested ones in e.g. EndorsementCredential 		
 		JsonNode credentialSchemaNode = root.get("credentialSchema");
 		if(credentialSchemaNode == null) return success(ctx);
 		
