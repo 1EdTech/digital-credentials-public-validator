@@ -60,6 +60,11 @@ public class Credential extends GeneratedObject  {
 		return Optional.ofNullable(jwt);
 	}
 	
+	public ProofType getProofType() {
+		if(jwt == null) return ProofType.EMBEDDED;
+		return ProofType.EXTERNAL;
+	}
+	
 	/**
 	 * Get the canonical schema for this credential if such exists.
 	 */
@@ -103,6 +108,11 @@ public class Credential extends GeneratedObject  {
 			}
 			return Unknown;
 		}
+	}
+	
+	public enum ProofType {
+		EXTERNAL,
+		EMBEDDED
 	}
 	
 	@Override

@@ -26,7 +26,8 @@ public class OB30Tests {
 	@BeforeAll 
 	static void setup() {		
 		validator = new OB30Inspector.Builder()				
-				.set(Behavior.TEST_INCLUDE_SUCCESS, true)				
+				.set(Behavior.TEST_INCLUDE_SUCCESS, true)	
+				.set(Behavior.VALIDATOR_FAIL_FAST, true)
 				.build();		
 	}
 	

@@ -137,25 +137,5 @@ public class EndorsementInspector extends VCInspector implements SubInspector {
 	}
 	
 	public static final String ENDORSEMENT_KEY = "ENDORSEMENT_KEY";
-    private static final String REFRESHED = "is.refreshed.credential";
-
-		/**
-	 * If the AchievementCredential or EndorsementCredential has a “refreshService” property and the type of the 
-	 * RefreshService object is “1EdTechCredentialRefresh”, you should fetch the refreshed credential from the URL 
-	 * provided, then start the verification process over using the response as input. If the request fails, 
-	 * the credential is invalid.
-	 */
-	private Optional<String> checkRefreshService(Credential crd, RunContext ctx) {
-		JsonNode refreshServiceNode = crd.getJson().get("refreshService");		
-		if(refreshServiceNode != null) {
-			JsonNode serviceTypeNode = refreshServiceNode.get("type");
-			if(serviceTypeNode != null && serviceTypeNode.asText().equals("1EdTechCredentialRefresh")) {
-				JsonNode serviceURINode = refreshServiceNode.get("id");
-				if(serviceURINode != null) {
-					return Optional.of(serviceURINode.asText());
-				}
-			}	
-		}				
-		return Optional.empty();
-	}
+   
 }
