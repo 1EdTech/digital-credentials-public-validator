@@ -64,8 +64,7 @@ public class Credential extends GeneratedObject  {
 	}
 	
 	public ProofType getProofType() {
-		if(jwt == null) return ProofType.EMBEDDED;
-		return ProofType.EXTERNAL;
+		return jwt == null ? ProofType.EMBEDDED : ProofType.EXTERNAL;
 	}
 	
 	
