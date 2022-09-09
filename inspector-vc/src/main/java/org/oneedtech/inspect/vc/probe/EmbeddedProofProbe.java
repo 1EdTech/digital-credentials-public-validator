@@ -3,6 +3,7 @@ package org.oneedtech.inspect.vc.probe;
 import java.io.StringReader;
 import java.net.URI;
 
+import org.bouncycastle.util.Arrays;
 import org.oneedtech.inspect.core.probe.Probe;
 import org.oneedtech.inspect.core.probe.RunContext;
 import org.oneedtech.inspect.core.report.ReportItems;
@@ -10,6 +11,7 @@ import org.oneedtech.inspect.vc.Credential;
 import org.oneedtech.inspect.vc.util.CachingDocumentLoader;
 
 import com.apicatalog.ld.DocumentError;
+import com.apicatalog.multibase.Multibase;
 import com.apicatalog.vc.processor.StatusVerifier;
 import com.danubetech.verifiablecredentials.VerifiableCredential;
 
@@ -36,7 +38,42 @@ public class EmbeddedProofProbe extends Probe<Credential> {
 		vc.setDocumentLoader(new CachingDocumentLoader()); 
 						
 		URI method = vc.getLdProof().getVerificationMethod();
-		byte[] publicKey = method.toString().getBytes(); 
+
+		// The verification method must dereference to an Ed25519VerificationKey2020.
+		// Danubetech's Ed25519Signature2020LdVerifier expects the decoded public key
+		// from the Ed25519VerificationKey2020 (32 bytes).
+
+		String publicKeyMultibase = "";
+
+		// Formats accepted:
+		//
+		// [controller]#[publicKeyMultibase]
+		// did:key:[publicKeyMultibase]
+		// [publicKeyMultibase]
+
+		if (method.toString().contains("#")) {
+			publicKeyMultibase = method.getFragment();
+		} else {
+			if (method.toString().startsWith("did")) {
+				String didScheme = method.getSchemeSpecificPart();
+				if (didScheme.startsWith("key:")) {
+					publicKeyMultibase = didScheme.substring(4);
+				} else {
+					return fatal("Unknown verification method: " + method.toString(), ctx);
+				}
+			} else {
+				publicKeyMultibase = method.toString();
+			}
+		}
+
+		// Decode the Multibase to Multicodec and check that it is an Ed25519 public key
+		byte[] publicKeyMulticodec = Multibase.decode(publicKeyMultibase);
+		if (publicKeyMulticodec[0] != -19 || publicKeyMulticodec[1] != 1) {
+			return fatal("Verification method does not contain an Ed25519 public key", ctx);
+		}
+
+		// Extract the publicKey bytes from the Multicodec
+		byte[] publicKey = Arrays.copyOfRange(publicKeyMulticodec, 2, publicKeyMulticodec.length);
 		
 		Ed25519Signature2020LdVerifier verifier = new Ed25519Signature2020LdVerifier(publicKey); 
 		
