@@ -40,8 +40,8 @@ public class CachingDocumentLoader implements DocumentLoader {
 	}
 
 	static final ImmutableMap<String, URL> bundled = ImmutableMap.<String, URL>builder()
-			.put("https://purl.imsglobal.org/spec/clr/v2p0/context.json",Resources.getResource("clr-v2p0.json"))
-			.put("https://purl.imsglobal.org/spec/ob/v3p0/context.json",Resources.getResource("ob-v3p0.json"))			
+			.put("https://purl.imsglobal.org/spec/clr/v2p0/context.json",Resources.getResource("contexts/clr-v2p0.json"))
+			.put("https://purl.imsglobal.org/spec/ob/v3p0/context.json",Resources.getResource("contexts/ob-v3p0.json"))			
 			.put("https://imsglobal.github.io/openbadges-specification/context.json",Resources.getResource("contexts/obv3x.jsonld"))			
 			.put("https://www.w3.org/ns/did/v1", Resources.getResource("contexts/did-v1.jsonld"))
 			.put("https://www.w3.org/ns/odrl.jsonld", Resources.getResource("contexts/odrl.jsonld"))
