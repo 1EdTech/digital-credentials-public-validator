@@ -62,11 +62,11 @@ public class ContextPropertyProbe extends Probe<JsonNode> {
 			// TODO uris will change
 			.put(Set.of(OpenBadgeCredential, AchievementCredential, EndorsementCredential),
 					List.of("https://www.w3.org/2018/credentials/v1",
-							"https://imsglobal.github.io/openbadges-specification/context.json")) 
+							"https://purl.imsglobal.org/spec/ob/v3p0/context.json")) 
 			.put(Set.of(ClrCredential),
 					List.of("https://www.w3.org/2018/credentials/v1",
-							"https://dc.imsglobal.org/draft/clr/v2p0/context",
-							"https://imsglobal.github.io/openbadges-specification/context.json"))
+							"https://purl.imsglobal.org/spec/clr/v2p0/context.json",
+							"https://purl.imsglobal.org/spec/ob/v3p0/context.json"))
 			.build();
 
 	public static final String ID = ContextPropertyProbe.class.getSimpleName();

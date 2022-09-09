@@ -43,7 +43,7 @@ public class CachingDocumentLoader implements DocumentLoader {
 			  .put("https://www.w3.org/ns/odrl.jsonld", Resources.getResource("contexts/odrl.jsonld"))
 			  .put("https://w3id.org/security/suites/ed25519-2020/v1", Resources.getResource("contexts/security-suites-ed25519-2020-v1.jsonld"))
 			  .put("https://www.w3.org/2018/credentials/v1", Resources.getResource("contexts/2018-credentials-v1.jsonld"))
-			  .put("https://imsglobal.github.io/openbadges-specification/context.json", Resources.getResource("contexts/obv3.jsonld"))			  
+			  .put("https://purl.imsglobal.org/spec/ob/v3p0/context.json", Resources.getResource("contexts/obv3.jsonld"))			  
 			  .build();
 	
 	static final LoadingCache<Tuple<String, DocumentLoaderOptions>, Document> documentCache = CacheBuilder.newBuilder()
