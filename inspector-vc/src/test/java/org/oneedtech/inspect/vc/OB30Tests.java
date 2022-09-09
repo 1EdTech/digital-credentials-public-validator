@@ -21,7 +21,7 @@ import com.google.common.collect.Iterables;
 
 public class OB30Tests {
 	private static OB30Inspector validator; 
-	private static boolean verbose = false;
+	private static boolean verbose = true;
 	
 	@BeforeAll 
 	static void setup() {		
