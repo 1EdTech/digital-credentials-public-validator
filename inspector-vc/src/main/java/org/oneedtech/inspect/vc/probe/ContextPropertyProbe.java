@@ -58,15 +58,18 @@ public class ContextPropertyProbe extends Probe<JsonNode> {
 		return success(ctx);
 	}
 
-	private final static Map<Set<Credential.Type>, List<String>> values = new ImmutableMap.Builder<Set<Credential.Type>, List<String>>()
-			// TODO uris will change
+	private final static Map<Set<Credential.Type>, List<String>> values = new ImmutableMap.Builder<Set<Credential.Type>, List<String>>()			
 			.put(Set.of(OpenBadgeCredential, AchievementCredential, EndorsementCredential),
 					List.of("https://www.w3.org/2018/credentials/v1",
-							"https://purl.imsglobal.org/spec/ob/v3p0/context.json")) 
+							//"https://imsglobal.github.io/openbadges-specification/context.json")) //dev legacy
+							"https://purl.imsglobal.org/spec/ob/v3p0/context.json"))
 			.put(Set.of(ClrCredential),
 					List.of("https://www.w3.org/2018/credentials/v1",
+//							"https://dc.imsglobal.org/draft/clr/v2p0/context", //dev legacy
+//							"https://imsglobal.github.io/openbadges-specification/context.json")) //dev legacy
 							"https://purl.imsglobal.org/spec/clr/v2p0/context.json",
 							"https://purl.imsglobal.org/spec/ob/v3p0/context.json"))
+			
 			.build();
 
 	public static final String ID = ContextPropertyProbe.class.getSimpleName();
