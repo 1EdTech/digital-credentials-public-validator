@@ -89,10 +89,22 @@ public class OB30Tests {
 	}
 	
 	@Test
-	void testSimpleJsonInvalidProof() {
+	void testSimpleJsonInvalidProofMethod() {
 		//add some garbage chars to proofValue
 		assertDoesNotThrow(()->{
-			Report report = validator.run(Samples.OB30.JSON.SIMPLE_JSON_PROOF_ERROR.asFileResource());
+			Report report = validator.run(Samples.OB30.JSON.SIMPLE_JSON_PROOF_METHOD_ERROR.asFileResource());
+			if(verbose) PrintHelper.print(report, true);
+			assertInvalid(report);
+			assertErrorCount(report, 1);
+			assertHasProbeID(report, EmbeddedProofProbe.ID, true);
+		});	
+	}
+	
+	@Test
+	void testSimpleJsonInvalidProofValue() {
+		//add some garbage chars to proofValue
+		assertDoesNotThrow(()->{
+			Report report = validator.run(Samples.OB30.JSON.SIMPLE_JSON_PROOF_VALUE_ERROR.asFileResource());
 			if(verbose) PrintHelper.print(report, true);
 			assertInvalid(report);
 			assertErrorCount(report, 1);

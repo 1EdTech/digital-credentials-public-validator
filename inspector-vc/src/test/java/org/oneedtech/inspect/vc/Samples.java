@@ -13,7 +13,8 @@ public class Samples {
 			public final static Sample SIMPLE_JSON = new Sample("ob30/simple.json", true);
 			public final static Sample SIMPLE_JSON_NOPROOF = new Sample("ob30/simple-noproof.json", false);
 			public final static Sample SIMPLE_JSON_UNKNOWN_TYPE = new Sample("ob30/simple-err-type.json", false);
-			public final static Sample SIMPLE_JSON_PROOF_ERROR = new Sample("ob30/simple-err-proof.json", false);			
+			public final static Sample SIMPLE_JSON_PROOF_METHOD_ERROR = new Sample("ob30/simple-err-proof-method.json", false);			
+			public final static Sample SIMPLE_JSON_PROOF_VALUE_ERROR = new Sample("ob30/simple-err-proof-value.json", false);			
 			public final static Sample SIMPLE_JSON_EXPIRED = new Sample("ob30/simple-err-expired.json", false);
 			public final static Sample SIMPLE_JSON_ISSUED = new Sample("ob30/simple-err-issued.json", false);
 			public final static Sample SIMPLE_JSON_ISSUER = new Sample("ob30/simple-err-issuer.json", false);

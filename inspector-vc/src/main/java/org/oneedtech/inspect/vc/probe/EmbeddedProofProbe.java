@@ -66,7 +66,7 @@ public class EmbeddedProofProbe extends Probe<Credential> {
 				if (didScheme.startsWith("key:")) {
 					publicKeyMultibase = didScheme.substring(4);
 				} else {
-					return fatal("Unknown verification method: " + method.toString(), ctx);
+					return error("Unknown verification method: " + method.toString(), ctx);
 				}
 			} else {
 				publicKeyMultibase = method.toString();
@@ -74,9 +74,14 @@ public class EmbeddedProofProbe extends Probe<Credential> {
 		}
 
 		// Decode the Multibase to Multicodec and check that it is an Ed25519 public key
-		byte[] publicKeyMulticodec = Multibase.decode(publicKeyMultibase);
-		if (publicKeyMulticodec[0] != -19 || publicKeyMulticodec[1] != 1) {
-			return fatal("Verification method does not contain an Ed25519 public key", ctx);
+		byte[] publicKeyMulticodec;
+		try {
+			publicKeyMulticodec = Multibase.decode(publicKeyMultibase);
+			if (publicKeyMulticodec[0] != -19 || publicKeyMulticodec[1] != 1) {
+				return error("Verification method does not contain an Ed25519 public key", ctx);
+			}
+		} catch (Exception e) {
+			return error("Verification method is invalid: " + e.getMessage(), ctx);
 		}
 
 		// Extract the publicKey bytes from the Multicodec
@@ -90,7 +95,10 @@ public class EmbeddedProofProbe extends Probe<Credential> {
 		// if [publicKeyMultibase] -- don't check issuer ID. Maybe we should warn about this syntax. 
 		
 		try {
-			verifier.verify(vc);
+			boolean verify = verifier.verify(vc);
+			if (!verify) {
+				return error("Embedded proof verification failed.", ctx);
+			}
 		} catch (Exception e) {
 			return fatal("Embedded proof verification failed:" + e.getMessage(), ctx);
 		}	
