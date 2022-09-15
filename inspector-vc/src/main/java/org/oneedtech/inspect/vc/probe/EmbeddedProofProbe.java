@@ -34,6 +34,9 @@ public class EmbeddedProofProbe extends Probe<Credential> {
 	@Override  
 	public ReportItems run(Credential crd, RunContext ctx) throws Exception {	
 		
+		//TODO check that proof is Ed25519 - issue error if not ("type": "Ed25519Signature2020",
+		//TODO check value "proofPurpose": "assertionMethod", if not error
+		
 		VerifiableCredential vc = VerifiableCredential.fromJson(new StringReader(crd.getJson().toString()));
 		vc.setDocumentLoader(new CachingDocumentLoader()); 
 						
@@ -51,6 +54,10 @@ public class EmbeddedProofProbe extends Probe<Credential> {
 		// did:key:[publicKeyMultibase]
 		// [publicKeyMultibase]
 
+		// TODO fourth format that we don't support yet: a URL that returns a Ed25519VerificationKey2020
+		// if starts with http and does not have hashcode, try fetch and see if returns Ed25519VerificationKey2020
+		// property is publicKeyMultibase
+		
 		if (method.toString().contains("#")) {
 			publicKeyMultibase = method.getFragment();
 		} else {
@@ -76,6 +83,11 @@ public class EmbeddedProofProbe extends Probe<Credential> {
 		byte[] publicKey = Arrays.copyOfRange(publicKeyMulticodec, 2, publicKeyMulticodec.length);
 		
 		Ed25519Signature2020LdVerifier verifier = new Ed25519Signature2020LdVerifier(publicKey); 
+		
+		//TODO find out whether we also should check that controller matches issuer ID:
+		// if [controller]#[publicKeyMultibase] format - check [controller] segment
+		// if did:key:[publicKeyMultibase] format: issuer ID must match the entire URI
+		// if [publicKeyMultibase] -- don't check issuer ID. Maybe we should warn about this syntax. 
 		
 		try {
 			verifier.verify(vc);

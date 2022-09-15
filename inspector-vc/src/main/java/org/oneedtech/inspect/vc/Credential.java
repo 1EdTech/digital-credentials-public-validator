@@ -70,9 +70,9 @@ public class Credential extends GeneratedObject  {
 	
 	private static final Map<Credential.Type, SchemaKey> schemas = new ImmutableMap.Builder<Credential.Type, SchemaKey>()
 			.put(AchievementCredential, Catalog.OB_30_ACHIEVEMENTCREDENTIAL_JSON)
-			.put(ClrCredential, Catalog.OB_30_ACHIEVEMENTCREDENTIAL_JSON)
-			.put(EndorsementCredential, Catalog.OB_30_ENDORSEMENTCREDENTIAL_JSON)
+			.put(ClrCredential, Catalog.CLR_20_CLRCREDENTIAL_JSON)
 			.put(VerifiablePresentation, Catalog.CLR_20_CLRCREDENTIAL_JSON)
+			.put(EndorsementCredential, Catalog.OB_30_ENDORSEMENTCREDENTIAL_JSON)			
 			.build();
 	
 	/**
@@ -85,7 +85,7 @@ public class Credential extends GeneratedObject  {
 	public enum Type {
 		AchievementCredential,
 		OpenBadgeCredential, 	//treated as an alias of AchievementCredential
-		ClrCredential, //NOT a duplicate of OB this does not use an alias and we ONLY use 'ClrCredential' as the base type
+		ClrCredential, 
 		EndorsementCredential,
 		VerifiablePresentation,
 		VerifiableCredential,  //this is an underspecifier in our context
