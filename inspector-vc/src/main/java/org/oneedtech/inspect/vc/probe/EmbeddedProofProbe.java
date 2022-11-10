@@ -3,7 +3,6 @@ package org.oneedtech.inspect.vc.probe;
 import java.io.StringReader;
 import java.net.URI;
 
-import org.bouncycastle.util.Arrays;
 import org.oneedtech.inspect.core.probe.Probe;
 import org.oneedtech.inspect.core.probe.RunContext;
 import org.oneedtech.inspect.core.report.ReportItems;
@@ -12,6 +11,8 @@ import org.oneedtech.inspect.vc.util.CachingDocumentLoader;
 
 import com.apicatalog.ld.DocumentError;
 import com.apicatalog.multibase.Multibase;
+import com.apicatalog.multicodec.Multicodec;
+import com.apicatalog.multicodec.Multicodec.Codec;
 import com.apicatalog.vc.processor.StatusVerifier;
 import com.danubetech.verifiablecredentials.VerifiableCredential;
 
@@ -74,10 +75,11 @@ public class EmbeddedProofProbe extends Probe<Credential> {
 		}
 
 		// Decode the Multibase to Multicodec and check that it is an Ed25519 public key
+		// https://w3c-ccg.github.io/di-eddsa-2020/#ed25519verificationkey2020
 		byte[] publicKeyMulticodec;
 		try {
 			publicKeyMulticodec = Multibase.decode(publicKeyMultibase);
-			if (publicKeyMulticodec[0] != -19 || publicKeyMulticodec[1] != 1) {
+			if (publicKeyMulticodec[0] != (byte) 0xed || publicKeyMulticodec[1] != (byte) 0x01) {
 				return error("Verification method does not contain an Ed25519 public key", ctx);
 			}
 		} catch (Exception e) {
@@ -85,7 +87,7 @@ public class EmbeddedProofProbe extends Probe<Credential> {
 		}
 
 		// Extract the publicKey bytes from the Multicodec
-		byte[] publicKey = Arrays.copyOfRange(publicKeyMulticodec, 2, publicKeyMulticodec.length);
+		byte[] publicKey = Multicodec.decode(Codec.Ed25519PublicKey, publicKeyMulticodec);
 		
 		Ed25519Signature2020LdVerifier verifier = new Ed25519Signature2020LdVerifier(publicKey); 
 		
