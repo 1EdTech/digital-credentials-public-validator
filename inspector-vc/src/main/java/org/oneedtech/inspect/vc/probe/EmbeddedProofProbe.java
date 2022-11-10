@@ -58,21 +58,22 @@ public class EmbeddedProofProbe extends Probe<Credential> {
 		// TODO fourth format that we don't support yet: a URL that returns a Ed25519VerificationKey2020
 		// if starts with http and does not have hashcode, try fetch and see if returns Ed25519VerificationKey2020
 		// property is publicKeyMultibase
+
+		publicKeyMultibase = method.toString();
 		
-		if (method.toString().contains("#")) {
-			publicKeyMultibase = method.getFragment();
-		} else {
-			if (method.toString().startsWith("did")) {
-				String didScheme = method.getSchemeSpecificPart();
-				if (didScheme.startsWith("key:")) {
-					publicKeyMultibase = didScheme.substring(4);
-				} else {
-					return error("Unknown verification method: " + method.toString(), ctx);
-				}
-			} else {
-				publicKeyMultibase = method.toString();
-			}
-		}
+        if (method.getFragment() != null) {
+            publicKeyMultibase = method.getFragment();
+        } else {
+            if (method.getScheme().equals("did")) {
+                if (method.getSchemeSpecificPart().startsWith("key:")) {
+                    publicKeyMultibase = method.getSchemeSpecificPart().substring(4);
+                } else {
+                    return error("Unknown verification method: " + method, ctx);
+                }
+            } else if (method.getScheme().equals("http") || method.getScheme().equals("https")) {
+                return error("Cannot parse http verification key yet", ctx);
+            }
+        }
 
 		// Decode the Multibase to Multicodec and check that it is an Ed25519 public key
 		// https://w3c-ccg.github.io/di-eddsa-2020/#ed25519verificationkey2020
