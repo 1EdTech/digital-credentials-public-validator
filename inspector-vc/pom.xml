@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.1edtech</groupId>
 		<artifactId>inspector</artifactId>
-		<version>0.9.6</version>
+		<version>0.9.7</version>
 	</parent>
 	<artifactId>inspector-vc</artifactId>
 	<dependencies>
@@ -36,7 +36,7 @@
 			<!--  <version>1.1-20220818.090353-4</version>  -->
 			<version>1.1-SNAPSHOT</version>
 		</dependency>
-		
+
 		<!--  https://repo.danubetech.com/#browse/browse:maven-public:com%2Fdanubetech%2Fkey-formats-java%2F1.6-SNAPSHOT -->
 		<dependency>
 			<groupId>com.danubetech</groupId>
@@ -64,10 +64,10 @@
 			<version>4.5.13</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/io.setl/rdf-urdna -->
-		<!-- https://github.com/setl/rdf-urdna <dependency> <groupId>io.setl</groupId> 
-			<artifactId>rdf-urdna</artifactId> <version>1.1</version> <exclusions> <exclusion> 
-			<groupId>junit</groupId> <artifactId>junit</artifactId> </exclusion> <exclusion> 
-			<groupId>com.apicatalog</groupId> <artifactId>titanium-json-ld</artifactId> 
+		<!-- https://github.com/setl/rdf-urdna <dependency> <groupId>io.setl</groupId>
+			<artifactId>rdf-urdna</artifactId> <version>1.1</version> <exclusions> <exclusion>
+			<groupId>junit</groupId> <artifactId>junit</artifactId> </exclusion> <exclusion>
+			<groupId>com.apicatalog</groupId> <artifactId>titanium-json-ld</artifactId>
 			</exclusion> </exclusions> </dependency> -->
 		<dependency>
 			<groupId>org.glassfish</groupId>
