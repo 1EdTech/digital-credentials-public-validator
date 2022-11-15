@@ -8,7 +8,6 @@ import org.oneedtech.inspect.core.probe.Probe;
 import org.oneedtech.inspect.core.probe.RunContext;
 import org.oneedtech.inspect.core.report.ReportItems;
 import org.oneedtech.inspect.vc.Credential;
-import org.oneedtech.inspect.vc.util.CachingDocumentLoader;
 
 import com.apicatalog.jsonld.StringUtils;
 import com.apicatalog.jsonld.document.Document;
@@ -45,7 +44,12 @@ public class EmbeddedProofProbe extends Probe<Credential> {
 		// TODO: What there are multiple proofs?
 
 		VerifiableCredential vc = VerifiableCredential.fromJson(new StringReader(crd.getJson().toString()));
+		ConfigurableDocumentLoader documentLoader = new ConfigurableDocumentLoader();
+		documentLoader.setEnableHttp(true);
+		documentLoader.setEnableHttps(true);
 		vc.setDocumentLoader(new CachingDocumentLoader());
+		vc.setDocumentLoader(documentLoader);						
+		URI method = vc.getLdProof().getVerificationMethod();
 
 		LdProof proof = vc.getLdProof();
 		if (proof == null) {
