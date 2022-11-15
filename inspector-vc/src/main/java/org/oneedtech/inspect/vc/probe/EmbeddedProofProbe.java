@@ -25,7 +25,7 @@ import jakarta.json.JsonStructure;
 
 /**
  * A Probe that verifies a credential's embedded proof.
- * 
+ *
  * @author mgylling
  */
 public class EmbeddedProofProbe extends Probe<Credential> {
@@ -40,16 +40,14 @@ public class EmbeddedProofProbe extends Probe<Credential> {
 	 */
 	@Override
 	public ReportItems run(Credential crd, RunContext ctx) throws Exception {
-		
+
 		// TODO: What there are multiple proofs?
 
 		VerifiableCredential vc = VerifiableCredential.fromJson(new StringReader(crd.getJson().toString()));
 		ConfigurableDocumentLoader documentLoader = new ConfigurableDocumentLoader();
 		documentLoader.setEnableHttp(true);
 		documentLoader.setEnableHttps(true);
-		vc.setDocumentLoader(new CachingDocumentLoader());
-		vc.setDocumentLoader(documentLoader);						
-		URI method = vc.getLdProof().getVerificationMethod();
+		vc.setDocumentLoader(documentLoader);
 
 		LdProof proof = vc.getLdProof();
 		if (proof == null) {
@@ -93,11 +91,11 @@ public class EmbeddedProofProbe extends Probe<Credential> {
 				}
 			} else if (method.getScheme().equals("http") || method.getScheme().equals("https")) {
 				// TODO: Can we use proof.getDocumentLoader()?
-				ConfigurableDocumentLoader documentLoader = new ConfigurableDocumentLoader();
-				documentLoader.setEnableHttp(true);
-				documentLoader.setEnableHttps(true);
+				ConfigurableDocumentLoader keyDocumentLoader = new ConfigurableDocumentLoader();
+				keyDocumentLoader.setEnableHttp(true);
+				keyDocumentLoader.setEnableHttps(true);
 
-				Document keyDocument = documentLoader.loadDocument(method, new DocumentLoaderOptions());
+				Document keyDocument = keyDocumentLoader.loadDocument(method, new DocumentLoaderOptions());
 				Optional<JsonStructure> keyStructure = keyDocument.getJsonContent();
 				if (keyStructure.isEmpty()) {
 					return error("Key document not found at " + method, ctx);
