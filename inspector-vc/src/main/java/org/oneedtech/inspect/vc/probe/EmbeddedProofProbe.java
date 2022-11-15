@@ -7,7 +7,6 @@ import org.oneedtech.inspect.core.probe.Probe;
 import org.oneedtech.inspect.core.probe.RunContext;
 import org.oneedtech.inspect.core.report.ReportItems;
 import org.oneedtech.inspect.vc.Credential;
-import org.oneedtech.inspect.vc.util.CachingDocumentLoader;
 
 import com.apicatalog.ld.DocumentError;
 import com.apicatalog.multibase.Multibase;
@@ -16,6 +15,7 @@ import com.apicatalog.multicodec.Multicodec.Codec;
 import com.apicatalog.vc.processor.StatusVerifier;
 import com.danubetech.verifiablecredentials.VerifiableCredential;
 
+import foundation.identity.jsonld.ConfigurableDocumentLoader;
 import info.weboftrust.ldsignatures.verifier.Ed25519Signature2020LdVerifier;
 
 /**
@@ -39,8 +39,10 @@ public class EmbeddedProofProbe extends Probe<Credential> {
 		//TODO check value "proofPurpose": "assertionMethod", if not error
 		
 		VerifiableCredential vc = VerifiableCredential.fromJson(new StringReader(crd.getJson().toString()));
-		vc.setDocumentLoader(new CachingDocumentLoader()); 
-						
+		ConfigurableDocumentLoader documentLoader = new ConfigurableDocumentLoader();
+		documentLoader.setEnableHttp(true);
+		documentLoader.setEnableHttps(true);
+		vc.setDocumentLoader(documentLoader);						
 		URI method = vc.getLdProof().getVerificationMethod();
 
 		// The verification method must dereference to an Ed25519VerificationKey2020.
