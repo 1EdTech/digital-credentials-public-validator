@@ -1,7 +1,7 @@
 {
     "@context": [
         "https://www.w3.org/2018/credentials/v1",
-        "https://imsglobal.github.io/openbadges-specification/context.json",
+        "https://purl.imsglobal.org/spec/ob/v3p0/context.json",
         "https://w3id.org/security/suites/ed25519-2020/v1"
     ],
     "id": "http://1edtech.edu/credentials/3732",
@@ -93,7 +93,7 @@
                     {
                         "@context": [
                             "https://www.w3.org/2018/credentials/v1",
-                            "https://imsglobal.github.io/openbadges-specification/context.json",
+                            "https://purl.imsglobal.org/spec/ob/v3p0/context.json",
                             "https://w3id.org/security/suites/ed25519-2020/v1"
                         ],
                         "type": [
@@ -147,7 +147,7 @@
                     {
                         "@context": [
                             "https://www.w3.org/2018/credentials/v1",
-                            "https://imsglobal.github.io/openbadges-specification/context.json",
+                            "https://purl.imsglobal.org/spec/ob/v3p0/context.json",
                             "https://w3id.org/security/suites/ed25519-2020/v1"
                         ],
                         "type": [
@@ -253,7 +253,7 @@
                 {
                     "@context": [
                         "https://www.w3.org/2018/credentials/v1",
-                        "https://imsglobal.github.io/openbadges-specification/context.json",
+                        "https://purl.imsglobal.org/spec/ob/v3p0/context.json",
                         "https://w3id.org/security/suites/ed25519-2020/v1"
                     ],
                     "type": [
@@ -500,7 +500,7 @@
         {
             "@context": [
                 "https://www.w3.org/2018/credentials/v1",
-                "https://imsglobal.github.io/openbadges-specification/context.json",
+                "https://purl.imsglobal.org/spec/ob/v3p0/context.json",
                 "https://w3id.org/security/suites/ed25519-2020/v1"
             ],
             "type": [
@@ -588,7 +588,7 @@
             {
                 "@context": [
                     "https://www.w3.org/2018/credentials/v1",
-                    "https://imsglobal.github.io/openbadges-specification/context.json",
+                    "https://purl.imsglobal.org/spec/ob/v3p0/context.json",
                     "https://w3id.org/security/suites/ed25519-2020/v1"
                 ],
                 "type": [

@@ -43,7 +43,7 @@ public class CachingDocumentLoader implements DocumentLoader {
 			.put("https://purl.imsglobal.org/spec/clr/v2p0/context.json",Resources.getResource("contexts/clr-v2p0.json"))
 			.put("https://purl.imsglobal.org/spec/ob/v3p0/context.json",Resources.getResource("contexts/ob-v3p0.json"))		
 			.put("https://purl.imsglobal.org/spec/ob/v3p0/extensions.json",Resources.getResource("contexts/ob-v3p0-extensions.json"))
-			.put("https://imsglobal.github.io/openbadges-specification/context.json",Resources.getResource("contexts/obv3x.jsonld"))			
+			.put("https://purl.imsglobal.org/spec/ob/v3p0/context.json",Resources.getResource("contexts/obv3x.jsonld"))			
 			.put("https://www.w3.org/ns/did/v1", Resources.getResource("contexts/did-v1.jsonld"))
 			.put("https://www.w3.org/ns/odrl.jsonld", Resources.getResource("contexts/odrl.jsonld"))
 			.put("https://w3id.org/security/suites/ed25519-2020/v1",Resources.getResource("contexts/security-suites-ed25519-2020-v1.jsonld"))
