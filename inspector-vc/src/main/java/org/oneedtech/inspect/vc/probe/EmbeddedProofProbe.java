@@ -65,57 +65,60 @@ public class EmbeddedProofProbe extends Probe<Credential> {
 		// The verification method must dereference to an Ed25519VerificationKey2020.
 		// Danubetech's Ed25519Signature2020LdVerifier expects the decoded public key
 		// from the Ed25519VerificationKey2020 (32 bytes).
-
-		String publicKeyMultibase;
-		String controller = null;
-
+        //
 		// Formats accepted:
 		//
 		// [controller]#[publicKeyMultibase]
 		// did:key:[publicKeyMultibase]
 		// http/s://[location of a Ed25519VerificationKey2020 document]
 		// http/s://[location of a controller document with a 'verificationMethod' with a Ed25519VerificationKey2020]
-		// [publicKeyMultibase]
+
+		String publicKeyMultibase;
+		String controller = null;
 
 		publicKeyMultibase = method.toString();
 
-		if (method.getFragment() != null) {
+		if (method.getFragment() != null && IsValidPublicKeyMultibase(method.getFragment())) {
 			publicKeyMultibase = method.getFragment();
 			controller = method.toString().substring(0, method.toString().indexOf("#"));
 		} else {
-			if (method.getScheme().equals("did")) {
+			if (StringUtils.isBlank(method.getScheme())) {
+				return error("The verification method must be a valid URI (missing scheme)", ctx);
+			} else if (method.getScheme().equals("did")) {
 				if (method.getSchemeSpecificPart().startsWith("key:")) {
-					publicKeyMultibase = method.getSchemeSpecificPart().substring(4);
+					publicKeyMultibase = method.getSchemeSpecificPart().substring("key:".length());
 				} else {
 					return error("Unknown verification method: " + method, ctx);
 				}
 			} else if (method.getScheme().equals("http") || method.getScheme().equals("https")) {
-				// TODO: Can we use proof.getDocumentLoader()?
-				ConfigurableDocumentLoader keyDocumentLoader = new ConfigurableDocumentLoader();
-				keyDocumentLoader.setEnableHttp(true);
-				keyDocumentLoader.setEnableHttps(true);
-
-				Document keyDocument = keyDocumentLoader.loadDocument(method, new DocumentLoaderOptions());
-				Optional<JsonStructure> keyStructure = keyDocument.getJsonContent();
-				if (keyStructure.isEmpty()) {
-					return error("Key document not found at " + method, ctx);
-				}
-
-				// First look for a Ed25519VerificationKey2020 document
-				controller = keyStructure.get().asJsonObject().getString("controller");
-				if (StringUtils.isBlank(controller)) {
-					// Then look for a controller document (e.g. DID Document) with a 'verificationMethod'
-					// that is a Ed25519VerificationKey2020 document
-					JsonObject keyVerificationMethod = keyStructure.get().asJsonObject()
-							.getJsonObject("verificationMethod");
-					if (keyVerificationMethod.isEmpty()) {
-						return error("Cannot parse key document from " + method, ctx);
+				try {
+					Document keyDocument = vc.getDocumentLoader().loadDocument(method, new DocumentLoaderOptions());
+					Optional<JsonStructure> keyStructure = keyDocument.getJsonContent();
+					if (keyStructure.isEmpty()) {
+						return error("Key document not found at " + method, ctx);
 					}
-					controller = keyVerificationMethod.getString("controller");
-					publicKeyMultibase = keyVerificationMethod.getString("publicKeyMultibase");
-				} else {
-					publicKeyMultibase = keyStructure.get().asJsonObject().getString("publicKeyMultibase");
+	
+					// First look for a Ed25519VerificationKey2020 document
+					controller = keyStructure.get().asJsonObject().getString("controller");
+					if (StringUtils.isBlank(controller)) {
+						// Then look for a controller document (e.g. DID Document) with a 'verificationMethod'
+						// that is a Ed25519VerificationKey2020 document
+						JsonObject keyVerificationMethod = keyStructure.get().asJsonObject()
+								.getJsonObject("verificationMethod");
+						if (keyVerificationMethod.isEmpty()) {
+							return error("Cannot parse key document from " + method, ctx);
+						}
+						controller = keyVerificationMethod.getString("controller");
+						publicKeyMultibase = keyVerificationMethod.getString("publicKeyMultibase");
+					} else {
+						publicKeyMultibase = keyStructure.get().asJsonObject().getString("publicKeyMultibase");
+					}
+	
+				} catch (Exception e) {
+					return error("Invalid verification key URL: " + e.getMessage(), ctx);
 				}
+			} else {
+				return error("Unknown verification method scheme: " + method.getScheme(), ctx);
 			}
 		}
 
@@ -152,6 +155,17 @@ public class EmbeddedProofProbe extends Probe<Credential> {
 		}
 
 		return success(ctx);
+	}
+
+	private Boolean IsValidPublicKeyMultibase(String publicKeyMultibase) {
+		try {
+			byte[] publicKeyMulticodec = Multibase.decode(publicKeyMultibase);
+			byte[] publicKey = Multicodec.decode(Codec.Ed25519PublicKey, publicKeyMulticodec);
+			return publicKey.length == 32;
+		} catch (Exception e) {
+			return false;
+		}
+
 	}
 
 	public static final String ID = EmbeddedProofProbe.class.getSimpleName();

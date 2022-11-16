@@ -21,7 +21,7 @@ import com.google.common.collect.Iterables;
 
 public class OB30Tests {
 	private static OB30Inspector validator; 
-	private static boolean verbose = false;
+	private static boolean verbose = true;
 	
 	@BeforeAll 
 	static void setup() {		
@@ -35,6 +35,16 @@ public class OB30Tests {
 	void testSimpleJsonValid() {
 		assertDoesNotThrow(()->{
 			Report report = validator.run(Samples.OB30.JSON.SIMPLE_JSON.asFileResource());
+			if(verbose) PrintHelper.print(report, true);
+			assertValid(report);			
+		});	
+	}
+	
+	@Test
+	@Disabled("Do not have a valid sample")
+	void testSimpleDidMethodJsonValid() {
+		assertDoesNotThrow(()->{
+			Report report = validator.run(Samples.OB30.JSON.SIMPLE_DID_METHOD_JSON.asFileResource());
 			if(verbose) PrintHelper.print(report, true);
 			assertValid(report);			
 		});	
@@ -90,9 +100,46 @@ public class OB30Tests {
 	
 	@Test
 	void testSimpleJsonInvalidProofMethod() {
-		//add some garbage chars to proofValue
+		// add some garbage chars to the verification method fragment
+		// it will be treated a URL to a verification key, but the URL will not be found
 		assertDoesNotThrow(()->{
 			Report report = validator.run(Samples.OB30.JSON.SIMPLE_JSON_PROOF_METHOD_ERROR.asFileResource());
+			if(verbose) PrintHelper.print(report, true);
+			assertInvalid(report);
+			assertErrorCount(report, 1);
+			assertHasProbeID(report, EmbeddedProofProbe.ID, true);
+		});	
+	}
+	
+	@Test
+	void testSimpleJsonInvalidProofMethodNoScheme() {
+		// The verificationMethod is not a URI (no scheme)
+		assertDoesNotThrow(()->{
+			Report report = validator.run(Samples.OB30.JSON.SIMPLE_JSON_PROOF_METHOD_NO_SCHEME_ERROR.asFileResource());
+			if(verbose) PrintHelper.print(report, true);
+			assertInvalid(report);
+			assertErrorCount(report, 1);
+			assertHasProbeID(report, EmbeddedProofProbe.ID, true);
+		});	
+	}
+	
+	@Test
+	void testSimpleJsonInvalidProofMethodUnknownScheme() {
+		// The verificationMethod is not a URI (no scheme)
+		assertDoesNotThrow(()->{
+			Report report = validator.run(Samples.OB30.JSON.SIMPLE_JSON_PROOF_METHOD_UNKNOWN_SCHEME_ERROR.asFileResource());
+			if(verbose) PrintHelper.print(report, true);
+			assertInvalid(report);
+			assertErrorCount(report, 1);
+			assertHasProbeID(report, EmbeddedProofProbe.ID, true);
+		});	
+	}
+	
+	@Test
+	void testSimpleJsonInvalidProofMethodUnknownDidMethod() {
+		// The verificationMethod is an unknown DID Method
+		assertDoesNotThrow(()->{
+			Report report = validator.run(Samples.OB30.JSON.SIMPLE_JSON_PROOF_METHOD_UNKNOWN_DID_METHOD_ERROR.asFileResource());
 			if(verbose) PrintHelper.print(report, true);
 			assertInvalid(report);
 			assertErrorCount(report, 1);
