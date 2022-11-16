@@ -41,7 +41,6 @@ public class OB30Tests {
 	}
 	
 	@Test
-	@Disabled("Do not have a valid sample")
 	void testSimpleDidMethodJsonValid() {
 		assertDoesNotThrow(()->{
 			Report report = validator.run(Samples.OB30.JSON.SIMPLE_DID_METHOD_JSON.asFileResource());
