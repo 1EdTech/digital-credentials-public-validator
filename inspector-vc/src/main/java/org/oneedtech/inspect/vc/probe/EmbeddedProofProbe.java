@@ -128,7 +128,7 @@ public class EmbeddedProofProbe extends Probe<Credential> {
 				return error("Verification method does not contain an Ed25519 public key", ctx);
 			}
 		} catch (Exception e) {
-			return fatal("Invalid public key: " + e.getMessage(), ctx);
+			return error("Invalid public key: " + e.getMessage(), ctx);
 		}
 
 		if (controller != null) {
