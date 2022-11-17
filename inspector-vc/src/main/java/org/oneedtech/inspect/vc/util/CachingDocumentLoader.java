@@ -23,7 +23,7 @@ import com.google.common.io.Resources;
 
 /**
  * A com.apicatalog DocumentLoader with a threadsafe static cache.
- * 
+ *
  * @author mgylling
  */
 public class CachingDocumentLoader implements DocumentLoader {
@@ -41,13 +41,12 @@ public class CachingDocumentLoader implements DocumentLoader {
 
 	static final ImmutableMap<String, URL> bundled = ImmutableMap.<String, URL>builder()
 			.put("https://purl.imsglobal.org/spec/clr/v2p0/context.json",Resources.getResource("contexts/clr-v2p0.json"))
-			.put("https://purl.imsglobal.org/spec/ob/v3p0/context.json",Resources.getResource("contexts/ob-v3p0.json"))		
+			.put("https://purl.imsglobal.org/spec/ob/v3p0/context.json",Resources.getResource("contexts/ob-v3p0.json"))
 			.put("https://purl.imsglobal.org/spec/ob/v3p0/extensions.json",Resources.getResource("contexts/ob-v3p0-extensions.json"))
-			.put("https://purl.imsglobal.org/spec/ob/v3p0/context.json",Resources.getResource("contexts/obv3x.jsonld"))			
 			.put("https://www.w3.org/ns/did/v1", Resources.getResource("contexts/did-v1.jsonld"))
 			.put("https://www.w3.org/ns/odrl.jsonld", Resources.getResource("contexts/odrl.jsonld"))
 			.put("https://w3id.org/security/suites/ed25519-2020/v1",Resources.getResource("contexts/security-suites-ed25519-2020-v1.jsonld"))
-			.put("https://www.w3.org/2018/credentials/v1", Resources.getResource("contexts/2018-credentials-v1.jsonld"))			
+			.put("https://www.w3.org/2018/credentials/v1", Resources.getResource("contexts/2018-credentials-v1.jsonld"))
 			.put("https://w3id.org/security/v1", Resources.getResource("contexts/security-v1.jsonld"))
 			.put("https://w3id.org/security/v2", Resources.getResource("contexts/security-v2.jsonld"))
 			.put("https://w3id.org/security/v3", Resources.getResource("contexts/security-v3-unstable.jsonld"))
@@ -56,14 +55,14 @@ public class CachingDocumentLoader implements DocumentLoader {
 			.put("https://w3id.org/security/suites/ed25519-2018/v1", Resources.getResource("contexts/suites-ed25519-2018.jsonld"))
 			.put("https://w3id.org/security/suites/x25519-2019/v1", Resources.getResource("contexts/suites-x25519-2019.jsonld"))
 			.put("https://w3id.org/security/suites/jws-2020/v1", Resources.getResource("contexts/suites-jws-2020.jsonld"))
-			
+
 			.build();
 
 	static final LoadingCache<Tuple<String, DocumentLoaderOptions>, Document> documentCache = CacheBuilder.newBuilder()
 			.initialCapacity(32).maximumSize(64).expireAfterAccess(Duration.ofHours(24))
 			.build(new CacheLoader<Tuple<String, DocumentLoaderOptions>, Document>() {
 				public Document load(final Tuple<String, DocumentLoaderOptions> id) throws Exception {
-					try (InputStream is = bundled.keySet().contains(id.t1) 
+					try (InputStream is = bundled.keySet().contains(id.t1)
 							? bundled.get(id.t1).openStream()
 							: new URI(id.t1).toURL().openStream();) {
 						return JsonDocument.of(is);
