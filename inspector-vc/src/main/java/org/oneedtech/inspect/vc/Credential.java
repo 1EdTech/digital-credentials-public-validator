@@ -1,19 +1,17 @@
 package org.oneedtech.inspect.vc;
 
-import static org.oneedtech.inspect.util.code.Defensives.*;
-import static org.oneedtech.inspect.util.resource.ResourceType.*;
-import static org.oneedtech.inspect.vc.Credential.Type.*;
+import static org.oneedtech.inspect.vc.Credential.Type.AchievementCredential;
+import static org.oneedtech.inspect.vc.Credential.Type.ClrCredential;
+import static org.oneedtech.inspect.vc.Credential.Type.EndorsementCredential;
+import static org.oneedtech.inspect.vc.Credential.Type.VerifiablePresentation;
 
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
-import org.oneedtech.inspect.core.probe.GeneratedObject;
 import org.oneedtech.inspect.schema.Catalog;
 import org.oneedtech.inspect.schema.SchemaKey;
 import org.oneedtech.inspect.util.resource.Resource;
-import org.oneedtech.inspect.util.resource.ResourceType;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -21,76 +19,45 @@ import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableMap;
 
 /**
- * A wrapper object for a verifiable credential. This contains e.g. the origin resource 
- * and the extracted JSON data plus any other stuff Probes need.  
+ * A wrapper object for a verifiable credential. This contains e.g. the origin resource
+ * and the extracted JSON data plus any other stuff Probes need.
  * @author mgylling
  */
-public class Credential extends GeneratedObject  {
-	final Resource resource;
-	final JsonNode jsonData;
+public class Credential extends AbstractBaseCredential  {
 	final Credential.Type credentialType;
-	final String jwt;
-	
-	public Credential(Resource resource, JsonNode data, String jwt) {
-		super(ID, GeneratedObject.Type.INTERNAL);
-		this.resource = checkNotNull(resource);
-		this.jsonData = checkNotNull(data);
-		this.jwt = jwt; //may be null
-				
-		checkTrue(RECOGNIZED_PAYLOAD_TYPES.contains(resource.getType()));
-				
+
+    protected Credential(Resource resource, JsonNode data, String jwt, Map<String, SchemaKey> schemas) {
+        super(ID, resource, data, jwt, schemas);
+
 		ArrayNode typeNode = (ArrayNode)jsonData.get("type");
 		this.credentialType = Credential.Type.valueOf(typeNode);
-	}
-	
-	public Credential(Resource resource, JsonNode data) {
-		this(resource, data, null);
-	}
-	
-	public Resource getResource() {
-		return resource;
-	}
-	
-	public JsonNode getJson() {
-		return jsonData;
+    }
+
+	public String getCredentialType() {
+		return credentialType.toString();
 	}
 
-	public Credential.Type getCredentialType() {
-		return credentialType;
-	}
-
-	public Optional<String> getJwt() {
-		return Optional.ofNullable(jwt);
-	}
-	
 	public ProofType getProofType() {
 		return jwt == null ? ProofType.EMBEDDED : ProofType.EXTERNAL;
 	}
-	
-	
+
 	private static final Map<Credential.Type, SchemaKey> schemas = new ImmutableMap.Builder<Credential.Type, SchemaKey>()
 			.put(AchievementCredential, Catalog.OB_30_ACHIEVEMENTCREDENTIAL_JSON)
 			.put(ClrCredential, Catalog.CLR_20_CLRCREDENTIAL_JSON)
 			.put(VerifiablePresentation, Catalog.CLR_20_CLRCREDENTIAL_JSON)
-			.put(EndorsementCredential, Catalog.OB_30_ENDORSEMENTCREDENTIAL_JSON)			
+			.put(EndorsementCredential, Catalog.OB_30_ENDORSEMENTCREDENTIAL_JSON)
 			.build();
-	
-	/**
-	 * Get the canonical schema for this credential if such exists.
-	 */
-	public Optional<SchemaKey> getSchemaKey() {
-		return Optional.ofNullable(schemas.get(credentialType));		
-	}
-	
+
+
 	public enum Type {
 		AchievementCredential,
 		OpenBadgeCredential, 	//treated as an alias of AchievementCredential
-		ClrCredential, 
+		ClrCredential,
 		EndorsementCredential,
 		VerifiablePresentation,
 		VerifiableCredential,  //this is an underspecifier in our context
-		Unknown;	
-		
+		Unknown;
+
 		public static Credential.Type valueOf (ArrayNode typeArray) {
 			if(typeArray != null) {
 				Iterator<JsonNode> iter = typeArray.iterator();
@@ -110,24 +77,32 @@ public class Credential extends GeneratedObject  {
 			return Unknown;
 		}
 	}
-	
+
 	public enum ProofType {
 		EXTERNAL,
 		EMBEDDED
 	}
-	
+
 	@Override
 	public String toString() {
-		return MoreObjects.toStringHelper(this)				
-				.add("resource", resource.getID())
-				.add("resourceType", resource.getType())
+		return MoreObjects.toStringHelper(this)
+				.add("super", super.toString())
 				.add("credentialType", credentialType)
-				.add("json", jsonData)
 				.toString();
 	}
-	
+
+    public static class Builder extends AbstractBaseCredential.Builder<Credential> {
+        @Override
+        public Credential build() {
+            // transform key of schemas map to string because the type of the key in the base map is generic
+            // and our specific key is an Enum
+            return new Credential(getResource(), getJsonData(), getJwt(),
+                schemas.entrySet().stream().collect(Collectors.toMap(
+                                    entry -> entry.getKey().toString(),
+                                    entry -> entry.getValue())));
+        }
+    }
+
 	public static final String ID = Credential.class.getCanonicalName();
-	public static final List<ResourceType> RECOGNIZED_PAYLOAD_TYPES = List.of(SVG, PNG, JSON, JWT);
-	public static final String CREDENTIAL_KEY = "CREDENTIAL_KEY";
-		
+
 }
