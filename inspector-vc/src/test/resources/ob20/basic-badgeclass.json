@@ -1,0 +1,10 @@
+{
+    "@context": "https://w3id.org/openbadges/v2",
+    "type": "BadgeClass",
+    "id": "https://example.org/robotics-badge.json",
+    "name": "Awesome Robotics Badge",
+    "description": "For doing awesome things with robots that people think is pretty great.",
+    "image": "https://example.org/robotics-badge.png",
+    "criteria": "https://example.org/robotics-badge.html",
+    "issuer": "https://example.org/organization.json"
+}
