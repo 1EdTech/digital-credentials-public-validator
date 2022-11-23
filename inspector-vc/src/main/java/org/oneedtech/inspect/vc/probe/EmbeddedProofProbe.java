@@ -8,6 +8,7 @@ import org.oneedtech.inspect.core.probe.Probe;
 import org.oneedtech.inspect.core.probe.RunContext;
 import org.oneedtech.inspect.core.report.ReportItems;
 import org.oneedtech.inspect.vc.VerifiableCredential;
+import org.oneedtech.inspect.vc.util.CachingDocumentLoader;
 
 import com.apicatalog.jsonld.StringUtils;
 import com.apicatalog.jsonld.document.Document;
@@ -16,7 +17,6 @@ import com.apicatalog.multibase.Multibase;
 import com.apicatalog.multicodec.Multicodec;
 import com.apicatalog.multicodec.Multicodec.Codec;
 
-import foundation.identity.jsonld.ConfigurableDocumentLoader;
 import info.weboftrust.ldsignatures.LdProof;
 import info.weboftrust.ldsignatures.verifier.Ed25519Signature2020LdVerifier;
 import jakarta.json.JsonObject;
@@ -43,10 +43,7 @@ public class EmbeddedProofProbe extends Probe<VerifiableCredential> {
 		// TODO: What there are multiple proofs?
 
 		com.danubetech.verifiablecredentials.VerifiableCredential vc = com.danubetech.verifiablecredentials.VerifiableCredential.fromJson(new StringReader(crd.getJson().toString()));
-		ConfigurableDocumentLoader documentLoader = new ConfigurableDocumentLoader();
-		documentLoader.setEnableHttp(true);
-		documentLoader.setEnableHttps(true);
-		vc.setDocumentLoader(documentLoader);
+		vc.setDocumentLoader(new CachingDocumentLoader());
 
 		LdProof proof = vc.getLdProof();
 		if (proof == null) {
