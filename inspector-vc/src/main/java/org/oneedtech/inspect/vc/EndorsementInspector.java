@@ -5,7 +5,7 @@ import static org.oneedtech.inspect.core.probe.RunContext.Key.*;
 import static org.oneedtech.inspect.core.report.ReportUtil.onProbeException;
 import static org.oneedtech.inspect.util.code.Defensives.checkNotNull;
 import static org.oneedtech.inspect.util.json.ObjectMapperCache.Config.DEFAULT;
-import static org.oneedtech.inspect.vc.AbstractBaseCredential.CREDENTIAL_KEY;
+import static org.oneedtech.inspect.vc.Credential.CREDENTIAL_KEY;
 import static org.oneedtech.inspect.vc.VerifiableCredential.ProofType.EXTERNAL;
 
 import java.net.URI;

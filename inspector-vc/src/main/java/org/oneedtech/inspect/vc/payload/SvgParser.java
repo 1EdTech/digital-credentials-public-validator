@@ -14,7 +14,7 @@ import org.oneedtech.inspect.core.probe.RunContext;
 import org.oneedtech.inspect.util.resource.Resource;
 import org.oneedtech.inspect.util.resource.ResourceType;
 import org.oneedtech.inspect.util.xml.XMLInputFactoryCache;
-import org.oneedtech.inspect.vc.AbstractBaseCredential;
+import org.oneedtech.inspect.vc.Credential;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -30,7 +30,7 @@ public final class SvgParser extends PayloadParser {
 	}
 
 	@Override
-	public AbstractBaseCredential parse(Resource resource, RunContext ctx)  throws Exception {
+	public Credential parse(Resource resource, RunContext ctx)  throws Exception {
 		final QNames qNames = (QNames) ctx.get(RunContext.Key.SVG_CREDENTIAL_QNAME);
 
 		checkTrue(resource.getType() == ResourceType.SVG);

@@ -22,13 +22,13 @@ import com.google.common.base.MoreObjects;
  * This contains e.g. the origin resource and the extracted JSON data.
  * @author xaracil
  */
-public abstract class AbstractBaseCredential extends GeneratedObject {
+public abstract class Credential extends GeneratedObject {
 	final Resource resource;
 	final JsonNode jsonData;
 	final String jwt;
     final Map<String, SchemaKey> schemas;
 
-    protected AbstractBaseCredential(String id, Resource resource, JsonNode data, String jwt, Map<String, SchemaKey> schemas) {
+    protected Credential(String id, Resource resource, JsonNode data, String jwt, Map<String, SchemaKey> schemas) {
 		super(id, GeneratedObject.Type.INTERNAL);
 		this.resource = checkNotNull(resource);
 		this.jsonData = checkNotNull(data);
@@ -72,7 +72,7 @@ public abstract class AbstractBaseCredential extends GeneratedObject {
 	public static final List<ResourceType> RECOGNIZED_PAYLOAD_TYPES = List.of(SVG, PNG, JSON, JWT);
 	public static final String CREDENTIAL_KEY = "CREDENTIAL_KEY";
 
-	public abstract static class Builder<B extends AbstractBaseCredential> {
+	public abstract static class Builder<B extends Credential> {
         private Resource resource;
         private JsonNode jsonData;
         private String jwt;

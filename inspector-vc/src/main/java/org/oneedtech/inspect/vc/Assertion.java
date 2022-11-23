@@ -18,7 +18,7 @@ import com.google.common.collect.ImmutableMap;
  * and the extracted JSON data plus any other stuff Probes need.
  * @author xaracil
  */
-public class Assertion extends AbstractBaseCredential {
+public class Assertion extends Credential {
 
 	final Assertion.Type assertionType;
 
@@ -46,7 +46,7 @@ public class Assertion extends AbstractBaseCredential {
 			.put(Type.Assertion, Catalog.OB_21_ASSERTION_JSON)
 			.build();
 
-    public static class Builder extends AbstractBaseCredential.Builder<Assertion> {
+    public static class Builder extends Credential.Builder<Assertion> {
 
         @Override
         public Assertion build() {

@@ -11,7 +11,7 @@ import javax.imageio.metadata.IIOMetadata;
 import org.oneedtech.inspect.core.probe.RunContext;
 import org.oneedtech.inspect.util.resource.Resource;
 import org.oneedtech.inspect.util.resource.ResourceType;
-import org.oneedtech.inspect.vc.AbstractBaseCredential;
+import org.oneedtech.inspect.vc.Credential;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
@@ -29,7 +29,7 @@ public final class PngParser extends PayloadParser {
 	}
 
 	@Override
-	public AbstractBaseCredential parse(Resource resource, RunContext ctx) throws Exception {
+	public Credential parse(Resource resource, RunContext ctx) throws Exception {
 
 		checkTrue(resource.getType() == ResourceType.PNG);
 

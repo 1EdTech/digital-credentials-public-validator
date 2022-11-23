@@ -8,7 +8,7 @@ import org.oneedtech.inspect.core.report.ReportItems;
 import org.oneedtech.inspect.util.resource.Resource;
 import org.oneedtech.inspect.util.resource.ResourceType;
 import org.oneedtech.inspect.util.resource.detect.TypeDetector;
-import org.oneedtech.inspect.vc.AbstractBaseCredential;
+import org.oneedtech.inspect.vc.Credential;
 import org.oneedtech.inspect.vc.VerifiableCredential;
 import org.oneedtech.inspect.vc.payload.PayloadParserFactory;
 
@@ -43,7 +43,7 @@ public class CredentialParseProbe extends Probe<Resource> {
 				return fatal("Payload type not supported: " + type.get().getName(), context);
 			}
 
-			AbstractBaseCredential crd = PayloadParserFactory.of(resource).parse(resource, context);
+			Credential crd = PayloadParserFactory.of(resource).parse(resource, context);
 			context.addGeneratedObject(crd);
 			return success(this, context);
 

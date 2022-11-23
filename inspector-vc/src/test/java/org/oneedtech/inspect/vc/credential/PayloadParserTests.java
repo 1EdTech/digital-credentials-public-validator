@@ -11,7 +11,7 @@ import org.oneedtech.inspect.core.probe.json.JsonPathEvaluator;
 import org.oneedtech.inspect.util.json.ObjectMapperCache;
 import org.oneedtech.inspect.util.resource.Resource;
 import org.oneedtech.inspect.util.resource.ResourceType;
-import org.oneedtech.inspect.vc.AbstractBaseCredential;
+import org.oneedtech.inspect.vc.Credential;
 import org.oneedtech.inspect.vc.OB30Inspector;
 import org.oneedtech.inspect.vc.Samples;
 import org.oneedtech.inspect.vc.payload.PayloadParser;
@@ -27,7 +27,7 @@ public class PayloadParserTests {
 			Resource res = Samples.OB30.SVG.SIMPLE_JSON_SVG.asFileResource(ResourceType.SVG);
 			PayloadParser ext = PayloadParserFactory.of(res);
 			assertNotNull(ext);
-			AbstractBaseCredential crd = ext.parse(res, mockOB30Context(res));
+			Credential crd = ext.parse(res, mockOB30Context(res));
 			//System.out.println(crd.getJson().toPrettyString());
 			assertNotNull(crd);
 			assertNotNull(crd.getJson());
@@ -41,7 +41,7 @@ public class PayloadParserTests {
 			Resource res = Samples.OB30.SVG.SIMPLE_JWT_SVG.asFileResource(ResourceType.SVG);
 			PayloadParser ext = PayloadParserFactory.of(res);
 			assertNotNull(ext);
-			AbstractBaseCredential crd = ext.parse(res, mockOB30Context(res));
+			Credential crd = ext.parse(res, mockOB30Context(res));
 			//System.out.println(crd.getJson().toPrettyString());
 			assertNotNull(crd);
 			assertNotNull(crd.getJson());
@@ -55,7 +55,7 @@ public class PayloadParserTests {
 			Resource res = Samples.OB30.PNG.SIMPLE_JSON_PNG.asFileResource(ResourceType.PNG);
 			PayloadParser ext = PayloadParserFactory.of(res);
 			assertNotNull(ext);
-			AbstractBaseCredential crd = ext.parse(res, mockOB30Context(res));
+			Credential crd = ext.parse(res, mockOB30Context(res));
 			//System.out.println(crd.getJson().toPrettyString());
 			assertNotNull(crd);
 			assertNotNull(crd.getJson());
@@ -69,7 +69,7 @@ public class PayloadParserTests {
 			Resource res = Samples.OB30.PNG.SIMPLE_JWT_PNG.asFileResource(ResourceType.PNG);
 			PayloadParser ext = PayloadParserFactory.of(res);
 			assertNotNull(ext);
-			AbstractBaseCredential crd = ext.parse(res, mockOB30Context(res));
+			Credential crd = ext.parse(res, mockOB30Context(res));
 			//System.out.println(crd.getJson().toPrettyString());
 			assertNotNull(crd);
 			assertNotNull(crd.getJson());
@@ -83,7 +83,7 @@ public class PayloadParserTests {
 			Resource res = Samples.OB30.JWT.SIMPLE_JWT.asFileResource(ResourceType.JWT);
 			PayloadParser ext = PayloadParserFactory.of(res);
 			assertNotNull(ext);
-			AbstractBaseCredential crd = ext.parse(res, mockOB30Context(res));
+			Credential crd = ext.parse(res, mockOB30Context(res));
 			//System.out.println(crd.getJson().toPrettyString());
 			assertNotNull(crd);
 			assertNotNull(crd.getJson());
@@ -97,7 +97,7 @@ public class PayloadParserTests {
 			Resource res = Samples.OB30.JSON.SIMPLE_JSON.asFileResource(ResourceType.JSON);
 			PayloadParser ext = PayloadParserFactory.of(res);
 			assertNotNull(ext);
-			AbstractBaseCredential crd = ext.parse(res, mockOB30Context(res));
+			Credential crd = ext.parse(res, mockOB30Context(res));
 			//System.out.println(crd.getJson().toPrettyString());
 			assertNotNull(crd);
 			assertNotNull(crd.getJson());

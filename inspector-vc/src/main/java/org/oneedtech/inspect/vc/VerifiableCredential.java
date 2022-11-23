@@ -23,7 +23,7 @@ import com.google.common.collect.ImmutableMap;
  * and the extracted JSON data plus any other stuff Probes need.
  * @author mgylling
  */
-public class VerifiableCredential extends AbstractBaseCredential  {
+public class VerifiableCredential extends Credential  {
 	final VerifiableCredential.Type credentialType;
 
     protected VerifiableCredential(Resource resource, JsonNode data, String jwt, Map<String, SchemaKey> schemas) {
@@ -91,7 +91,7 @@ public class VerifiableCredential extends AbstractBaseCredential  {
 				.toString();
 	}
 
-    public static class Builder extends AbstractBaseCredential.Builder<VerifiableCredential> {
+    public static class Builder extends Credential.Builder<VerifiableCredential> {
         @Override
         public VerifiableCredential build() {
             // transform key of schemas map to string because the type of the key in the base map is generic

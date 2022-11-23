@@ -7,7 +7,7 @@ import org.oneedtech.inspect.core.probe.RunContext;
 import org.oneedtech.inspect.core.probe.RunContext.Key;
 import org.oneedtech.inspect.util.resource.Resource;
 import org.oneedtech.inspect.util.resource.ResourceType;
-import org.oneedtech.inspect.vc.AbstractBaseCredential;
+import org.oneedtech.inspect.vc.Credential;
 import com.fasterxml.jackson.databind.JsonNode;
 
 /**
@@ -22,7 +22,7 @@ public final class JsonParser extends PayloadParser {
 	}
 
 	@Override
-	public AbstractBaseCredential parse(Resource resource, RunContext ctx)  throws Exception {
+	public Credential parse(Resource resource, RunContext ctx)  throws Exception {
 		checkTrue(resource.getType() == ResourceType.JSON);
 		String json = resource.asByteSource().asCharSource(UTF_8).read();
 		JsonNode node = fromString(json, ctx);

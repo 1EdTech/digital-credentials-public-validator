@@ -6,7 +6,7 @@ import static org.oneedtech.inspect.util.code.Defensives.checkTrue;
 import org.oneedtech.inspect.core.probe.RunContext;
 import org.oneedtech.inspect.util.resource.Resource;
 import org.oneedtech.inspect.util.resource.ResourceType;
-import org.oneedtech.inspect.vc.AbstractBaseCredential;
+import org.oneedtech.inspect.vc.Credential;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -22,7 +22,7 @@ public final class JwtParser extends PayloadParser {
 	}
 
 	@Override
-	public AbstractBaseCredential parse(Resource resource, RunContext ctx)  throws Exception {
+	public Credential parse(Resource resource, RunContext ctx)  throws Exception {
 		checkTrue(resource.getType() == ResourceType.JWT);
 		String jwt = resource.asByteSource().asCharSource(UTF_8).read();
 		JsonNode node = fromJwt(jwt, ctx);

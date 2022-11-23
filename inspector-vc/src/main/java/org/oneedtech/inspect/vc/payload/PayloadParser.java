@@ -7,7 +7,7 @@ import java.util.Base64.Decoder;
 import org.oneedtech.inspect.core.probe.RunContext;
 import org.oneedtech.inspect.util.resource.Resource;
 import org.oneedtech.inspect.util.resource.ResourceType;
-import org.oneedtech.inspect.vc.AbstractBaseCredential;
+import org.oneedtech.inspect.vc.Credential;
 import org.oneedtech.inspect.vc.VerifiableCredential;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -22,11 +22,11 @@ public abstract class PayloadParser {
 
 	public abstract boolean supports(ResourceType type);
 
-	public abstract AbstractBaseCredential parse(Resource source, RunContext ctx) throws Exception;
+	public abstract Credential parse(Resource source, RunContext ctx) throws Exception;
 
 	@SuppressWarnings("rawtypes")
-	public static AbstractBaseCredential.Builder getBuilder(RunContext context) {
-		return ((AbstractBaseCredential.Builder) context.get(RunContext.Key.GENERATED_OBJECT_BUILDER));
+	public static Credential.Builder getBuilder(RunContext context) {
+		return ((Credential.Builder) context.get(RunContext.Key.GENERATED_OBJECT_BUILDER));
 	}
 
 	protected static JsonNode fromString(String json, RunContext context) throws Exception {

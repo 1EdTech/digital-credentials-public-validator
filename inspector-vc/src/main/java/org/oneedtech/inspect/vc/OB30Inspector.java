@@ -5,7 +5,7 @@ import static org.oneedtech.inspect.core.Inspector.Behavior.RESET_CACHES_ON_RUN;
 import static org.oneedtech.inspect.core.report.ReportUtil.onProbeException;
 import static org.oneedtech.inspect.util.code.Defensives.*;
 import static org.oneedtech.inspect.util.json.ObjectMapperCache.Config.DEFAULT;
-import static org.oneedtech.inspect.vc.AbstractBaseCredential.CREDENTIAL_KEY;
+import static org.oneedtech.inspect.vc.Credential.CREDENTIAL_KEY;
 import static org.oneedtech.inspect.vc.VerifiableCredential.ProofType.EXTERNAL;
 import static org.oneedtech.inspect.vc.payload.PayloadParser.fromJwt;
 import static org.oneedtech.inspect.vc.util.JsonNodeUtil.asNodeList;
