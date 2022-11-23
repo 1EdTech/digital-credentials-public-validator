@@ -14,8 +14,11 @@ import org.oneedtech.inspect.util.resource.ResourceType;
 import org.oneedtech.inspect.vc.Credential;
 import org.oneedtech.inspect.vc.OB30Inspector;
 import org.oneedtech.inspect.vc.Samples;
+import org.oneedtech.inspect.vc.VerifiableCredential;
 import org.oneedtech.inspect.vc.payload.PayloadParser;
 import org.oneedtech.inspect.vc.payload.PayloadParserFactory;
+import org.oneedtech.inspect.vc.payload.PngParser;
+import org.oneedtech.inspect.vc.payload.SvgParser;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -113,6 +116,9 @@ public class PayloadParserTests {
 				.put(res)
 				.put(Key.JACKSON_OBJECTMAPPER, mapper)
 				.put(Key.JSONPATH_EVALUATOR, jsonPath)
+				.put(Key.GENERATED_OBJECT_BUILDER, new VerifiableCredential.Builder())
+				.put(Key.PNG_CREDENTIAL_KEY, PngParser.Keys.OB30)
+				.put(Key.SVG_CREDENTIAL_QNAME, SvgParser.QNames.OB30)
 				.build();
 	}
 }
