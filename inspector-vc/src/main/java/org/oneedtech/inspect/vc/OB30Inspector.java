@@ -6,7 +6,7 @@ import static org.oneedtech.inspect.core.report.ReportUtil.onProbeException;
 import static org.oneedtech.inspect.util.code.Defensives.*;
 import static org.oneedtech.inspect.util.json.ObjectMapperCache.Config.DEFAULT;
 import static org.oneedtech.inspect.vc.AbstractBaseCredential.CREDENTIAL_KEY;
-import static org.oneedtech.inspect.vc.Credential.ProofType.EXTERNAL;
+import static org.oneedtech.inspect.vc.VerifiableCredential.ProofType.EXTERNAL;
 import static org.oneedtech.inspect.vc.payload.PayloadParser.fromJwt;
 import static org.oneedtech.inspect.vc.util.JsonNodeUtil.asNodeList;
 
@@ -34,7 +34,7 @@ import org.oneedtech.inspect.util.resource.ResourceType;
 import org.oneedtech.inspect.util.resource.UriResource;
 import org.oneedtech.inspect.util.resource.context.ResourceContext;
 import org.oneedtech.inspect.util.spec.Specification;
-import org.oneedtech.inspect.vc.Credential.Type;
+import org.oneedtech.inspect.vc.VerifiableCredential.Type;
 import org.oneedtech.inspect.vc.payload.PngParser;
 import org.oneedtech.inspect.vc.payload.SvgParser;
 import org.oneedtech.inspect.vc.probe.ContextPropertyProbe;
@@ -58,7 +58,7 @@ import com.google.common.collect.ImmutableList;
  * @author mgylling
  */
 public class OB30Inspector extends VCInspector implements SubInspector {
-	protected final List<Probe<Credential>> userProbes;
+	protected final List<Probe<VerifiableCredential>> userProbes;
 
 	protected OB30Inspector(OB30Inspector.Builder builder) {
 		super(builder);
@@ -93,7 +93,7 @@ public class OB30Inspector extends VCInspector implements SubInspector {
 				.put(resource)
 				.put(Key.JACKSON_OBJECTMAPPER, mapper)
 				.put(Key.JSONPATH_EVALUATOR, jsonPath)
-				.put(Key.GENERATED_OBJECT_BUILDER, new Credential.Builder())
+				.put(Key.GENERATED_OBJECT_BUILDER, new VerifiableCredential.Builder())
 				.put(Key.PNG_CREDENTIAL_KEY, PngParser.Keys.OB30)
 				.put(Key.SVG_CREDENTIAL_QNAME, SvgParser.QNames.OB30)
 				.build();
@@ -108,15 +108,15 @@ public class OB30Inspector extends VCInspector implements SubInspector {
 				if(broken(accumulator, true)) return abort(ctx, accumulator, probeCount);
 
 				//we expect the above to place a generated object in the context
-				Credential ob = ctx.getGeneratedObject(Credential.ID);
+				VerifiableCredential ob = ctx.getGeneratedObject(VerifiableCredential.ID);
 
 				//call the subinspector method of this
-				Report subReport = this.run(resource, Map.of(Credential.CREDENTIAL_KEY, ob));
+				Report subReport = this.run(resource, Map.of(VerifiableCredential.CREDENTIAL_KEY, ob));
 				probeCount += subReport.getSummary().getTotalRun();
 				accumulator.add(subReport);
 
 				//finally, run any user-added probes
-				for(Probe<Credential> probe : userProbes) {
+				for(Probe<VerifiableCredential> probe : userProbes) {
 					probeCount++;
 					accumulator.add(probe.run(ob, ctx));
 				}
@@ -131,11 +131,11 @@ public class OB30Inspector extends VCInspector implements SubInspector {
 	@Override
 	public Report run(Resource resource, Map<String, GeneratedObject> parentObjects) {
 
-		Credential ob = checkNotNull((Credential)parentObjects.get(CREDENTIAL_KEY));
+		VerifiableCredential ob = checkNotNull((VerifiableCredential)parentObjects.get(CREDENTIAL_KEY));
 
 		ObjectMapper mapper = ObjectMapperCache.get(DEFAULT);
 		JsonPathEvaluator jsonPath = new JsonPathEvaluator(mapper);
-		Credential.Builder credentialBuilder = new Credential.Builder();
+		VerifiableCredential.Builder credentialBuilder = new VerifiableCredential.Builder();
 		RunContext ctx = new RunContext.Builder()
 				.put(this)
 				.put(resource)
@@ -152,7 +152,7 @@ public class OB30Inspector extends VCInspector implements SubInspector {
 		try {
 
 			//context and type properties
-			Credential.Type type = Type.OpenBadgeCredential;
+			VerifiableCredential.Type type = Type.OpenBadgeCredential;
 			for(Probe<JsonNode> probe : List.of(new ContextPropertyProbe(type), new TypePropertyProbe(type))) {
 				probeCount++;
 				accumulator.add(probe.run(ob.getJson(), ctx));
@@ -194,7 +194,7 @@ public class OB30Inspector extends VCInspector implements SubInspector {
 			}
 
 			//revocation, expiration and issuance
-			for(Probe<Credential> probe : List.of(new RevocationListProbe(),
+			for(Probe<VerifiableCredential> probe : List.of(new RevocationListProbe(),
 					new ExpirationProbe(), new IssuanceProbe())) {
 				probeCount++;
 				accumulator.add(probe.run(ob, ctx));
@@ -207,7 +207,7 @@ public class OB30Inspector extends VCInspector implements SubInspector {
 			List<JsonNode> endorsements = asNodeList(ob.getJson(), "$..endorsement", jsonPath);
 			for(JsonNode node : endorsements) {
 				probeCount++;
-				Credential endorsement = credentialBuilder.resource(resource).jsonData(node).build();
+				VerifiableCredential endorsement = credentialBuilder.resource(resource).jsonData(node).build();
 				accumulator.add(endorsementInspector.run(resource, Map.of(CREDENTIAL_KEY, endorsement)));
 			}
 
@@ -217,7 +217,7 @@ public class OB30Inspector extends VCInspector implements SubInspector {
 				probeCount++;
 				String jwt = node.asText();
 				JsonNode vcNode = fromJwt(jwt, ctx);
-				Credential endorsement = credentialBuilder.resource(resource).jsonData(node).jwt(jwt).build();
+				VerifiableCredential endorsement = credentialBuilder.resource(resource).jsonData(node).jwt(jwt).build();
 				accumulator.add(endorsementInspector.run(resource, Map.of(CREDENTIAL_KEY, endorsement)));
 			}
 

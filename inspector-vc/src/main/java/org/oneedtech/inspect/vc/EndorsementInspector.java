@@ -5,8 +5,8 @@ import static org.oneedtech.inspect.core.probe.RunContext.Key.*;
 import static org.oneedtech.inspect.core.report.ReportUtil.onProbeException;
 import static org.oneedtech.inspect.util.code.Defensives.checkNotNull;
 import static org.oneedtech.inspect.util.json.ObjectMapperCache.Config.DEFAULT;
-import static org.oneedtech.inspect.vc.Credential.CREDENTIAL_KEY;
-import static org.oneedtech.inspect.vc.Credential.ProofType.EXTERNAL;
+import static org.oneedtech.inspect.vc.AbstractBaseCredential.CREDENTIAL_KEY;
+import static org.oneedtech.inspect.vc.VerifiableCredential.ProofType.EXTERNAL;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -25,7 +25,7 @@ import org.oneedtech.inspect.util.json.ObjectMapperCache;
 import org.oneedtech.inspect.util.resource.Resource;
 import org.oneedtech.inspect.util.resource.UriResource;
 import org.oneedtech.inspect.util.resource.context.ResourceContext;
-import org.oneedtech.inspect.vc.Credential.Type;
+import org.oneedtech.inspect.vc.VerifiableCredential.Type;
 import org.oneedtech.inspect.vc.probe.ContextPropertyProbe;
 import org.oneedtech.inspect.vc.probe.EmbeddedProofProbe;
 import org.oneedtech.inspect.vc.probe.ExpirationProbe;
@@ -39,32 +39,32 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * An inspector for EndorsementCredential objects. 
+ * An inspector for EndorsementCredential objects.
  * @author mgylling
  */
 public class EndorsementInspector extends VCInspector implements SubInspector {
 
 	protected <B extends VCInspector.Builder<?>> EndorsementInspector(B builder) {
 		super(builder);
-	}	
+	}
 
 	@Override
 	public Report run(Resource resource, Map<String, GeneratedObject> parentObjects) {
-		
+
 		/*
 		 * The resource param is the top-level credential that embeds the endorsement, we
 		 * expect parentObjects to provide a pointer to the JsonNode we should check.
-		 * 
+		 *
 		 * The parent inspector is responsible to decode away possible jwt-ness, so that
-		 * what we get here is a verbatim json node. 
-		 * 
+		 * what we get here is a verbatim json node.
+		 *
 		 */
-		
-		Credential endorsement = (Credential) checkNotNull(parentObjects.get(CREDENTIAL_KEY));
-				
+
+		VerifiableCredential endorsement = (VerifiableCredential) checkNotNull(parentObjects.get(CREDENTIAL_KEY));
+
 		ObjectMapper mapper = ObjectMapperCache.get(DEFAULT);
 		JsonPathEvaluator jsonPath = new JsonPathEvaluator(mapper);
-		
+
 		RunContext ctx = new RunContext.Builder()
 				.put(this)
 				.put(JACKSON_OBJECTMAPPER, mapper)
@@ -74,18 +74,18 @@ public class EndorsementInspector extends VCInspector implements SubInspector {
 		List<ReportItems> accumulator = new ArrayList<>();
 		int probeCount = 0;
         try {
-								
+
 			//context and type properties
-			Credential.Type type = Type.EndorsementCredential;
-			for(Probe<JsonNode> probe : List.of(new ContextPropertyProbe(type), new TypePropertyProbe(type))) {					
+			VerifiableCredential.Type type = Type.EndorsementCredential;
+			for(Probe<JsonNode> probe : List.of(new ContextPropertyProbe(type), new TypePropertyProbe(type))) {
 				probeCount++;
 				accumulator.add(probe.run(endorsement.getJson(), ctx));
 				if(broken(accumulator)) return abort(ctx, accumulator, probeCount);
 			}
-			
+
 			//inline schema (parent inspector has already validated against canonical)
 			accumulator.add(new InlineJsonSchemaProbe().run(endorsement.getJson(), ctx));
-									
+
 			//signatures, proofs
 			probeCount++;
 			if(endorsement.getProofType() == EXTERNAL){
@@ -93,16 +93,16 @@ public class EndorsementInspector extends VCInspector implements SubInspector {
 				accumulator.add(new ExternalProofProbe().run(endorsement, ctx));
 			} else {
 				//The credential not contained in a jwt, must have an internal proof.
-				accumulator.add(new EmbeddedProofProbe().run(endorsement, ctx));		
-				
+				accumulator.add(new EmbeddedProofProbe().run(endorsement, ctx));
+
 			}
 			if(broken(accumulator)) return abort(ctx, accumulator, probeCount);
 
 			//check refresh service if we are not already refreshed (check just like in external CLR)
 			probeCount++;
 			if(resource.getContext().get(REFRESHED) != TRUE) {
-				Optional<String> newID = checkRefreshService(endorsement, ctx); 											
-				if(newID.isPresent()) {		
+				Optional<String> newID = checkRefreshService(endorsement, ctx);
+				if(newID.isPresent()) {
 					//TODO resource.type
 					return this.run(
 						new UriResource(new URI(newID.get()))
@@ -111,8 +111,8 @@ public class EndorsementInspector extends VCInspector implements SubInspector {
 			}
 
 			//revocation, expiration and issuance
-			for(Probe<Credential> probe : List.of(new RevocationListProbe(), 
-				new ExpirationProbe(), new IssuanceProbe())) {					
+			for(Probe<VerifiableCredential> probe : List.of(new RevocationListProbe(),
+				new ExpirationProbe(), new IssuanceProbe())) {
 				probeCount++;
 				accumulator.add(probe.run(endorsement, ctx));
 				if(broken(accumulator)) return abort(ctx, accumulator, probeCount);
@@ -129,7 +129,7 @@ public class EndorsementInspector extends VCInspector implements SubInspector {
 	public <R extends Resource> Report run(R resource) {
 		throw new IllegalStateException("must use #run(resource, map)");
 	}
-	
+
 	public static class Builder extends VCInspector.Builder<EndorsementInspector.Builder> {
 		@SuppressWarnings("unchecked")
 		@Override
@@ -137,5 +137,5 @@ public class EndorsementInspector extends VCInspector implements SubInspector {
 			return new EndorsementInspector(this);
 		}
 	}
-	   
+
 }

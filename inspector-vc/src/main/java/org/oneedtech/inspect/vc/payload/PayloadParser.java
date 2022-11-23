@@ -8,7 +8,7 @@ import org.oneedtech.inspect.core.probe.RunContext;
 import org.oneedtech.inspect.util.resource.Resource;
 import org.oneedtech.inspect.util.resource.ResourceType;
 import org.oneedtech.inspect.vc.AbstractBaseCredential;
-import org.oneedtech.inspect.vc.Credential;
+import org.oneedtech.inspect.vc.VerifiableCredential;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;

@@ -9,7 +9,7 @@ import org.oneedtech.inspect.util.resource.Resource;
 import org.oneedtech.inspect.util.resource.ResourceType;
 import org.oneedtech.inspect.util.resource.detect.TypeDetector;
 import org.oneedtech.inspect.vc.AbstractBaseCredential;
-import org.oneedtech.inspect.vc.Credential;
+import org.oneedtech.inspect.vc.VerifiableCredential;
 import org.oneedtech.inspect.vc.payload.PayloadParserFactory;
 
 /**
@@ -39,7 +39,7 @@ public class CredentialParseProbe extends Probe<Resource> {
 				}
 			}
 
-			if(!Credential.RECOGNIZED_PAYLOAD_TYPES.contains(type.get())) {
+			if(!VerifiableCredential.RECOGNIZED_PAYLOAD_TYPES.contains(type.get())) {
 				return fatal("Payload type not supported: " + type.get().getName(), context);
 			}
 

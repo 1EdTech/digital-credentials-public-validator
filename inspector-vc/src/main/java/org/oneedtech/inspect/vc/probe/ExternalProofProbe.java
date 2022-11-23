@@ -21,7 +21,7 @@ import org.apache.http.util.EntityUtils;
 import org.oneedtech.inspect.core.probe.Probe;
 import org.oneedtech.inspect.core.probe.RunContext;
 import org.oneedtech.inspect.core.report.ReportItems;
-import org.oneedtech.inspect.vc.Credential;
+import org.oneedtech.inspect.vc.VerifiableCredential;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
@@ -36,32 +36,32 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Splitter;
 
 /**
- * A Probe that verifies credential external proof (jwt) 
+ * A Probe that verifies credential external proof (jwt)
  * @author mlyon
  */
-public class ExternalProofProbe extends Probe<Credential> {
-	
+public class ExternalProofProbe extends Probe<VerifiableCredential> {
+
 	public ExternalProofProbe() {
 		super(ID);
 	}
-	
+
 	@Override
-	public ReportItems run(Credential crd, RunContext ctx) throws Exception {
+	public ReportItems run(VerifiableCredential crd, RunContext ctx) throws Exception {
 		try {
 			verifySignature(crd, ctx);
 		} catch (Exception e) {
 			return fatal("Error verifying jwt signature: " + e.getMessage(), ctx);
-		}						
+		}
 		return success(ctx);
 	}
 
-	private void verifySignature(Credential crd, RunContext ctx) throws Exception {
+	private void verifySignature(VerifiableCredential crd, RunContext ctx) throws Exception {
 		checkTrue(crd.getJwt().isPresent(), "no jwt supplied");
 		checkTrue(crd.getJwt().get().length() > 0, "no jwt supplied");
-        
+
 		DecodedJWT decodedJwt = null;
 		String jwt = crd.getJwt().get();
-		
+
 		List<String> parts = Splitter.on('.').splitToList(jwt);
 		if(parts.size() != 3) throw new IllegalArgumentException("invalid jwt");
 
@@ -85,7 +85,7 @@ public class ExternalProofProbe extends Probe<Credential> {
 
 		if(jwk == null && kid == null) { throw new Exception("Key must present in either jwk or kid value."); }
 		if(kid != null){
-			//Load jwk JsonNode from url and do the rest the same below.  
+			//Load jwk JsonNode from url and do the rest the same below.
 			//TODO Consider additional testing.
 			String kidUrl = kid.textValue();
 			String jwkResponse = fetchJwk(kidUrl);
@@ -145,7 +145,7 @@ public class ExternalProofProbe extends Probe<Credential> {
 
         return responseString;
     }
-	
+
 	public static final String ID = ExternalProofProbe.class.getSimpleName();
 
 }

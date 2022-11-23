@@ -7,7 +7,7 @@ import java.util.Optional;
 import org.oneedtech.inspect.core.probe.Probe;
 import org.oneedtech.inspect.core.probe.RunContext;
 import org.oneedtech.inspect.core.report.ReportItems;
-import org.oneedtech.inspect.vc.Credential;
+import org.oneedtech.inspect.vc.VerifiableCredential;
 
 import com.apicatalog.jsonld.StringUtils;
 import com.apicatalog.jsonld.document.Document;
@@ -15,7 +15,6 @@ import com.apicatalog.jsonld.loader.DocumentLoaderOptions;
 import com.apicatalog.multibase.Multibase;
 import com.apicatalog.multicodec.Multicodec;
 import com.apicatalog.multicodec.Multicodec.Codec;
-import com.danubetech.verifiablecredentials.VerifiableCredential;
 
 import foundation.identity.jsonld.ConfigurableDocumentLoader;
 import info.weboftrust.ldsignatures.LdProof;
@@ -28,7 +27,7 @@ import jakarta.json.JsonStructure;
  *
  * @author mgylling
  */
-public class EmbeddedProofProbe extends Probe<Credential> {
+public class EmbeddedProofProbe extends Probe<VerifiableCredential> {
 
 	public EmbeddedProofProbe() {
 		super(ID);
@@ -39,11 +38,11 @@ public class EmbeddedProofProbe extends Probe<Credential> {
 	 * (https://github.com/danubetech/verifiable-credentials-java)
 	 */
 	@Override
-	public ReportItems run(Credential crd, RunContext ctx) throws Exception {
+	public ReportItems run(VerifiableCredential crd, RunContext ctx) throws Exception {
 
 		// TODO: What there are multiple proofs?
 
-		VerifiableCredential vc = VerifiableCredential.fromJson(new StringReader(crd.getJson().toString()));
+		com.danubetech.verifiablecredentials.VerifiableCredential vc = com.danubetech.verifiablecredentials.VerifiableCredential.fromJson(new StringReader(crd.getJson().toString()));
 		ConfigurableDocumentLoader documentLoader = new ConfigurableDocumentLoader();
 		documentLoader.setEnableHttp(true);
 		documentLoader.setEnableHttps(true);
@@ -97,7 +96,7 @@ public class EmbeddedProofProbe extends Probe<Credential> {
 					if (keyStructure.isEmpty()) {
 						return error("Key document not found at " + method, ctx);
 					}
-	
+
 					// First look for a Ed25519VerificationKey2020 document
 					controller = keyStructure.get().asJsonObject().getString("controller");
 					if (StringUtils.isBlank(controller)) {
@@ -113,7 +112,7 @@ public class EmbeddedProofProbe extends Probe<Credential> {
 					} else {
 						publicKeyMultibase = keyStructure.get().asJsonObject().getString("publicKeyMultibase");
 					}
-	
+
 				} catch (Exception e) {
 					return error("Invalid verification key URL: " + e.getMessage(), ctx);
 				}

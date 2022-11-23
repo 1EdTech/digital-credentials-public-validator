@@ -1,9 +1,9 @@
 package org.oneedtech.inspect.vc;
 
-import static org.oneedtech.inspect.vc.Credential.Type.AchievementCredential;
-import static org.oneedtech.inspect.vc.Credential.Type.ClrCredential;
-import static org.oneedtech.inspect.vc.Credential.Type.EndorsementCredential;
-import static org.oneedtech.inspect.vc.Credential.Type.VerifiablePresentation;
+import static org.oneedtech.inspect.vc.VerifiableCredential.Type.AchievementCredential;
+import static org.oneedtech.inspect.vc.VerifiableCredential.Type.ClrCredential;
+import static org.oneedtech.inspect.vc.VerifiableCredential.Type.EndorsementCredential;
+import static org.oneedtech.inspect.vc.VerifiableCredential.Type.VerifiablePresentation;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -23,14 +23,14 @@ import com.google.common.collect.ImmutableMap;
  * and the extracted JSON data plus any other stuff Probes need.
  * @author mgylling
  */
-public class Credential extends AbstractBaseCredential  {
-	final Credential.Type credentialType;
+public class VerifiableCredential extends AbstractBaseCredential  {
+	final VerifiableCredential.Type credentialType;
 
-    protected Credential(Resource resource, JsonNode data, String jwt, Map<String, SchemaKey> schemas) {
+    protected VerifiableCredential(Resource resource, JsonNode data, String jwt, Map<String, SchemaKey> schemas) {
         super(ID, resource, data, jwt, schemas);
 
 		ArrayNode typeNode = (ArrayNode)jsonData.get("type");
-		this.credentialType = Credential.Type.valueOf(typeNode);
+		this.credentialType = VerifiableCredential.Type.valueOf(typeNode);
     }
 
 	public String getCredentialType() {
@@ -41,7 +41,7 @@ public class Credential extends AbstractBaseCredential  {
 		return jwt == null ? ProofType.EMBEDDED : ProofType.EXTERNAL;
 	}
 
-	private static final Map<Credential.Type, SchemaKey> schemas = new ImmutableMap.Builder<Credential.Type, SchemaKey>()
+	private static final Map<VerifiableCredential.Type, SchemaKey> schemas = new ImmutableMap.Builder<VerifiableCredential.Type, SchemaKey>()
 			.put(AchievementCredential, Catalog.OB_30_ACHIEVEMENTCREDENTIAL_JSON)
 			.put(ClrCredential, Catalog.CLR_20_CLRCREDENTIAL_JSON)
 			.put(VerifiablePresentation, Catalog.CLR_20_CLRCREDENTIAL_JSON)
@@ -58,7 +58,7 @@ public class Credential extends AbstractBaseCredential  {
 		VerifiableCredential,  //this is an underspecifier in our context
 		Unknown;
 
-		public static Credential.Type valueOf (ArrayNode typeArray) {
+		public static VerifiableCredential.Type valueOf (ArrayNode typeArray) {
 			if(typeArray != null) {
 				Iterator<JsonNode> iter = typeArray.iterator();
 				while(iter.hasNext()) {
@@ -91,18 +91,18 @@ public class Credential extends AbstractBaseCredential  {
 				.toString();
 	}
 
-    public static class Builder extends AbstractBaseCredential.Builder<Credential> {
+    public static class Builder extends AbstractBaseCredential.Builder<VerifiableCredential> {
         @Override
-        public Credential build() {
+        public VerifiableCredential build() {
             // transform key of schemas map to string because the type of the key in the base map is generic
             // and our specific key is an Enum
-            return new Credential(getResource(), getJsonData(), getJwt(),
+            return new VerifiableCredential(getResource(), getJsonData(), getJwt(),
                 schemas.entrySet().stream().collect(Collectors.toMap(
                                     entry -> entry.getKey().toString(),
                                     entry -> entry.getValue())));
         }
     }
 
-	public static final String ID = Credential.class.getCanonicalName();
+	public static final String ID = VerifiableCredential.class.getCanonicalName();
 
 }

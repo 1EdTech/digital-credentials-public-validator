@@ -1,6 +1,6 @@
 package org.oneedtech.inspect.vc.probe;
 
-import static org.oneedtech.inspect.vc.Credential.Type.*;
+import static org.oneedtech.inspect.vc.VerifiableCredential.Type.*;
 
 import static org.oneedtech.inspect.util.code.Defensives.checkNotNull;
 
@@ -11,7 +11,7 @@ import java.util.Set;
 import org.oneedtech.inspect.core.probe.Probe;
 import org.oneedtech.inspect.core.probe.RunContext;
 import org.oneedtech.inspect.core.report.ReportItems;
-import org.oneedtech.inspect.vc.Credential;
+import org.oneedtech.inspect.vc.VerifiableCredential;
 
 import org.oneedtech.inspect.vc.util.JsonNodeUtil;
 
@@ -21,13 +21,13 @@ import com.google.common.collect.ImmutableMap;
 
 /**
  * A Probe that verifies a credential's context property.
- * 
+ *
  * @author mgylling
  */
 public class ContextPropertyProbe extends Probe<JsonNode> {
-	private final Credential.Type type;
+	private final VerifiableCredential.Type type;
 
-	public ContextPropertyProbe(Credential.Type type) {
+	public ContextPropertyProbe(VerifiableCredential.Type type) {
 		super(ID);
 		this.type = checkNotNull(type);
 	}
@@ -45,7 +45,7 @@ public class ContextPropertyProbe extends Probe<JsonNode> {
 				.filter(s->s.contains(type))
 				.findFirst()
 				.orElseThrow(()-> new IllegalArgumentException(type.name() + " not recognized")));
-		
+
 		List<String> given = JsonNodeUtil.asStringList(contextNode);
 		int pos = 0;
 		for (String uri : expected) {
@@ -58,7 +58,7 @@ public class ContextPropertyProbe extends Probe<JsonNode> {
 		return success(ctx);
 	}
 
-	private final static Map<Set<Credential.Type>, List<String>> values = new ImmutableMap.Builder<Set<Credential.Type>, List<String>>()			
+	private final static Map<Set<VerifiableCredential.Type>, List<String>> values = new ImmutableMap.Builder<Set<VerifiableCredential.Type>, List<String>>()
 			.put(Set.of(OpenBadgeCredential, AchievementCredential, EndorsementCredential),
 					List.of("https://www.w3.org/2018/credentials/v1",
 							//"https://purl.imsglobal.org/spec/ob/v3p0/context.json")) //dev legacy
@@ -69,7 +69,7 @@ public class ContextPropertyProbe extends Probe<JsonNode> {
 //							"https://purl.imsglobal.org/spec/ob/v3p0/context.json")) //dev legacy
 							"https://purl.imsglobal.org/spec/clr/v2p0/context.json",
 							"https://purl.imsglobal.org/spec/ob/v3p0/context.json"))
-			
+
 			.build();
 
 	public static final String ID = ContextPropertyProbe.class.getSimpleName();

@@ -7,8 +7,8 @@ import java.util.List;
 import org.oneedtech.inspect.core.probe.Probe;
 import org.oneedtech.inspect.core.probe.RunContext;
 import org.oneedtech.inspect.core.report.ReportItems;
-import org.oneedtech.inspect.vc.Credential;
-import org.oneedtech.inspect.vc.Credential.Type;
+import org.oneedtech.inspect.vc.VerifiableCredential;
+import org.oneedtech.inspect.vc.VerifiableCredential.Type;
 import org.oneedtech.inspect.vc.util.JsonNodeUtil;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -16,13 +16,13 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 
 /**
  * A Probe that verifies a credential's type property.
- * 
+ *
  * @author mgylling
  */
 public class TypePropertyProbe extends Probe<JsonNode> {
-	private final Credential.Type expected;
+	private final VerifiableCredential.Type expected;
 
-	public TypePropertyProbe(Credential.Type expected) {
+	public TypePropertyProbe(VerifiableCredential.Type expected) {
 		super(ID);
 		this.expected = checkNotNull(expected);
 	}
@@ -40,15 +40,15 @@ public class TypePropertyProbe extends Probe<JsonNode> {
 			return fatal("The type property does not contain the entry 'VerifiableCredential'", ctx);
 		}
 
-		if (expected == Credential.Type.OpenBadgeCredential) {
+		if (expected == VerifiableCredential.Type.OpenBadgeCredential) {
 			if (!values.contains("OpenBadgeCredential") && !values.contains("AchievementCredential")) {
 				return fatal("The type property does not contain one of 'OpenBadgeCredential' or 'AchievementCredential'", ctx);
 			}
-		} else if (expected == Credential.Type.ClrCredential) {
+		} else if (expected == VerifiableCredential.Type.ClrCredential) {
 			if (!values.contains("ClrCredential")) {
 				return fatal("The type property does not contain the entry 'ClrCredential'", ctx);
 			}
-		} else if (expected == Credential.Type.EndorsementCredential) {
+		} else if (expected == VerifiableCredential.Type.EndorsementCredential) {
 			if (!values.contains("EndorsementCredential")) {
 				return fatal("The type property does not contain the entry 'EndorsementCredential'", ctx);
 			}
