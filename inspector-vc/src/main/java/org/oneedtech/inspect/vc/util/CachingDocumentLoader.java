@@ -21,21 +21,43 @@ import com.google.common.cache.LoadingCache;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.io.Resources;
 
+import foundation.identity.jsonld.ConfigurableDocumentLoader;
+
 /**
  * A com.apicatalog DocumentLoader with a threadsafe static cache.
  *
  * @author mgylling
  */
-public class CachingDocumentLoader implements DocumentLoader {
+public class CachingDocumentLoader extends ConfigurableDocumentLoader {
+
+
+	public CachingDocumentLoader() {
+		super();
+		setEnableHttp(true);
+		setEnableHttps(true);
+		setDefaultHttpLoader(new HttpLoader());
+	}
 
 	@Override
 	public Document loadDocument(URI url, DocumentLoaderOptions options) throws JsonLdError {
-		Tuple<String, DocumentLoaderOptions> tpl = new Tuple<>(url.toASCIIString(), options);
-		try {
-			return documentCache.get(tpl);
-		} catch (Exception e) {
+		Document document = super.loadDocument(url, options);
+		if (document == null) {
 			logger.error("documentCache not able to load {}", url);
-			throw new JsonLdError(JsonLdErrorCode.INVALID_REMOTE_CONTEXT, e.getMessage());
+			throw new JsonLdError(JsonLdErrorCode.INVALID_REMOTE_CONTEXT);
+		}
+		return document;
+	}
+
+	public class HttpLoader implements DocumentLoader {
+		@Override
+		public Document loadDocument(URI url, DocumentLoaderOptions options) throws JsonLdError {
+			Tuple<String, DocumentLoaderOptions> tpl = new Tuple<>(url.toASCIIString(), options);
+			try {
+				return documentCache.get(tpl);
+			} catch (Exception e) {
+				logger.error("documentCache not able to load {}", url);
+				throw new JsonLdError(JsonLdErrorCode.INVALID_REMOTE_CONTEXT, e.getMessage());
+			}
 		}
 	}
 
@@ -62,7 +84,7 @@ public class CachingDocumentLoader implements DocumentLoader {
 			.initialCapacity(32).maximumSize(64).expireAfterAccess(Duration.ofHours(24))
 			.build(new CacheLoader<Tuple<String, DocumentLoaderOptions>, Document>() {
 				public Document load(final Tuple<String, DocumentLoaderOptions> id) throws Exception {
-					try (InputStream is = bundled.keySet().contains(id.t1)
+					try (InputStream is = bundled.containsKey(id.t1)
 							? bundled.get(id.t1).openStream()
 							: new URI(id.t1).toURL().openStream();) {
 						return JsonDocument.of(is);
