@@ -7,9 +7,9 @@ import static org.oneedtech.inspect.util.json.ObjectMapperCache.Config.DEFAULT;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.oneedtech.inspect.core.Inspector;
+import org.oneedtech.inspect.core.probe.Outcome;
 import org.oneedtech.inspect.core.probe.Probe;
 import org.oneedtech.inspect.core.probe.RunContext;
 import org.oneedtech.inspect.core.probe.RunContext.Key;
@@ -23,6 +23,8 @@ import org.oneedtech.inspect.util.resource.ResourceType;
 import org.oneedtech.inspect.util.spec.Specification;
 import org.oneedtech.inspect.vc.payload.PngParser;
 import org.oneedtech.inspect.vc.payload.SvgParser;
+import org.oneedtech.inspect.vc.probe.CredentialParseProbe;
+import org.oneedtech.inspect.vc.probe.JsonLDCompactionProve;
 import org.oneedtech.inspect.vc.util.CachingDocumentLoader;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -36,6 +38,25 @@ public class OB20Inspector extends Inspector {
 	protected OB20Inspector(OB20Inspector.Builder builder) {
 		super(builder);
 	}
+
+	protected Report abort(RunContext ctx, List<ReportItems> accumulator, int probeCount) {
+		return new Report(ctx, new ReportItems(accumulator), probeCount);
+	}
+
+	protected boolean broken(List<ReportItems> accumulator) {
+		return broken(accumulator, false);
+	}
+
+	protected boolean broken(List<ReportItems> accumulator, boolean force) {
+		if(!force && getBehavior(Inspector.Behavior.VALIDATOR_FAIL_FAST) == Boolean.FALSE) {
+			return false;
+		}
+		for(ReportItems items : accumulator) {
+			if(items.contains(Outcome.FATAL, Outcome.EXCEPTION)) return true;
+		}
+		return false;
+	}
+
 
 	@Override
 	public Report run(Resource resource) {
@@ -65,13 +86,15 @@ public class OB20Inspector extends Inspector {
 		try {
 				//detect type (png, svg, json, jwt) and extract json data
 				probeCount++;
-				// accumulator.add(new CredentialParseProbe().run(resource, ctx));
-				// if(broken(accumulator, true)) return abort(ctx, accumulator, probeCount);
+				accumulator.add(new CredentialParseProbe().run(resource, ctx));
+				if(broken(accumulator, true)) return abort(ctx, accumulator, probeCount);
 
 				// //we expect the above to place a generated object in the context
-				// VerifiableCredential ob = ctx.getGeneratedObject(VerifiableCredential.ID);
+				Assertion assertion = ctx.getGeneratedObject(Assertion.ID);
 
-
+				// let's compact and validate
+				accumulator.add(getCompactionProbe(assertion).run(assertion, ctx));
+				if(broken(accumulator, true)) return abort(ctx, accumulator, probeCount);
 
 
 		} catch (Exception e) {
@@ -81,7 +104,18 @@ public class OB20Inspector extends Inspector {
 		return new Report(ctx, new ReportItems(accumulator), probeCount);
     }
 
+	protected JsonLDCompactionProve getCompactionProbe(Assertion assertion) {
+		return new JsonLDCompactionProve(assertion.getContext().get(0));
+	}
+
 	public static class Builder extends Inspector.Builder<OB20Inspector.Builder> {
+
+		public Builder() {
+			super();
+			// don't allow local redirections by default
+			super.behaviors.put(Behavior.ALLOW_LOCAL_REDIRECTION, false);
+		}
+
 		@SuppressWarnings("unchecked")
 		@Override
 		public OB20Inspector build() {
@@ -90,4 +124,12 @@ public class OB20Inspector extends Inspector {
 			return new OB20Inspector(this);
 		}
 	}
+
+	public static class Behavior extends Inspector.Behavior {
+		/**
+		 * Whether to support local redirection of uris
+		 */
+		public static final String ALLOW_LOCAL_REDIRECTION = "ALLOW_LOCAL_REDIRECTION";
+	}
+
 }
