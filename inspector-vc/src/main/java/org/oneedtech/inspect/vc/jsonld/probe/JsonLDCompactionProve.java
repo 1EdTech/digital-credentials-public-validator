@@ -1,4 +1,4 @@
-package org.oneedtech.inspect.vc.probe;
+package org.oneedtech.inspect.vc.jsonld.probe;
 
 import java.io.StringReader;
 import java.net.URI;
@@ -8,7 +8,7 @@ import org.oneedtech.inspect.core.probe.Probe;
 import org.oneedtech.inspect.core.probe.RunContext;
 import org.oneedtech.inspect.core.report.ReportItems;
 import org.oneedtech.inspect.vc.Credential;
-import org.oneedtech.inspect.vc.JsonLdGeneratedObject;
+import org.oneedtech.inspect.vc.jsonld.JsonLdGeneratedObject;
 import org.oneedtech.inspect.vc.util.CachingDocumentLoader;
 
 import com.apicatalog.jsonld.JsonLd;

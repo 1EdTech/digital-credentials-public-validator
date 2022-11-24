@@ -1,4 +1,4 @@
-package org.oneedtech.inspect.vc;
+package org.oneedtech.inspect.vc.jsonld;
 
 import org.oneedtech.inspect.core.probe.GeneratedObject;
 

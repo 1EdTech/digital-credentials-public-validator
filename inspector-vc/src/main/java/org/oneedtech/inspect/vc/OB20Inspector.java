@@ -21,11 +21,12 @@ import org.oneedtech.inspect.util.json.ObjectMapperCache;
 import org.oneedtech.inspect.util.resource.Resource;
 import org.oneedtech.inspect.util.resource.ResourceType;
 import org.oneedtech.inspect.util.spec.Specification;
+import org.oneedtech.inspect.vc.jsonld.JsonLdGeneratedObject;
+import org.oneedtech.inspect.vc.jsonld.probe.JsonLDCompactionProve;
+import org.oneedtech.inspect.vc.jsonld.probe.JsonLDValidationProbe;
 import org.oneedtech.inspect.vc.payload.PngParser;
 import org.oneedtech.inspect.vc.payload.SvgParser;
 import org.oneedtech.inspect.vc.probe.CredentialParseProbe;
-import org.oneedtech.inspect.vc.probe.JsonLDCompactionProve;
-import org.oneedtech.inspect.vc.probe.JsonLDValidationProbe;
 import org.oneedtech.inspect.vc.util.CachingDocumentLoader;
 
 import com.fasterxml.jackson.databind.ObjectMapper;

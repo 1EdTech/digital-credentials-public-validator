@@ -9,7 +9,7 @@ import org.oneedtech.inspect.util.resource.ResourceType;
 import org.oneedtech.inspect.util.spec.Specification;
 import org.oneedtech.inspect.vc.Assertion;
 import org.oneedtech.inspect.vc.OB20Inspector;
-import org.oneedtech.inspect.vc.probe.JsonLDCompactionProve;
+import org.oneedtech.inspect.vc.jsonld.probe.JsonLDCompactionProve;
 
 /**
  * OpenBadges 2.0 Test inspector.
