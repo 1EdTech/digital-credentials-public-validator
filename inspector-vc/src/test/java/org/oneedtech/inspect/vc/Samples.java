@@ -43,13 +43,16 @@ public class Samples {
 
 	public static final class OB20 {
 		public static final class JSON {
-			//  original: test_verify:test_verify_function
+			//  original: test_verify: test_verify_function
 			public final static Sample SIMPLE_ASSERTION_JSON = new Sample("ob20/basic-assertion.json", true);
-			// original: test_graph:test_verify_with_redirection
+			// original: test_graph: test_verify_with_redirection
 			public final static Sample WARNING_REDIRECTION_ASSERTION_JSON = new Sample("ob20/warning-with-redirection.json", true);
+			// original: test_validation: test_can_input_badgeclass
+			public final static Sample SIMPLE_BADGECLASS = new Sample("ob20/assets/badgeclass1.json", true);
 		}
 
 		public static final class PNG {
+			// original: test_verify: test_verify_of_baked_image
 			public final static Sample SIMPLE_JSON_PNG = new Sample("ob20/simple-badge.png", true);
 		}
 	}
