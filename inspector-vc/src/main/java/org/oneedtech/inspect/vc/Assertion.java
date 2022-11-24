@@ -25,7 +25,7 @@ public class Assertion extends Credential {
     protected Assertion(Resource resource, JsonNode data, String jwt, Map<String, SchemaKey> schemas) {
         super(ID, resource, data, jwt, schemas);
 
-        ArrayNode typeNode = (ArrayNode)jsonData.get("type");
+        JsonNode typeNode = jsonData.get("type");
 		this.assertionType = Assertion.Type.valueOf(typeNode);
     }
 
@@ -63,15 +63,12 @@ public class Assertion extends Credential {
 		Assertion,
         Unknown;
 
-		public static Assertion.Type valueOf (ArrayNode typeArray) {
-			if(typeArray != null) {
-				Iterator<JsonNode> iter = typeArray.iterator();
-				while(iter.hasNext()) {
-					String value = iter.next().asText();
-					if(value.equals("Assertion")) {
-						return Assertion;
-                    }
-				}
+		public static Assertion.Type valueOf (JsonNode typeNode) {
+			if(typeNode != null) {
+                String value = typeNode.asText();
+                if(value.equals("Assertion")) {
+                    return Assertion;
+                }
 			}
 			return Unknown;
 		}
