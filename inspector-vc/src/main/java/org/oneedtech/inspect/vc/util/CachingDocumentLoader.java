@@ -2,8 +2,10 @@ package org.oneedtech.inspect.vc.util;
 
 import java.io.InputStream;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.time.Duration;
+import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -32,10 +34,14 @@ public class CachingDocumentLoader extends ConfigurableDocumentLoader {
 
 
 	public CachingDocumentLoader() {
+		this(null);
+	}
+
+	public CachingDocumentLoader(Map<URI, String> localDomains) {
 		super();
 		setEnableHttp(true);
 		setEnableHttps(true);
-		setDefaultHttpLoader(new HttpLoader());
+		setDefaultHttpLoader(new HttpLoader(localDomains));
 	}
 
 	@Override
@@ -49,15 +55,40 @@ public class CachingDocumentLoader extends ConfigurableDocumentLoader {
 	}
 
 	public class HttpLoader implements DocumentLoader {
+		final Map<URI, String> localDomains;
+
+		public HttpLoader(Map<URI, String> localDomains) {
+			this.localDomains = localDomains;
+		}
+
 		@Override
 		public Document loadDocument(URI url, DocumentLoaderOptions options) throws JsonLdError {
-			Tuple<String, DocumentLoaderOptions> tpl = new Tuple<>(url.toASCIIString(), options);
 			try {
+				// resolve url
+				URI resolvedUrl = resolve(url);
+
+				Tuple<String, DocumentLoaderOptions> tpl = new Tuple<>(resolvedUrl.toASCIIString(), options);
+
 				return documentCache.get(tpl);
 			} catch (Exception e) {
 				logger.error("documentCache not able to load {}", url);
 				throw new JsonLdError(JsonLdErrorCode.INVALID_REMOTE_CONTEXT, e.getMessage());
 			}
+		}
+
+		/**
+		 * Resolved given url. If the url is from one of local domain, a URL of the relative resource will be returned
+		 * @throws URISyntaxException
+		 */
+		private URI resolve(URI url) throws URISyntaxException {
+			if (localDomains != null) {
+				URI base = url.resolve("/");
+				if (localDomains.containsKey(base)) {
+					URL resource = Resources.getResource(localDomains.get(base) + "/" + base.relativize(url).toString());
+					return resource.toURI();
+				}
+			}
+			return url;
 		}
 	}
 
