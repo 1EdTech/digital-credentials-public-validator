@@ -25,6 +25,7 @@ import org.oneedtech.inspect.vc.payload.PngParser;
 import org.oneedtech.inspect.vc.payload.SvgParser;
 import org.oneedtech.inspect.vc.probe.CredentialParseProbe;
 import org.oneedtech.inspect.vc.probe.JsonLDCompactionProve;
+import org.oneedtech.inspect.vc.probe.JsonLDValidationProbe;
 import org.oneedtech.inspect.vc.util.CachingDocumentLoader;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -84,19 +85,30 @@ public class OB20Inspector extends Inspector {
 		int probeCount = 0;
 
 		try {
-				//detect type (png, svg, json, jwt) and extract json data
-				probeCount++;
-				accumulator.add(new CredentialParseProbe().run(resource, ctx));
-				if(broken(accumulator, true)) return abort(ctx, accumulator, probeCount);
+			//detect type (png, svg, json, jwt) and extract json data
+			probeCount++;
+			accumulator.add(new CredentialParseProbe().run(resource, ctx));
+			if(broken(accumulator, true)) return abort(ctx, accumulator, probeCount);
 
-				// //we expect the above to place a generated object in the context
-				Assertion assertion = ctx.getGeneratedObject(Assertion.ID);
+			// we expect the above to place a generated object in the context
+			Assertion assertion = ctx.getGeneratedObject(Assertion.ID);
 
-				// let's compact and validate
-				accumulator.add(getCompactionProbe(assertion).run(assertion, ctx));
-				if(broken(accumulator, true)) return abort(ctx, accumulator, probeCount);
+			// let's compact
+			accumulator.add(getCompactionProbe(assertion).run(assertion, ctx));
+			if(broken(accumulator, true)) return abort(ctx, accumulator, probeCount);
 
+			// validate JSON LD
+			JsonLdGeneratedObject jsonLdGeneratedObject = ctx.getGeneratedObject(JsonLdGeneratedObject.ID);
+			accumulator.add(new JsonLDValidationProbe(jsonLdGeneratedObject).run(assertion, ctx));
+			if(broken(accumulator, true)) return abort(ctx, accumulator, probeCount);
 
+			//canonical schema and inline schemata
+			// SchemaKey schema = assertion.getSchemaKey().orElseThrow();
+			// for(Probe<JsonNode> probe : List.of(new JsonSchemaProbe(schema), new InlineJsonSchemaProbe(schema))) {
+			// 	probeCount++;
+			// 	accumulator.add(probe.run(assertion.getJson(), ctx));
+			// 	if(broken(accumulator)) return abort(ctx, accumulator, probeCount);
+			// }
 		} catch (Exception e) {
 			accumulator.add(onProbeException(Probe.ID.NO_UNCAUGHT_EXCEPTIONS, resource, e));
 		}
