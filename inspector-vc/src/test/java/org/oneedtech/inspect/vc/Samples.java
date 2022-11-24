@@ -48,5 +48,9 @@ public class Samples {
 			// original: test_graph:test_verify_with_redirection
 			public final static Sample WARNING_REDIRECTION_ASSERTION_JSON = new Sample("ob20/warning-with-redirection.json", true);
 		}
+
+		public static final class PNG {
+			public final static Sample SIMPLE_JSON_PNG = new Sample("ob20/simple-badge.png", true);
+		}
 	}
 }

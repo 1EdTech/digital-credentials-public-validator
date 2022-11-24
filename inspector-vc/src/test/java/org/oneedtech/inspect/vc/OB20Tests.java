@@ -39,6 +39,15 @@ public class OB20Tests {
 		});
 	}
 
+	@Test
+	void testSimplePNGPlainValid() {
+		assertDoesNotThrow(()->{
+			Report report = validator.run(Samples.OB20.PNG.SIMPLE_JSON_PNG.asFileResource());
+			if(verbose) PrintHelper.print(report, true);
+			assertValid(report);
+		});
+	}
+
 	@Nested
 	static class WarningTests {
 		@BeforeAll
