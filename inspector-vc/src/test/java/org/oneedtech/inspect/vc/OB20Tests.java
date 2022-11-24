@@ -48,6 +48,17 @@ public class OB20Tests {
 		});
 	}
 
+	@Test
+	void testSimpleBadgeClassJsonValid() {
+		assertDoesNotThrow(()->{
+			Report report = validator.run(Samples.OB20.JSON.SIMPLE_BADGECLASS.asFileResource());
+			if(verbose) PrintHelper.print(report, true);
+			assertValid(report);
+		});
+	}
+
+
+
 	@Nested
 	static class WarningTests {
 		@BeforeAll
