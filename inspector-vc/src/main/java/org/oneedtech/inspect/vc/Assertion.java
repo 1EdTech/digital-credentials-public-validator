@@ -1,6 +1,6 @@
 package org.oneedtech.inspect.vc;
 
-import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -9,7 +9,6 @@ import org.oneedtech.inspect.schema.SchemaKey;
 import org.oneedtech.inspect.util.resource.Resource;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableMap;
 
@@ -32,6 +31,11 @@ public class Assertion extends Credential {
     @Override
     public String getCredentialType() {
         return assertionType.toString();
+    }
+
+    @Override
+    public List<String> getContext() {
+        return List.of("https://w3id.org/openbadges/v2");
     }
 
     @Override

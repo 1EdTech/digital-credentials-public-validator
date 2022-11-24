@@ -59,6 +59,8 @@ public abstract class Credential extends GeneratedObject {
 
     public abstract String getCredentialType();
 
+    public abstract List<String> getContext();
+
 	@Override
 	public String toString() {
 		return MoreObjects.toStringHelper(this)

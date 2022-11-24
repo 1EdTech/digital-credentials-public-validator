@@ -6,7 +6,9 @@ import static org.oneedtech.inspect.vc.VerifiableCredential.Type.EndorsementCred
 import static org.oneedtech.inspect.vc.VerifiableCredential.Type.VerifiablePresentation;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.oneedtech.inspect.schema.Catalog;
@@ -37,6 +39,15 @@ public class VerifiableCredential extends Credential  {
 		return credentialType.toString();
 	}
 
+	@Override
+	public List<String> getContext() {
+		return values.get(values.keySet()
+			.stream()
+			.filter(s->s.contains(credentialType))
+			.findFirst()
+			.orElseThrow(()-> new IllegalArgumentException(credentialType.name() + " not recognized")));
+	}
+
 	public ProofType getProofType() {
 		return jwt == null ? ProofType.EMBEDDED : ProofType.EXTERNAL;
 	}
@@ -48,6 +59,19 @@ public class VerifiableCredential extends Credential  {
 			.put(EndorsementCredential, Catalog.OB_30_ENDORSEMENTCREDENTIAL_JSON)
 			.build();
 
+	private static final Map<Set<VerifiableCredential.Type>, List<String>> values = new ImmutableMap.Builder<Set<VerifiableCredential.Type>, List<String>>()
+			.put(Set.of(Type.OpenBadgeCredential, AchievementCredential, EndorsementCredential),
+					List.of("https://www.w3.org/2018/credentials/v1",
+							//"https://purl.imsglobal.org/spec/ob/v3p0/context.json")) //dev legacy
+							"https://purl.imsglobal.org/spec/ob/v3p0/context.json"))
+			.put(Set.of(ClrCredential),
+					List.of("https://www.w3.org/2018/credentials/v1",
+		//							"https://dc.imsglobal.org/draft/clr/v2p0/context", //dev legacy
+		//							"https://purl.imsglobal.org/spec/ob/v3p0/context.json")) //dev legacy
+							"https://purl.imsglobal.org/spec/clr/v2p0/context.json",
+							"https://purl.imsglobal.org/spec/ob/v3p0/context.json"))
+
+			.build();
 
 	public enum Type {
 		AchievementCredential,
@@ -104,5 +128,4 @@ public class VerifiableCredential extends Credential  {
     }
 
 	public static final String ID = VerifiableCredential.class.getCanonicalName();
-
 }
