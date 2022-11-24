@@ -44,8 +44,8 @@ public class Samples {
 	public static final class OB20 {
 		public static final class JSON {
 			public final static Sample SIMPLE_ASSERTION_JSON = new Sample("ob20/basic-assertion.json", true);
-			public final static Sample SIMPLE_BADGECLASS_JSON = new Sample("ob20/basic-badgeclass.json", true);
-			public final static Sample SIMPLE_ISSUER_JSON = new Sample("ob20/basic-issuer.json", true);
+			// public final static Sample SIMPLE_BADGECLASS_JSON = new Sample("ob20/basic-badgeclass.json", true);
+			// public final static Sample SIMPLE_ISSUER_JSON = new Sample("ob20/basic-issuer.json", true);
 		}
 	}
 }
