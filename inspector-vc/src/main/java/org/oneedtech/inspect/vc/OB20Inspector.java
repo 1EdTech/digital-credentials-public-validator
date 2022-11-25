@@ -21,14 +21,18 @@ import org.oneedtech.inspect.util.json.ObjectMapperCache;
 import org.oneedtech.inspect.util.resource.Resource;
 import org.oneedtech.inspect.util.resource.ResourceType;
 import org.oneedtech.inspect.util.spec.Specification;
+import org.oneedtech.inspect.vc.Assertion.Type;
+import org.oneedtech.inspect.vc.Credential.CredentialEnum;
 import org.oneedtech.inspect.vc.jsonld.JsonLdGeneratedObject;
 import org.oneedtech.inspect.vc.jsonld.probe.JsonLDCompactionProve;
 import org.oneedtech.inspect.vc.jsonld.probe.JsonLDValidationProbe;
 import org.oneedtech.inspect.vc.payload.PngParser;
 import org.oneedtech.inspect.vc.payload.SvgParser;
 import org.oneedtech.inspect.vc.probe.CredentialParseProbe;
+import org.oneedtech.inspect.vc.probe.TypePropertyProbe;
 import org.oneedtech.inspect.vc.util.CachingDocumentLoader;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
@@ -102,6 +106,14 @@ public class OB20Inspector extends Inspector {
 			JsonLdGeneratedObject jsonLdGeneratedObject = ctx.getGeneratedObject(JsonLdGeneratedObject.ID);
 			accumulator.add(new JsonLDValidationProbe(jsonLdGeneratedObject).run(assertion, ctx));
 			if(broken(accumulator, true)) return abort(ctx, accumulator, probeCount);
+
+			//context and type properties
+			CredentialEnum type = assertion.getCredentialType();
+			for(Probe<JsonNode> probe : List.of(/*new ContextPropertyProbe(type), */new TypePropertyProbe(type))) {
+				probeCount++;
+				accumulator.add(probe.run(assertion.getJson(), ctx));
+				if(broken(accumulator)) return abort(ctx, accumulator, probeCount);
+			}
 
 			//canonical schema and inline schemata
 			// SchemaKey schema = assertion.getSchemaKey().orElseThrow();
