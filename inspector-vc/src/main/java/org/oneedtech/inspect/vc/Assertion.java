@@ -1,5 +1,6 @@
 package org.oneedtech.inspect.vc;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -64,9 +65,16 @@ public class Assertion extends Credential {
         }
     }
 
-    public enum Type {
-		Assertion,
-        Unknown;
+    public enum Type implements CredentialEnum {
+		Assertion(List.of("Assertion")),
+		BadgeClass(List.of("BadgeClass")),
+        Unknown(Collections.emptyList());
+
+        private final List<String> allowedTypeValues;
+
+        Type(List<String> typeValues) {
+            this.allowedTypeValues = typeValues;
+        }
 
 		public static Assertion.Type valueOf (JsonNode typeNode) {
 			if(typeNode != null) {
@@ -75,9 +83,22 @@ public class Assertion extends Credential {
                     if(value.equals("Assertion")) {
                         return Assertion;
                     }
+                    if(value.equals("BadgeClass")) {
+                        return BadgeClass;
+                    }
                 }
 			}
 			return Unknown;
+        }
+
+        @Override
+        public List<String> getRequiredTypeValues() {
+            return Collections.emptyList();
+        }
+
+        @Override
+        public List<String> getAllowedTypeValues() {
+            return allowedTypeValues;
         }
 	}
 

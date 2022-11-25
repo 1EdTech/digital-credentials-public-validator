@@ -74,6 +74,11 @@ public abstract class Credential extends GeneratedObject {
 	public static final List<ResourceType> RECOGNIZED_PAYLOAD_TYPES = List.of(SVG, PNG, JSON, JWT);
 	public static final String CREDENTIAL_KEY = "CREDENTIAL_KEY";
 
+    public interface CredentialEnum {
+        List<String> getRequiredTypeValues();
+        List<String> getAllowedTypeValues();
+    }
+
 	public abstract static class Builder<B extends Credential> {
         private Resource resource;
         private JsonNode jsonData;

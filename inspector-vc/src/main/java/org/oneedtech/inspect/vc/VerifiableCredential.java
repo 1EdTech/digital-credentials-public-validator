@@ -5,6 +5,7 @@ import static org.oneedtech.inspect.vc.VerifiableCredential.Type.ClrCredential;
 import static org.oneedtech.inspect.vc.VerifiableCredential.Type.EndorsementCredential;
 import static org.oneedtech.inspect.vc.VerifiableCredential.Type.VerifiablePresentation;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -72,14 +73,20 @@ public class VerifiableCredential extends Credential  {
 
 			.build();
 
-	public enum Type {
-		AchievementCredential,
-		OpenBadgeCredential, 	//treated as an alias of AchievementCredential
-		ClrCredential,
-		EndorsementCredential,
-		VerifiablePresentation,
-		VerifiableCredential,  //this is an underspecifier in our context
-		Unknown;
+	public enum Type implements CredentialEnum {
+		AchievementCredential(Collections.emptyList()),
+		OpenBadgeCredential(List.of("OpenBadgeCredential", "AchievementCredential")), 	//treated as an alias of AchievementCredential
+		ClrCredential(List.of("ClrCredential")),
+		EndorsementCredential(List.of("EndorsementCredential")),
+		VerifiablePresentation(Collections.emptyList()),
+		VerifiableCredential(List.of("VerifiableCredential")),  //this is an underspecifier in our context
+		Unknown(Collections.emptyList());
+
+		private final List<String> allowedTypeValues;
+
+		Type(List<String> allowedTypeValues) {
+            this.allowedTypeValues = allowedTypeValues;
+        }
 
 		public static VerifiableCredential.Type valueOf (JsonNode typeNode) {
 			if(typeNode != null) {
@@ -97,6 +104,16 @@ public class VerifiableCredential extends Credential  {
 				}
 			}
 			return Unknown;
+        }
+
+		@Override
+		public List<String> getRequiredTypeValues() {
+			return List.of("VerifiableCredential");
+		}
+
+		@Override
+        public List<String> getAllowedTypeValues() {
+            return allowedTypeValues;
         }
 	}
 
