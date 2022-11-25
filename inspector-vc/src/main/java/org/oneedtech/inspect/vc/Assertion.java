@@ -23,7 +23,7 @@ public class Assertion extends Credential {
 
 	final Assertion.Type assertionType;
 
-    protected Assertion(Resource resource, JsonNode data, String jwt, Map<String, SchemaKey> schemas) {
+    protected Assertion(Resource resource, JsonNode data, String jwt, Map<CredentialEnum, SchemaKey> schemas) {
         super(ID, resource, data, jwt, schemas);
 
         JsonNode typeNode = jsonData.get("type");
@@ -31,8 +31,8 @@ public class Assertion extends Credential {
     }
 
     @Override
-    public String getCredentialType() {
-        return assertionType.toString();
+    public CredentialEnum getCredentialType() {
+        return assertionType;
     }
 
     @Override
@@ -48,7 +48,7 @@ public class Assertion extends Credential {
 				.toString();
 	}
 
-	private static final Map<Assertion.Type, SchemaKey> schemas = new ImmutableMap.Builder<Assertion.Type, SchemaKey>()
+	private static final Map<CredentialEnum, SchemaKey> schemas = new ImmutableMap.Builder<CredentialEnum, SchemaKey>()
 			.put(Type.Assertion, Catalog.OB_21_ASSERTION_JSON)
 			.build();
 
@@ -58,10 +58,7 @@ public class Assertion extends Credential {
         public Assertion build() {
             // transform key of schemas map to string because the type of the key in the base map is generic
             // and our specific key is an Enum
-            return new Assertion(getResource(), getJsonData(), getJwt(),
-                schemas.entrySet().stream().collect(Collectors.toMap(
-                                    entry -> entry.getKey().toString(),
-                                    entry -> entry.getValue())));
+            return new Assertion(getResource(), getJsonData(), getJwt(), schemas);
         }
     }
 

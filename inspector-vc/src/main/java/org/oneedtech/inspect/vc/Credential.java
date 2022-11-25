@@ -1,7 +1,11 @@
 package org.oneedtech.inspect.vc;
 
-import static org.oneedtech.inspect.util.code.Defensives.*;
-import static org.oneedtech.inspect.util.resource.ResourceType.*;
+import static org.oneedtech.inspect.util.code.Defensives.checkNotNull;
+import static org.oneedtech.inspect.util.code.Defensives.checkTrue;
+import static org.oneedtech.inspect.util.resource.ResourceType.JSON;
+import static org.oneedtech.inspect.util.resource.ResourceType.JWT;
+import static org.oneedtech.inspect.util.resource.ResourceType.PNG;
+import static org.oneedtech.inspect.util.resource.ResourceType.SVG;
 
 import java.util.List;
 import java.util.Map;
@@ -13,7 +17,6 @@ import org.oneedtech.inspect.util.resource.Resource;
 import org.oneedtech.inspect.util.resource.ResourceType;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.google.common.base.MoreObjects;
 
 
@@ -26,9 +29,9 @@ public abstract class Credential extends GeneratedObject {
 	final Resource resource;
 	final JsonNode jsonData;
 	final String jwt;
-    final Map<String, SchemaKey> schemas;
+    final Map<CredentialEnum, SchemaKey> schemas;
 
-    protected Credential(String id, Resource resource, JsonNode data, String jwt, Map<String, SchemaKey> schemas) {
+    protected Credential(String id, Resource resource, JsonNode data, String jwt, Map<CredentialEnum, SchemaKey> schemas) {
 		super(id, GeneratedObject.Type.INTERNAL);
 		this.resource = checkNotNull(resource);
 		this.jsonData = checkNotNull(data);
@@ -57,7 +60,7 @@ public abstract class Credential extends GeneratedObject {
 		return Optional.ofNullable(schemas.get(getCredentialType()));
 	}
 
-    public abstract String getCredentialType();
+    public abstract CredentialEnum getCredentialType();
 
     public abstract List<String> getContext();
 

@@ -28,15 +28,15 @@ import com.google.common.collect.ImmutableMap;
 public class VerifiableCredential extends Credential  {
 	final VerifiableCredential.Type credentialType;
 
-    protected VerifiableCredential(Resource resource, JsonNode data, String jwt, Map<String, SchemaKey> schemas) {
+    protected VerifiableCredential(Resource resource, JsonNode data, String jwt, Map<CredentialEnum, SchemaKey> schemas) {
         super(ID, resource, data, jwt, schemas);
 
         JsonNode typeNode = jsonData.get("type");
 		this.credentialType = VerifiableCredential.Type.valueOf(typeNode);
     }
 
-	public String getCredentialType() {
-		return credentialType.toString();
+	public CredentialEnum getCredentialType() {
+		return credentialType;
 	}
 
 	@Override
@@ -52,7 +52,7 @@ public class VerifiableCredential extends Credential  {
 		return jwt == null ? ProofType.EMBEDDED : ProofType.EXTERNAL;
 	}
 
-	private static final Map<VerifiableCredential.Type, SchemaKey> schemas = new ImmutableMap.Builder<VerifiableCredential.Type, SchemaKey>()
+	private static final Map<CredentialEnum, SchemaKey> schemas = new ImmutableMap.Builder<CredentialEnum, SchemaKey>()
 			.put(AchievementCredential, Catalog.OB_30_ACHIEVEMENTCREDENTIAL_JSON)
 			.put(ClrCredential, Catalog.CLR_20_CLRCREDENTIAL_JSON)
 			.put(VerifiablePresentation, Catalog.CLR_20_CLRCREDENTIAL_JSON)
@@ -133,12 +133,7 @@ public class VerifiableCredential extends Credential  {
     public static class Builder extends Credential.Builder<VerifiableCredential> {
         @Override
         public VerifiableCredential build() {
-            // transform key of schemas map to string because the type of the key in the base map is generic
-            // and our specific key is an Enum
-            return new VerifiableCredential(getResource(), getJsonData(), getJwt(),
-                schemas.entrySet().stream().collect(Collectors.toMap(
-                                    entry -> entry.getKey().toString(),
-                                    entry -> entry.getValue())));
+            return new VerifiableCredential(getResource(), getJsonData(), getJwt(), schemas);
         }
     }
 
