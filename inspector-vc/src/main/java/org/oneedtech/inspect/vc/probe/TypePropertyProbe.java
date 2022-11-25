@@ -33,8 +33,7 @@ public class TypePropertyProbe extends PropertyProbe {
 
 		List<String> allowedValues = expected.getAllowedTypeValues();
 		if (allowedValues.isEmpty()) {
-			// TODO implement
-			throw new IllegalStateException();
+			return fatal("The type property is invalid", ctx);
 		}
 		if (!values.stream().anyMatch(v -> allowedValues.contains(v))) {
 			return fatal(formatMessage(values), ctx);

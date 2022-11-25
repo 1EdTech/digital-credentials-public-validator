@@ -17,6 +17,7 @@ import org.oneedtech.inspect.core.Inspector.Behavior;
 import org.oneedtech.inspect.core.report.Report;
 import org.oneedtech.inspect.test.PrintHelper;
 import org.oneedtech.inspect.vc.probe.ContextPropertyProbe;
+import org.oneedtech.inspect.vc.probe.TypePropertyProbe;
 import org.oneedtech.inspect.vc.util.TestOB20Inspector.TestBuilder;
 
 public class OB20Tests {
@@ -44,17 +45,6 @@ public class OB20Tests {
 	}
 
 	@Test
-	void testSimpleJsonInvalidContext() {
-		assertDoesNotThrow(()->{
-			Report report = validator.run(Samples.OB20.JSON.SIMPLE_ASSERTION_INVALID_CONTEXT_JSON.asFileResource());
-			if(verbose) PrintHelper.print(report, true);
-			assertInvalid(report);
-			assertFatalCount(report, 1);
-			assertHasProbeID(report, ContextPropertyProbe.ID, true);
-		});
-	}
-
-	@Test
 	void testSimplePNGPlainValid() {
 		assertDoesNotThrow(()->{
 			Report report = validator.run(Samples.OB20.PNG.SIMPLE_JSON_PNG.asFileResource());
@@ -69,6 +59,28 @@ public class OB20Tests {
 			Report report = validator.run(Samples.OB20.JSON.SIMPLE_BADGECLASS.asFileResource());
 			if(verbose) PrintHelper.print(report, true);
 			assertValid(report);
+		});
+	}
+
+	@Test
+	void testSimpleJsonInvalidContext() {
+		assertDoesNotThrow(()->{
+			Report report = validator.run(Samples.OB20.JSON.SIMPLE_ASSERTION_INVALID_CONTEXT_JSON.asFileResource());
+			if(verbose) PrintHelper.print(report, true);
+			assertInvalid(report);
+			assertFatalCount(report, 1);
+			assertHasProbeID(report, ContextPropertyProbe.ID, true);
+		});
+	}
+
+	@Test
+	void testSimpleJsonInvalidType() {
+		assertDoesNotThrow(()->{
+			Report report = validator.run(Samples.OB20.JSON.SIMPLE_ASSERTION_INVALID_TYPE_JSON.asFileResource());
+			if(verbose) PrintHelper.print(report, true);
+			assertInvalid(report);
+			assertFatalCount(report, 1);
+			assertHasProbeID(report, TypePropertyProbe.ID, true);
 		});
 	}
 
