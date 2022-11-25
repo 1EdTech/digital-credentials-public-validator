@@ -4,38 +4,25 @@ import static org.oneedtech.inspect.util.code.Defensives.checkNotNull;
 
 import java.util.List;
 
-import org.oneedtech.inspect.core.probe.Probe;
 import org.oneedtech.inspect.core.probe.RunContext;
 import org.oneedtech.inspect.core.report.ReportItems;
 import org.oneedtech.inspect.vc.VerifiableCredential;
-import org.oneedtech.inspect.vc.VerifiableCredential.Type;
-import org.oneedtech.inspect.vc.util.JsonNodeUtil;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 
 /**
  * A Probe that verifies a credential's type property.
  *
  * @author mgylling
  */
-public class TypePropertyProbe extends Probe<JsonNode> {
+public class TypePropertyProbe extends PropertyProbe {
 	private final VerifiableCredential.Type expected;
 
 	public TypePropertyProbe(VerifiableCredential.Type expected) {
-		super(ID);
+		super(ID, "type");
 		this.expected = checkNotNull(expected);
+		this.setValidations(this::validate);
 	}
 
-	@Override
-	public ReportItems run(JsonNode root, RunContext ctx) throws Exception {
-
-		ArrayNode typeNode = (ArrayNode) root.get("type");
-		if (typeNode == null)
-			return fatal("No type property", ctx);
-
-		List<String> values = JsonNodeUtil.asStringList(typeNode);
-
+	public ReportItems validate(List<String> values, RunContext ctx) {
 		if (!values.contains("VerifiableCredential")) {
 			return fatal("The type property does not contain the entry 'VerifiableCredential'", ctx);
 		}

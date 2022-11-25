@@ -7,6 +7,7 @@ import static org.oneedtech.inspect.util.code.Defensives.checkNotNull;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.BiFunction;
 
 import org.oneedtech.inspect.core.probe.Probe;
 import org.oneedtech.inspect.core.probe.RunContext;
@@ -24,32 +25,29 @@ import com.google.common.collect.ImmutableMap;
  *
  * @author mgylling
  */
-public class ContextPropertyProbe extends Probe<JsonNode> {
+public class ContextPropertyProbe extends PropertyProbe {
 	private final VerifiableCredential.Type type;
 
 	public ContextPropertyProbe(VerifiableCredential.Type type) {
-		super(ID);
+		super(ID, "@context");
 		this.type = checkNotNull(type);
+		setValidations(this::validate);
 	}
 
 	@Override
-	public ReportItems run(JsonNode root, RunContext ctx) throws Exception {
+	protected ReportItems reportForNonExistentProperty(RunContext ctx) {
+		return notRun("No @context property", ctx);
+	}
 
-		ArrayNode contextNode = (ArrayNode) root.get("@context");
-		if (contextNode == null) {
-			return notRun("No @context property", ctx);
-		}
-
+	public ReportItems validate(List<String> nodeValues, RunContext ctx) {
 		List<String> expected = values.get(values.keySet()
 				.stream()
 				.filter(s->s.contains(type))
 				.findFirst()
 				.orElseThrow(()-> new IllegalArgumentException(type.name() + " not recognized")));
-
-		List<String> given = JsonNodeUtil.asStringList(contextNode);
 		int pos = 0;
 		for (String uri : expected) {
-			if ((given.size() < pos + 1) || !given.get(pos).equals(uri)) {
+			if ((nodeValues.size() < pos + 1) || !nodeValues.get(pos).equals(uri)) {
 				return error("missing required @context uri " + uri + " at position " + (pos + 1), ctx);
 			}
 			pos++;
