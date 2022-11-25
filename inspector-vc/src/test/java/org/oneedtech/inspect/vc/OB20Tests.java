@@ -1,6 +1,9 @@
 package org.oneedtech.inspect.vc;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.oneedtech.inspect.test.Assertions.assertFatalCount;
+import static org.oneedtech.inspect.test.Assertions.assertHasProbeID;
+import static org.oneedtech.inspect.test.Assertions.assertInvalid;
 import static org.oneedtech.inspect.test.Assertions.assertValid;
 import static org.oneedtech.inspect.test.Assertions.assertWarning;
 
@@ -13,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.oneedtech.inspect.core.Inspector.Behavior;
 import org.oneedtech.inspect.core.report.Report;
 import org.oneedtech.inspect.test.PrintHelper;
+import org.oneedtech.inspect.vc.probe.ContextPropertyProbe;
 import org.oneedtech.inspect.vc.util.TestOB20Inspector.TestBuilder;
 
 public class OB20Tests {
@@ -36,6 +40,17 @@ public class OB20Tests {
 			Report report = validator.run(Samples.OB20.JSON.SIMPLE_ASSERTION_JSON.asFileResource());
 			if(verbose) PrintHelper.print(report, true);
 			assertValid(report);
+		});
+	}
+
+	@Test
+	void testSimpleJsonInvalidContext() {
+		assertDoesNotThrow(()->{
+			Report report = validator.run(Samples.OB20.JSON.SIMPLE_ASSERTION_INVALID_CONTEXT_JSON.asFileResource());
+			if(verbose) PrintHelper.print(report, true);
+			assertInvalid(report);
+			assertFatalCount(report, 1);
+			assertHasProbeID(report, ContextPropertyProbe.ID, true);
 		});
 	}
 

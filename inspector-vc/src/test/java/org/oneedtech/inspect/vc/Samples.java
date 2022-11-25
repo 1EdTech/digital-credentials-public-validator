@@ -45,6 +45,7 @@ public class Samples {
 		public static final class JSON {
 			//  original: test_verify: test_verify_function
 			public final static Sample SIMPLE_ASSERTION_JSON = new Sample("ob20/basic-assertion.json", true);
+			public final static Sample SIMPLE_ASSERTION_INVALID_CONTEXT_JSON = new Sample("ob20/basic-assertion-invalid-context.json", true);
 			// original: test_graph: test_verify_with_redirection
 			public final static Sample WARNING_REDIRECTION_ASSERTION_JSON = new Sample("ob20/warning-with-redirection.json", true);
 			// original: test_validation: test_can_input_badgeclass

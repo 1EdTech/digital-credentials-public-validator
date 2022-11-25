@@ -99,6 +99,14 @@ public class OB20Inspector extends Inspector {
 			// we expect the above to place a generated object in the context
 			Assertion assertion = ctx.getGeneratedObject(Assertion.ID);
 
+			//context and type properties
+			CredentialEnum type = assertion.getCredentialType();
+			for(Probe<JsonNode> probe : List.of(new ContextPropertyProbe(type), new TypePropertyProbe(type))) {
+				probeCount++;
+				accumulator.add(probe.run(assertion.getJson(), ctx));
+				if(broken(accumulator)) return abort(ctx, accumulator, probeCount);
+			}
+
 			// let's compact
 			accumulator.add(getCompactionProbe(assertion).run(assertion, ctx));
 			if(broken(accumulator, true)) return abort(ctx, accumulator, probeCount);
@@ -107,14 +115,6 @@ public class OB20Inspector extends Inspector {
 			JsonLdGeneratedObject jsonLdGeneratedObject = ctx.getGeneratedObject(JsonLdGeneratedObject.ID);
 			accumulator.add(new JsonLDValidationProbe(jsonLdGeneratedObject).run(assertion, ctx));
 			if(broken(accumulator, true)) return abort(ctx, accumulator, probeCount);
-
-			//context and type properties
-			CredentialEnum type = assertion.getCredentialType();
-			for(Probe<JsonNode> probe : List.of(new ContextPropertyProbe(type), new TypePropertyProbe(type))) {
-				probeCount++;
-				accumulator.add(probe.run(assertion.getJson(), ctx));
-				if(broken(accumulator)) return abort(ctx, accumulator, probeCount);
-			}
 
 			//canonical schema and inline schemata
 			// SchemaKey schema = assertion.getSchemaKey().orElseThrow();
