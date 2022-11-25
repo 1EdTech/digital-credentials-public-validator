@@ -5,7 +5,6 @@ import static org.oneedtech.inspect.vc.VerifiableCredential.Type.ClrCredential;
 import static org.oneedtech.inspect.vc.VerifiableCredential.Type.EndorsementCredential;
 import static org.oneedtech.inspect.vc.VerifiableCredential.Type.VerifiablePresentation;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -14,9 +13,9 @@ import java.util.stream.Collectors;
 import org.oneedtech.inspect.schema.Catalog;
 import org.oneedtech.inspect.schema.SchemaKey;
 import org.oneedtech.inspect.util.resource.Resource;
+import org.oneedtech.inspect.vc.util.JsonNodeUtil;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableMap;
 
@@ -31,7 +30,7 @@ public class VerifiableCredential extends Credential  {
     protected VerifiableCredential(Resource resource, JsonNode data, String jwt, Map<String, SchemaKey> schemas) {
         super(ID, resource, data, jwt, schemas);
 
-		ArrayNode typeNode = (ArrayNode)jsonData.get("type");
+        JsonNode typeNode = jsonData.get("type");
 		this.credentialType = VerifiableCredential.Type.valueOf(typeNode);
     }
 
@@ -82,11 +81,10 @@ public class VerifiableCredential extends Credential  {
 		VerifiableCredential,  //this is an underspecifier in our context
 		Unknown;
 
-		public static VerifiableCredential.Type valueOf (ArrayNode typeArray) {
-			if(typeArray != null) {
-				Iterator<JsonNode> iter = typeArray.iterator();
-				while(iter.hasNext()) {
-					String value = iter.next().asText();
+		public static VerifiableCredential.Type valueOf (JsonNode typeNode) {
+			if(typeNode != null) {
+				List<String> values = JsonNodeUtil.asStringList(typeNode);
+				for (String value : values) {
 					if(value.equals("AchievementCredential") || value.equals("OpenBadgeCredential")) {
 						return AchievementCredential;
 					} else if(value.equals("ClrCredential")) {
@@ -99,7 +97,7 @@ public class VerifiableCredential extends Credential  {
 				}
 			}
 			return Unknown;
-		}
+        }
 	}
 
 	public enum ProofType {

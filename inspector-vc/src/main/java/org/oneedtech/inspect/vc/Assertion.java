@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import org.oneedtech.inspect.schema.Catalog;
 import org.oneedtech.inspect.schema.SchemaKey;
 import org.oneedtech.inspect.util.resource.Resource;
+import org.oneedtech.inspect.vc.util.JsonNodeUtil;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.base.MoreObjects;
@@ -25,7 +26,7 @@ public class Assertion extends Credential {
         super(ID, resource, data, jwt, schemas);
 
         JsonNode typeNode = jsonData.get("type");
-		this.assertionType = Assertion.Type.valueOf(typeNode);
+        this.assertionType = Assertion.Type.valueOf(typeNode);
     }
 
     @Override
@@ -69,13 +70,15 @@ public class Assertion extends Credential {
 
 		public static Assertion.Type valueOf (JsonNode typeNode) {
 			if(typeNode != null) {
-                String value = typeNode.asText();
-                if(value.equals("Assertion")) {
-                    return Assertion;
+                List<String> values = JsonNodeUtil.asStringList(typeNode);
+                for (String value : values) {
+                    if(value.equals("Assertion")) {
+                        return Assertion;
+                    }
                 }
 			}
 			return Unknown;
-		}
+        }
 	}
 
     public static final String ID = Assertion.class.getCanonicalName();
