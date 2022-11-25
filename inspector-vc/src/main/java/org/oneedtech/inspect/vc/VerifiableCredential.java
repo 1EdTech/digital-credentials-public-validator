@@ -39,15 +39,6 @@ public class VerifiableCredential extends Credential  {
 		return credentialType;
 	}
 
-	@Override
-	public List<String> getContext() {
-		return values.get(values.keySet()
-			.stream()
-			.filter(s->s.contains(credentialType))
-			.findFirst()
-			.orElseThrow(()-> new IllegalArgumentException(credentialType.name() + " not recognized")));
-	}
-
 	public ProofType getProofType() {
 		return jwt == null ? ProofType.EMBEDDED : ProofType.EXTERNAL;
 	}
@@ -59,7 +50,7 @@ public class VerifiableCredential extends Credential  {
 			.put(EndorsementCredential, Catalog.OB_30_ENDORSEMENTCREDENTIAL_JSON)
 			.build();
 
-	private static final Map<Set<VerifiableCredential.Type>, List<String>> values = new ImmutableMap.Builder<Set<VerifiableCredential.Type>, List<String>>()
+	private static final Map<Set<VerifiableCredential.Type>, List<String>> contextMap = new ImmutableMap.Builder<Set<VerifiableCredential.Type>, List<String>>()
 			.put(Set.of(Type.OpenBadgeCredential, AchievementCredential, EndorsementCredential),
 					List.of("https://www.w3.org/2018/credentials/v1",
 							//"https://purl.imsglobal.org/spec/ob/v3p0/context.json")) //dev legacy
@@ -115,6 +106,15 @@ public class VerifiableCredential extends Credential  {
         public List<String> getAllowedTypeValues() {
             return allowedTypeValues;
         }
+
+		@Override
+		public List<String> getContextUris() {
+			return contextMap.get(contextMap.keySet()
+				.stream()
+				.filter(s->s.contains(this))
+				.findFirst()
+				.orElseThrow(()-> new IllegalArgumentException(this.name() + " not recognized")));
+		}
 	}
 
 	public enum ProofType {

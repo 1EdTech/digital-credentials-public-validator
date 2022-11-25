@@ -62,8 +62,6 @@ public abstract class Credential extends GeneratedObject {
 
     public abstract CredentialEnum getCredentialType();
 
-    public abstract List<String> getContext();
-
 	@Override
 	public String toString() {
 		return MoreObjects.toStringHelper(this)
@@ -80,6 +78,7 @@ public abstract class Credential extends GeneratedObject {
     public interface CredentialEnum {
         List<String> getRequiredTypeValues();
         List<String> getAllowedTypeValues();
+        List<String> getContextUris();
     }
 
 	public abstract static class Builder<B extends Credential> {

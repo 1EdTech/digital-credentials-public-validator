@@ -36,11 +36,6 @@ public class Assertion extends Credential {
     }
 
     @Override
-    public List<String> getContext() {
-        return List.of("https://w3id.org/openbadges/v2");
-    }
-
-    @Override
 	public String toString() {
 		return MoreObjects.toStringHelper(this)
 				.add("super", super.toString())
@@ -96,6 +91,11 @@ public class Assertion extends Credential {
         @Override
         public List<String> getAllowedTypeValues() {
             return allowedTypeValues;
+        }
+
+        @Override
+        public List<String> getContextUris() {
+            return List.of("https://w3id.org/openbadges/v2") ;
         }
 	}
 
