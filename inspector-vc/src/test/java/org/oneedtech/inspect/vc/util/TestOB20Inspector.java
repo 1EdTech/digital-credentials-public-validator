@@ -29,7 +29,7 @@ public class TestOB20Inspector extends OB20Inspector {
 
     @Override
     protected JsonLDCompactionProve getCompactionProbe(Assertion assertion) {
-        return new JsonLDCompactionProve(assertion.getContext().get(0), localDomains);
+        return new JsonLDCompactionProve(assertion.getCredentialType().getContextUris().get(0), localDomains);
     }
 
 	public static class TestBuilder extends OB20Inspector.Builder {

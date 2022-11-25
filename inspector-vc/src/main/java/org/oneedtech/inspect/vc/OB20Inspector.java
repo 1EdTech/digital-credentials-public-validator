@@ -28,6 +28,7 @@ import org.oneedtech.inspect.vc.jsonld.probe.JsonLDCompactionProve;
 import org.oneedtech.inspect.vc.jsonld.probe.JsonLDValidationProbe;
 import org.oneedtech.inspect.vc.payload.PngParser;
 import org.oneedtech.inspect.vc.payload.SvgParser;
+import org.oneedtech.inspect.vc.probe.ContextPropertyProbe;
 import org.oneedtech.inspect.vc.probe.CredentialParseProbe;
 import org.oneedtech.inspect.vc.probe.TypePropertyProbe;
 import org.oneedtech.inspect.vc.util.CachingDocumentLoader;
@@ -109,7 +110,7 @@ public class OB20Inspector extends Inspector {
 
 			//context and type properties
 			CredentialEnum type = assertion.getCredentialType();
-			for(Probe<JsonNode> probe : List.of(/*new ContextPropertyProbe(type), */new TypePropertyProbe(type))) {
+			for(Probe<JsonNode> probe : List.of(new ContextPropertyProbe(type), new TypePropertyProbe(type))) {
 				probeCount++;
 				accumulator.add(probe.run(assertion.getJson(), ctx));
 				if(broken(accumulator)) return abort(ctx, accumulator, probeCount);
@@ -130,7 +131,7 @@ public class OB20Inspector extends Inspector {
     }
 
 	protected JsonLDCompactionProve getCompactionProbe(Assertion assertion) {
-		return new JsonLDCompactionProve(assertion.getContext().get(0));
+		return new JsonLDCompactionProve(assertion.getCredentialType().getContextUris().get(0));
 	}
 
 	public static class Builder extends Inspector.Builder<OB20Inspector.Builder> {
