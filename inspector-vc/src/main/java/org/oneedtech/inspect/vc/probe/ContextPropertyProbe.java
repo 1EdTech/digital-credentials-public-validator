@@ -8,6 +8,8 @@ import org.oneedtech.inspect.core.probe.RunContext;
 import org.oneedtech.inspect.core.report.ReportItems;
 import org.oneedtech.inspect.vc.Credential.CredentialEnum;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
 /**
  * A Probe that verifies a credential's context property.
  *
@@ -23,7 +25,7 @@ public class ContextPropertyProbe extends StringValuePropertyProbe {
 	}
 
 	@Override
-	protected ReportItems reportForNonExistentProperty(RunContext ctx) {
+	protected ReportItems reportForNonExistentProperty(JsonNode node, RunContext ctx) {
 		return notRun("No @context property", ctx);
 	}
 
