@@ -12,7 +12,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 public class PropertyProbe extends Probe<JsonNode> {
     private final String propertyName;
-    private BiFunction<List<String>, RunContext, ReportItems> validations;
+    private BiFunction<JsonNode, RunContext, ReportItems> validations;
 
     public PropertyProbe(String id, String propertyName) {
         super(id);
@@ -20,7 +20,7 @@ public class PropertyProbe extends Probe<JsonNode> {
         this.validations = this::defaultValidation;
     }
 
-    public void setValidations(BiFunction<List<String>, RunContext, ReportItems> validations) {
+    public void setValidations(BiFunction<JsonNode, RunContext, ReportItems> validations) {
         this.validations = validations;
     }
 
@@ -30,14 +30,16 @@ public class PropertyProbe extends Probe<JsonNode> {
 		if (propertyNode == null) {
 			return reportForNonExistentProperty(ctx);
         }
+
 		List<String> values = JsonNodeUtil.asStringList(propertyNode);
-        return validations.apply(values, ctx);
+        return validations.apply(propertyNode, ctx);
     }
+
     protected ReportItems reportForNonExistentProperty(RunContext ctx) {
         return fatal("No " + propertyName + " property", ctx);
     }
 
-    private ReportItems defaultValidation(List<String> nodeValues, RunContext ctx) {
+    private ReportItems defaultValidation(JsonNode node, RunContext ctx) {
         return notRun("Not additional validations run", ctx);
     }
 }

@@ -14,13 +14,13 @@ import org.oneedtech.inspect.vc.Credential.CredentialEnum;
  *
  * @author mgylling
  */
-public class TypePropertyProbe extends PropertyProbe {
+public class TypePropertyProbe extends StringValuePropertyProbe {
 	private final CredentialEnum expected;
 
 	public TypePropertyProbe(CredentialEnum expected) {
 		super(ID, "type");
 		this.expected = checkNotNull(expected);
-		this.setValidations(this::validate);
+		this.setValueValidations(this::validate);
 	}
 
 	public ReportItems validate(List<String> values, RunContext ctx) {

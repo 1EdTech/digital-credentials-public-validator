@@ -13,13 +13,13 @@ import org.oneedtech.inspect.vc.Credential.CredentialEnum;
  *
  * @author mgylling
  */
-public class ContextPropertyProbe extends PropertyProbe {
+public class ContextPropertyProbe extends StringValuePropertyProbe {
 	private final CredentialEnum type;
 
 	public ContextPropertyProbe(CredentialEnum type) {
 		super(ID, "@context");
 		this.type = checkNotNull(type);
-		setValidations(this::validate);
+		setValueValidations(this::validate);
 	}
 
 	@Override
