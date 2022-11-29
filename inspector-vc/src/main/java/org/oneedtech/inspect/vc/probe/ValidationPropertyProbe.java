@@ -1,25 +1,51 @@
 package org.oneedtech.inspect.vc.probe;
 
+import static org.oneedtech.inspect.vc.Assertion.ValueType.DATA_URI;
+import static org.oneedtech.inspect.vc.Assertion.ValueType.DATA_URI_OR_URL;
+import static org.oneedtech.inspect.vc.Assertion.ValueType.URL;
+
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
+import org.oneedtech.inspect.core.probe.Outcome;
+import org.oneedtech.inspect.core.probe.Probe;
 import org.oneedtech.inspect.core.probe.RunContext;
+import org.oneedtech.inspect.core.probe.RunContext.Key;
 import org.oneedtech.inspect.core.report.ReportItems;
-import org.oneedtech.inspect.vc.Validation;
+import org.oneedtech.inspect.core.report.ReportUtil;
+import org.oneedtech.inspect.util.resource.UriResource;
+import org.oneedtech.inspect.vc.Assertion;
 import org.oneedtech.inspect.vc.Assertion.ValueType;
+import org.oneedtech.inspect.vc.Validation;
+import org.oneedtech.inspect.vc.jsonld.JsonLdGeneratedObject;
+import org.oneedtech.inspect.vc.jsonld.probe.JsonLDCompactionProve;
+import org.oneedtech.inspect.vc.util.CachingDocumentLoader;
 import org.oneedtech.inspect.vc.util.JsonNodeUtil;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import foundation.identity.jsonld.ConfigurableDocumentLoader;
 
 
 public class ValidationPropertyProbe extends PropertyProbe {
     private final Validation validation;
+    private final boolean fullValidate; // TODO: fullValidate
 
     public ValidationPropertyProbe(Validation validation) {
+        this(validation, false);
+    }
+
+    public ValidationPropertyProbe(Validation validation, boolean fullValidate) {
         super(ID + "<" + validation.getName() + ">", validation.getName());
         this.validation = validation;
+        this.fullValidate = fullValidate;
         setValidations(this::validate);
     }
+
 
 
     @Override
@@ -40,6 +66,8 @@ public class ValidationPropertyProbe extends PropertyProbe {
      * @return validation result
      */
     private ReportItems validate(JsonNode node, RunContext ctx) {
+        ReportItems result = new ReportItems();
+
         // required property
         if (validation.isRequired()) {
             if (node.isObject()) {
@@ -72,64 +100,88 @@ public class ValidationPropertyProbe extends PropertyProbe {
                     }
                 }
             } else {
-                /**
-                for i in range(len(values_to_test)):
-                val = values_to_test[i]
-                if isinstance(prop_value, (list, tuple,)):
-                    value_to_test_path = [node_id, prop_name, i]
-                else:
-                    value_to_test_path = [node_id, prop_name]
+                for (JsonNode childNode : nodeList) {
+                    if (childNode.isObject()) {
+                        result = new ReportItems(List.of(result, validateExpectedTypes(childNode, ctx)));
+                        continue;
+                    } else if (validation.isAllowDataUri() && !DATA_URI_OR_URL.getValidationFunction().apply(childNode)){
+                        return error("ID-type property " + validation.getName() + " had value `" + childNode.toString() + "` that isn't URI or DATA URI in " + node.toString(), ctx);
+                    } else if (!validation.isAllowDataUri() && !ValueType.IRI.getValidationFunction().apply(childNode)) {
+                        return error("ID-type property " + validation.getName() + " had value `" + childNode.toString() + "` where another scheme may have been expected " + node.toString(), ctx);
+                    }
 
-                if isinstance(val, dict):
-                    actions.append(
-                        add_task(VALIDATE_EXPECTED_NODE_CLASS, node_path=value_to_test_path,
-                                 expected_class=task_meta.get('expected_class'),
-                                 full_validate=task_meta.get('full_validate', True)))
-                    continue
-                elif task_meta.get('allow_data_uri') and not PrimitiveValueValidator(ValueTypes.DATA_URI_OR_URL)(val):
-                    raise ValidationError("ID-type property {} had value `{}` that isn't URI or DATA URI in {}.".format(
-                        prop_name, abv(val), abv_node(node_id, node_path))
-                    )
-                elif not task_meta.get('allow_data_uri', False) and not PrimitiveValueValidator(ValueTypes.IRI)(val):
-                    actions.append(report_message(
-                        "ID-type property {} had value `{}` where another scheme may have been expected {}.".format(
-                            prop_name, abv(val), abv_node(node_id, node_path)
-                        ), message_level=MESSAGE_LEVEL_WARNING))
-                    raise ValidationError(
-                        "ID-type property {} had value `{}` not embedded node or in IRI format in {}.".format(
-                            prop_name, abv(val), abv_node(node_id, node_path))
-                    )
-                try:
-                    target = get_node_by_id(state, val)
-                except IndexError:
-                    if not task_meta.get('fetch', False):
-                        if task_meta.get('allow_remote_url') and PrimitiveValueValidator(ValueTypes.URL)(val):
-                            continue
-                        if task_meta.get('allow_data_uri') and PrimitiveValueValidator(ValueTypes.DATA_URI)(val):
-                            continue
-                        raise ValidationError(
-                            'Node {} has {} property value `{}` that appears not to be in URI format'.format(
-                                abv_node(node_id, node_path), prop_name, abv(val)
-                            ) + ' or did not correspond to a known local node.')
-                    else:
-                        actions.append(
-                            add_task(FETCH_HTTP_NODE, url=val,
-                                     expected_class=task_meta.get('expected_class'),
-                                     source_node_path=value_to_test_path
-                                     ))
-                else:
-                    actions.append(
-                        add_task(VALIDATE_EXPECTED_NODE_CLASS, node_id=val,
-                                 expected_class=task_meta.get('expected_class')))
-                 */
+                    // get node from context
+                    JsonLdGeneratedObject resolved = (JsonLdGeneratedObject) ctx.getGeneratedObject(childNode.asText());
+                    if (resolved == null) {
+                        if (!validation.isFetch()) {
+                            if (validation.isAllowRemoteUrl() && URL.getValidationFunction().apply(childNode)) {
+                                continue;
+                            }
+
+                            if (validation.isAllowDataUri() && DATA_URI.getValidationFunction().apply(childNode)) {
+                                continue;
+                            }
+                            return error("Node " + node.toString() + " has " + validation.getName() +" property value `" + childNode.toString() + "` that appears not to be in URI format", ctx);
+                        } else {
+                            // fetch
+                            UriResource uriResource = resolveUriResource(ctx, childNode);
+
+                            result = new ReportItems(List.of(result, new CredentialParseProbe().run(uriResource, ctx)));
+                            if (!result.contains(Outcome.FATAL, Outcome.EXCEPTION)) {
+                                Assertion assertion = (Assertion) ctx.getGeneratedObject(uriResource.getID());
+
+                                // compact ld
+                                result = new ReportItems(List.of(result, new JsonLDCompactionProve(assertion.getCredentialType().getContextUris().get(0)).run(assertion, ctx)));
+                                if (!result.contains(Outcome.FATAL, Outcome.EXCEPTION)) {
+                                    JsonLdGeneratedObject fetched = (JsonLdGeneratedObject) ctx.getGeneratedObject(JsonLDCompactionProve.getId(assertion));
+                                    JsonNode fetchedNode = ((ObjectMapper) ctx.get(Key.JACKSON_OBJECTMAPPER)).readTree(fetched.getJson());
+
+                                    // validate document
+                                    result = new ReportItems(List.of(result, validateExpectedTypes(fetchedNode, ctx)));
+                                }
+                            }
+                        }
+                    } else {
+                        // validate expected node class
+                        result = new ReportItems(List.of(result, validateExpectedTypes(childNode, ctx)));
+                    }
+                }
             }
         } catch (Throwable t) {
             return fatal(t.getMessage(), ctx);
         }
 
-        return success(ctx);
+        return result.size() > 0 ? result : success(ctx);
     }
 
-    public static final String ID = ValidationPropertyProbe.class.getSimpleName();
+    private UriResource resolveUriResource(RunContext ctx, JsonNode childNode) throws URISyntaxException {
+        URI uri = new URI(childNode.asText());
+        UriResource initialUriResource = new UriResource(uri);
+        UriResource uriResource = initialUriResource;
 
+        // check if uri points to a local resource
+        if (ctx.get(Key.JSON_DOCUMENT_LOADER) instanceof ConfigurableDocumentLoader) {
+            if (ConfigurableDocumentLoader.getDefaultHttpLoader() instanceof CachingDocumentLoader.HttpLoader) {
+                URI resolvedUri = ((CachingDocumentLoader.HttpLoader) ConfigurableDocumentLoader.getDefaultHttpLoader()).resolve(uri);
+                uriResource = new UriResource(resolvedUri);
+            }
+        }
+        return uriResource;
+    }
+
+    private ReportItems validateExpectedTypes(JsonNode node, RunContext ctx) {
+        List<ReportItems> results = validation.getExpectedTypes().stream()
+        .flatMap(type -> type.getValidations().stream())
+        .map(v -> new ValidationPropertyProbe(v, validation.isFullValidate()))
+        .map(probe -> {
+            try {
+                return probe.run(node, ctx);
+            } catch (Exception e) {
+                return ReportUtil.onProbeException(Probe.ID.NO_UNCAUGHT_EXCEPTIONS, null, e);
+            }
+        })
+        .collect(Collectors.toList());
+        return new ReportItems(results);
+    }
+    public static final String ID = ValidationPropertyProbe.class.getSimpleName();
 }

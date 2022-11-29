@@ -7,9 +7,9 @@ import java.util.Map;
 
 import org.oneedtech.inspect.util.resource.ResourceType;
 import org.oneedtech.inspect.util.spec.Specification;
-import org.oneedtech.inspect.vc.Assertion;
 import org.oneedtech.inspect.vc.OB20Inspector;
-import org.oneedtech.inspect.vc.jsonld.probe.JsonLDCompactionProve;
+
+import com.apicatalog.jsonld.loader.DocumentLoader;
 
 /**
  * OpenBadges 2.0 Test inspector.
@@ -28,9 +28,9 @@ public class TestOB20Inspector extends OB20Inspector {
     }
 
     @Override
-    protected JsonLDCompactionProve getCompactionProbe(Assertion assertion) {
-        return new JsonLDCompactionProve(assertion.getCredentialType().getContextUris().get(0), localDomains);
-    }
+	protected DocumentLoader getDocumentLoader() {
+		return new CachingDocumentLoader(localDomains);
+	}
 
 	public static class TestBuilder extends OB20Inspector.Builder {
 		final Map<URI, String> localDomains;

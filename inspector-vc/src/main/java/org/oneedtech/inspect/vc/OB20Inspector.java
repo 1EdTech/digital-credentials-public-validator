@@ -33,6 +33,7 @@ import org.oneedtech.inspect.vc.probe.TypePropertyProbe;
 import org.oneedtech.inspect.vc.probe.ValidationPropertyProbe;
 import org.oneedtech.inspect.vc.util.CachingDocumentLoader;
 
+import com.apicatalog.jsonld.loader.DocumentLoader;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -76,6 +77,7 @@ public class OB20Inspector extends Inspector {
 
         ObjectMapper mapper = ObjectMapperCache.get(DEFAULT);
 		JsonPathEvaluator jsonPath = new JsonPathEvaluator(mapper);
+		DocumentLoader documentLoader = getDocumentLoader();
 
 		RunContext ctx = new RunContext.Builder()
 				.put(this)
@@ -85,6 +87,7 @@ public class OB20Inspector extends Inspector {
 				.put(Key.GENERATED_OBJECT_BUILDER, new Assertion.Builder())
 				.put(Key.PNG_CREDENTIAL_KEY, PngParser.Keys.OB20)
 				.put(Key.SVG_CREDENTIAL_QNAME, SvgParser.QNames.OB20)
+				.put(Key.JSON_DOCUMENT_LOADER, documentLoader)
 				.build();
 
 		List<ReportItems> accumulator = new ArrayList<>();
@@ -97,7 +100,7 @@ public class OB20Inspector extends Inspector {
 			if(broken(accumulator, true)) return abort(ctx, accumulator, probeCount);
 
 			// we expect the above to place a generated object in the context
-			Assertion assertion = ctx.getGeneratedObject(Assertion.ID);
+			Assertion assertion = ctx.getGeneratedObject(resource.getID());
 
 			//context and type properties
 			CredentialEnum type = assertion.getCredentialType();
@@ -108,11 +111,11 @@ public class OB20Inspector extends Inspector {
 			}
 
 			// let's compact
-			accumulator.add(getCompactionProbe(assertion).run(assertion, ctx));
+			accumulator.add(new JsonLDCompactionProve(assertion.getCredentialType().getContextUris().get(0)).run(assertion, ctx));
 			if(broken(accumulator, true)) return abort(ctx, accumulator, probeCount);
 
 			// validate JSON LD
-			JsonLdGeneratedObject jsonLdGeneratedObject = ctx.getGeneratedObject(JsonLdGeneratedObject.ID);
+			JsonLdGeneratedObject jsonLdGeneratedObject = ctx.getGeneratedObject(JsonLDCompactionProve.getId(assertion));
 			accumulator.add(new JsonLDValidationProbe(jsonLdGeneratedObject).run(assertion, ctx));
 			if(broken(accumulator, true)) return abort(ctx, accumulator, probeCount);
 
@@ -145,8 +148,8 @@ public class OB20Inspector extends Inspector {
 		return new Report(ctx, new ReportItems(accumulator), probeCount);
     }
 
-	protected JsonLDCompactionProve getCompactionProbe(Assertion assertion) {
-		return new JsonLDCompactionProve(assertion.getCredentialType().getContextUris().get(0));
+	protected DocumentLoader getDocumentLoader() {
+		return new CachingDocumentLoader();
 	}
 
 	public static class Builder extends Inspector.Builder<OB20Inspector.Builder> {

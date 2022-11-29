@@ -6,7 +6,11 @@ public class JsonLdGeneratedObject extends GeneratedObject {
     private String json;
 
     public JsonLdGeneratedObject(String json) {
-        super(ID, GeneratedObject.Type.INTERNAL);
+        this(ID, json);
+    }
+
+    public JsonLdGeneratedObject(String id, String json) {
+        super(id, GeneratedObject.Type.INTERNAL);
         this.json = json;
     }
 

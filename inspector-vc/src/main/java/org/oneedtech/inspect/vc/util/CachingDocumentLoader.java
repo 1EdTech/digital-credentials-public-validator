@@ -80,7 +80,7 @@ public class CachingDocumentLoader extends ConfigurableDocumentLoader {
 		 * Resolved given url. If the url is from one of local domain, a URL of the relative resource will be returned
 		 * @throws URISyntaxException
 		 */
-		private URI resolve(URI url) throws URISyntaxException {
+		public URI resolve(URI url) throws URISyntaxException {
 			if (localDomains != null) {
 				URI base = url.resolve("/");
 				if (localDomains.containsKey(base)) {

@@ -1,6 +1,5 @@
 package org.oneedtech.inspect.vc;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -27,7 +26,7 @@ public class Assertion extends Credential {
 	final Assertion.Type assertionType;
 
     protected Assertion(Resource resource, JsonNode data, String jwt, Map<CredentialEnum, SchemaKey> schemas) {
-        super(ID, resource, data, jwt, schemas);
+        super(resource.getID(), resource, data, jwt, schemas);
 
         JsonNode typeNode = jsonData.get("type");
         this.assertionType = Assertion.Type.valueOf(typeNode);
@@ -124,6 +123,10 @@ public class Assertion extends Credential {
         public List<String> getContextUris() {
             return List.of("https://w3id.org/openbadges/v2") ;
         }
+
+        public List<Validation> getValidations() {
+            return validationMap.get(this);
+        }
 	}
 
     public enum ValueType {
@@ -165,7 +168,7 @@ public class Assertion extends Credential {
         new Validation.Builder().name("type").type(ValueType.RDF_TYPE).required(true).many(true).mustContainOneType(List.of(Type.Assertion)).build(),
         new Validation.Builder().name("recipient").type(ValueType.ID).expectedType(Type.IdentityObject).required(true).build(),
         new Validation.Builder().name("badge").type(ValueType.ID).prerequisite("ASN_FLATTEN_BC").expectedType(Type.BadgeClass).fetch(true).required(true).build(),
-        new Validation.Builder().name("verification").type(ValueType.ID).expectedTypes(List.of(Type.VerificationObjectAssertion)).required(true).build(),
+        new Validation.Builder().name("verification").type(ValueType.ID).expectedType(Type.VerificationObjectAssertion).required(true).build(),
         new Validation.Builder().name("issuedOn").type(ValueType.DATETIME).required(true).build(),
         new Validation.Builder().name("expires").type(ValueType.DATETIME).required(false).build(),
         new Validation.Builder().name("image").type(ValueType.ID).required(false).allowRemoteUrl(true).expectedType(Type.Image).fetch(false).allowDataUri(false).build(),

@@ -110,7 +110,7 @@ public class PrimitiveValueValidator {
         }
 
         ObjectMapper mapper = new ObjectMapper(); // TODO: get from RunContext
-        JsonPathEvaluator jsonPath = new JsonPathEvaluator(mapper);
+        JsonPathEvaluator jsonPath = new JsonPathEvaluator(mapper); // TODO: get from RunContext
 
         try {
             JsonNode node = mapper.readTree(Resources.getResource("contexts/ob-v2p0.json"));
