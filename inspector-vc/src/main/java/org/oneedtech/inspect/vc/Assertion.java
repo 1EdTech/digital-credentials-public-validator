@@ -5,11 +5,13 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 import org.oneedtech.inspect.schema.Catalog;
 import org.oneedtech.inspect.schema.SchemaKey;
 import org.oneedtech.inspect.util.resource.Resource;
 import org.oneedtech.inspect.vc.util.JsonNodeUtil;
+import org.oneedtech.inspect.vc.util.PrimitiveValueValidator;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.base.MoreObjects;
@@ -125,23 +127,33 @@ public class Assertion extends Credential {
 	}
 
     public enum ValueType {
-        BOOLEAN,
-        COMPACT_IRI,
-        DATA_URI,
-        DATA_URI_OR_URL,
-        DATETIME,
-        EMAIL,
-        ID,
-        IDENTITY_HASH,
-        IRI,
-        LANGUAGE,
-        MARKDOWN_TEXT,
-        RDF_TYPE,
-        TELEPHONE,
-        TEXT,
-        TEXT_OR_NUMBER,
-        URL,
-        URL_AUTHORITY;
+        BOOLEAN(PrimitiveValueValidator::validateBoolean),
+        COMPACT_IRI(PrimitiveValueValidator::validateCompactIri),
+        DATA_URI(PrimitiveValueValidator::validateDataUri),
+        DATA_URI_OR_URL(PrimitiveValueValidator::validateDataUriOrUrl),
+        DATETIME(PrimitiveValueValidator::validateDatetime),
+        EMAIL(PrimitiveValueValidator::validateEmail),
+        ID(null),
+        IDENTITY_HASH(PrimitiveValueValidator::validateIdentityHash),
+        IRI(PrimitiveValueValidator::validateIri),
+        LANGUAGE(PrimitiveValueValidator::validateLanguage),
+        MARKDOWN_TEXT(PrimitiveValueValidator::validateMarkdown),
+        RDF_TYPE(PrimitiveValueValidator::validateRdfType),
+        TELEPHONE(PrimitiveValueValidator::validateTelephone),
+        TEXT(PrimitiveValueValidator::validateText),
+        TEXT_OR_NUMBER(PrimitiveValueValidator::validateTextOrNumber),
+        URL(PrimitiveValueValidator::validateUrl),
+        URL_AUTHORITY(PrimitiveValueValidator::validateUrlAuthority);
+
+        private final Function<JsonNode, Boolean> validationFunction;
+
+        private ValueType(Function<JsonNode, Boolean> validationFunction) {
+            this.validationFunction = validationFunction;
+        }
+
+        public Function<JsonNode, Boolean> getValidationFunction() {
+            return validationFunction;
+        }
 
         public static List<ValueType> primitives = List.of(BOOLEAN, DATA_URI_OR_URL, DATETIME, ID, IDENTITY_HASH, IRI, LANGUAGE, MARKDOWN_TEXT,
         TELEPHONE, TEXT, TEXT_OR_NUMBER, URL, URL_AUTHORITY);

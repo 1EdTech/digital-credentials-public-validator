@@ -36,6 +36,55 @@ public class Validation {
         this.fullValidate = builder.fullValidate;
     }
 
+
+    public String getName() {
+        return name;
+    }
+
+    public Assertion.ValueType getType() {
+        return type;
+    }
+
+    public boolean isRequired() {
+        return required;
+    }
+
+    public boolean isMany() {
+        return many;
+    }
+
+    public List<String> getMustContainOne() {
+        return mustContainOne;
+    }
+
+    public List<String> getPrerequisites() {
+        return prerequisites;
+    }
+
+    public List<Assertion.Type> getExpectedTypes() {
+        return expectedTypes;
+    }
+
+    public boolean isAllowRemoteUrl() {
+        return allowRemoteUrl;
+    }
+
+    public boolean isAllowDataUri() {
+        return allowDataUri;
+    }
+
+    public boolean isFetch() {
+        return fetch;
+    }
+
+    public String getDefaultType() {
+        return defaultType;
+    }
+
+    public boolean isFullValidate() {
+        return fullValidate;
+    }
+
     public static class Builder {
         private String name;
         private Assertion.ValueType type;

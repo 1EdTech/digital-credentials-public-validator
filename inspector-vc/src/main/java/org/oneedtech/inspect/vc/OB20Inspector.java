@@ -21,7 +21,6 @@ import org.oneedtech.inspect.util.json.ObjectMapperCache;
 import org.oneedtech.inspect.util.resource.Resource;
 import org.oneedtech.inspect.util.resource.ResourceType;
 import org.oneedtech.inspect.util.spec.Specification;
-import org.oneedtech.inspect.vc.Assertion.Type;
 import org.oneedtech.inspect.vc.Credential.CredentialEnum;
 import org.oneedtech.inspect.vc.jsonld.JsonLdGeneratedObject;
 import org.oneedtech.inspect.vc.jsonld.probe.JsonLDCompactionProve;
@@ -31,6 +30,7 @@ import org.oneedtech.inspect.vc.payload.SvgParser;
 import org.oneedtech.inspect.vc.probe.ContextPropertyProbe;
 import org.oneedtech.inspect.vc.probe.CredentialParseProbe;
 import org.oneedtech.inspect.vc.probe.TypePropertyProbe;
+import org.oneedtech.inspect.vc.probe.ValidationPropertyProbe;
 import org.oneedtech.inspect.vc.util.CachingDocumentLoader;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -115,6 +115,21 @@ public class OB20Inspector extends Inspector {
 			JsonLdGeneratedObject jsonLdGeneratedObject = ctx.getGeneratedObject(JsonLdGeneratedObject.ID);
 			accumulator.add(new JsonLDValidationProbe(jsonLdGeneratedObject).run(assertion, ctx));
 			if(broken(accumulator, true)) return abort(ctx, accumulator, probeCount);
+
+			// Validates the Open Badge
+			List<Validation> validations = assertion.getValidations();
+			for (Validation validation : validations) {
+				probeCount++;
+				accumulator.add(new ValidationPropertyProbe(validation).run(assertion.getJson(), ctx));
+				if(broken(accumulator)) return abort(ctx, accumulator, probeCount);
+			}
+
+			// Each Badge Object contains all required properties for its class
+			// This could be done validating with the schema, but seems that there are some error on that file
+			// So, we do a manual Probe for the nodes
+
+			// accumulator.add(new RequiredFieldsProbe(jsonLdGeneratedObject).run(assertion, ctx));
+			// if(broken(accumulator, true)) return abort(ctx, accumulator, probeCount);
 
 			//canonical schema and inline schemata
 			// SchemaKey schema = assertion.getSchemaKey().orElseThrow();
