@@ -31,6 +31,7 @@ import org.oneedtech.inspect.vc.probe.ContextPropertyProbe;
 import org.oneedtech.inspect.vc.probe.CredentialParseProbe;
 import org.oneedtech.inspect.vc.probe.TypePropertyProbe;
 import org.oneedtech.inspect.vc.probe.ValidationPropertyProbe;
+import org.oneedtech.inspect.vc.probe.ValidationPropertyProbeFactory;
 import org.oneedtech.inspect.vc.util.CachingDocumentLoader;
 
 import com.apicatalog.jsonld.loader.DocumentLoader;
@@ -119,11 +120,12 @@ public class OB20Inspector extends Inspector {
 			accumulator.add(new JsonLDValidationProbe(jsonLdGeneratedObject).run(assertion, ctx));
 			if(broken(accumulator, true)) return abort(ctx, accumulator, probeCount);
 
-			// Validates the Open Badge
+			// Validates the Open Badge, from the compacted form
+			JsonNode assertionNode = mapper.readTree(jsonLdGeneratedObject.getJson());
 			List<Validation> validations = assertion.getValidations();
 			for (Validation validation : validations) {
 				probeCount++;
-				accumulator.add(new ValidationPropertyProbe(validation).run(assertion.getJson(), ctx));
+				accumulator.add(ValidationPropertyProbeFactory.of(validation).run(assertionNode, ctx));
 				if(broken(accumulator)) return abort(ctx, accumulator, probeCount);
 			}
 
