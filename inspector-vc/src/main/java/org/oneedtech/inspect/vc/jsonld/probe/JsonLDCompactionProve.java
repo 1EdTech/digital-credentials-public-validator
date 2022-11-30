@@ -6,6 +6,7 @@ import org.oneedtech.inspect.core.probe.Probe;
 import org.oneedtech.inspect.core.probe.RunContext;
 import org.oneedtech.inspect.core.probe.RunContext.Key;
 import org.oneedtech.inspect.core.report.ReportItems;
+import org.oneedtech.inspect.util.resource.Resource;
 import org.oneedtech.inspect.vc.Credential;
 import org.oneedtech.inspect.vc.jsonld.JsonLdGeneratedObject;
 
@@ -51,7 +52,14 @@ public class JsonLDCompactionProve extends Probe<Credential> {
     }
 
     public static String getId(Credential crd) {
-      return "json-ld-compact:" + crd.getResource().getID();
+      return getId(crd.getResource());
+    }
+
+    public static String getId(Resource resource) {
+      return getId(resource.getID());
+    }
+    public static String getId(String id) {
+      return "json-ld-compact:" + id;
     }
 
 	public static final String ID = JsonLDCompactionProve.class.getSimpleName();
