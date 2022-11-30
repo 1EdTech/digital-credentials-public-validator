@@ -111,7 +111,8 @@ public class ValidationPropertyProbe extends PropertyProbe {
                     }
 
                     // get node from context
-                    JsonLdGeneratedObject resolved = (JsonLdGeneratedObject) ctx.getGeneratedObject(childNode.asText());
+                    UriResource uriResource = resolveUriResource(ctx, childNode.asText());
+                    JsonLdGeneratedObject resolved = (JsonLdGeneratedObject) ctx.getGeneratedObject(JsonLDCompactionProve.getId(uriResource));
                     if (resolved == null) {
                         if (!validation.isFetch()) {
                             if (validation.isAllowRemoteUrl() && URL.getValidationFunction().apply(childNode)) {
@@ -124,8 +125,6 @@ public class ValidationPropertyProbe extends PropertyProbe {
                             return error("Node " + node.toString() + " has " + validation.getName() +" property value `" + childNode.toString() + "` that appears not to be in URI format", ctx);
                         } else {
                             // fetch
-                            UriResource uriResource = resolveUriResource(ctx, childNode.asText());
-
                             result = new ReportItems(List.of(result, new CredentialParseProbe().run(uriResource, ctx)));
                             if (!result.contains(Outcome.FATAL, Outcome.EXCEPTION)) {
                                 Assertion assertion = (Assertion) ctx.getGeneratedObject(uriResource.getID());
@@ -182,73 +181,6 @@ public class ValidationPropertyProbe extends PropertyProbe {
         })
         .collect(Collectors.toList());
         return new ReportItems(results);
-    }
-
-    private void flattenEmbeddedResource(JsonNode node, RunContext ctx) {
-        /*
-    try:
-        node_id = task_meta['node_id']
-        node = get_node_by_id(state, node_id)
-        prop_name = task_meta['prop_name']
-        node_class = task_meta['node_class']
-    except (IndexError, KeyError):
-        raise TaskPrerequisitesError()
-
-    actions = []
-    value = node.get(prop_name)
-    if value is None:
-        return task_result(True, "Expected property {} was missing in node {}".format(node_id))
-
-    if isinstance(value, six.string_types):
-        return task_result(
-            True, "Property {} referenced from {} is not embedded in need of flattening".format(
-                prop_name, abv_node(node_id=node_id)
-            ))
-
-    if not isinstance(value, dict):
-        return task_result(
-            False, "Property {} referenced from {} is not a JSON object or string as expected".format(
-                prop_name, abv_node(node_id=node_id)
-            ))
-    embedded_node_id = value.get('id')
-
-    if embedded_node_id is None:
-        new_node = value.copy()
-        embedded_node_id = '_:{}'.format(uuid.uuid4())
-        new_node['id'] = embedded_node_id
-        new_node['@context'] = OPENBADGES_CONTEXT_V2_URI
-        actions.append(add_node(embedded_node_id, data=new_node))
-        actions.append(patch_node(node_id, {prop_name: embedded_node_id}))
-        actions.append(report_message(
-            'Node id missing at {}. A blank node ID has been assigned'.format(
-                abv_node(node_path=[node_id, prop_name], length=64)
-            ), message_level=MESSAGE_LEVEL_WARNING)
-        )
-    elif not isinstance(embedded_node_id, six.string_types) or not is_iri(embedded_node_id):
-        return task_result(False, "Embedded JSON object at {} has no proper assigned id.".format(
-            abv_node(node_path=[node_id, prop_name])))
-
-    elif node_class == OBClasses.Assertion and not is_url(embedded_node_id):
-            if not re.match(URN_REGEX, embedded_node_id, re.IGNORECASE):
-                actions.append(report_message(
-                    'ID format for {} at {} not in an expected HTTP or URN:UUID scheme'.format(
-                        embedded_node_id, abv_node(node_path=[node_id, prop_name])
-                    )))
-            new_node = value.copy()
-            new_node['@context'] = OPENBADGES_CONTEXT_V2_URI
-            actions.append(add_node(embedded_node_id, data=value))
-            actions.append(patch_node(node_id, {prop_name: embedded_node_id}))
-
-    else:
-        actions.append(patch_node(node_id, {prop_name: embedded_node_id}))
-        if not node_match_exists(state, embedded_node_id) and not filter_tasks(
-                state, node_id=embedded_node_id, task_type=FETCH_HTTP_NODE):
-            # fetch
-            actions.append(add_task(FETCH_HTTP_NODE, url=embedded_node_id))
-
-    return task_result(True, "Embedded {} node in {} queued for storage and/or refetching as needed", actions)
-
-         */
     }
 
     public static final String ID = ValidationPropertyProbe.class.getSimpleName();
