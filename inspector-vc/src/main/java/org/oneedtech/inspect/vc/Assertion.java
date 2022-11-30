@@ -9,6 +9,7 @@ import java.util.function.Function;
 import org.oneedtech.inspect.schema.Catalog;
 import org.oneedtech.inspect.schema.SchemaKey;
 import org.oneedtech.inspect.util.resource.Resource;
+import org.oneedtech.inspect.vc.Validation.MessageLevel;
 import org.oneedtech.inspect.vc.util.JsonNodeUtil;
 import org.oneedtech.inspect.vc.util.PrimitiveValueValidator;
 
@@ -148,7 +149,8 @@ public class Assertion extends Credential {
         URL(PrimitiveValueValidator::validateUrl),
         URL_AUTHORITY(PrimitiveValueValidator::validateUrlAuthority),
 
-        IMAGE(null);
+        IMAGE(null),
+        ISSUER(null);
 
         private final Function<JsonNode, Boolean> validationFunction;
 
@@ -264,7 +266,8 @@ public class Assertion extends Credential {
         new Validation.Builder().name("email").type(ValueType.EMAIL).required(true).build(),
         new Validation.Builder().name("telephone").type(ValueType.TELEPHONE).required(false).build(),
         new Validation.Builder().name("publicKey").type(ValueType.ID).expectedType(Type.CryptographicKey).fetch(true).required(false).build(),
-        new Validation.Builder().name("verification").type(ValueType.ID).expectedType(Type.VerificationObjectIssuer).fetch(false).required(false).build()
+        new Validation.Builder().name("verification").type(ValueType.ID).expectedType(Type.VerificationObjectIssuer).fetch(false).required(false).build(),
+        new Validation.Builder().name("id").type(ValueType.ISSUER).required(false).messageLevel(MessageLevel.Warning).build()
     ))
     .put(Type.Profile, List.of(
         new Validation.Builder().name("id").type(ValueType.IRI).required(true).build(),
@@ -276,7 +279,8 @@ public class Assertion extends Credential {
         new Validation.Builder().name("email").type(ValueType.EMAIL).required(true).build(),
         new Validation.Builder().name("telephone").type(ValueType.TELEPHONE).required(false).build(),
         new Validation.Builder().name("publicKey").type(ValueType.ID).expectedType(Type.CryptographicKey).fetch(true).required(false).build(),
-        new Validation.Builder().name("verification").type(ValueType.ID).expectedType(Type.VerificationObjectIssuer).fetch(false).required(false).build()
+        new Validation.Builder().name("verification").type(ValueType.ID).expectedType(Type.VerificationObjectIssuer).fetch(false).required(false).build(),
+        new Validation.Builder().name("id").type(ValueType.ISSUER).required(false).messageLevel(MessageLevel.Warning).build()
     ))
     .put(Type.RevocationList, List.of(
         new Validation.Builder().name("type").type(ValueType.RDF_TYPE).required(true).many(true).mustContainOneType(List.of(Type.RevocationList)).build(),

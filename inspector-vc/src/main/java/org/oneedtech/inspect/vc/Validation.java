@@ -20,6 +20,7 @@ public class Validation {
     private final boolean fetch;
     private final String defaultType;
     private final boolean fullValidate;
+    private MessageLevel messageLevel;
 
     public Validation(Builder builder) {
         this.name = builder.name;
@@ -34,8 +35,8 @@ public class Validation {
         this.fetch = builder.fetch;
         this.defaultType = builder.defaultType;
         this.fullValidate = builder.fullValidate;
+        this.messageLevel = builder.messageLevel;
     }
-
 
     public String getName() {
         return name;
@@ -85,6 +86,15 @@ public class Validation {
         return fullValidate;
     }
 
+    public MessageLevel getMessageLevel() {
+        return messageLevel;
+    }
+
+    public enum MessageLevel {
+        Warning,
+        Error
+    }
+
     public static class Builder {
         private String name;
         private Assertion.ValueType type;
@@ -98,11 +108,13 @@ public class Validation {
         private boolean fetch;
         private String defaultType;
         private boolean fullValidate;
+        private MessageLevel messageLevel;
 
         public Builder() {
             this.mustContainOne = new ArrayList<>();
             this.prerequisites = new ArrayList<>();
             this.expectedTypes = new ArrayList<>();
+            this.messageLevel = MessageLevel.Error;
         }
 
         public Builder name(String name) {
@@ -181,6 +193,11 @@ public class Validation {
 
         public Builder fullValidate(boolean fullValidate) {
             this.fullValidate = fullValidate;
+            return this;
+        }
+
+        public Builder messageLevel(MessageLevel messageLevel) {
+            this.messageLevel = messageLevel;
             return this;
         }
 
