@@ -19,6 +19,9 @@ public class ValidationPropertyProbeFactory {
 		if (validation.getType() == ValueType.RDF_TYPE) {
 			return new ValidationRdfTypePropertyProbe(validation, fullValidate);
 		}
+		if (validation.getType() == ValueType.IMAGE) {
+			return new ValidationImagePropertyProbe(validation);
+		}
 		return new ValidationPropertyProbe(validation, fullValidate);
 	}
 }

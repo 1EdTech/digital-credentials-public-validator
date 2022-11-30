@@ -146,7 +146,9 @@ public class Assertion extends Credential {
         TEXT(PrimitiveValueValidator::validateText),
         TEXT_OR_NUMBER(PrimitiveValueValidator::validateTextOrNumber),
         URL(PrimitiveValueValidator::validateUrl),
-        URL_AUTHORITY(PrimitiveValueValidator::validateUrlAuthority);
+        URL_AUTHORITY(PrimitiveValueValidator::validateUrlAuthority),
+
+        IMAGE(null);
 
         private final Function<JsonNode, Boolean> validationFunction;
 
@@ -173,7 +175,8 @@ public class Assertion extends Credential {
         new Validation.Builder().name("expires").type(ValueType.DATETIME).required(false).build(),
         new Validation.Builder().name("image").type(ValueType.ID).required(false).allowRemoteUrl(true).expectedType(Type.Image).fetch(false).allowDataUri(false).build(),
         new Validation.Builder().name("narrative").type(ValueType.MARKDOWN_TEXT).required(false).build(),
-        new Validation.Builder().name("evidence").type(ValueType.ID).allowRemoteUrl(true).expectedType(Type.Evidence).many(true).fetch(false).required(false).build()
+        new Validation.Builder().name("evidence").type(ValueType.ID).allowRemoteUrl(true).expectedType(Type.Evidence).many(true).fetch(false).required(false).build(),
+        new Validation.Builder().name("image").type(ValueType.IMAGE).required(false).many(false).allowDataUri(false).build()
     ))
     .put(Type.BadgeClass, List.of(
         new Validation.Builder().name("id").type(ValueType.IRI).required(true).build(),
