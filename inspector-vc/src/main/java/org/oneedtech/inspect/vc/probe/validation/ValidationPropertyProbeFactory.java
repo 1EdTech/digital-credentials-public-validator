@@ -1,4 +1,4 @@
-package org.oneedtech.inspect.vc.probe;
+package org.oneedtech.inspect.vc.probe.validation;
 
 import static org.oneedtech.inspect.util.code.Defensives.checkNotNull;
 

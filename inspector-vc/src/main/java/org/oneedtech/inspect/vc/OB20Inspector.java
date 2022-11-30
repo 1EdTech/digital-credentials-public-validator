@@ -30,8 +30,8 @@ import org.oneedtech.inspect.vc.payload.SvgParser;
 import org.oneedtech.inspect.vc.probe.ContextPropertyProbe;
 import org.oneedtech.inspect.vc.probe.CredentialParseProbe;
 import org.oneedtech.inspect.vc.probe.TypePropertyProbe;
-import org.oneedtech.inspect.vc.probe.ValidationPropertyProbe;
-import org.oneedtech.inspect.vc.probe.ValidationPropertyProbeFactory;
+import org.oneedtech.inspect.vc.probe.validation.ValidationPropertyProbe;
+import org.oneedtech.inspect.vc.probe.validation.ValidationPropertyProbeFactory;
 import org.oneedtech.inspect.vc.util.CachingDocumentLoader;
 
 import com.apicatalog.jsonld.loader.DocumentLoader;

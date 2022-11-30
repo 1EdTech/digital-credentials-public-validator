@@ -1,4 +1,4 @@
-package org.oneedtech.inspect.vc.probe;
+package org.oneedtech.inspect.vc.probe.validation;
 
 import java.util.List;
 import java.util.regex.Matcher;

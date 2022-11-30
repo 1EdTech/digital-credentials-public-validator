@@ -1,4 +1,4 @@
-package org.oneedtech.inspect.vc.probe;
+package org.oneedtech.inspect.vc.probe.validation;
 
 import static org.oneedtech.inspect.vc.Assertion.ValueType.DATA_URI;
 import static org.oneedtech.inspect.vc.Assertion.ValueType.DATA_URI_OR_URL;
@@ -22,6 +22,8 @@ import org.oneedtech.inspect.vc.Assertion.ValueType;
 import org.oneedtech.inspect.vc.Validation;
 import org.oneedtech.inspect.vc.jsonld.JsonLdGeneratedObject;
 import org.oneedtech.inspect.vc.jsonld.probe.JsonLDCompactionProve;
+import org.oneedtech.inspect.vc.probe.CredentialParseProbe;
+import org.oneedtech.inspect.vc.probe.PropertyProbe;
 import org.oneedtech.inspect.vc.util.CachingDocumentLoader;
 import org.oneedtech.inspect.vc.util.JsonNodeUtil;
 
