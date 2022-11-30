@@ -9,6 +9,7 @@ import static org.oneedtech.inspect.test.Assertions.assertWarning;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Nested;
@@ -26,10 +27,11 @@ public class OB20Tests {
 
 	@BeforeAll
 	static void setup() throws URISyntaxException {
-		validator = new TestBuilder()
-			.add(new URI("https://www.example.org/"), "ob20/assets")
-			.add(new URI("https://example.org/"), "ob20/assets")
-			.add(new URI("http://example.org/"), "ob20/assets")
+		TestBuilder builder = new TestBuilder();
+		for (String localDomain : localDomains) {
+			builder.add(new URI(localDomain), "ob20/assets");
+		}
+		validator = builder
 			.set(Behavior.TEST_INCLUDE_SUCCESS, true)
 			.set(Behavior.TEST_INCLUDE_WARNINGS, false)
 			.set(Behavior.VALIDATOR_FAIL_FAST, true)
@@ -93,8 +95,11 @@ public class OB20Tests {
 	static class WarningTests {
 		@BeforeAll
 		static void setup() throws URISyntaxException {
-			validator = new TestBuilder()
-				.add(new URI("https://www.example.org/"), "ob20/assets")
+			TestBuilder builder = new TestBuilder();
+			for (String localDomain : localDomains) {
+				builder.add(new URI(localDomain), "ob20/assets");
+			}
+			validator = builder
 				.set(Behavior.TEST_INCLUDE_SUCCESS, true)
 				.set(Behavior.TEST_INCLUDE_WARNINGS, true)
 				.set(Behavior.VALIDATOR_FAIL_FAST, true)
@@ -110,5 +115,16 @@ public class OB20Tests {
 				assertWarning(report);
 			});
 		}
+
+		@Test
+		void testWarningIssuerNonHttps() {
+			assertDoesNotThrow(()->{
+				Report report = validator.run(Samples.OB20.JSON.WARNING_ISSUER_NON_HTTPS_JSON.asFileResource());
+				if(verbose) PrintHelper.print(report, true);
+				assertWarning(report);
+			});
+		}
 	}
+
+	private static final List<String> localDomains = List.of("https://www.example.org/", "https://example.org/", "http://example.org/");
 }

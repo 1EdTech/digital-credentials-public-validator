@@ -198,11 +198,9 @@
         },
         "verify": "verification"
     },
-    "id": "http://example.org/badgeclass1",
-    "type": "BadgeClass",
-    "name": "Example Badge",
-    "description": "An example",
-    "criteria": "http://example.com/badgecriteria.json",
-    "issuer": "http://example.org/issuer1",
-    "image": "http://example.org/robotics-badge.png"
+    "id": "urn:uuid:2d391246-6e0d-4dab-906c-b29770bd7aa6",
+    "type": "Issuer",
+    "url": "http://example.com",
+    "email": "email@example.org",
+    "name": "some Issuer"
 }

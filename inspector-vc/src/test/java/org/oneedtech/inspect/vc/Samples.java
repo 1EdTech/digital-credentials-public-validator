@@ -49,6 +49,8 @@ public class Samples {
 			public final static Sample SIMPLE_ASSERTION_INVALID_TYPE_JSON = new Sample("ob20/basic-assertion-invalid-type.json", true);
 			// original: test_graph: test_verify_with_redirection
 			public final static Sample WARNING_REDIRECTION_ASSERTION_JSON = new Sample("ob20/warning-with-redirection.json", true);
+			// original: test_validation: test_issuer_warn_on_non_https_id
+			public final static Sample WARNING_ISSUER_NON_HTTPS_JSON = new Sample("ob20/warning-issuer-non-http.json", true);
 			// original: test_validation: test_can_input_badgeclass
 			public final static Sample SIMPLE_BADGECLASS = new Sample("ob20/assets/badgeclass1.json", true);
 		}
