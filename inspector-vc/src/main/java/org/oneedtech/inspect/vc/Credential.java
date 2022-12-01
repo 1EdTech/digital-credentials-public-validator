@@ -30,15 +30,17 @@ public abstract class Credential extends GeneratedObject {
 	final JsonNode jsonData;
 	final String jwt;
     final String issuedOnPropertyName;
+    final String expiresAtPropertyName;
     final Map<CredentialEnum, SchemaKey> schemas;
 
-    protected Credential(String id, Resource resource, JsonNode data, String jwt, Map<CredentialEnum, SchemaKey> schemas, String issuedOnPropertyName) {
+    protected Credential(String id, Resource resource, JsonNode data, String jwt, Map<CredentialEnum, SchemaKey> schemas, String issuedOnPropertyName, String expiresAtPropertyName) {
 		super(id, GeneratedObject.Type.INTERNAL);
 		this.resource = checkNotNull(resource);
 		this.jsonData = checkNotNull(data);
 		this.jwt = jwt; //may be null
         this.schemas = schemas;
         this.issuedOnPropertyName = issuedOnPropertyName;
+        this.expiresAtPropertyName = expiresAtPropertyName;
 
 		checkTrue(RECOGNIZED_PAYLOAD_TYPES.contains(resource.getType()));
 	}
@@ -57,6 +59,10 @@ public abstract class Credential extends GeneratedObject {
 
     public String getIssuedOnPropertyName() {
         return issuedOnPropertyName;
+    }
+
+    public String getExpiresAtPropertyName() {
+        return expiresAtPropertyName;
     }
 
     /**

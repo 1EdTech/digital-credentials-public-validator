@@ -26,8 +26,8 @@ public class Assertion extends Credential {
 
 	final Assertion.Type assertionType;
 
-    protected Assertion(Resource resource, JsonNode data, String jwt, Map<CredentialEnum, SchemaKey> schemas, String issuedOnPropertyName) {
-        super(resource.getID(), resource, data, jwt, schemas, issuedOnPropertyName);
+    protected Assertion(Resource resource, JsonNode data, String jwt, Map<CredentialEnum, SchemaKey> schemas, String issuedOnPropertyName, String expiresAtPropertyName) {
+        super(resource.getID(), resource, data, jwt, schemas, issuedOnPropertyName, expiresAtPropertyName);
 
         JsonNode typeNode = jsonData.get("type");
         this.assertionType = Assertion.Type.valueOf(typeNode);
@@ -60,7 +60,7 @@ public class Assertion extends Credential {
         public Assertion build() {
             // transform key of schemas map to string because the type of the key in the base map is generic
             // and our specific key is an Enum
-            return new Assertion(getResource(), getJsonData(), getJwt(), schemas, ISSUED_ON_PROPERTY_NAME);
+            return new Assertion(getResource(), getJsonData(), getJwt(), schemas, ISSUED_ON_PROPERTY_NAME, EXPIRES_AT_PROPERTY_NAME);
         }
     }
 
@@ -301,4 +301,5 @@ public class Assertion extends Credential {
 
     public static final String ID = Assertion.class.getCanonicalName();
 	private static final String ISSUED_ON_PROPERTY_NAME = "issuedOn";
+	private static final String EXPIRES_AT_PROPERTY_NAME = "expires";
 }

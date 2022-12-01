@@ -28,8 +28,8 @@ import com.google.common.collect.ImmutableMap;
 public class VerifiableCredential extends Credential  {
 	final VerifiableCredential.Type credentialType;
 
-    protected VerifiableCredential(Resource resource, JsonNode data, String jwt, Map<CredentialEnum, SchemaKey> schemas, String issuedOnPropertyName) {
-        super(ID, resource, data, jwt, schemas, issuedOnPropertyName);
+    protected VerifiableCredential(Resource resource, JsonNode data, String jwt, Map<CredentialEnum, SchemaKey> schemas, String issuedOnPropertyName, String expiresAtPropertyName) {
+        super(ID, resource, data, jwt, schemas, issuedOnPropertyName, expiresAtPropertyName);
 
         JsonNode typeNode = jsonData.get("type");
 		this.credentialType = VerifiableCredential.Type.valueOf(typeNode);
@@ -133,10 +133,11 @@ public class VerifiableCredential extends Credential  {
     public static class Builder extends Credential.Builder<VerifiableCredential> {
         @Override
         public VerifiableCredential build() {
-            return new VerifiableCredential(getResource(), getJsonData(), getJwt(), schemas, ISSUED_ON_PROPERTY_NAME);
+            return new VerifiableCredential(getResource(), getJsonData(), getJwt(), schemas, ISSUED_ON_PROPERTY_NAME, EXPIRES_AT_PROPERTY_NAME);
         }
     }
 
 	public static final String ID = VerifiableCredential.class.getCanonicalName();
 	private static final String ISSUED_ON_PROPERTY_NAME = "issuanceDate";
+	private static final String EXPIRES_AT_PROPERTY_NAME = "expirationDate";
 }
