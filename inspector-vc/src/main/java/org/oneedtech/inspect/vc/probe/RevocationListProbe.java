@@ -10,6 +10,7 @@ import java.util.List;
 import org.oneedtech.inspect.core.probe.Probe;
 import org.oneedtech.inspect.core.probe.RunContext;
 import org.oneedtech.inspect.core.report.ReportItems;
+import org.oneedtech.inspect.vc.Credential;
 import org.oneedtech.inspect.vc.VerifiableCredential;
 import org.oneedtech.inspect.vc.util.JsonNodeUtil;
 
@@ -20,14 +21,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * A Probe that verifies a credential's revocation status.
  * @author mgylling
  */
-public class RevocationListProbe extends Probe<VerifiableCredential> {
+public class RevocationListProbe extends Probe<Credential> {
 
 	public RevocationListProbe() {
 		super(ID);
 	}
 
 	@Override
-	public ReportItems run(VerifiableCredential crd, RunContext ctx) throws Exception {
+	public ReportItems run(Credential crd, RunContext ctx) throws Exception {
 
 		/*
 		 *	If the AchievementCredential or EndorsementCredential has a “credentialStatus” property

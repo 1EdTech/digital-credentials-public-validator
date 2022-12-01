@@ -5,7 +5,7 @@ import java.time.ZonedDateTime;
 import org.oneedtech.inspect.core.probe.Probe;
 import org.oneedtech.inspect.core.probe.RunContext;
 import org.oneedtech.inspect.core.report.ReportItems;
-import org.oneedtech.inspect.vc.VerifiableCredential;
+import org.oneedtech.inspect.vc.Credential;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -13,14 +13,14 @@ import com.fasterxml.jackson.databind.JsonNode;
  * A Probe that verifies a credential's expiration status
  * @author mgylling
  */
-public class ExpirationProbe extends Probe<VerifiableCredential> {
+public class ExpirationProbe extends Probe<Credential> {
 
 	public ExpirationProbe() {
 		super(ID);
 	}
 
 	@Override
-	public ReportItems run(VerifiableCredential crd, RunContext ctx) throws Exception {
+	public ReportItems run(Credential crd, RunContext ctx) throws Exception {
 		/*
 		 *  If the AchievementCredential or EndorsementCredential has an “expirationDate” property
 		 *	and the expiration date is prior to the current date, the credential has expired.

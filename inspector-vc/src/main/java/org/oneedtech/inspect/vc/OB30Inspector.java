@@ -194,7 +194,7 @@ public class OB30Inspector extends VCInspector implements SubInspector {
 			}
 
 			//revocation, expiration and issuance
-			for(Probe<VerifiableCredential> probe : List.of(new RevocationListProbe(),
+			for(Probe<Credential> probe : List.of(new RevocationListProbe(),
 					new ExpirationProbe(), new IssuanceProbe())) {
 				probeCount++;
 				accumulator.add(probe.run(ob, ctx));

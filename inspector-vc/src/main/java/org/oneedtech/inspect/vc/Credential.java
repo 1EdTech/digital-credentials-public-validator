@@ -29,14 +29,16 @@ public abstract class Credential extends GeneratedObject {
 	final Resource resource;
 	final JsonNode jsonData;
 	final String jwt;
+    final String issuedOnPropertyName;
     final Map<CredentialEnum, SchemaKey> schemas;
 
-    protected Credential(String id, Resource resource, JsonNode data, String jwt, Map<CredentialEnum, SchemaKey> schemas) {
+    protected Credential(String id, Resource resource, JsonNode data, String jwt, Map<CredentialEnum, SchemaKey> schemas, String issuedOnPropertyName) {
 		super(id, GeneratedObject.Type.INTERNAL);
 		this.resource = checkNotNull(resource);
 		this.jsonData = checkNotNull(data);
 		this.jwt = jwt; //may be null
         this.schemas = schemas;
+        this.issuedOnPropertyName = issuedOnPropertyName;
 
 		checkTrue(RECOGNIZED_PAYLOAD_TYPES.contains(resource.getType()));
 	}
@@ -52,6 +54,10 @@ public abstract class Credential extends GeneratedObject {
     public Optional<String> getJwt() {
 		return Optional.ofNullable(jwt);
 	}
+
+    public String getIssuedOnPropertyName() {
+        return issuedOnPropertyName;
+    }
 
     /**
 	 * Get the canonical schema for this credential if such exists.
