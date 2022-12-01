@@ -29,6 +29,8 @@ import org.oneedtech.inspect.vc.payload.PngParser;
 import org.oneedtech.inspect.vc.payload.SvgParser;
 import org.oneedtech.inspect.vc.probe.ContextPropertyProbe;
 import org.oneedtech.inspect.vc.probe.CredentialParseProbe;
+import org.oneedtech.inspect.vc.probe.ExpirationProbe;
+import org.oneedtech.inspect.vc.probe.IssuanceProbe;
 import org.oneedtech.inspect.vc.probe.TypePropertyProbe;
 import org.oneedtech.inspect.vc.probe.validation.ValidationPropertyProbe;
 import org.oneedtech.inspect.vc.probe.validation.ValidationPropertyProbeFactory;
@@ -126,6 +128,14 @@ public class OB20Inspector extends Inspector {
 			for (Validation validation : validations) {
 				probeCount++;
 				accumulator.add(ValidationPropertyProbeFactory.of(validation).run(assertionNode, ctx));
+				if(broken(accumulator)) return abort(ctx, accumulator, probeCount);
+			}
+
+			//expiration and issuance
+			for(Probe<Credential> probe : List.of(
+					new ExpirationProbe(), new IssuanceProbe())) {
+				probeCount++;
+				accumulator.add(probe.run(assertion, ctx));
 				if(broken(accumulator)) return abort(ctx, accumulator, probeCount);
 			}
 
