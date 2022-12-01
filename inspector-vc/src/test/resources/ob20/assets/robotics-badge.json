@@ -5,6 +5,6 @@
   "name": "Awesome Robotics Badge",
   "description": "For doing awesome things with robots that people think is pretty great.",
   "image": "https://example.org/robotics-badge.png",
-  "criteria": "https://example.org/robotics-badge.html",
+  "criteria": "https://example.org/badgecriteria.json",
   "issuer": "https://example.org/organization.json"
 }

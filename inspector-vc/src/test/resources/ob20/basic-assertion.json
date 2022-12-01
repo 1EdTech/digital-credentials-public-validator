@@ -9,7 +9,6 @@
     "identity": "sha256$ecf5409f3f4b91ab60cc5ef4c02aef7032354375e70cf4d8e43f6a1d29891942"
   },
   "image": "https://example.org/beths-robot-badge.png",
-  "evidence": "https://example.org/beths-robot-work.html",
   "issuedOn": "2016-12-31T23:59:59Z",
   "badge": "https://example.org/robotics-badge.json",
   "verification": {
