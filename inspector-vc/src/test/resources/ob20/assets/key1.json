@@ -1,0 +1,7 @@
+{
+    "@context": "https://w3id.org/openbadges/v2",
+    "id": "http://example.org/key1.json",
+    "type": "CryptographicKey",
+    "owner": "https://example.org/organization.json",
+    "publicKeyPem": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAq/tyy5CGrCVfGIMrMkVq\nZ5cAKkbLdrNrNFvXNMSazvKj/9VmuALZOjqXl1Od/Ku6q+18sn70p6r25kGRoaU/\nAJNLt36EnRSs9I66xZ3tOY4c9PeWpMC1XbCrUBh1rpx7XQ5wULOMbttEvBf9V2Cl\nCGiNqwqcafrQHoYteAtF4d2zcjNm+xZRQmnVU0CdvXSXeniWjqyif/751/M/xb93\nfeF1AIFS5IGaI1cWca7BG2izKz1DjZxbMlvQVZk1Axz2Uj/FXssyBKmAdCw4EjuF\nqinQBmKwmFvCB3yhMAK6+f1k4hsR/ET/PxwkNQZfu+gkmEAQoYAMSPgGS3xY3LVf\nxwIDAQAB\n-----END PUBLIC KEY-----"
+}

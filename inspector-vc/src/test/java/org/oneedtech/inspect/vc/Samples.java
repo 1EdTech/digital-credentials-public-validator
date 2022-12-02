@@ -59,5 +59,9 @@ public class Samples {
 			// original: test_verify: test_verify_of_baked_image
 			public final static Sample SIMPLE_JSON_PNG = new Sample("ob20/simple-badge.png", true);
 		}
+
+		public static final class JWT {
+			public final static Sample SIMPLE_JWT = new Sample("ob20/simple.jwt", true);
+		}
 	}
 }
