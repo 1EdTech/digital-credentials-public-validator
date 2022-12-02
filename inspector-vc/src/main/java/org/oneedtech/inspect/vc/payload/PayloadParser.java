@@ -1,14 +1,16 @@
 package org.oneedtech.inspect.vc.payload;
 
+import static com.apicatalog.jsonld.StringUtils.isBlank;
+
 import java.util.Base64;
-import java.util.List;
 import java.util.Base64.Decoder;
+import java.util.List;
 
 import org.oneedtech.inspect.core.probe.RunContext;
+import org.oneedtech.inspect.core.probe.RunContext.Key;
 import org.oneedtech.inspect.util.resource.Resource;
 import org.oneedtech.inspect.util.resource.ResourceType;
 import org.oneedtech.inspect.vc.Credential;
-import org.oneedtech.inspect.vc.VerifiableCredential;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -48,9 +50,13 @@ public abstract class PayloadParser {
 		 */
 		String jwtPayload = new String(decoder.decode(parts.get(1)));
 
-		//Deserialize and fetch the 'vc' node from the object
+		//Deserialize and fetch the credential node from the object
 		JsonNode outerPayload = fromString(jwtPayload, context);
-		JsonNode vcNode = outerPayload.get("vc");
+		String nodeName = (String) context.get(Key.JWT_CREDENTIAL_NODE_NAME);
+		if (isBlank(nodeName)) {
+			return outerPayload;
+		}
+		JsonNode vcNode = outerPayload.get(nodeName);
 
 		return vcNode;
 	}

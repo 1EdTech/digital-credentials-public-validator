@@ -96,6 +96,7 @@ public class OB30Inspector extends VCInspector implements SubInspector {
 				.put(Key.GENERATED_OBJECT_BUILDER, new VerifiableCredential.Builder())
 				.put(Key.PNG_CREDENTIAL_KEY, PngParser.Keys.OB30)
 				.put(Key.SVG_CREDENTIAL_QNAME, SvgParser.QNames.OB30)
+				.put(Key.JWT_CREDENTIAL_NODE_NAME, VerifiableCredential.JWT_NODE_NAME)
 				.build();
 
 		List<ReportItems> accumulator = new ArrayList<>();

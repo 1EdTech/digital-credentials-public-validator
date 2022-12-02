@@ -140,4 +140,5 @@ public class VerifiableCredential extends Credential  {
 	public static final String ID = VerifiableCredential.class.getCanonicalName();
 	private static final String ISSUED_ON_PROPERTY_NAME = "issuanceDate";
 	private static final String EXPIRES_AT_PROPERTY_NAME = "expirationDate";
+	public static final String JWT_NODE_NAME = "vc";
 }
