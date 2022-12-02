@@ -32,7 +32,6 @@ import org.oneedtech.inspect.vc.probe.CredentialParseProbe;
 import org.oneedtech.inspect.vc.probe.ExpirationProbe;
 import org.oneedtech.inspect.vc.probe.IssuanceProbe;
 import org.oneedtech.inspect.vc.probe.TypePropertyProbe;
-import org.oneedtech.inspect.vc.probe.validation.ValidationPropertyProbe;
 import org.oneedtech.inspect.vc.probe.validation.ValidationPropertyProbeFactory;
 import org.oneedtech.inspect.vc.util.CachingDocumentLoader;
 
@@ -91,6 +90,7 @@ public class OB20Inspector extends Inspector {
 				.put(Key.PNG_CREDENTIAL_KEY, PngParser.Keys.OB20)
 				.put(Key.SVG_CREDENTIAL_QNAME, SvgParser.QNames.OB20)
 				.put(Key.JSON_DOCUMENT_LOADER, documentLoader)
+				.put(Key.JWT_CREDENTIAL_NODE_NAME, Assertion.JWT_NODE_NAME)
 				.build();
 
 		List<ReportItems> accumulator = new ArrayList<>();
@@ -122,7 +122,11 @@ public class OB20Inspector extends Inspector {
 			accumulator.add(new JsonLDValidationProbe(jsonLdGeneratedObject).run(assertion, ctx));
 			if(broken(accumulator, true)) return abort(ctx, accumulator, probeCount);
 
-			// Validates the Open Badge, from the compacted form
+
+			// Each Badge Object contains all required properties for its class
+			// This could be done validating with the schema, but seems that there are some error on that file
+			// So, we do a manual Probe for the nodes.
+			// Also, we validate the Open Badge, from the compacted form
 			JsonNode assertionNode = mapper.readTree(jsonLdGeneratedObject.getJson());
 			List<Validation> validations = assertion.getValidations();
 			for (Validation validation : validations) {
@@ -131,28 +135,13 @@ public class OB20Inspector extends Inspector {
 				if(broken(accumulator)) return abort(ctx, accumulator, probeCount);
 			}
 
-			//expiration and issuance
+			// expiration and issuance
 			for(Probe<Credential> probe : List.of(
 					new ExpirationProbe(), new IssuanceProbe())) {
 				probeCount++;
 				accumulator.add(probe.run(assertion, ctx));
 				if(broken(accumulator)) return abort(ctx, accumulator, probeCount);
 			}
-
-			// Each Badge Object contains all required properties for its class
-			// This could be done validating with the schema, but seems that there are some error on that file
-			// So, we do a manual Probe for the nodes
-
-			// accumulator.add(new RequiredFieldsProbe(jsonLdGeneratedObject).run(assertion, ctx));
-			// if(broken(accumulator, true)) return abort(ctx, accumulator, probeCount);
-
-			//canonical schema and inline schemata
-			// SchemaKey schema = assertion.getSchemaKey().orElseThrow();
-			// for(Probe<JsonNode> probe : List.of(new JsonSchemaProbe(schema), new InlineJsonSchemaProbe(schema))) {
-			// 	probeCount++;
-			// 	accumulator.add(probe.run(assertion.getJson(), ctx));
-			// 	if(broken(accumulator)) return abort(ctx, accumulator, probeCount);
-			// }
 		} catch (Exception e) {
 			accumulator.add(onProbeException(Probe.ID.NO_UNCAUGHT_EXCEPTIONS, resource, e));
 		}

@@ -302,4 +302,5 @@ public class Assertion extends Credential {
     public static final String ID = Assertion.class.getCanonicalName();
 	private static final String ISSUED_ON_PROPERTY_NAME = "issuedOn";
 	private static final String EXPIRES_AT_PROPERTY_NAME = "expires";
+	public static final String JWT_NODE_NAME = ""; // empty because the whole payload is the assertion
 }

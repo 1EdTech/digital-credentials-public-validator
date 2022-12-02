@@ -89,7 +89,14 @@ public class OB20Tests {
 		});
 	}
 
-
+	@Test
+	void testSimpleJWTValid() {
+		assertDoesNotThrow(()->{
+			Report report = validator.run(Samples.OB20.JWT.SIMPLE_JWT.asFileResource());
+			if(verbose) PrintHelper.print(report, true);
+			assertValid(report);
+		});
+	}
 
 	@Nested
 	static class WarningTests {
