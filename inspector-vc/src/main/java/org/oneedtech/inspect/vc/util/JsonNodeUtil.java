@@ -58,4 +58,12 @@ public class JsonNodeUtil {
 					.collect(Collectors.toList());
 		}
 	}
+
+	public static boolean isNotEmpty(JsonNode node) {
+		return node != null && !node.isNull() && !node.isEmpty();
+	}
+
+	public static boolean isEmpty(JsonNode node) {
+		return node == null || node.isNull() || node.isEmpty();
+	}
 }

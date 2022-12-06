@@ -7,14 +7,19 @@ import org.oneedtech.inspect.vc.Validation.MessageLevel;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+/**
+ * Issuer properties additional validator for Open Badges 2.0
+ * Maps to "ISSUER_PROPERTY_DEPENDENCIES" task in python implementation
+ * @author xaracil
+ */
 public class ValidationIssuerPropertyProbe extends ValidationPropertyProbe {
 
     public ValidationIssuerPropertyProbe(Validation validation) {
-        super(validation);
+        super(ID, validation);
     }
 
     public ValidationIssuerPropertyProbe(Validation validation, boolean fullValidate) {
-        super(validation, fullValidate);
+        super(ID, validation, fullValidate);
     }
 
     @Override
@@ -32,4 +37,7 @@ public class ValidationIssuerPropertyProbe extends ValidationPropertyProbe {
         }
         return error(msg, ctx);
     }
+
+    public static final String ID = ValidationIssuerPropertyProbe.class.getSimpleName();
+
 }

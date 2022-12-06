@@ -171,25 +171,33 @@ public class Assertion extends Credential {
         new Validation.Builder().name("id").type(ValueType.IRI).required(true).build(),
         new Validation.Builder().name("type").type(ValueType.RDF_TYPE).required(true).many(true).mustContainOneType(List.of(Type.Assertion)).build(),
         new Validation.Builder().name("recipient").type(ValueType.ID).expectedType(Type.IdentityObject).required(true).build(),
-        new Validation.Builder().name("badge").type(ValueType.ID).prerequisite("ASN_FLATTEN_BC").expectedType(Type.BadgeClass).fetch(true).required(true).build(),
+        new Validation.Builder().name("badge").type(ValueType.ID).expectedType(Type.BadgeClass).fetch(true).required(true).allowFlattenEmbeddedResource(true).build(),
         new Validation.Builder().name("verification").type(ValueType.ID).expectedType(Type.VerificationObjectAssertion).required(true).build(),
         new Validation.Builder().name("issuedOn").type(ValueType.DATETIME).required(true).build(),
         new Validation.Builder().name("expires").type(ValueType.DATETIME).required(false).build(),
         new Validation.Builder().name("image").type(ValueType.ID).required(false).allowRemoteUrl(true).expectedType(Type.Image).fetch(false).allowDataUri(false).build(),
         new Validation.Builder().name("narrative").type(ValueType.MARKDOWN_TEXT).required(false).build(),
         new Validation.Builder().name("evidence").type(ValueType.ID).allowRemoteUrl(true).expectedType(Type.Evidence).many(true).fetch(false).required(false).build(),
-        new Validation.Builder().name("image").type(ValueType.IMAGE).required(false).many(false).allowDataUri(false).build()
+        new Validation.Builder().name("image").type(ValueType.IMAGE).required(false).many(false).allowDataUri(false).build(),
+        new Validation.Builder().name("@language").type(ValueType.LANGUAGE).required(false).build(),
+        new Validation.Builder().name("version").type(ValueType.TEXT_OR_NUMBER).required(false).build(),
+        new Validation.Builder().name("related").type(ValueType.ID).required(false).allowRemoteUrl(true).fetch(false).allowDataUri(false).expectedType(Type.Assertion).fullValidate(false).many(true).build(),
+        new Validation.Builder().name("endorsement").type(ValueType.ID).required(false).allowRemoteUrl(true).fetch(true).allowDataUri(false).expectedType(Type.Endorsement).many(true).build()
     ))
     .put(Type.BadgeClass, List.of(
         new Validation.Builder().name("id").type(ValueType.IRI).required(true).build(),
         new Validation.Builder().name("type").type(ValueType.RDF_TYPE).required(true).many(true).mustContainOneType(List.of(Type.BadgeClass)).build(),
-        new Validation.Builder().name("issuer").type(ValueType.ID).prerequisite("BC_FLATTEN_ISS").expectedType(Type.Profile).fetch(true).required(true).build(),
+        new Validation.Builder().name("issuer").type(ValueType.ID).expectedType(Type.Profile).fetch(true).required(true).allowFlattenEmbeddedResource(true).build(),
         new Validation.Builder().name("name").type(ValueType.TEXT).required(true).build(),
         new Validation.Builder().name("description").type(ValueType.TEXT).required(true).build(),
         new Validation.Builder().name("image").type(ValueType.ID).required(false).allowRemoteUrl(true).expectedType(Type.Image).fetch(false).allowDataUri(true).build(),
         new Validation.Builder().name("criteria").type(ValueType.ID).expectedType(Type.Criteria).fetch(false).required(true).allowRemoteUrl(true).build(),
         new Validation.Builder().name("alignment").type(ValueType.ID).expectedType(Type.AlignmentObject).many(true).fetch(false).required(false).build(),
-        new Validation.Builder().name("tags").type(ValueType.TEXT).many(true).required(false).build()
+        new Validation.Builder().name("tags").type(ValueType.TEXT).many(true).required(false).build(),
+        new Validation.Builder().name("@language").type(ValueType.LANGUAGE).required(false).build(),
+        new Validation.Builder().name("version").type(ValueType.TEXT_OR_NUMBER).required(false).build(),
+        new Validation.Builder().name("related").type(ValueType.ID).required(false).allowRemoteUrl(true).fetch(false).allowDataUri(false).expectedType(Type.BadgeClass).fullValidate(false).many(true).build(),
+        new Validation.Builder().name("endorsement").type(ValueType.ID).required(false).allowRemoteUrl(true).fetch(true).allowDataUri(false).expectedType(Type.Endorsement).many(true).build()
     ))
     .put(Type.AlignmentObject, List.of(
         new Validation.Builder().name("type").type(ValueType.RDF_TYPE).many(true).required(false).defaultType(Type.AlignmentObject).build(),
@@ -216,7 +224,11 @@ public class Assertion extends Credential {
         new Validation.Builder().name("claim").type(ValueType.ID).required(true).allowRemoteUrl(false).fetch(false).allowDataUri(false).expectedTypes(List.of(Type.EndorsementClaim, Type.Endorsement)).fullValidate(false).build(),
         new Validation.Builder().name("issuedOn").type(ValueType.DATETIME).required(true).build(),
         new Validation.Builder().name("issuer").type(ValueType.ID).expectedType(Type.Profile).fetch(true).required(true).build(),
-        new Validation.Builder().name("verification").build()
+        new Validation.Builder().name("verification").build(),
+        new Validation.Builder().name("@language").type(ValueType.LANGUAGE).required(false).build(),
+        new Validation.Builder().name("version").type(ValueType.TEXT_OR_NUMBER).required(false).build(),
+        new Validation.Builder().name("related").type(ValueType.ID).required(false).allowRemoteUrl(true).fetch(false).allowDataUri(false).expectedType(Type.Endorsement).fullValidate(false).many(true).build(),
+        new Validation.Builder().name("endorsement").type(ValueType.ID).required(false).allowRemoteUrl(true).fetch(true).allowDataUri(false).expectedType(Type.Endorsement).many(true).build()
     ))
     .put(Type.EndorsementClaim, List.of(
         new Validation.Builder().name("id").type(ValueType.IRI).required(true).build(),
@@ -267,7 +279,11 @@ public class Assertion extends Credential {
         new Validation.Builder().name("telephone").type(ValueType.TELEPHONE).required(false).build(),
         new Validation.Builder().name("publicKey").type(ValueType.ID).expectedType(Type.CryptographicKey).fetch(true).required(false).build(),
         new Validation.Builder().name("verification").type(ValueType.ID).expectedType(Type.VerificationObjectIssuer).fetch(false).required(false).build(),
-        new Validation.Builder().name("id").type(ValueType.ISSUER).required(false).messageLevel(MessageLevel.Warning).build()
+        new Validation.Builder().name("id").type(ValueType.ISSUER).required(false).messageLevel(MessageLevel.Warning).build(),
+        new Validation.Builder().name("@language").type(ValueType.LANGUAGE).required(false).build(),
+        new Validation.Builder().name("version").type(ValueType.TEXT_OR_NUMBER).required(false).build(),
+        new Validation.Builder().name("related").type(ValueType.ID).required(false).allowRemoteUrl(true).fetch(false).allowDataUri(false).expectedType(Type.Issuer).fullValidate(false).many(true).build(),
+        new Validation.Builder().name("endorsement").type(ValueType.ID).required(false).allowRemoteUrl(true).fetch(true).allowDataUri(false).expectedType(Type.Endorsement).many(true).build()
     ))
     .put(Type.Profile, List.of(
         new Validation.Builder().name("id").type(ValueType.IRI).required(true).build(),
@@ -280,7 +296,11 @@ public class Assertion extends Credential {
         new Validation.Builder().name("telephone").type(ValueType.TELEPHONE).required(false).build(),
         new Validation.Builder().name("publicKey").type(ValueType.ID).expectedType(Type.CryptographicKey).fetch(true).required(false).build(),
         new Validation.Builder().name("verification").type(ValueType.ID).expectedType(Type.VerificationObjectIssuer).fetch(false).required(false).build(),
-        new Validation.Builder().name("id").type(ValueType.ISSUER).required(false).messageLevel(MessageLevel.Warning).build()
+        new Validation.Builder().name("id").type(ValueType.ISSUER).required(false).messageLevel(MessageLevel.Warning).build(),
+        new Validation.Builder().name("@language").type(ValueType.LANGUAGE).required(false).build(),
+        new Validation.Builder().name("version").type(ValueType.TEXT_OR_NUMBER).required(false).build(),
+        new Validation.Builder().name("related").type(ValueType.ID).required(false).allowRemoteUrl(true).fetch(false).allowDataUri(false).expectedType(Type.Profile).fullValidate(false).many(true).build(),
+        new Validation.Builder().name("endorsement").type(ValueType.ID).required(false).allowRemoteUrl(true).fetch(true).allowDataUri(false).expectedType(Type.Endorsement).many(true).build()
     ))
     .put(Type.RevocationList, List.of(
         new Validation.Builder().name("type").type(ValueType.RDF_TYPE).required(true).many(true).mustContainOneType(List.of(Type.RevocationList)).build(),
@@ -289,7 +309,7 @@ public class Assertion extends Credential {
     .put(Type.VerificationObject, List.of())
     .put(Type.VerificationObjectAssertion, List.of(
         new Validation.Builder().name("type").type(ValueType.RDF_TYPE).required(true).many(false).mustContainOne(List.of("HostedBadge", "SignedBadge")).build(),
-        new Validation.Builder().name("creator").type(ValueType.ID).expectedType(Type.CryptographicKey).fetch(true).required(false).prerequisite("ASSERTION_VERIFICATION_DEPENDENCIES").build()
+        new Validation.Builder().name("creator").type(ValueType.ID).expectedType(Type.CryptographicKey).fetch(true).required(false).build()
     ))
     .put(Type.VerificationObjectIssuer, List.of(
         new Validation.Builder().name("type").type(ValueType.RDF_TYPE).required(false).many(true).defaultType(Type.VerificationObject).build(),

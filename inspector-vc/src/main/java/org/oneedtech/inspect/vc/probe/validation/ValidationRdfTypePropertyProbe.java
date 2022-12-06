@@ -13,13 +13,18 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.TextNode;
 
+/**
+ * Validator for properties of type ValueType.RDF_TYPE in Open Badges 2.0 types
+ * Maps to "VALIDATE_RDF_TYPE_PROPERTY" task in python implementation
+ * @author xaracil
+ */
 public class ValidationRdfTypePropertyProbe extends ValidationPropertyProbe {
     public ValidationRdfTypePropertyProbe(Validation validation) {
-        super(validation);
+        super(ID, validation);
     }
 
     public ValidationRdfTypePropertyProbe(Validation validation, boolean fullValidate) {
-        super(validation, fullValidate);
+        super(ID, validation, fullValidate);
     }
 
     @Override
@@ -55,4 +60,6 @@ public class ValidationRdfTypePropertyProbe extends ValidationPropertyProbe {
         }
         return new ReportItems(List.of(result, success(ctx)));
     }
+
+    public static final String ID = ValidationRdfTypePropertyProbe.class.getSimpleName();
 }

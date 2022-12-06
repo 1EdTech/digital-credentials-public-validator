@@ -23,6 +23,7 @@ import org.oneedtech.inspect.util.resource.ResourceType;
 import org.oneedtech.inspect.util.spec.Specification;
 import org.oneedtech.inspect.vc.Credential.CredentialEnum;
 import org.oneedtech.inspect.vc.jsonld.JsonLdGeneratedObject;
+import org.oneedtech.inspect.vc.jsonld.probe.GraphFetcherProbe;
 import org.oneedtech.inspect.vc.jsonld.probe.JsonLDCompactionProve;
 import org.oneedtech.inspect.vc.jsonld.probe.JsonLDValidationProbe;
 import org.oneedtech.inspect.vc.payload.PngParser;
@@ -32,6 +33,7 @@ import org.oneedtech.inspect.vc.probe.CredentialParseProbe;
 import org.oneedtech.inspect.vc.probe.ExpirationProbe;
 import org.oneedtech.inspect.vc.probe.IssuanceProbe;
 import org.oneedtech.inspect.vc.probe.TypePropertyProbe;
+import org.oneedtech.inspect.vc.probe.VerificationDependenciesProbe;
 import org.oneedtech.inspect.vc.probe.validation.ValidationPropertyProbeFactory;
 import org.oneedtech.inspect.vc.util.CachingDocumentLoader;
 
@@ -122,12 +124,15 @@ public class OB20Inspector extends Inspector {
 			accumulator.add(new JsonLDValidationProbe(jsonLdGeneratedObject).run(assertion, ctx));
 			if(broken(accumulator, true)) return abort(ctx, accumulator, probeCount);
 
-
-			// Each Badge Object contains all required properties for its class
-			// This could be done validating with the schema, but seems that there are some error on that file
-			// So, we do a manual Probe for the nodes.
-			// Also, we validate the Open Badge, from the compacted form
+			// validation the Open Badge, from the compacted form
 			JsonNode assertionNode = mapper.readTree(jsonLdGeneratedObject.getJson());
+
+			// mount the graph, flattening embedded resources
+			probeCount++;
+			accumulator.add(new GraphFetcherProbe(assertion).run(assertionNode, ctx));
+			if(broken(accumulator)) return abort(ctx, accumulator, probeCount);
+
+			// perform validations
 			List<Validation> validations = assertion.getValidations();
 			for (Validation validation : validations) {
 				probeCount++;
@@ -142,6 +147,12 @@ public class OB20Inspector extends Inspector {
 				accumulator.add(probe.run(assertion, ctx));
 				if(broken(accumulator)) return abort(ctx, accumulator, probeCount);
 			}
+
+			// verification
+			probeCount++;
+			accumulator.add(new VerificationDependenciesProbe(assertion.getId()).run(jsonLdGeneratedObject, ctx));
+			if(broken(accumulator)) return abort(ctx, accumulator, probeCount);
+
 		} catch (Exception e) {
 			accumulator.add(onProbeException(Probe.ID.NO_UNCAUGHT_EXCEPTIONS, resource, e));
 		}

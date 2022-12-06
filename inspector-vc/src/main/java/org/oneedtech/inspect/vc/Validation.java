@@ -13,7 +13,7 @@ public class Validation {
     private final boolean required;
     private final boolean many;
     private final List<String> mustContainOne;
-    private final List<String> prerequisites;
+    private final List<Validation> prerequisites;
     private final List<Assertion.Type> expectedTypes;
     private final boolean allowRemoteUrl;
     private final boolean allowDataUri;
@@ -21,6 +21,7 @@ public class Validation {
     private final String defaultType;
     private final boolean fullValidate;
     private MessageLevel messageLevel;
+    private final boolean allowFlattenEmbeddedResource;
 
     public Validation(Builder builder) {
         this.name = builder.name;
@@ -36,6 +37,7 @@ public class Validation {
         this.defaultType = builder.defaultType;
         this.fullValidate = builder.fullValidate;
         this.messageLevel = builder.messageLevel;
+        this.allowFlattenEmbeddedResource = builder.allowFlattenEmbeddedResource;
     }
 
     public String getName() {
@@ -58,7 +60,7 @@ public class Validation {
         return mustContainOne;
     }
 
-    public List<String> getPrerequisites() {
+    public List<Validation> getPrerequisites() {
         return prerequisites;
     }
 
@@ -90,6 +92,10 @@ public class Validation {
         return messageLevel;
     }
 
+    public boolean isAllowFlattenEmbeddedResource() {
+        return allowFlattenEmbeddedResource;
+    }
+
     public enum MessageLevel {
         Warning,
         Error
@@ -101,7 +107,7 @@ public class Validation {
         private boolean required;
         private boolean many;
         private List<String> mustContainOne;
-        private List<String> prerequisites;
+        private List<Validation> prerequisites;
         private List<Assertion.Type> expectedTypes;
         private boolean allowRemoteUrl;
         private boolean allowDataUri;
@@ -109,6 +115,7 @@ public class Validation {
         private String defaultType;
         private boolean fullValidate;
         private MessageLevel messageLevel;
+        private boolean allowFlattenEmbeddedResource;
 
         public Builder() {
             this.mustContainOne = new ArrayList<>();
@@ -147,12 +154,12 @@ public class Validation {
             return this;
         }
 
-        public Builder prerequisites(List<String> elems) {
+        public Builder prerequisites(List<Validation> elems) {
             this.prerequisites = elems;
             return this;
         }
 
-        public Builder prerequisite(String elem) {
+        public Builder prerequisite(Validation elem) {
             this.prerequisites = List.of(elem);
             return this;
         }
@@ -198,6 +205,11 @@ public class Validation {
 
         public Builder messageLevel(MessageLevel messageLevel) {
             this.messageLevel = messageLevel;
+            return this;
+        }
+
+        public Builder allowFlattenEmbeddedResource(boolean allowFlattenEmbeddedResource) {
+            this.allowFlattenEmbeddedResource = allowFlattenEmbeddedResource;
             return this;
         }
 

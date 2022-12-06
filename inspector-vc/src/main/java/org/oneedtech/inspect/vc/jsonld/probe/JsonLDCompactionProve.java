@@ -18,7 +18,11 @@ import com.apicatalog.jsonld.loader.DocumentLoader;
 
 import jakarta.json.JsonObject;
 
-
+/**
+ * JSON-LD compaction probe for Open Badges 2.0
+ * Maps to "JSONLD_COMPACT_DATA" task in python implementation
+ * @author xaracil
+ */
 public class JsonLDCompactionProve extends Probe<Credential> {
     private final String context;
 

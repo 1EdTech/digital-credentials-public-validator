@@ -13,14 +13,19 @@ import org.oneedtech.inspect.vc.util.PrimitiveValueValidator;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+/**
+ * Image validation for Open Badges 2.0
+ * Maps to "IMAGE_VALIDATION" task in python implementation
+ * @author xaracil
+ */
 public class ValidationImagePropertyProbe extends ValidationPropertyProbe {
 
     public ValidationImagePropertyProbe(Validation validation) {
-        super(validation);
+        super(ID, validation);
     }
 
     public ValidationImagePropertyProbe(Validation validation, boolean fullValidate) {
-        super(validation, fullValidate);
+        super(ID, validation, fullValidate);
     }
 
     @Override
@@ -62,4 +67,6 @@ public class ValidationImagePropertyProbe extends ValidationPropertyProbe {
     }
 
     private static final List<MimeType> allowedMimeTypes = List.of(MimeType.IMAGE_PNG, MimeType.IMAGE_SVG);
+    public static final String ID = ValidationImagePropertyProbe.class.getSimpleName();
+
 }
