@@ -28,6 +28,7 @@ import org.oneedtech.inspect.vc.jsonld.probe.JsonLDCompactionProve;
 import org.oneedtech.inspect.vc.jsonld.probe.JsonLDValidationProbe;
 import org.oneedtech.inspect.vc.payload.PngParser;
 import org.oneedtech.inspect.vc.payload.SvgParser;
+import org.oneedtech.inspect.vc.probe.AssertionRevocationListProbe;
 import org.oneedtech.inspect.vc.probe.ContextPropertyProbe;
 import org.oneedtech.inspect.vc.probe.CredentialParseProbe;
 import org.oneedtech.inspect.vc.probe.ExpirationProbe;
@@ -148,10 +149,13 @@ public class OB20Inspector extends Inspector {
 				if(broken(accumulator)) return abort(ctx, accumulator, probeCount);
 			}
 
-			// verification
-			probeCount++;
-			accumulator.add(new VerificationDependenciesProbe(assertion.getId()).run(jsonLdGeneratedObject, ctx));
-			if(broken(accumulator)) return abort(ctx, accumulator, probeCount);
+			// verification and revocation
+			for(Probe<JsonLdGeneratedObject> probe : List.of(new VerificationDependenciesProbe(assertion.getId()), new AssertionRevocationListProbe(assertion.getId()))) {
+				probeCount++;
+				accumulator.add(probe.run(jsonLdGeneratedObject, ctx));
+				if(broken(accumulator)) return abort(ctx, accumulator, probeCount);
+			}
+
 
 		} catch (Exception e) {
 			accumulator.add(onProbeException(Probe.ID.NO_UNCAUGHT_EXCEPTIONS, resource, e));
