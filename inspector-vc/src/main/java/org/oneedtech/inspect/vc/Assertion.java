@@ -174,15 +174,15 @@ public class Assertion extends Credential {
         new Validation.Builder().name("badge").type(ValueType.ID).expectedType(Type.BadgeClass).fetch(true).required(true).allowFlattenEmbeddedResource(true).build(),
         new Validation.Builder().name("verification").type(ValueType.ID).expectedType(Type.VerificationObjectAssertion).required(true).build(),
         new Validation.Builder().name("issuedOn").type(ValueType.DATETIME).required(true).build(),
-        new Validation.Builder().name("expires").type(ValueType.DATETIME).required(false).build(),
-        new Validation.Builder().name("image").type(ValueType.ID).required(false).allowRemoteUrl(true).expectedType(Type.Image).fetch(false).allowDataUri(false).build(),
-        new Validation.Builder().name("narrative").type(ValueType.MARKDOWN_TEXT).required(false).build(),
-        new Validation.Builder().name("evidence").type(ValueType.ID).allowRemoteUrl(true).expectedType(Type.Evidence).many(true).fetch(false).required(false).build(),
-        new Validation.Builder().name("image").type(ValueType.IMAGE).required(false).many(false).allowDataUri(false).build(),
-        new Validation.Builder().name("@language").type(ValueType.LANGUAGE).required(false).build(),
-        new Validation.Builder().name("version").type(ValueType.TEXT_OR_NUMBER).required(false).build(),
-        new Validation.Builder().name("related").type(ValueType.ID).required(false).allowRemoteUrl(true).fetch(false).allowDataUri(false).expectedType(Type.Assertion).fullValidate(false).many(true).build(),
-        new Validation.Builder().name("endorsement").type(ValueType.ID).required(false).allowRemoteUrl(true).fetch(true).allowDataUri(false).expectedType(Type.Endorsement).many(true).build()
+        new Validation.Builder().name("expires").type(ValueType.DATETIME).build(),
+        new Validation.Builder().name("image").type(ValueType.ID).allowRemoteUrl(true).expectedType(Type.Image).build(),
+        new Validation.Builder().name("narrative").type(ValueType.MARKDOWN_TEXT).build(),
+        new Validation.Builder().name("evidence").type(ValueType.ID).allowRemoteUrl(true).expectedType(Type.Evidence).many(true).build(),
+        new Validation.Builder().name("image").type(ValueType.IMAGE).build(),
+        new Validation.Builder().name("@language").type(ValueType.LANGUAGE).build(),
+        new Validation.Builder().name("version").type(ValueType.TEXT_OR_NUMBER).build(),
+        new Validation.Builder().name("related").type(ValueType.ID).allowRemoteUrl(true).expectedType(Type.Assertion).many(true).build(),
+        new Validation.Builder().name("endorsement").type(ValueType.ID).allowRemoteUrl(true).fetch(true).expectedType(Type.Endorsement).many(true).build()
     ))
     .put(Type.BadgeClass, List.of(
         new Validation.Builder().name("id").type(ValueType.IRI).required(true).build(),
@@ -190,132 +190,132 @@ public class Assertion extends Credential {
         new Validation.Builder().name("issuer").type(ValueType.ID).expectedType(Type.Profile).fetch(true).required(true).allowFlattenEmbeddedResource(true).build(),
         new Validation.Builder().name("name").type(ValueType.TEXT).required(true).build(),
         new Validation.Builder().name("description").type(ValueType.TEXT).required(true).build(),
-        new Validation.Builder().name("image").type(ValueType.ID).required(false).allowRemoteUrl(true).expectedType(Type.Image).fetch(false).allowDataUri(true).build(),
-        new Validation.Builder().name("criteria").type(ValueType.ID).expectedType(Type.Criteria).fetch(false).required(true).allowRemoteUrl(true).build(),
-        new Validation.Builder().name("alignment").type(ValueType.ID).expectedType(Type.AlignmentObject).many(true).fetch(false).required(false).build(),
-        new Validation.Builder().name("tags").type(ValueType.TEXT).many(true).required(false).build(),
-        new Validation.Builder().name("@language").type(ValueType.LANGUAGE).required(false).build(),
-        new Validation.Builder().name("version").type(ValueType.TEXT_OR_NUMBER).required(false).build(),
-        new Validation.Builder().name("related").type(ValueType.ID).required(false).allowRemoteUrl(true).fetch(false).allowDataUri(false).expectedType(Type.BadgeClass).fullValidate(false).many(true).build(),
-        new Validation.Builder().name("endorsement").type(ValueType.ID).required(false).allowRemoteUrl(true).fetch(true).allowDataUri(false).expectedType(Type.Endorsement).many(true).build()
+        new Validation.Builder().name("image").type(ValueType.ID).allowRemoteUrl(true).expectedType(Type.Image).allowDataUri(true).build(),
+        new Validation.Builder().name("criteria").type(ValueType.ID).expectedType(Type.Criteria).required(true).allowRemoteUrl(true).build(),
+        new Validation.Builder().name("alignment").type(ValueType.ID).expectedType(Type.AlignmentObject).many(true).build(),
+        new Validation.Builder().name("tags").type(ValueType.TEXT).many(true).build(),
+        new Validation.Builder().name("@language").type(ValueType.LANGUAGE).build(),
+        new Validation.Builder().name("version").type(ValueType.TEXT_OR_NUMBER).build(),
+        new Validation.Builder().name("related").type(ValueType.ID).allowRemoteUrl(true).expectedType(Type.BadgeClass).many(true).build(),
+        new Validation.Builder().name("endorsement").type(ValueType.ID).allowRemoteUrl(true).fetch(true).expectedType(Type.Endorsement).many(true).build()
     ))
     .put(Type.AlignmentObject, List.of(
-        new Validation.Builder().name("type").type(ValueType.RDF_TYPE).many(true).required(false).defaultType(Type.AlignmentObject).build(),
+        new Validation.Builder().name("type").type(ValueType.RDF_TYPE).many(true).defaultType(Type.AlignmentObject).build(),
         new Validation.Builder().name("targetName").type(ValueType.TEXT).required(true).build(),
         new Validation.Builder().name("targetUrl").type(ValueType.URL).required(true).build(),
-        new Validation.Builder().name("description").type(ValueType.TEXT).required(false).build(),
-        new Validation.Builder().name("targetFramework").type(ValueType.TEXT).required(false).build(),
-        new Validation.Builder().name("targetCode").type(ValueType.TEXT).required(false).build()
+        new Validation.Builder().name("description").type(ValueType.TEXT).build(),
+        new Validation.Builder().name("targetFramework").type(ValueType.TEXT).build(),
+        new Validation.Builder().name("targetCode").type(ValueType.TEXT).build()
     ))
     .put(Type.Criteria, List.of(
-        new Validation.Builder().name("type").type(ValueType.RDF_TYPE).many(true).required(false).defaultType(Type.Criteria).build(),
-        new Validation.Builder().name("id").type(ValueType.IRI).required(false).build(),
-        new Validation.Builder().name("narrative").type(ValueType.MARKDOWN_TEXT).required(false).build()
+        new Validation.Builder().name("type").type(ValueType.RDF_TYPE).many(true).defaultType(Type.Criteria).build(),
+        new Validation.Builder().name("id").type(ValueType.IRI).build(),
+        new Validation.Builder().name("narrative").type(ValueType.MARKDOWN_TEXT).build()
     ))
     .put(Type.CryptographicKey, List.of(
-        new Validation.Builder().name("id").type(ValueType.IRI).required(false).build(),
-        new Validation.Builder().name("type").type(ValueType.RDF_TYPE).required(false).many(true).defaultType(Type.CryptographicKey).build(),
-        new Validation.Builder().name("owner").type(ValueType.IRI).required(false).fetch(true).build(),
-        new Validation.Builder().name("publicKeyPem").type(ValueType.TEXT).required(false).build()
+        new Validation.Builder().name("id").type(ValueType.IRI).build(),
+        new Validation.Builder().name("type").type(ValueType.RDF_TYPE).many(true).defaultType(Type.CryptographicKey).build(),
+        new Validation.Builder().name("owner").type(ValueType.IRI).fetch(true).build(),
+        new Validation.Builder().name("publicKeyPem").type(ValueType.TEXT).build()
     ))
     .put(Type.Endorsement, List.of(
         new Validation.Builder().name("id").type(ValueType.IRI).required(true).build(),
         new Validation.Builder().name("type").type(ValueType.RDF_TYPE).required(true).many(true).mustContainOneType(List.of(Type.Endorsement)).build(),
-        new Validation.Builder().name("claim").type(ValueType.ID).required(true).allowRemoteUrl(false).fetch(false).allowDataUri(false).expectedTypes(List.of(Type.EndorsementClaim, Type.Endorsement)).fullValidate(false).build(),
+        new Validation.Builder().name("claim").type(ValueType.ID).required(true).expectedTypes(List.of(Type.EndorsementClaim, Type.Endorsement)).build(),
         new Validation.Builder().name("issuedOn").type(ValueType.DATETIME).required(true).build(),
         new Validation.Builder().name("issuer").type(ValueType.ID).expectedType(Type.Profile).fetch(true).required(true).build(),
         new Validation.Builder().name("verification").build(),
-        new Validation.Builder().name("@language").type(ValueType.LANGUAGE).required(false).build(),
-        new Validation.Builder().name("version").type(ValueType.TEXT_OR_NUMBER).required(false).build(),
-        new Validation.Builder().name("related").type(ValueType.ID).required(false).allowRemoteUrl(true).fetch(false).allowDataUri(false).expectedType(Type.Endorsement).fullValidate(false).many(true).build(),
-        new Validation.Builder().name("endorsement").type(ValueType.ID).required(false).allowRemoteUrl(true).fetch(true).allowDataUri(false).expectedType(Type.Endorsement).many(true).build()
+        new Validation.Builder().name("@language").type(ValueType.LANGUAGE).build(),
+        new Validation.Builder().name("version").type(ValueType.TEXT_OR_NUMBER).build(),
+        new Validation.Builder().name("related").type(ValueType.ID).allowRemoteUrl(true).expectedType(Type.Endorsement).many(true).build(),
+        new Validation.Builder().name("endorsement").type(ValueType.ID).allowRemoteUrl(true).fetch(true).expectedType(Type.Endorsement).many(true).build()
     ))
     .put(Type.EndorsementClaim, List.of(
         new Validation.Builder().name("id").type(ValueType.IRI).required(true).build(),
-        new Validation.Builder().name("endorsementComment").type(ValueType.MARKDOWN_TEXT).required(false).build()
+        new Validation.Builder().name("endorsementComment").type(ValueType.MARKDOWN_TEXT).build()
     ))
     .put(Type.Evidence, List.of(
-        new Validation.Builder().name("type").type(ValueType.RDF_TYPE).many(true).required(false).defaultType(Type.Evidence).build(),
-        new Validation.Builder().name("id").type(ValueType.IRI).required(false).build(),
-        new Validation.Builder().name("narrative").type(ValueType.MARKDOWN_TEXT).required(false).build(),
-        new Validation.Builder().name("name").type(ValueType.TEXT).required(false).build(),
-        new Validation.Builder().name("description").type(ValueType.TEXT).required(false).build(),
-        new Validation.Builder().name("genre").type(ValueType.TEXT).required(false).build(),
-        new Validation.Builder().name("audience").type(ValueType.TEXT).required(false).build()
+        new Validation.Builder().name("type").type(ValueType.RDF_TYPE).many(true).defaultType(Type.Evidence).build(),
+        new Validation.Builder().name("id").type(ValueType.IRI).build(),
+        new Validation.Builder().name("narrative").type(ValueType.MARKDOWN_TEXT).build(),
+        new Validation.Builder().name("name").type(ValueType.TEXT).build(),
+        new Validation.Builder().name("description").type(ValueType.TEXT).build(),
+        new Validation.Builder().name("genre").type(ValueType.TEXT).build(),
+        new Validation.Builder().name("audience").type(ValueType.TEXT).build()
     ))
     .put(Type.ExpectedRecipientProfile, List.of(
-        new Validation.Builder().name("id").type(ValueType.IRI).required(false).build(),
-        new Validation.Builder().name("type").type(ValueType.RDF_TYPE).required(false).many(true).mustContainOneType(List.of(Type.Issuer, Type.Profile)).defaultType(Type.Profile).build(),
-        new Validation.Builder().name("name").type(ValueType.TEXT).required(false).build(),
-        new Validation.Builder().name("description").type(ValueType.TEXT).required(false).build(),
-        new Validation.Builder().name("image").type(ValueType.ID).required(false).expectedType(Type.Image).fetch(false).allowDataUri(true).build(),
-        new Validation.Builder().name("url").type(ValueType.URL).required(false).many(true).build(),
-        new Validation.Builder().name("email").type(ValueType.EMAIL).required(false).many(true).build(),
-        new Validation.Builder().name("telephone").type(ValueType.TELEPHONE).required(false).many(true).build(),
-        new Validation.Builder().name("publicKey").type(ValueType.ID).many(true).expectedType(Type.CryptographicKey).fetch(false).required(false).build(),
-        new Validation.Builder().name("verification").type(ValueType.ID).expectedType(Type.VerificationObjectIssuer).fetch(false).required(false).build()
+        new Validation.Builder().name("id").type(ValueType.IRI).build(),
+        new Validation.Builder().name("type").type(ValueType.RDF_TYPE).many(true).mustContainOneType(List.of(Type.Issuer, Type.Profile)).defaultType(Type.Profile).build(),
+        new Validation.Builder().name("name").type(ValueType.TEXT).build(),
+        new Validation.Builder().name("description").type(ValueType.TEXT).build(),
+        new Validation.Builder().name("image").type(ValueType.ID).expectedType(Type.Image).allowDataUri(true).build(),
+        new Validation.Builder().name("url").type(ValueType.URL).many(true).build(),
+        new Validation.Builder().name("email").type(ValueType.EMAIL).many(true).build(),
+        new Validation.Builder().name("telephone").type(ValueType.TELEPHONE).many(true).build(),
+        new Validation.Builder().name("publicKey").type(ValueType.ID).many(true).expectedType(Type.CryptographicKey).build(),
+        new Validation.Builder().name("verification").type(ValueType.ID).expectedType(Type.VerificationObjectIssuer).build()
     ))
     .put(Type.Extension, List.of())
     .put(Type.IdentityObject, List.of(
-        new Validation.Builder().name("type").type(ValueType.RDF_TYPE).required(true).many(false).mustContainOne(List.of("id", "email", "url", "telephone")).build(),
+        new Validation.Builder().name("type").type(ValueType.RDF_TYPE).required(true).mustContainOne(List.of("id", "email", "url", "telephone")).build(),
         new Validation.Builder().name("identity").type(ValueType.IDENTITY_HASH).required(true).build(),
         new Validation.Builder().name("hashed").type(ValueType.BOOLEAN).required(true).build(),
-        new Validation.Builder().name("salt").type(ValueType.TEXT).required(false).build()
+        new Validation.Builder().name("salt").type(ValueType.TEXT).build()
     ))
     .put(Type.Image, List.of(
-        new Validation.Builder().name("type").type(ValueType.RDF_TYPE).many(true).required(false).defaultType("schema:ImageObject").build(),
+        new Validation.Builder().name("type").type(ValueType.RDF_TYPE).many(true).defaultType("schema:ImageObject").build(),
         new Validation.Builder().name("id").type(ValueType.DATA_URI_OR_URL).required(true).build(),
-        new Validation.Builder().name("caption").type(ValueType.TEXT).required(false).build(),
-        new Validation.Builder().name("author").type(ValueType.IRI).required(false).build()
+        new Validation.Builder().name("caption").type(ValueType.TEXT).build(),
+        new Validation.Builder().name("author").type(ValueType.IRI).build()
     ))
     .put(Type.Issuer, List.of(
         new Validation.Builder().name("id").type(ValueType.IRI).required(true).build(),
         new Validation.Builder().name("type").type(ValueType.RDF_TYPE).required(true).many(true).mustContainOneType(List.of(Type.Issuer, Type.Profile)).build(),
         new Validation.Builder().name("name").type(ValueType.TEXT).required(true).build(),
-        new Validation.Builder().name("description").type(ValueType.TEXT).required(false).build(),
-        new Validation.Builder().name("image").type(ValueType.ID).required(false).allowRemoteUrl(true).expectedType(Type.Image).fetch(false).allowDataUri(true).build(),
+        new Validation.Builder().name("description").type(ValueType.TEXT).build(),
+        new Validation.Builder().name("image").type(ValueType.ID).allowRemoteUrl(true).expectedType(Type.Image).allowDataUri(true).build(),
         new Validation.Builder().name("url").type(ValueType.URL).required(true).build(),
         new Validation.Builder().name("email").type(ValueType.EMAIL).required(true).build(),
-        new Validation.Builder().name("telephone").type(ValueType.TELEPHONE).required(false).build(),
-        new Validation.Builder().name("publicKey").type(ValueType.ID).expectedType(Type.CryptographicKey).fetch(true).required(false).build(),
-        new Validation.Builder().name("verification").type(ValueType.ID).expectedType(Type.VerificationObjectIssuer).fetch(false).required(false).build(),
-        new Validation.Builder().name("id").type(ValueType.ISSUER).required(false).messageLevel(MessageLevel.Warning).build(),
-        new Validation.Builder().name("@language").type(ValueType.LANGUAGE).required(false).build(),
-        new Validation.Builder().name("version").type(ValueType.TEXT_OR_NUMBER).required(false).build(),
-        new Validation.Builder().name("related").type(ValueType.ID).required(false).allowRemoteUrl(true).fetch(false).allowDataUri(false).expectedType(Type.Issuer).fullValidate(false).many(true).build(),
-        new Validation.Builder().name("endorsement").type(ValueType.ID).required(false).allowRemoteUrl(true).fetch(true).allowDataUri(false).expectedType(Type.Endorsement).many(true).build()
+        new Validation.Builder().name("telephone").type(ValueType.TELEPHONE).build(),
+        new Validation.Builder().name("publicKey").type(ValueType.ID).expectedType(Type.CryptographicKey).fetch(true).build(),
+        new Validation.Builder().name("verification").type(ValueType.ID).expectedType(Type.VerificationObjectIssuer).build(),
+        new Validation.Builder().name("id").type(ValueType.ISSUER).messageLevel(MessageLevel.Warning).build(),
+        new Validation.Builder().name("@language").type(ValueType.LANGUAGE).build(),
+        new Validation.Builder().name("version").type(ValueType.TEXT_OR_NUMBER).build(),
+        new Validation.Builder().name("related").type(ValueType.ID).allowRemoteUrl(true).expectedType(Type.Issuer).many(true).build(),
+        new Validation.Builder().name("endorsement").type(ValueType.ID).allowRemoteUrl(true).fetch(true).expectedType(Type.Endorsement).many(true).build()
     ))
     .put(Type.Profile, List.of(
         new Validation.Builder().name("id").type(ValueType.IRI).required(true).build(),
         new Validation.Builder().name("type").type(ValueType.RDF_TYPE).required(true).many(true).mustContainOneType(List.of(Type.Issuer, Type.Profile)).build(),
         new Validation.Builder().name("name").type(ValueType.TEXT).required(true).build(),
-        new Validation.Builder().name("description").type(ValueType.TEXT).required(false).build(),
-        new Validation.Builder().name("image").type(ValueType.ID).required(false).allowRemoteUrl(true).expectedType(Type.Image).fetch(false).allowDataUri(true).build(),
+        new Validation.Builder().name("description").type(ValueType.TEXT).build(),
+        new Validation.Builder().name("image").type(ValueType.ID).allowRemoteUrl(true).expectedType(Type.Image).allowDataUri(true).build(),
         new Validation.Builder().name("url").type(ValueType.URL).required(true).build(),
         new Validation.Builder().name("email").type(ValueType.EMAIL).required(true).build(),
-        new Validation.Builder().name("telephone").type(ValueType.TELEPHONE).required(false).build(),
-        new Validation.Builder().name("publicKey").type(ValueType.ID).expectedType(Type.CryptographicKey).fetch(true).required(false).build(),
-        new Validation.Builder().name("verification").type(ValueType.ID).expectedType(Type.VerificationObjectIssuer).fetch(false).required(false).build(),
-        new Validation.Builder().name("id").type(ValueType.ISSUER).required(false).messageLevel(MessageLevel.Warning).build(),
-        new Validation.Builder().name("@language").type(ValueType.LANGUAGE).required(false).build(),
-        new Validation.Builder().name("version").type(ValueType.TEXT_OR_NUMBER).required(false).build(),
-        new Validation.Builder().name("related").type(ValueType.ID).required(false).allowRemoteUrl(true).fetch(false).allowDataUri(false).expectedType(Type.Profile).fullValidate(false).many(true).build(),
-        new Validation.Builder().name("endorsement").type(ValueType.ID).required(false).allowRemoteUrl(true).fetch(true).allowDataUri(false).expectedType(Type.Endorsement).many(true).build()
+        new Validation.Builder().name("telephone").type(ValueType.TELEPHONE).build(),
+        new Validation.Builder().name("publicKey").type(ValueType.ID).expectedType(Type.CryptographicKey).fetch(true).build(),
+        new Validation.Builder().name("verification").type(ValueType.ID).expectedType(Type.VerificationObjectIssuer).build(),
+        new Validation.Builder().name("id").type(ValueType.ISSUER).messageLevel(MessageLevel.Warning).build(),
+        new Validation.Builder().name("@language").type(ValueType.LANGUAGE).build(),
+        new Validation.Builder().name("version").type(ValueType.TEXT_OR_NUMBER).build(),
+        new Validation.Builder().name("related").type(ValueType.ID).allowRemoteUrl(true).expectedType(Type.Profile).many(true).build(),
+        new Validation.Builder().name("endorsement").type(ValueType.ID).allowRemoteUrl(true).fetch(true).expectedType(Type.Endorsement).many(true).build()
     ))
     .put(Type.RevocationList, List.of(
         new Validation.Builder().name("type").type(ValueType.RDF_TYPE).required(true).many(true).mustContainOneType(List.of(Type.RevocationList)).build(),
-        new Validation.Builder().name("id").type(ValueType.IRI).required(false).build()
+        new Validation.Builder().name("id").type(ValueType.IRI).build()
     ))
     .put(Type.VerificationObject, List.of())
     .put(Type.VerificationObjectAssertion, List.of(
-        new Validation.Builder().name("type").type(ValueType.RDF_TYPE).required(true).many(false).mustContainOne(List.of("HostedBadge", "SignedBadge")).build(),
-        new Validation.Builder().name("creator").type(ValueType.ID).expectedType(Type.CryptographicKey).fetch(true).required(false).build()
+        new Validation.Builder().name("type").type(ValueType.RDF_TYPE).required(true).mustContainOne(List.of("HostedBadge", "SignedBadge")).build(),
+        new Validation.Builder().name("creator").type(ValueType.ID).expectedType(Type.CryptographicKey).fetch(true).build()
     ))
     .put(Type.VerificationObjectIssuer, List.of(
-        new Validation.Builder().name("type").type(ValueType.RDF_TYPE).required(false).many(true).defaultType(Type.VerificationObject).build(),
-        new Validation.Builder().name("verificationProperty").type(ValueType.COMPACT_IRI).required(false).build(),
-        new Validation.Builder().name("startsWith").type(ValueType.URL).required(false).build(),
-        new Validation.Builder().name("allowedOrigins").type(ValueType.URL_AUTHORITY).required(false).many(true).build()
+        new Validation.Builder().name("type").type(ValueType.RDF_TYPE).many(true).defaultType(Type.VerificationObject).build(),
+        new Validation.Builder().name("verificationProperty").type(ValueType.COMPACT_IRI).build(),
+        new Validation.Builder().name("startsWith").type(ValueType.URL).build(),
+        new Validation.Builder().name("allowedOrigins").type(ValueType.URL_AUTHORITY).many(true).build()
     ))
     .build();
 
