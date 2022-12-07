@@ -279,6 +279,7 @@ public class Assertion extends Credential {
         new Validation.Builder().name("telephone").type(ValueType.TELEPHONE).build(),
         new Validation.Builder().name("publicKey").type(ValueType.ID).expectedType(Type.CryptographicKey).fetch(true).build(),
         new Validation.Builder().name("verification").type(ValueType.ID).expectedType(Type.VerificationObjectIssuer).build(),
+        new Validation.Builder().name("revocationList").type(ValueType.ID).expectedType(Type.RevocationList).fetch(true).build(),
         new Validation.Builder().name("id").type(ValueType.ISSUER).messageLevel(MessageLevel.Warning).build(),
         new Validation.Builder().name("@language").type(ValueType.LANGUAGE).build(),
         new Validation.Builder().name("version").type(ValueType.TEXT_OR_NUMBER).build(),
