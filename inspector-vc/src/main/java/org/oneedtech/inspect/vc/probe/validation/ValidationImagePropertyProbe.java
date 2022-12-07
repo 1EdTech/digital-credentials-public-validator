@@ -30,7 +30,8 @@ public class ValidationImagePropertyProbe extends ValidationPropertyProbe {
 
     @Override
     protected ReportItems reportForNonExistentProperty(JsonNode node, RunContext ctx) {
-        return notRun("Could not load and validate image in node " + node.toString(), ctx);
+        // Could not load and validate image in node
+        return success(ctx);
     }
 
     @Override

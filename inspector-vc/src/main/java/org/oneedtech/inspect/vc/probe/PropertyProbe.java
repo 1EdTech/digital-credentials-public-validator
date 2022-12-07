@@ -37,6 +37,6 @@ public class PropertyProbe extends Probe<JsonNode> {
     }
 
     private ReportItems defaultValidation(JsonNode node, RunContext ctx) {
-        return notRun("Not additional validations run", ctx);
+        return success(ctx);
     }
 }

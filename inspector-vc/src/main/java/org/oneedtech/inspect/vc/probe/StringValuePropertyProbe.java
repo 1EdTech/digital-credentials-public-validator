@@ -28,7 +28,7 @@ public class StringValuePropertyProbe extends PropertyProbe {
 }
 
     private ReportItems defaultValidation(List<String> nodeValues, RunContext ctx) {
-        return notRun("Not additional validations run", ctx);
+        return success(ctx);
     }
 
 
