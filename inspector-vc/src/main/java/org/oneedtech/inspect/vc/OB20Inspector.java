@@ -35,6 +35,7 @@ import org.oneedtech.inspect.vc.probe.ExpirationProbe;
 import org.oneedtech.inspect.vc.probe.IssuanceProbe;
 import org.oneedtech.inspect.vc.probe.TypePropertyProbe;
 import org.oneedtech.inspect.vc.probe.VerificationDependenciesProbe;
+import org.oneedtech.inspect.vc.probe.VerificationJWTProbe;
 import org.oneedtech.inspect.vc.probe.validation.ValidationPropertyProbeFactory;
 import org.oneedtech.inspect.vc.util.CachingDocumentLoader;
 
@@ -150,9 +151,17 @@ public class OB20Inspector extends Inspector {
 			}
 
 			// verification and revocation
-			for(Probe<JsonLdGeneratedObject> probe : List.of(new VerificationDependenciesProbe(assertion.getId()), new AssertionRevocationListProbe(assertion.getId()))) {
+			for(Probe<JsonLdGeneratedObject> probe : List.of(new VerificationDependenciesProbe(assertion.getId()),
+				new AssertionRevocationListProbe(assertion.getId()))) {
 				probeCount++;
 				accumulator.add(probe.run(jsonLdGeneratedObject, ctx));
+				if(broken(accumulator)) return abort(ctx, accumulator, probeCount);
+			}
+
+			// JWS verification
+			if (assertion.getJwt().isPresent()) {
+				probeCount++;
+				accumulator.add(new VerificationJWTProbe(assertion.getJwt().get()).run(jsonLdGeneratedObject, ctx));
 				if(broken(accumulator)) return abort(ctx, accumulator, probeCount);
 			}
 
