@@ -39,18 +39,30 @@ public class VerificationDependenciesProbe extends Probe<JsonLdGeneratedObject> 
         ObjectMapper mapper = (ObjectMapper) ctx.get(Key.JACKSON_OBJECTMAPPER);
         JsonNode jsonNode = (mapper).readTree(jsonLdGeneratedObject.getJson());
 
-        // TODO: get verification object from graph
-        String type = jsonNode.get("verification").get("type").asText().strip();
+        JsonNode verificationNode = jsonNode.get("verification");
+        checkNotNull(verificationNode);
+        String type = null;
+        if (verificationNode.isTextual()) {
+            // get verification from graph
+            UriResource verificationUriResource = resolveUriResource(ctx, verificationNode.asText().strip());
+            JsonLdGeneratedObject verificationObject = (JsonLdGeneratedObject) ctx.getGeneratedObject(
+                JsonLDCompactionProve.getId(verificationUriResource));
+            JsonNode verificationRootNode = ((ObjectMapper) ctx.get(Key.JACKSON_OBJECTMAPPER))
+                .readTree(verificationObject.getJson());
+            type = verificationRootNode.get("type").asText().strip();
+        } else {
+            type = verificationNode.get("type").asText().strip();
+        }
+
         if ("HostedBadge".equals(type)) {
             // get badge
             UriResource badgeUriResource = resolveUriResource(ctx, jsonNode.get("badge").asText().strip());
             JsonLdGeneratedObject badgeObject = (JsonLdGeneratedObject) ctx.getGeneratedObject(
                 JsonLDCompactionProve.getId(badgeUriResource));
-
-            // get issuer from badge
             JsonNode badgeNode = ((ObjectMapper) ctx.get(Key.JACKSON_OBJECTMAPPER))
                 .readTree(badgeObject.getJson());
 
+            // get issuer from badge
             UriResource issuerUriResource = resolveUriResource(ctx, badgeNode.get("issuer").asText().strip());
 
             JsonLdGeneratedObject issuerObject = (JsonLdGeneratedObject) ctx.getGeneratedObject(
