@@ -1,5 +1,7 @@
 package org.oneedtech.inspect.vc.probe.validation;
 
+import java.util.regex.Pattern;
+
 import org.oneedtech.inspect.core.probe.RunContext;
 import org.oneedtech.inspect.core.report.ReportItems;
 import org.oneedtech.inspect.vc.Validation;
@@ -24,7 +26,7 @@ public class ValidationIssuerPropertyProbe extends ValidationPropertyProbe {
 
     @Override
     protected ReportItems validate(JsonNode node, RunContext ctx) {
-        if (!node.asText().matches("^http(s)?://")) {
+        if (!Pattern.compile("^http(s)?://.+", Pattern.CASE_INSENSITIVE).matcher(node.asText()).matches()) {
             return buildResponse("Issuer Profile " + node.toString() + " not hosted with HTTP-based identifier."  +
                 "Many platforms can only handle HTTP(s)-hosted issuers.", ctx);
         }
