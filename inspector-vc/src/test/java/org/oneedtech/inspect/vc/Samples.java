@@ -47,6 +47,8 @@ public class Samples {
 			public final static Sample SIMPLE_ASSERTION_JSON = new Sample("ob20/basic-assertion.json", true);
 			public final static Sample SIMPLE_ASSERTION_INVALID_CONTEXT_JSON = new Sample("ob20/basic-assertion-invalid-context.json", true);
 			public final static Sample SIMPLE_ASSERTION_INVALID_TYPE_JSON = new Sample("ob20/basic-assertion-invalid-type.json", true);
+			// original:
+			public final static Sample SIMPLE_ASSERTION_ISSUER_WITHOUT_PUBLIC_KEY_JSON = new Sample("ob20/basic-assertion-no-public-key.json", true);
 			// original: test_graph: test_verify_with_redirection
 			public final static Sample WARNING_REDIRECTION_ASSERTION_JSON = new Sample("ob20/warning-with-redirection.json", true);
 			// original: test_validation: test_issuer_warn_on_non_https_id

@@ -108,6 +108,16 @@ public class OB20Tests {
 		});
 	}
 
+	@Test
+	void testNoPublicKeyInIssuer() {
+		assertDoesNotThrow(()->{
+			Report report = validator.run(Samples.OB20.JSON.SIMPLE_ASSERTION_ISSUER_WITHOUT_PUBLIC_KEY_JSON.asFileResource());
+			if(verbose) PrintHelper.print(report, true);
+			assertValid(report);
+			// check than
+		});
+	}
+
 	@Nested
 	static class WarningTests {
 		@BeforeAll
