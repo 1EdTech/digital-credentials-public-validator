@@ -153,8 +153,8 @@ public class OB20Inspector extends Inspector {
 
 			// verification and revocation
 			if (assertion.getCredentialType() == Type.Assertion) {
-				for(Probe<JsonLdGeneratedObject> probe : List.of(new VerificationDependenciesProbe(assertion.getId()),
-					new AssertionRevocationListProbe(assertion.getId()))) {
+				for(Probe<JsonLdGeneratedObject> probe : List.of(new VerificationDependenciesProbe(assertionNode.get("id").asText()),
+					new AssertionRevocationListProbe(assertionNode.get("id").asText()))) {
 					probeCount++;
 					accumulator.add(probe.run(jsonLdGeneratedObject, ctx));
 					if(broken(accumulator)) return abort(ctx, accumulator, probeCount);

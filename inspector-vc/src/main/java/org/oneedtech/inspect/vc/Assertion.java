@@ -335,7 +335,7 @@ public class Assertion extends Credential {
     .put(Type.VerificationObjectIssuer, List.of(
         new Validation.Builder().name("type").type(ValueType.RDF_TYPE).many(true).defaultType(Type.VerificationObject).build(),
         new Validation.Builder().name("verificationProperty").type(ValueType.COMPACT_IRI).build(),
-        new Validation.Builder().name("startsWith").type(ValueType.URL).build(),
+        new Validation.Builder().name("startsWith").type(ValueType.URL).many(true).build(),
         new Validation.Builder().name("allowedOrigins").type(ValueType.URL_AUTHORITY).many(true).build()
     ))
     .put(Type.External, Collections.emptyList())

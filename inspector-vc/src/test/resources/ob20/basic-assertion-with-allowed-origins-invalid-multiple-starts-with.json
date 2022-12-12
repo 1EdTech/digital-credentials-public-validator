@@ -1,0 +1,18 @@
+{
+  "@context": "https://w3id.org/openbadges/v2",
+  "type": "Assertion",
+  "id": "https://example.org/beths-robotics-badge.json",
+  "recipient": {
+    "type": "email",
+    "hashed": true,
+    "salt": "deadsea",
+    "identity": "sha256$ecf5409f3f4b91ab60cc5ef4c02aef7032354375e70cf4d8e43f6a1d29891942"
+  },
+  "image": "https://example.org/beths-robot-badge.png",
+  "evidence": "https://example.org/beths-robot-work.html",
+  "issuedOn": "2016-12-31T23:59:59Z",
+  "badge": "https://example.org/badgeclass-with-verification-invalid-multiple-starts-with.json",
+  "verification": {
+    "type": "hosted"
+  }
+}

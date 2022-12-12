@@ -149,6 +149,43 @@ public class OB20Tests {
 		});
 	}
 
+	@Test
+	void testVerification() {
+		assertDoesNotThrow(()->{
+			Report report = validator.run(Samples.OB20.JSON.ISSUER_WITH_ALLOWED_ORIGINS.asFileResource());
+			if(verbose) PrintHelper.print(report, true);
+			assertValid(report);
+		});
+	}
+
+	@Test
+	void testVerificationStartsWith() {
+		assertDoesNotThrow(()->{
+			Report report = validator.run(Samples.OB20.JSON.ISSUER_WITH_ALLOWED_ORIGINS_VALID_STARTSWITH.asFileResource());
+			if(verbose) PrintHelper.print(report, true);
+			assertValid(report);
+		});
+		assertDoesNotThrow(()->{
+			Report report = validator.run(Samples.OB20.JSON.ISSUER_WITH_ALLOWED_ORIGINS_INVALID_STARTSWITH.asFileResource());
+			if(verbose) PrintHelper.print(report, true);
+			assertInvalid(report);
+		});
+	}
+
+	@Test
+	void testVerificationMultipleStartsWith() {
+		assertDoesNotThrow(()->{
+			Report report = validator.run(Samples.OB20.JSON.ISSUER_WITH_ALLOWED_ORIGINS_VALID_MULTIPLE_STARTSWITH.asFileResource());
+			if(verbose) PrintHelper.print(report, true);
+			assertValid(report);
+		});
+		assertDoesNotThrow(()->{
+			Report report = validator.run(Samples.OB20.JSON.ISSUER_WITH_ALLOWED_ORIGINS_INVALID_MULTIPLE_STARTSWITH.asFileResource());
+			if(verbose) PrintHelper.print(report, true);
+			assertInvalid(report);
+		});
+	}
+
 	@Nested
 	static class WarningTests {
 		@BeforeAll
