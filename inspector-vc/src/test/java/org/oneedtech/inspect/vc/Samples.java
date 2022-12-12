@@ -64,16 +64,17 @@ public class Samples {
 			public final static Sample RDF_VALIDATION_VALID_ISSUER_EXTENSION_CLASS = new Sample("ob20/rdf-validation/valid-issuer-extension.json", true);
 			public final static Sample RDF_VALIDATION_VALID_ALIGNMENT_OBJECT = new Sample("ob20/rdf-validation/valid-alignment-object.json", true);
 			public final static Sample RDF_VALIDATION_VALID_EXTERNAL_CLASS = new Sample("ob20/rdf-validation/valid-cool-class.json", true);
-			public final static Sample RDF_VALIDATION_INVALID_CLASS = new Sample("ob20/rdf-validation/invalid-class.json", false);
-			public final static Sample RDF_VALIDATION_INVALID_EMPTY_CLASS = new Sample("ob20/rdf-validation/invalid-empty-type.json", false);
-			public final static Sample RDF_VALIDATION_INVALID_ELEM_CLASS = new Sample("ob20/rdf-validation/invalid-one-invalid-class.json", false);
-			public final static Sample RDF_VALIDATION_INVALID_ISSUER_TYPE = new Sample("ob20/rdf-validation/badge-class-invalid-issuer-type.json", false);
+			public final static Sample RDF_VALIDATION_INVALID_CLASS = new Sample("ob20/rdf-validation/invalid-class.json", true);
+			public final static Sample RDF_VALIDATION_INVALID_EMPTY_CLASS = new Sample("ob20/rdf-validation/invalid-empty-type.json", true);
+			public final static Sample RDF_VALIDATION_INVALID_ELEM_CLASS = new Sample("ob20/rdf-validation/invalid-one-invalid-class.json", true);
+			public final static Sample RDF_VALIDATION_INVALID_ISSUER_TYPE = new Sample("ob20/rdf-validation/badge-class-invalid-issuer-type.json", true);
 			public final static Sample RDF_VALIDATION_VALID_EMPTY_CRITERIA_TYPE = new Sample("ob20/rdf-validation/valid-badge-class-empty-criteria-type.json", true);
 			// otiginal: test_validation: test_hosted_verification_object_in_assertion
 			public final static Sample ISSUER_WITH_ALLOWED_ORIGINS = new Sample("ob20/basic-assertion-with-allowed-origins.json", true);
 			public final static Sample ISSUER_WITH_ALLOWED_ORIGINS_VALID_STARTSWITH = new Sample("ob20/basic-assertion-with-allowed-origins-valid-starts-with.json", true);
-			public final static Sample ISSUER_WITH_ALLOWED_ORIGINS_INVALID_STARTSWITH = new Sample("ob20/basic-assertion-with-allowed-origins-invalid-starts-with.json", false);
+			public final static Sample ISSUER_WITH_ALLOWED_ORIGINS_INVALID_STARTSWITH = new Sample("ob20/basic-assertion-with-allowed-origins-invalid-starts-with.json", true);
 			public final static Sample ISSUER_WITH_ALLOWED_ORIGINS_VALID_MULTIPLE_STARTSWITH = new Sample("ob20/basic-assertion-with-allowed-origins-valid-multiple-starts-with.json", true);
+			public final static Sample ISSUER_WITH_ALLOWED_ORIGINS_INVALID_MULTIPLE_STARTSWITH = new Sample("ob20/basic-assertion-with-allowed-origins-invalid-multiple-starts-with.json", true);
 			// original: test_validation: test_assertion_not_expired
 			public final static Sample SIMPLE_EXPIRED_ASSERTION_JSON = new Sample("ob20/basic-assertion-expired.json", true);
 			// original: test_validation: test_assertion_not_expires_before_issue

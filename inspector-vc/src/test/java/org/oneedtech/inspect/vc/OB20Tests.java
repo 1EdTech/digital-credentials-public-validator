@@ -132,21 +132,24 @@ public class OB20Tests {
 				Samples.OB20.JSON.RDF_VALIDATION_VALID_ISSUER_EXTENSION_CLASS,
 				Samples.OB20.JSON.RDF_VALIDATION_VALID_ALIGNMENT_OBJECT,
 				Samples.OB20.JSON.RDF_VALIDATION_VALID_EXTERNAL_CLASS,
-				Samples.OB20.JSON.RDF_VALIDATION_INVALID_EMPTY_CLASS,
-				Samples.OB20.JSON.RDF_VALIDATION_INVALID_CLASS,
-				Samples.OB20.JSON.RDF_VALIDATION_INVALID_ELEM_CLASS,
-				Samples.OB20.JSON.RDF_VALIDATION_INVALID_ISSUER_TYPE,
 				Samples.OB20.JSON.RDF_VALIDATION_VALID_EMPTY_CRITERIA_TYPE).forEach(resource -> {
 			assertDoesNotThrow(()->{
 				Report report = validator.run(resource.asFileResource());
 				if(verbose) PrintHelper.print(report, true);
-				if(resource.isValid()) {
-					assertValid(report);
-				} else {
-					assertInvalid(report);
-				}
+				assertValid(report);
 			});
 		});
+		List.of(Samples.OB20.JSON.RDF_VALIDATION_INVALID_EMPTY_CLASS,
+				Samples.OB20.JSON.RDF_VALIDATION_INVALID_CLASS,
+				Samples.OB20.JSON.RDF_VALIDATION_INVALID_ELEM_CLASS,
+				Samples.OB20.JSON.RDF_VALIDATION_INVALID_ISSUER_TYPE).forEach(resource -> {
+			assertDoesNotThrow(()->{
+				Report report = validator.run(resource.asFileResource());
+				if(verbose) PrintHelper.print(report, true);
+				assertInvalid(report);
+			});
+		});
+
 	}
 
 	@Test
