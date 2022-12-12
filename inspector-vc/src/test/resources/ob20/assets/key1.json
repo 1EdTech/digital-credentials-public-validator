@@ -3,5 +3,5 @@
     "id": "http://example.org/key1.json",
     "type": "CryptographicKey",
     "owner": "https://example.org/organization.json",
-    "publicKeyPem": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAq/tyy5CGrCVfGIMrMkVq\nZ5cAKkbLdrNrNFvXNMSazvKj/9VmuALZOjqXl1Od/Ku6q+18sn70p6r25kGRoaU/\nAJNLt36EnRSs9I66xZ3tOY4c9PeWpMC1XbCrUBh1rpx7XQ5wULOMbttEvBf9V2Cl\nCGiNqwqcafrQHoYteAtF4d2zcjNm+xZRQmnVU0CdvXSXeniWjqyif/751/M/xb93\nfeF1AIFS5IGaI1cWca7BG2izKz1DjZxbMlvQVZk1Axz2Uj/FXssyBKmAdCw4EjuF\nqinQBmKwmFvCB3yhMAK6+f1k4hsR/ET/PxwkNQZfu+gkmEAQoYAMSPgGS3xY3LVf\nxwIDAQAB\n-----END PUBLIC KEY-----"
+    "publicKeyPem": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAko9t/QZEwRUainRO5MqY\nGBBeFe7rm/BVg6ugkgkyRGdDkjCeEjNfCm6An+bQqeCsHoMCprs629/a9yJ58/4w\nP7ws/5lJ9YwZYXpGvLfha0xrpWl5DiExeOMB9pB8p4ze0AI6H49w9ZX0G+cgaqaK\n/FbQ/Ln1zkZH6+VaAntoaLu3I5kLLR1F31HqLmSKpm6rHyLFkq534dGfuNmjSM+x\nZxBKu+ugmyeL9DinHvBZ/dwFMGS+o4/bT54UeLMd7a71ONevRY2hXgwarfWjqkDs\nAgqnfKSDjjDZQDM2OlyLWvyI2SWF4eWxIUtWuFP4j0d/5SUFjhAldRLjIXMQWMEN\nNwIDAQAB\n-----END PUBLIC KEY-----"
 }

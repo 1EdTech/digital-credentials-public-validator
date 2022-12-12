@@ -1,0 +1,7 @@
+{
+	"@context": "https://w3id.org/openbadges/v2",
+	"id": "http://example.org/key2.json",
+	"type": "CryptographicKey",
+	"owner": "https://example.org/organization-with-empty-revocation-list.json",
+	"publicKeyPem": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAjjtSHqVnCOhOe91mt1hh\nWa0h6qF5K32ETY3+6ENQ7kR6qvI1S4prxptYfkuCncJFeZkCu306QS8E/iYCUEoC\ndKOYMVtn1Tm16p2cD+d4LQNYDQbKyKIqU8Cgqb3GoS2MWlJ6Q9sVW1B24RYAokW9\npm80xFJMJAIbZKBfr/hMLofGD5vvBHV/UFYtGvy7PByA7eNPkSLFnIY2L6WBWVyE\na2o95Jzvih+H2CmAk6HSumJL/PdV3yys/m4TEmU0V3m7B8voa3yEIFYG4hKxGUCi\nRqaq/wTFsTVBsEZn9rcpjG58ibjfd1+HBhWjRqsa5NNM9sQqnvvNBSWnqE5ggiNc\nzQIDAQAB\n-----END PUBLIC KEY-----"
+}

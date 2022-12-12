@@ -98,6 +98,24 @@ public class OB20Tests {
 	}
 
 	@Test
+	void testJWTNotRevoked() {
+		assertDoesNotThrow(()->{
+			Report report = validator.run(Samples.OB20.JWT.SIMPLE_NOT_REVOKED_JWT.asFileResource());
+			if(verbose) PrintHelper.print(report, true);
+			assertValid(report);
+		});
+	}
+
+	@Test
+	void testJWTRevoked() {
+		assertDoesNotThrow(()->{
+			Report report = validator.run(Samples.OB20.JWT.SIMPLE_REVOKED_JWT.asFileResource());
+			if(verbose) PrintHelper.print(report, true);
+			assertInvalid(report);
+		});
+	}
+
+	@Test
 	void testLanguageInBadgeClass() {
 		assertDoesNotThrow(()->{
 			Report report = validator.run(Samples.OB20.JSON.SIMPLE_LANGUAGE_BADGECLASS.asFileResource());

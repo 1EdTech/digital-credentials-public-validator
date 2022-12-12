@@ -91,7 +91,12 @@ public class Samples {
 		}
 
 		public static final class JWT {
+			// original: test_signed_verification: test_can_full_verify_jws_signed_assertion
 			public final static Sample SIMPLE_JWT = new Sample("ob20/simple.jwt", true);
+			// original: test_signed_verification: test_can_full_verify_with_revocation_check
+			public final static Sample SIMPLE_NOT_REVOKED_JWT = new Sample("ob20/simple-not-revoked.jwt", true);
+			// original: test_signed_verification: test_revoked_badge_marked_invalid
+			public final static Sample SIMPLE_REVOKED_JWT = new Sample("ob20/simple-revoked.jwt", true);
 		}
 	}
 }
