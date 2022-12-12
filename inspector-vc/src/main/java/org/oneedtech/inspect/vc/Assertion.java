@@ -217,7 +217,8 @@ public class Assertion extends Credential {
         new Validation.Builder().name("@language").type(ValueType.LANGUAGE).build(),
         new Validation.Builder().name("version").type(ValueType.TEXT_OR_NUMBER).build(),
         new Validation.Builder().name("related").type(ValueType.ID).allowRemoteUrl(true).expectedType(Type.BadgeClass).many(true).fullValidate(false).build(),
-        new Validation.Builder().name("endorsement").type(ValueType.ID).allowRemoteUrl(true).fetch(true).expectedType(Type.Endorsement).many(true).build()
+        new Validation.Builder().name("endorsement").type(ValueType.ID).allowRemoteUrl(true).fetch(true).expectedType(Type.Endorsement).many(true).build(),
+        new Validation.Builder().name("image").type(ValueType.IMAGE).allowDataUri(true).build()
     ))
     .put(Type.AlignmentObject, List.of(
         new Validation.Builder().name("type").type(ValueType.RDF_TYPE).many(true).defaultType(Type.AlignmentObject).build(),
@@ -286,7 +287,8 @@ public class Assertion extends Credential {
         new Validation.Builder().name("type").type(ValueType.RDF_TYPE).many(true).defaultType("schema:ImageObject").build(),
         new Validation.Builder().name("id").type(ValueType.DATA_URI_OR_URL).required(true).build(),
         new Validation.Builder().name("caption").type(ValueType.TEXT).build(),
-        new Validation.Builder().name("author").type(ValueType.IRI).build()
+        new Validation.Builder().name("author").type(ValueType.IRI).build(),
+        new Validation.Builder().name("id").type(ValueType.IMAGE).allowDataUri(true).build()
     ))
     .put(Type.Issuer, List.of(
         new Validation.Builder().name("id").type(ValueType.IRI).required(true).build(),
@@ -321,8 +323,7 @@ public class Assertion extends Credential {
         new Validation.Builder().name("@language").type(ValueType.LANGUAGE).build(),
         new Validation.Builder().name("version").type(ValueType.TEXT_OR_NUMBER).build(),
         new Validation.Builder().name("related").type(ValueType.ID).allowRemoteUrl(true).expectedType(Type.Profile).many(true).fullValidate(false).build(),
-        new Validation.Builder().name("endorsement").type(ValueType.ID).allowRemoteUrl(true).fetch(true).expectedType(Type.Endorsement).many(true).build()
-    ))
+        new Validation.Builder().name("endorsement").type(ValueType.ID).allowRemoteUrl(true).fetch(true).expectedType(Type.Endorsement).many(true).build()    ))
     .put(Type.RevocationList, List.of(
         new Validation.Builder().name("type").type(ValueType.RDF_TYPE).required(true).many(true).mustContainOneType(List.of(Type.RevocationList)).build(),
         new Validation.Builder().name("id").type(ValueType.IRI).build()

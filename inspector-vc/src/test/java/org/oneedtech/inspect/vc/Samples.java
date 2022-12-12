@@ -83,6 +83,8 @@ public class Samples {
 			public final static Sample SIMPLE_FUTURE_ASSERTION_JSON = new Sample("ob20/basic-assertion-in-future.json", true);
 			// original: test_validate_related: test_validate_related_language
 			public final static Sample BASIC_WITH_LANGUAGE_JSON = new Sample("ob20/basic-assertion-with-language.json", true);
+			// original: test_image_validation: test_base64_data_uri_in_badgeclass
+			public final static Sample BADGE_WITH_DATA_IMAGE_JSON = new Sample("ob20/assets/badge-with-data-image.json", true);
 		}
 
 		public static final class PNG {

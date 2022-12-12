@@ -44,7 +44,7 @@ public class ValidationPropertyProbe extends PropertyProbe {
     }
 
     public ValidationPropertyProbe(String id, Validation validation) {
-        this(ID, validation, true);
+        this(id, validation, true);
     }
 
     public ValidationPropertyProbe(Validation validation, boolean fullValidate) {

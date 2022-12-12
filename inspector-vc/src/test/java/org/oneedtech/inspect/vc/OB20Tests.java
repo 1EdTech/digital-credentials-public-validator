@@ -116,6 +116,15 @@ public class OB20Tests {
 	}
 
 	@Test
+	void testDataImage() {
+		assertDoesNotThrow(()->{
+			Report report = validator.run(Samples.OB20.JSON.BADGE_WITH_DATA_IMAGE_JSON.asFileResource());
+			if(verbose) PrintHelper.print(report, true);
+			assertValid(report);
+		});
+	}
+
+	@Test
 	void testLanguageInBadgeClass() {
 		assertDoesNotThrow(()->{
 			Report report = validator.run(Samples.OB20.JSON.SIMPLE_LANGUAGE_BADGECLASS.asFileResource());
