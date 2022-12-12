@@ -6,13 +6,19 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.time.chrono.IsoChronology;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.DateTimeParseException;
+import java.time.format.ResolverStyle;
 import java.util.IllformedLocaleException;
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Pattern;
 
 import org.oneedtech.inspect.core.probe.json.JsonPathEvaluator;
+import org.oneedtech.inspect.util.json.ObjectMapperCache;
+import org.oneedtech.inspect.util.json.ObjectMapperCache.Config;
 
 import com.apicatalog.jsonld.JsonLd;
 import com.apicatalog.jsonld.JsonLdError;
@@ -20,10 +26,8 @@ import com.apicatalog.jsonld.document.JsonDocument;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.google.common.io.Resources;
-
-import jakarta.json.JsonArray;
-import jakarta.json.JsonObject;
 
 /**
  * Validator for ValueType. Translated into java from PrimitiveValueValidator in validation.py
@@ -39,13 +43,30 @@ public class PrimitiveValueValidator {
             return true;
         }
 
+        ObjectMapper mapper = ObjectMapperCache.get(Config.DEFAULT); // TODO: get from RunContext
+
+        try {
+            JsonNode node = mapper.readTree(Resources.getResource("contexts/ob-v2p0.json"));
+            ObjectReader readerForUpdating = mapper.readerForUpdating(node);
+            JsonNode merged = readerForUpdating.readValue("{\"" + value.asText() + "\" : \"TEST\"}");
+            JsonDocument jsonDocument = JsonDocument.of(new StringReader(merged.toString()));
+
+            JsonNode expanded = mapper.readTree(JsonLd.expand(jsonDocument).get().toString());
+            if (expanded.isArray() && ((ArrayNode) expanded).size() > 0) {
+                return true;
+            }
+
+        } catch (NullPointerException | IOException | JsonLdError e) {
+            return false;
+        }
+
         return false;
     }
 
     public static boolean validateDataUri(JsonNode value) {
         try {
             URI uri = new URI(value.asText());
-            return "data".equalsIgnoreCase(uri.getScheme());
+            return "data".equalsIgnoreCase(uri.getScheme()) && uri.getSchemeSpecificPart().contains(",");
         } catch (Throwable ignored) {
         }
         return false;
@@ -55,13 +76,28 @@ public class PrimitiveValueValidator {
         return validateUrl(value) || validateDataUri(value);
     }
 
+    private static DateTimeFormatter ISO_OFFSET_TIME_JOINED = new DateTimeFormatterBuilder()
+        .parseCaseInsensitive()
+        .append(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+        .parseLenient()
+        .appendOffset("+Hmmss", "Z")
+        .parseStrict()
+        .toFormatter();
+
     public static boolean validateDatetime(JsonNode value) {
-        try {
-            DateTimeFormatter.ISO_INSTANT.parse(value.asText());
-            return true;
-        } catch (DateTimeParseException | NullPointerException ignored) {
-        }
-        return false;
+        boolean valid = List.of(ISO_OFFSET_TIME_JOINED,
+            DateTimeFormatter.ISO_OFFSET_DATE_TIME,
+            DateTimeFormatter.ISO_INSTANT)
+        .stream().anyMatch(formatter -> {
+            try {
+                formatter.parse(value.asText());
+                return true;
+            } catch (DateTimeParseException | NullPointerException ignored) {
+                return false;
+            }
+        });
+
+        return valid;
     }
 
     public static boolean validateEmail(JsonNode value) {
@@ -88,7 +124,10 @@ public class PrimitiveValueValidator {
      * @return
      */
     public static boolean validateIri(JsonNode value) {
-        return validateUrl(value) || value.asText().matches("^_:") || value.asText().matches("^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$");
+        return
+            Pattern.compile("^_:.+", Pattern.CASE_INSENSITIVE).matcher(value.asText()).matches()
+            || Pattern.compile("^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$", Pattern.CASE_INSENSITIVE).matcher(value.asText()).matches()
+            || validateUrl(value);
     }
 
     public static boolean validateLanguage(JsonNode value) {
@@ -109,7 +148,7 @@ public class PrimitiveValueValidator {
             return false;
         }
 
-        ObjectMapper mapper = new ObjectMapper(); // TODO: get from RunContext
+        ObjectMapper mapper = ObjectMapperCache.get(Config.DEFAULT); // TODO: get from RunContext
         JsonPathEvaluator jsonPath = new JsonPathEvaluator(mapper); // TODO: get from RunContext
 
         try {
