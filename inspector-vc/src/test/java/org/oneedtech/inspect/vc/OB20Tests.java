@@ -59,12 +59,11 @@ public class OB20Tests {
 
 	@Test
 	void testSimpleBadgeClassJsonValid() {
-		// TODO: commented out due to lack of prerequisite tasks yet
-		// assertDoesNotThrow(()->{
-		// 	Report report = validator.run(Samples.OB20.JSON.SIMPLE_BADGECLASS.asFileResource());
-		// 	if(verbose) PrintHelper.print(report, true);
-		// 	assertValid(report);
-		// });
+		assertDoesNotThrow(()->{
+			Report report = validator.run(Samples.OB20.JSON.SIMPLE_BADGECLASS.asFileResource());
+			if(verbose) PrintHelper.print(report, true);
+			assertValid(report);
+		});
 	}
 
 	@Test
@@ -115,6 +114,15 @@ public class OB20Tests {
 			if(verbose) PrintHelper.print(report, true);
 			assertValid(report);
 			// check than
+		});
+	}
+
+	@Test
+	void testCompactIriInIssuer() {
+		assertDoesNotThrow(()->{
+			Report report = validator.run(Samples.OB20.JSON.ISSUER_COMPACTIRI_VALIDATION.asFileResource());
+			if(verbose) PrintHelper.print(report, true);
+			assertValid(report);
 		});
 	}
 
