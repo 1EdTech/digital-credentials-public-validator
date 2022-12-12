@@ -40,11 +40,11 @@ public class ValidationPropertyProbe extends PropertyProbe {
     protected final boolean fullValidate; // TODO: fullValidate
 
     public ValidationPropertyProbe(Validation validation) {
-        this(ID, validation, false);
+        this(ID, validation, true);
     }
 
     public ValidationPropertyProbe(String id, Validation validation) {
-        this(ID, validation, false);
+        this(ID, validation, true);
     }
 
     public ValidationPropertyProbe(Validation validation, boolean fullValidate) {
@@ -60,10 +60,10 @@ public class ValidationPropertyProbe extends PropertyProbe {
 
     @Override
     protected ReportItems reportForNonExistentProperty(JsonNode node, RunContext ctx) {
-        if (validation.isRequired()) {
+        if (fullValidate && validation.isRequired()) {
             return error("Required property " + validation.getName() + " not present in " + node.toPrettyString(), ctx);
         } else {
-            // optional property
+            // optional property or not doing full validation
             return success(ctx);
         }
     }

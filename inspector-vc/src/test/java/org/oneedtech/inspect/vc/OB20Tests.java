@@ -216,6 +216,15 @@ public class OB20Tests {
 		});
 	}
 
+	@Test
+	void testAssertionWithLanguage() {
+		assertDoesNotThrow(()->{
+			Report report = validator.run(Samples.OB20.JSON.BASIC_WITH_LANGUAGE_JSON.asFileResource());
+			if(verbose) PrintHelper.print(report, true);
+			assertValid(report);
+		});
+	}
+
 	@Nested
 	static class WarningTests {
 		@BeforeAll

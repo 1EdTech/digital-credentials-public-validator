@@ -201,7 +201,7 @@ public class Assertion extends Credential {
         new Validation.Builder().name("image").type(ValueType.IMAGE).build(),
         new Validation.Builder().name("@language").type(ValueType.LANGUAGE).build(),
         new Validation.Builder().name("version").type(ValueType.TEXT_OR_NUMBER).build(),
-        new Validation.Builder().name("related").type(ValueType.ID).allowRemoteUrl(true).expectedType(Type.Assertion).many(true).build(),
+        new Validation.Builder().name("related").type(ValueType.ID).allowRemoteUrl(true).expectedType(Type.Assertion).many(true).fullValidate(false).build(),
         new Validation.Builder().name("endorsement").type(ValueType.ID).allowRemoteUrl(true).fetch(true).expectedType(Type.Endorsement).many(true).build()
     ))
     .put(Type.BadgeClass, List.of(
@@ -216,7 +216,7 @@ public class Assertion extends Credential {
         new Validation.Builder().name("tags").type(ValueType.TEXT).many(true).build(),
         new Validation.Builder().name("@language").type(ValueType.LANGUAGE).build(),
         new Validation.Builder().name("version").type(ValueType.TEXT_OR_NUMBER).build(),
-        new Validation.Builder().name("related").type(ValueType.ID).allowRemoteUrl(true).expectedType(Type.BadgeClass).many(true).build(),
+        new Validation.Builder().name("related").type(ValueType.ID).allowRemoteUrl(true).expectedType(Type.BadgeClass).many(true).fullValidate(false).build(),
         new Validation.Builder().name("endorsement").type(ValueType.ID).allowRemoteUrl(true).fetch(true).expectedType(Type.Endorsement).many(true).build()
     ))
     .put(Type.AlignmentObject, List.of(
@@ -241,13 +241,13 @@ public class Assertion extends Credential {
     .put(Type.Endorsement, List.of(
         new Validation.Builder().name("id").type(ValueType.IRI).required(true).build(),
         new Validation.Builder().name("type").type(ValueType.RDF_TYPE).required(true).many(true).mustContainOneType(List.of(Type.Endorsement)).build(),
-        new Validation.Builder().name("claim").type(ValueType.ID).required(true).expectedTypes(List.of(Type.EndorsementClaim, Type.Endorsement)).build(),
+        new Validation.Builder().name("claim").type(ValueType.ID).required(true).expectedTypes(List.of(Type.EndorsementClaim, Type.Endorsement)).fullValidate(false).build(),
         new Validation.Builder().name("issuedOn").type(ValueType.DATETIME).required(true).build(),
         new Validation.Builder().name("issuer").type(ValueType.ID).expectedType(Type.Profile).fetch(true).required(true).build(),
         new Validation.Builder().name("verification").build(),
         new Validation.Builder().name("@language").type(ValueType.LANGUAGE).build(),
         new Validation.Builder().name("version").type(ValueType.TEXT_OR_NUMBER).build(),
-        new Validation.Builder().name("related").type(ValueType.ID).allowRemoteUrl(true).expectedType(Type.Endorsement).many(true).build(),
+        new Validation.Builder().name("related").type(ValueType.ID).allowRemoteUrl(true).expectedType(Type.Endorsement).many(true).fullValidate(false).build(),
         new Validation.Builder().name("endorsement").type(ValueType.ID).allowRemoteUrl(true).fetch(true).expectedType(Type.Endorsement).many(true).build()
     ))
     .put(Type.EndorsementClaim, List.of(
@@ -303,7 +303,7 @@ public class Assertion extends Credential {
         new Validation.Builder().name("id").type(ValueType.ISSUER).messageLevel(MessageLevel.Warning).build(),
         new Validation.Builder().name("@language").type(ValueType.LANGUAGE).build(),
         new Validation.Builder().name("version").type(ValueType.TEXT_OR_NUMBER).build(),
-        new Validation.Builder().name("related").type(ValueType.ID).allowRemoteUrl(true).expectedType(Type.Issuer).many(true).build(),
+        new Validation.Builder().name("related").type(ValueType.ID).allowRemoteUrl(true).expectedType(Type.Issuer).many(true).fullValidate(false).build(),
         new Validation.Builder().name("endorsement").type(ValueType.ID).allowRemoteUrl(true).fetch(true).expectedType(Type.Endorsement).many(true).build()
     ))
     .put(Type.Profile, List.of(
@@ -320,7 +320,7 @@ public class Assertion extends Credential {
         new Validation.Builder().name("id").type(ValueType.ISSUER).messageLevel(MessageLevel.Warning).build(),
         new Validation.Builder().name("@language").type(ValueType.LANGUAGE).build(),
         new Validation.Builder().name("version").type(ValueType.TEXT_OR_NUMBER).build(),
-        new Validation.Builder().name("related").type(ValueType.ID).allowRemoteUrl(true).expectedType(Type.Profile).many(true).build(),
+        new Validation.Builder().name("related").type(ValueType.ID).allowRemoteUrl(true).expectedType(Type.Profile).many(true).fullValidate(false).build(),
         new Validation.Builder().name("endorsement").type(ValueType.ID).allowRemoteUrl(true).fetch(true).expectedType(Type.Endorsement).many(true).build()
     ))
     .put(Type.RevocationList, List.of(

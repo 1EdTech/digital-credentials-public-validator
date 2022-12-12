@@ -11,7 +11,7 @@ import org.oneedtech.inspect.vc.Validation;
  */
 public class ValidationPropertyProbeFactory {
     public static ValidationPropertyProbe of(Validation validation) {
-		return of(validation, false);
+		return of(validation, true);
 	}
 
 	public static ValidationPropertyProbe of(Validation validation, boolean fullValidate) {

@@ -39,6 +39,10 @@ public class ValidationRdfTypePropertyProbe extends ValidationPropertyProbe {
             }
         }
 
+        // if we're not doing a full validation and it's not and id field, pass
+        if (!fullValidate && !validation.getName().equals("id")) {
+            return success(ctx);
+        }
         return error("Required property " + validation.getName() + " not present in " + node.toPrettyString(), ctx);
     }
 

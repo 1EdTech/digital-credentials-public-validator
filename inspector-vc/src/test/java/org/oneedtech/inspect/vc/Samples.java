@@ -81,6 +81,8 @@ public class Samples {
 			public final static Sample SIMPLE_EXPIRED_BEFORE_ISSUED_ASSERTION_JSON = new Sample("ob20/basic-assertion-expired-before-issued.json", true);
 			// original: test_validation: test_assertion_not_issued_in_future
 			public final static Sample SIMPLE_FUTURE_ASSERTION_JSON = new Sample("ob20/basic-assertion-in-future.json", true);
+			// original: test_validate_related: test_validate_related_language
+			public final static Sample BASIC_WITH_LANGUAGE_JSON = new Sample("ob20/basic-assertion-with-language.json", true);
 		}
 
 		public static final class PNG {

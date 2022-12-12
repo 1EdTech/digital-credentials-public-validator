@@ -122,6 +122,7 @@ public class Validation {
             this.prerequisites = new ArrayList<>();
             this.expectedTypes = new ArrayList<>();
             this.messageLevel = MessageLevel.Error;
+            this.fullValidate = true; // by default, full validation
         }
 
         public Builder name(String name) {
