@@ -108,6 +108,10 @@ public class VerifiableCredential extends Credential  {
         }
 
 		@Override
+		public boolean isAllowedTypeValuesRequired() {
+			return true;
+		}
+		@Override
 		public List<String> getContextUris() {
 			return contextMap.get(contextMap.keySet()
 				.stream()

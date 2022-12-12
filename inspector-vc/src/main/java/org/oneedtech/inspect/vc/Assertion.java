@@ -1,5 +1,7 @@
 package org.oneedtech.inspect.vc;
 
+import static org.oneedtech.inspect.vc.util.PrimitiveValueValidator.validateIri;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -84,14 +86,21 @@ public class Assertion extends Credential {
         VerificationObject(List.of("VerificationObject")),
         VerificationObjectAssertion(List.of("VerificationObjectAssertion")),
         VerificationObjectIssuer(List.of("VerificationObjectIssuer")),
+        External(Collections.emptyList(), false),
         Unknown(Collections.emptyList());
 
         public static List<Type> primaryObjects = List.of(Assertion, BadgeClass, Issuer, Profile, Endorsement);
 
         private final List<String> allowedTypeValues;
+        private final boolean allowedTypeValuesRequired;
 
         Type(List<String> typeValues) {
+            this(typeValues, true);
+        }
+
+        Type(List<String> typeValues, boolean allowedTypeValuesRequired) {
             this.allowedTypeValues = typeValues;
+            this.allowedTypeValuesRequired = allowedTypeValuesRequired;
         }
 
 		public static Assertion.Type valueOf (JsonNode typeNode) {
@@ -107,6 +116,12 @@ public class Assertion extends Credential {
                     }
                 }
 			}
+
+            // check external type
+            if (validateIri(typeNode)) {
+                return External;
+            }
+
 			return Unknown;
         }
 
@@ -123,6 +138,11 @@ public class Assertion extends Credential {
         @Override
         public List<String> getContextUris() {
             return List.of("https://w3id.org/openbadges/v2") ;
+        }
+
+        @Override
+        public boolean isAllowedTypeValuesRequired() {
+            return allowedTypeValuesRequired;
         }
 
         public List<Validation> getValidations() {
@@ -318,6 +338,8 @@ public class Assertion extends Credential {
         new Validation.Builder().name("startsWith").type(ValueType.URL).build(),
         new Validation.Builder().name("allowedOrigins").type(ValueType.URL_AUTHORITY).many(true).build()
     ))
+    .put(Type.External, Collections.emptyList())
+    .put(Type.Unknown, Collections.emptyList())
     .build();
 
     public static final String ID = Assertion.class.getCanonicalName();

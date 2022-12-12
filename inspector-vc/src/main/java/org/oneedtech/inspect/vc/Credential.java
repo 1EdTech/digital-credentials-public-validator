@@ -90,6 +90,7 @@ public abstract class Credential extends GeneratedObject {
     public interface CredentialEnum {
         List<String> getRequiredTypeValues();
         List<String> getAllowedTypeValues();
+        boolean isAllowedTypeValuesRequired();
         List<String> getContextUris();
     }
 
