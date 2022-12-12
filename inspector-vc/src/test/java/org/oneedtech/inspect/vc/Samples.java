@@ -53,6 +53,8 @@ public class Samples {
 			public final static Sample WARNING_ISSUER_NON_HTTPS_JSON = new Sample("ob20/warning-issuer-non-http.json", true);
 			// original: test_validation: test_can_input_badgeclass
 			public final static Sample SIMPLE_BADGECLASS = new Sample("ob20/assets/badgeclass1.json", true);
+			// original: validate_language: validate_language_prop_basic
+			public final static Sample SIMPLE_LANGUAGE_BADGECLASS = new Sample("ob20/badge-class-with-language.json", true);
 		}
 
 		public static final class PNG {

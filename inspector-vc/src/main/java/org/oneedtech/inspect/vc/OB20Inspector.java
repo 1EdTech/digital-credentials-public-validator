@@ -21,6 +21,7 @@ import org.oneedtech.inspect.util.json.ObjectMapperCache;
 import org.oneedtech.inspect.util.resource.Resource;
 import org.oneedtech.inspect.util.resource.ResourceType;
 import org.oneedtech.inspect.util.spec.Specification;
+import org.oneedtech.inspect.vc.Assertion.Type;
 import org.oneedtech.inspect.vc.Credential.CredentialEnum;
 import org.oneedtech.inspect.vc.jsonld.JsonLdGeneratedObject;
 import org.oneedtech.inspect.vc.jsonld.probe.GraphFetcherProbe;
@@ -151,18 +152,20 @@ public class OB20Inspector extends Inspector {
 			}
 
 			// verification and revocation
-			for(Probe<JsonLdGeneratedObject> probe : List.of(new VerificationDependenciesProbe(assertion.getId()),
-				new AssertionRevocationListProbe(assertion.getId()))) {
-				probeCount++;
-				accumulator.add(probe.run(jsonLdGeneratedObject, ctx));
-				if(broken(accumulator)) return abort(ctx, accumulator, probeCount);
-			}
+			if (assertion.getCredentialType() == Type.Assertion) {
+				for(Probe<JsonLdGeneratedObject> probe : List.of(new VerificationDependenciesProbe(assertion.getId()),
+					new AssertionRevocationListProbe(assertion.getId()))) {
+					probeCount++;
+					accumulator.add(probe.run(jsonLdGeneratedObject, ctx));
+					if(broken(accumulator)) return abort(ctx, accumulator, probeCount);
+				}
 
-			// JWS verification
-			if (assertion.getJwt().isPresent()) {
-				probeCount++;
-				accumulator.add(new VerificationJWTProbe(assertion.getJwt().get()).run(jsonLdGeneratedObject, ctx));
-				if(broken(accumulator)) return abort(ctx, accumulator, probeCount);
+				// JWS verification
+				if (assertion.getJwt().isPresent()) {
+					probeCount++;
+					accumulator.add(new VerificationJWTProbe(assertion.getJwt().get()).run(jsonLdGeneratedObject, ctx));
+					if(broken(accumulator)) return abort(ctx, accumulator, probeCount);
+				}
 			}
 
 
