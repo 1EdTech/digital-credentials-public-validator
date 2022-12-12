@@ -203,6 +203,6 @@
     "name": "Example Badge",
     "description": "An example",
     "criteria": "http://example.com/badgecriteria.json",
-    "issuer": "http://example.org/issuer1",
+    "issuer": "http://example.org/issuer1.json",
     "image": "http://example.org/robotics-badge.png"
 }
