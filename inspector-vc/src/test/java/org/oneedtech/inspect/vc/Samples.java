@@ -74,7 +74,12 @@ public class Samples {
 			public final static Sample ISSUER_WITH_ALLOWED_ORIGINS_VALID_STARTSWITH = new Sample("ob20/basic-assertion-with-allowed-origins-valid-starts-with.json", true);
 			public final static Sample ISSUER_WITH_ALLOWED_ORIGINS_INVALID_STARTSWITH = new Sample("ob20/basic-assertion-with-allowed-origins-invalid-starts-with.json", false);
 			public final static Sample ISSUER_WITH_ALLOWED_ORIGINS_VALID_MULTIPLE_STARTSWITH = new Sample("ob20/basic-assertion-with-allowed-origins-valid-multiple-starts-with.json", true);
-			public final static Sample ISSUER_WITH_ALLOWED_ORIGINS_INVALID_MULTIPLE_STARTSWITH = new Sample("ob20/basic-assertion-with-allowed-origins-invalid-multiple-starts-with.json", false);
+			// original: test_validation: test_assertion_not_expired
+			public final static Sample SIMPLE_EXPIRED_ASSERTION_JSON = new Sample("ob20/basic-assertion-expired.json", true);
+			// original: test_validation: test_assertion_not_expires_before_issue
+			public final static Sample SIMPLE_EXPIRED_BEFORE_ISSUED_ASSERTION_JSON = new Sample("ob20/basic-assertion-expired-before-issued.json", true);
+			// original: test_validation: test_assertion_not_issued_in_future
+			public final static Sample SIMPLE_FUTURE_ASSERTION_JSON = new Sample("ob20/basic-assertion-in-future.json", true);
 		}
 
 		public static final class PNG {

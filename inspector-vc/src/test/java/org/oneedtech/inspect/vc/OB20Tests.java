@@ -186,6 +186,33 @@ public class OB20Tests {
 		});
 	}
 
+	@Test
+	void testExpired() {
+		assertDoesNotThrow(()->{
+			Report report = validator.run(Samples.OB20.JSON.SIMPLE_EXPIRED_ASSERTION_JSON.asFileResource());
+			if(verbose) PrintHelper.print(report, true);
+			assertInvalid(report);
+		});
+	}
+
+	@Test
+	void testExpiredBeforeIssued() {
+		assertDoesNotThrow(()->{
+			Report report = validator.run(Samples.OB20.JSON.SIMPLE_EXPIRED_BEFORE_ISSUED_ASSERTION_JSON.asFileResource());
+			if(verbose) PrintHelper.print(report, true);
+			assertInvalid(report);
+		});
+	}
+
+	@Test
+	void testIssuedInFuture() {
+		assertDoesNotThrow(()->{
+			Report report = validator.run(Samples.OB20.JSON.SIMPLE_FUTURE_ASSERTION_JSON.asFileResource());
+			if(verbose) PrintHelper.print(report, true);
+			assertInvalid(report);
+		});
+	}
+
 	@Nested
 	static class WarningTests {
 		@BeforeAll
