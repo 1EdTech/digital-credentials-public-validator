@@ -116,9 +116,27 @@ public class OB20Tests {
 	}
 
 	@Test
-	void testDataImage() {
+	void testDataImageInBadge() {
 		assertDoesNotThrow(()->{
 			Report report = validator.run(Samples.OB20.JSON.BADGE_WITH_DATA_IMAGE_JSON.asFileResource());
+			if(verbose) PrintHelper.print(report, true);
+			assertValid(report);
+		});
+	}
+
+	@Test
+	void testDataImageInAssertion() {
+		assertDoesNotThrow(()->{
+			Report report = validator.run(Samples.OB20.JSON.ASSERTION_WITH_DATA_IMAGE_JSON.asFileResource());
+			if(verbose) PrintHelper.print(report, true);
+			assertInvalid(report);
+		});
+	}
+
+	@Test
+	void testComplexImageInAssertion() {
+		assertDoesNotThrow(()->{
+			Report report = validator.run(Samples.OB20.JSON.BADGE_WITH_COMPLEX_IMAGE_JSON.asFileResource());
 			if(verbose) PrintHelper.print(report, true);
 			assertValid(report);
 		});

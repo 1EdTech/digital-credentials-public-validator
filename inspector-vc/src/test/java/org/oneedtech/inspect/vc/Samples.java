@@ -85,6 +85,10 @@ public class Samples {
 			public final static Sample BASIC_WITH_LANGUAGE_JSON = new Sample("ob20/basic-assertion-with-language.json", true);
 			// original: test_image_validation: test_base64_data_uri_in_badgeclass
 			public final static Sample BADGE_WITH_DATA_IMAGE_JSON = new Sample("ob20/assets/badge-with-data-image.json", true);
+			// original: test_image_validation: test_base64_data_uri_in_assertion
+			public final static Sample ASSERTION_WITH_DATA_IMAGE_JSON = new Sample("ob20/assertion-with-data-image.json", true);
+			// original: test_image_validation: test_validate_badgeclass_image_formats
+			public final static Sample BADGE_WITH_COMPLEX_IMAGE_JSON = new Sample("ob20/assets/badgeclass-with-complex-image.json", true);
 		}
 
 		public static final class PNG {

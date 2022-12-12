@@ -1,0 +1,14 @@
+{
+    "@context": "https://w3id.org/openbadges/v2",
+    "id": "http://example.org/badgeclass-with-complex-image.json",
+    "type": "BadgeClass",
+    "name": "Example Badge",
+    "description": "An example",
+    "criteria": "http://example.com/badgecriteria.json",
+    "issuer": "http://example.org/issuer1.json",
+    "image": {
+        "id": "http://example.org/beths-robot-badge.png",
+        "author": "http://someoneelse.org/1",
+        "caption": "A hexagon with attitude"
+    }
+}
