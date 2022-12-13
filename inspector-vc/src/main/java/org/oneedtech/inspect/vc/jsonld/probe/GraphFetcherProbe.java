@@ -30,6 +30,8 @@ import org.oneedtech.inspect.vc.util.CachingDocumentLoader;
 import org.oneedtech.inspect.vc.util.JsonNodeUtil;
 import org.oneedtech.inspect.vc.util.PrimitiveValueValidator;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
@@ -105,11 +107,7 @@ public class GraphFetcherProbe extends Probe<JsonNode> {
                         updateNode(validation, idNode, ctx);
 
                         // fetch node and add it to the graph
-                        UriResource uriResource = resolveUriResource(ctx, idNode.asText().strip());
-                        JsonLdGeneratedObject resolved = (JsonLdGeneratedObject) ctx.getGeneratedObject(JsonLDCompactionProve.getId(uriResource));
-                        if (resolved == null) {
-                            return new CredentialParseProbe().run(uriResource, ctx);
-                        }
+                        result = fetchNode(ctx, result, idNode);
                     }
                 }
             }
@@ -118,30 +116,35 @@ public class GraphFetcherProbe extends Probe<JsonNode> {
             for (JsonNode childNode : nodeList) {
                 if (shouldFetch(childNode, validation)) {
                     // get node from context
-                    UriResource uriResource = resolveUriResource(ctx, childNode.asText());
-                    JsonLdGeneratedObject resolved = (JsonLdGeneratedObject) ctx.getGeneratedObject(JsonLDCompactionProve.getId(uriResource));
-                    if (resolved == null) {
-                        // fetch
-                        result = new ReportItems(List.of(result, new CredentialParseProbe().run(uriResource, ctx)));
-                        if (!result.contains(Outcome.FATAL, Outcome.EXCEPTION)) {
-                            Assertion fetchedAssertion = (Assertion) ctx.getGeneratedObject(uriResource.getID());
-
-                            // compact ld
-                            result = new ReportItems(List.of(result, new JsonLDCompactionProve(fetchedAssertion.getCredentialType().getContextUris().get(0)).run(fetchedAssertion, ctx)));
-                            if (!result.contains(Outcome.FATAL, Outcome.EXCEPTION)) {
-                                JsonLdGeneratedObject fetched = (JsonLdGeneratedObject) ctx.getGeneratedObject(JsonLDCompactionProve.getId(fetchedAssertion));
-                                JsonNode fetchedNode = ((ObjectMapper) ctx.get(Key.JACKSON_OBJECTMAPPER)).readTree(fetched.getJson());
-
-                                // recursive call
-                                result = new ReportItems(List.of(result, new GraphFetcherProbe(fetchedAssertion).run(fetchedNode, ctx)));
-                            }
-                        }
-                    }
+                    result = fetchNode(ctx, result, childNode);
                 }
             }
 
         }
         return success(ctx);
+    }
+
+    private ReportItems fetchNode(RunContext ctx, ReportItems result, JsonNode idNode)
+            throws URISyntaxException, Exception, JsonProcessingException, JsonMappingException {
+        UriResource uriResource = resolveUriResource(ctx, idNode.asText().strip());
+        JsonLdGeneratedObject resolved = (JsonLdGeneratedObject) ctx.getGeneratedObject(JsonLDCompactionProve.getId(uriResource));
+        if (resolved == null) {
+            result = new ReportItems(List.of(result, new CredentialParseProbe().run(uriResource, ctx)));
+            if (!result.contains(Outcome.FATAL, Outcome.EXCEPTION)) {
+                Assertion fetchedAssertion = (Assertion) ctx.getGeneratedObject(uriResource.getID());
+
+                // compact ld
+                result = new ReportItems(List.of(result, new JsonLDCompactionProve(fetchedAssertion.getCredentialType().getContextUris().get(0)).run(fetchedAssertion, ctx)));
+                if (!result.contains(Outcome.FATAL, Outcome.EXCEPTION)) {
+                    JsonLdGeneratedObject fetched = (JsonLdGeneratedObject) ctx.getGeneratedObject(JsonLDCompactionProve.getId(fetchedAssertion));
+                    JsonNode fetchedNode = ((ObjectMapper) ctx.get(Key.JACKSON_OBJECTMAPPER)).readTree(fetched.getJson());
+
+                    // recursive call
+                    result = new ReportItems(List.of(result, new GraphFetcherProbe(fetchedAssertion).run(fetchedNode, ctx)));
+                }
+            }
+        }
+        return result;
     }
 
     /**
@@ -154,12 +157,14 @@ public class GraphFetcherProbe extends Probe<JsonNode> {
      * @return
      */
     private boolean shouldFetch(JsonNode node, Validation validation) {
-        return !node.isObject() || (!validation.isAllowDataUri() || DATA_URI_OR_URL.getValidationFunction().apply(node)) || (validation.isAllowDataUri() || ValueType.IRI.getValidationFunction().apply(node));
+        return !node.isObject() &&
+            (!validation.isAllowDataUri() || DATA_URI_OR_URL.getValidationFunction().apply(node)) &&
+            (validation.isAllowDataUri() || ValueType.IRI.getValidationFunction().apply(node));
     }
 
     private void updateNode(Validation validation, JsonNode idNode, RunContext ctx) throws IOException {
         JsonLdGeneratedObject jsonLdGeneratedObject = ctx.getGeneratedObject(JsonLDCompactionProve.getId(assertion));
-        JsonNode merged = createNewJson(ctx, jsonLdGeneratedObject.getJson(), "{\"" + validation.getName() + "\": \"" + idNode.asText().strip() + "\"");
+        JsonNode merged = createNewJson(ctx, jsonLdGeneratedObject.getJson(), "{\"" + validation.getName() + "\": \"" + idNode.asText().strip() + "\"}");
         jsonLdGeneratedObject.setJson(merged.toString());
 
     }
