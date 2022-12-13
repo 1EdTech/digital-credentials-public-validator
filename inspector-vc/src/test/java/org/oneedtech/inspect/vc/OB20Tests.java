@@ -143,12 +143,11 @@ public class OB20Tests {
 	}
 
 	@Test
-	void testLanguageInBadgeClass() {
+	void testEndorsementsInAssertion() {
 		assertDoesNotThrow(()->{
-			Report report = validator.run(Samples.OB20.JSON.SIMPLE_LANGUAGE_BADGECLASS.asFileResource());
+			Report report = validator.run(Samples.OB20.JSON.ASSERTION_WITH_ENDORSEMENTS.asFileResource());
 			if(verbose) PrintHelper.print(report, true);
 			assertValid(report);
-			// check than
 		});
 	}
 
@@ -158,7 +157,6 @@ public class OB20Tests {
 			Report report = validator.run(Samples.OB20.JSON.SIMPLE_ASSERTION_ISSUER_WITHOUT_PUBLIC_KEY_JSON.asFileResource());
 			if(verbose) PrintHelper.print(report, true);
 			assertValid(report);
-			// check than
 		});
 	}
 

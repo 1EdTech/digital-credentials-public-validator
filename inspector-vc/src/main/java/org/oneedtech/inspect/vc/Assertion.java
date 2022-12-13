@@ -245,11 +245,10 @@ public class Assertion extends Credential {
         new Validation.Builder().name("claim").type(ValueType.ID).required(true).expectedTypes(List.of(Type.EndorsementClaim, Type.Endorsement)).fullValidate(false).build(),
         new Validation.Builder().name("issuedOn").type(ValueType.DATETIME).required(true).build(),
         new Validation.Builder().name("issuer").type(ValueType.ID).expectedType(Type.Profile).fetch(true).required(true).build(),
-        new Validation.Builder().name("verification").build(),
+        new Validation.Builder().name("verification").type(ValueType.ID).expectedType(Type.VerificationObjectAssertion).required(true).build(),
         new Validation.Builder().name("@language").type(ValueType.LANGUAGE).build(),
         new Validation.Builder().name("version").type(ValueType.TEXT_OR_NUMBER).build(),
-        new Validation.Builder().name("related").type(ValueType.ID).allowRemoteUrl(true).expectedType(Type.Endorsement).many(true).fullValidate(false).build(),
-        new Validation.Builder().name("endorsement").type(ValueType.ID).allowRemoteUrl(true).fetch(true).expectedType(Type.Endorsement).many(true).build()
+        new Validation.Builder().name("related").type(ValueType.ID).allowRemoteUrl(true).expectedType(Type.Endorsement).many(true).fullValidate(false).build()
     ))
     .put(Type.EndorsementClaim, List.of(
         new Validation.Builder().name("id").type(ValueType.IRI).required(true).build(),

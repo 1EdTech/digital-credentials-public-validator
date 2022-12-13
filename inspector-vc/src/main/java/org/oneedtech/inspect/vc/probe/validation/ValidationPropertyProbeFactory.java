@@ -15,7 +15,7 @@ public class ValidationPropertyProbeFactory {
 	}
 
 	public static ValidationPropertyProbe of(Validation validation, boolean fullValidate) {
-			checkNotNull(validation.getType());
+		checkNotNull(validation.getType());
 		if (validation.getType() == ValueType.RDF_TYPE) {
 			return new ValidationRdfTypePropertyProbe(validation, fullValidate);
 		}

@@ -89,6 +89,8 @@ public class Samples {
 			public final static Sample ASSERTION_WITH_DATA_IMAGE_JSON = new Sample("ob20/assertion-with-data-image.json", true);
 			// original: test_image_validation: test_validate_badgeclass_image_formats
 			public final static Sample BADGE_WITH_COMPLEX_IMAGE_JSON = new Sample("ob20/assets/badgeclass-with-complex-image.json", true);
+			// original: test_validate_endorsements
+			public final static Sample ASSERTION_WITH_ENDORSEMENTS = new Sample("ob20/assertion-with-endorsements.json", true);
 		}
 
 		public static final class PNG {
