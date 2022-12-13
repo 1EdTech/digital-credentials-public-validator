@@ -10,7 +10,9 @@ import org.oneedtech.inspect.core.probe.Probe;
 import org.oneedtech.inspect.core.probe.RunContext;
 import org.oneedtech.inspect.core.report.Report;
 import org.oneedtech.inspect.core.report.ReportItems;
+import org.oneedtech.inspect.vc.util.CachingDocumentLoader;
 
+import com.apicatalog.jsonld.loader.DocumentLoader;
 import com.fasterxml.jackson.databind.JsonNode;
 
 /**
@@ -59,6 +61,14 @@ public abstract class VCInspector extends Inspector {
 			}
 		}
 		return Optional.empty();
+	}
+
+	/**
+	 * Creates a caching document loader for loading json resources
+	 * @return document loader for loading json resources
+	 */
+	protected DocumentLoader getDocumentLoader() {
+		return new CachingDocumentLoader();
 	}
 
     protected static final String REFRESHED = "is.refreshed.credential";

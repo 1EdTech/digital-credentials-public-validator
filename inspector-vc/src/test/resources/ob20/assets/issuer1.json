@@ -198,7 +198,7 @@
         },
         "verify": "verification"
     },
-    "id": "http://example.org/issuer1",
+    "id": "http://example.org/issuer1.json",
     "type": "Issuer",
     "name": "Example Issuer",
     "email": "me@example.org",

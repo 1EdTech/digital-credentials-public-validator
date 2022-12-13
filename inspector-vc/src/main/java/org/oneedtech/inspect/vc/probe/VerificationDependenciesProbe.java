@@ -28,11 +28,18 @@ import foundation.identity.jsonld.ConfigurableDocumentLoader;
  */
 public class VerificationDependenciesProbe extends Probe<JsonLdGeneratedObject> {
     private final String assertionId;
+    private final String propertyName;
 
     public VerificationDependenciesProbe(String assertionId) {
+        this(assertionId, "badge");
+    }
+
+    public VerificationDependenciesProbe(String assertionId, String propertyName) {
         super(ID);
         this.assertionId = assertionId;
+        this.propertyName = propertyName;
     }
+
 
     @Override
     public ReportItems run(JsonLdGeneratedObject jsonLdGeneratedObject, RunContext ctx) throws Exception {
@@ -56,7 +63,7 @@ public class VerificationDependenciesProbe extends Probe<JsonLdGeneratedObject> 
 
         if ("HostedBadge".equals(type)) {
             // get badge
-            UriResource badgeUriResource = resolveUriResource(ctx, jsonNode.get("badge").asText().strip());
+            UriResource badgeUriResource = resolveUriResource(ctx, getBadgeClaimId(jsonNode));
             JsonLdGeneratedObject badgeObject = (JsonLdGeneratedObject) ctx.getGeneratedObject(
                 JsonLDCompactionProve.getId(badgeUriResource));
             JsonNode badgeNode = ((ObjectMapper) ctx.get(Key.JACKSON_OBJECTMAPPER))
@@ -104,7 +111,7 @@ public class VerificationDependenciesProbe extends Probe<JsonLdGeneratedObject> 
                     allowedOrigins = List.of(defaultAllowedOrigins);
                 }
             } else {
-                JsonNodeUtil.asStringList(allowedOriginsNode);
+                allowedOrigins = JsonNodeUtil.asStringList(allowedOriginsNode);
             }
 
             if (allowedOrigins == null || allowedOrigins.isEmpty() || !issuerId.startsWith("http")) {
@@ -146,6 +153,20 @@ public class VerificationDependenciesProbe extends Probe<JsonLdGeneratedObject> 
         }
         return uriResource;
     }
+
+    /**
+     * Return the ID of the node with name propertyName
+     * @param jsonNode node
+     * @return ID of the node. If node is textual, the text is returned. If node is an object, its "ID" attribute is returned
+     */
+    protected String getBadgeClaimId(JsonNode jsonNode) {
+        JsonNode propertyNode = jsonNode.get(propertyName);
+        if (propertyNode.isTextual()) {
+            return propertyNode.asText().strip();
+        }
+        return propertyNode.get("id").asText().strip();
+    }
+
 
     public static final String ID = VerificationDependenciesProbe.class.getSimpleName();
 

@@ -25,10 +25,16 @@ import foundation.identity.jsonld.ConfigurableDocumentLoader;
 
 public class AssertionRevocationListProbe extends Probe<JsonLdGeneratedObject> {
     private final String assertionId;
+    private final String propertyName;
 
     public AssertionRevocationListProbe(String assertionId) {
+        this(assertionId, "badge");
+    }
+
+    public AssertionRevocationListProbe(String assertionId, String propertyName) {
         super(ID);
         this.assertionId = assertionId;
+        this.propertyName = propertyName;
     }
 
     @Override
@@ -37,7 +43,7 @@ public class AssertionRevocationListProbe extends Probe<JsonLdGeneratedObject> {
         JsonNode jsonNode = (mapper).readTree(jsonLdGeneratedObject.getJson());
 
         // get badge
-        UriResource badgeUriResource = resolveUriResource(ctx, jsonNode.get("badge").asText().strip());
+        UriResource badgeUriResource = resolveUriResource(ctx, getBadgeClaimId(jsonNode));
         JsonLdGeneratedObject badgeObject = (JsonLdGeneratedObject) ctx.getGeneratedObject(
             JsonLDCompactionProve.getId(badgeUriResource));
 
@@ -95,6 +101,19 @@ public class AssertionRevocationListProbe extends Probe<JsonLdGeneratedObject> {
             }
         }
         return uriResource;
+    }
+
+    /**
+     * Return the ID of the node with name propertyName
+     * @param jsonNode node
+     * @return ID of the node. If node is textual, the text is returned. If node is an object, its "ID" attribute is returned
+     */
+    protected String getBadgeClaimId(JsonNode jsonNode) {
+        JsonNode propertyNode = jsonNode.get(propertyName);
+        if (propertyNode.isTextual()) {
+            return propertyNode.asText().strip();
+        }
+        return propertyNode.get("id").asText().strip();
     }
 
     public static final String ID = AssertionRevocationListProbe.class.getSimpleName();

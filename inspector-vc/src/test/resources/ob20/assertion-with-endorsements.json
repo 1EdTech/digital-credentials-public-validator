@@ -11,7 +11,16 @@
   "image": "https://example.org/beths-robot-badge.png",
   "evidence": "https://example.org/beths-robot-work.html",
   "issuedOn": "2016-12-31T23:59:59Z",
-  "badge": "https://example.org/robotics-badge.json",
+  "badge": {
+    "type": "BadgeClass",
+    "id": "https://example.org/badgeclass-with-endorsements.json",
+    "name": "Awesome Robotics Badge",
+    "description": "For doing awesome things with robots that people think is pretty great.",
+    "image": "https://example.org/robotics-badge.png",
+    "criteria": "https://example.org/badgecriteria.json",
+    "issuer": "https://example.org/organization.json",
+    "endorsement": ["https://example.org/endorsement-3.json", "https://example.org/endorsement-4.json"]
+  },
   "verification": {
     "type": "hosted"
   },

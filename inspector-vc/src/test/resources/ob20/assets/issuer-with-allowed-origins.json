@@ -204,6 +204,6 @@
     "email": "me@example.org",
     "url": "http://example.org",
     "verification": {
-        "allowedOrigins": ["example.com"]
+        "allowedOrigins": ["example.com", "example.org"]
     }
 }

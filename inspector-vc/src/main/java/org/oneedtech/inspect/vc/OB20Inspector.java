@@ -4,12 +4,20 @@ import static java.lang.Boolean.TRUE;
 import static org.oneedtech.inspect.core.Inspector.Behavior.RESET_CACHES_ON_RUN;
 import static org.oneedtech.inspect.core.report.ReportUtil.onProbeException;
 import static org.oneedtech.inspect.util.json.ObjectMapperCache.Config.DEFAULT;
+import static org.oneedtech.inspect.vc.Credential.CREDENTIAL_KEY;
+import static org.oneedtech.inspect.vc.util.JsonNodeUtil.asNodeList;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.oneedtech.inspect.core.Inspector;
-import org.oneedtech.inspect.core.probe.Outcome;
+import org.oneedtech.inspect.core.probe.GeneratedObject;
 import org.oneedtech.inspect.core.probe.Probe;
 import org.oneedtech.inspect.core.probe.RunContext;
 import org.oneedtech.inspect.core.probe.RunContext.Key;
@@ -20,6 +28,7 @@ import org.oneedtech.inspect.schema.JsonSchemaCache;
 import org.oneedtech.inspect.util.json.ObjectMapperCache;
 import org.oneedtech.inspect.util.resource.Resource;
 import org.oneedtech.inspect.util.resource.ResourceType;
+import org.oneedtech.inspect.util.resource.UriResource;
 import org.oneedtech.inspect.util.spec.Specification;
 import org.oneedtech.inspect.vc.Assertion.Type;
 import org.oneedtech.inspect.vc.Credential.CredentialEnum;
@@ -41,38 +50,25 @@ import org.oneedtech.inspect.vc.probe.validation.ValidationPropertyProbeFactory;
 import org.oneedtech.inspect.vc.util.CachingDocumentLoader;
 
 import com.apicatalog.jsonld.loader.DocumentLoader;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import foundation.identity.jsonld.ConfigurableDocumentLoader;
 
 /**
  * A verifier for Open Badges 2.0.
  * @author xaracil
  */
-public class OB20Inspector extends Inspector {
+public class OB20Inspector extends VCInspector {
 
-	protected OB20Inspector(OB20Inspector.Builder builder) {
+	protected <B extends VCInspector.Builder<?>> OB20Inspector(B builder) {
 		super(builder);
 	}
 
-	protected Report abort(RunContext ctx, List<ReportItems> accumulator, int probeCount) {
-		return new Report(ctx, new ReportItems(accumulator), probeCount);
-	}
-
-	protected boolean broken(List<ReportItems> accumulator) {
-		return broken(accumulator, false);
-	}
-
-	protected boolean broken(List<ReportItems> accumulator, boolean force) {
-		if(!force && getBehavior(Inspector.Behavior.VALIDATOR_FAIL_FAST) == Boolean.FALSE) {
-			return false;
-		}
-		for(ReportItems items : accumulator) {
-			if(items.contains(Outcome.FATAL, Outcome.EXCEPTION)) return true;
-		}
-		return false;
-	}
-
-
+	/* (non-Javadoc)
+	 * @see org.oneedtech.inspect.core.Inspector#run(org.oneedtech.inspect.util.resource.Resource)
+	 */
 	@Override
 	public Report run(Resource resource) {
 		super.check(resource);
@@ -143,14 +139,6 @@ public class OB20Inspector extends Inspector {
 				if(broken(accumulator)) return abort(ctx, accumulator, probeCount);
 			}
 
-			// expiration and issuance
-			for(Probe<Credential> probe : List.of(
-					new ExpirationProbe(), new IssuanceProbe())) {
-				probeCount++;
-				accumulator.add(probe.run(assertion, ctx));
-				if(broken(accumulator)) return abort(ctx, accumulator, probeCount);
-			}
-
 			// verification and revocation
 			if (assertion.getCredentialType() == Type.Assertion) {
 				for(Probe<JsonLdGeneratedObject> probe : List.of(new VerificationDependenciesProbe(assertionNode.get("id").asText()),
@@ -168,6 +156,47 @@ public class OB20Inspector extends Inspector {
 				}
 			}
 
+			// expiration and issuance
+			for(Probe<Credential> probe : List.of(
+					new ExpirationProbe(), new IssuanceProbe())) {
+				probeCount++;
+				accumulator.add(probe.run(assertion, ctx));
+				if(broken(accumulator)) return abort(ctx, accumulator, probeCount);
+			}
+
+			// Embedded endorsements. Pass document loader because it has already cached documents, and it has localdomains for testing
+			OB20EndorsementInspector endorsementInspector = new OB20EndorsementInspector.Builder().documentLoader(documentLoader).build();
+
+			// get endorsements for all JSON_LD objects in the graph
+			List<JsonNode> endorsements = ctx.getGeneratedObjects().values().stream()
+				.filter(generatedObject -> generatedObject instanceof JsonLdGeneratedObject)
+				.flatMap(obj -> {
+					JsonNode node;
+					try {
+						node = mapper.readTree(((JsonLdGeneratedObject) obj).getJson());
+						// return endorsement node, filtering out the on inside @context
+						return asNodeList(node, "$..endorsement", jsonPath).stream().filter(endorsementNode -> !endorsementNode.isObject());
+					} catch (JsonProcessingException e) {
+						throw new IllegalArgumentException("Couldn't not parse " + obj.getId() + ": contains invalid JSON");
+					}
+				})
+				.collect(Collectors.toList());
+
+			for(JsonNode node : endorsements) {
+				probeCount++;
+				// get endorsement json from context
+				UriResource uriResource = resolveUriResource(ctx, node.asText());
+				JsonLdGeneratedObject resolved = (JsonLdGeneratedObject) ctx.getGeneratedObject(JsonLDCompactionProve.getId(uriResource));
+				if (resolved == null) {
+					throw new IllegalArgumentException("endorsement " + node.toString() + " not found in graph");
+				}
+
+				Assertion endorsement = new Assertion.Builder().resource(resource).jsonData(mapper.readTree(resolved.getJson())).build();
+				// pass graph to subinspector
+				Map<String, GeneratedObject> parentObjects = new HashMap<>(ctx.getGeneratedObjects());
+				parentObjects.put(CREDENTIAL_KEY, endorsement);
+				accumulator.add(endorsementInspector.run(resource, parentObjects));
+			}
 
 		} catch (Exception e) {
 			accumulator.add(onProbeException(Probe.ID.NO_UNCAUGHT_EXCEPTIONS, resource, e));
@@ -176,11 +205,7 @@ public class OB20Inspector extends Inspector {
 		return new Report(ctx, new ReportItems(accumulator), probeCount);
     }
 
-	protected DocumentLoader getDocumentLoader() {
-		return new CachingDocumentLoader();
-	}
-
-	public static class Builder extends Inspector.Builder<OB20Inspector.Builder> {
+	public static class Builder extends VCInspector.Builder<OB20Inspector.Builder> {
 
 		public Builder() {
 			super();
@@ -203,5 +228,20 @@ public class OB20Inspector extends Inspector {
 		 */
 		public static final String ALLOW_LOCAL_REDIRECTION = "ALLOW_LOCAL_REDIRECTION";
 	}
+
+    protected UriResource resolveUriResource(RunContext ctx, String url) throws URISyntaxException {
+        URI uri = new URI(url);
+        UriResource initialUriResource = new UriResource(uri);
+        UriResource uriResource = initialUriResource;
+
+        // check if uri points to a local resource
+        if (ctx.get(Key.JSON_DOCUMENT_LOADER) instanceof ConfigurableDocumentLoader) {
+            if (ConfigurableDocumentLoader.getDefaultHttpLoader() instanceof CachingDocumentLoader.HttpLoader) {
+                URI resolvedUri = ((CachingDocumentLoader.HttpLoader) ConfigurableDocumentLoader.getDefaultHttpLoader()).resolve(uri);
+                uriResource = new UriResource(resolvedUri);
+            }
+        }
+        return uriResource;
+    }
 
 }

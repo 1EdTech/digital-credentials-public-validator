@@ -1,6 +1,6 @@
 {
 	"@context": "https://w3id.org/openbadges/v2",
-	"id": "http://example.org/endorsement-2.json",
+	"id": "http://example.org/endorsement-4.json",
 	"type": "Endorsement",
 	"claim": {
 		"id": "https://example.org/badgeclass-with-endorsements.json",
