@@ -67,6 +67,7 @@ public class EndorsementInspector extends VCInspector implements SubInspector {
 
 		RunContext ctx = new RunContext.Builder()
 				.put(this)
+				.put(resource)
 				.put(JACKSON_OBJECTMAPPER, mapper)
 				.put(JSONPATH_EVALUATOR, jsonPath)
 				.build();
