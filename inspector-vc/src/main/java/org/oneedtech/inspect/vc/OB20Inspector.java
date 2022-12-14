@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -33,6 +34,7 @@ import org.oneedtech.inspect.util.spec.Specification;
 import org.oneedtech.inspect.vc.Assertion.Type;
 import org.oneedtech.inspect.vc.Credential.CredentialEnum;
 import org.oneedtech.inspect.vc.jsonld.JsonLdGeneratedObject;
+import org.oneedtech.inspect.vc.jsonld.probe.ExtensionProbe;
 import org.oneedtech.inspect.vc.jsonld.probe.GraphFetcherProbe;
 import org.oneedtech.inspect.vc.jsonld.probe.JsonLDCompactionProve;
 import org.oneedtech.inspect.vc.jsonld.probe.JsonLDValidationProbe;
@@ -164,23 +166,33 @@ public class OB20Inspector extends VCInspector {
 				if(broken(accumulator)) return abort(ctx, accumulator, probeCount);
 			}
 
-			// Embedded endorsements. Pass document loader because it has already cached documents, and it has localdomains for testing
-			OB20EndorsementInspector endorsementInspector = new OB20EndorsementInspector.Builder().documentLoader(documentLoader).build();
-
-			// get endorsements for all JSON_LD objects in the graph
-			List<JsonNode> endorsements = ctx.getGeneratedObjects().values().stream()
+			// extension validations
+			List<JsonNode> jsonLdGeneratedObjects = ctx.getGeneratedObjects().values().stream()
 				.filter(generatedObject -> generatedObject instanceof JsonLdGeneratedObject)
-				.flatMap(obj -> {
-					JsonNode node;
+				.map(obj -> {
+
 					try {
-						node = mapper.readTree(((JsonLdGeneratedObject) obj).getJson());
-						// return endorsement node, filtering out the on inside @context
-						return asNodeList(node, "$..endorsement", jsonPath).stream().filter(endorsementNode -> !endorsementNode.isObject());
+						return mapper.readTree(((JsonLdGeneratedObject) obj).getJson());
 					} catch (JsonProcessingException e) {
 						throw new IllegalArgumentException("Couldn't not parse " + obj.getId() + ": contains invalid JSON");
 					}
 				})
 				.collect(Collectors.toList());
+			for (JsonNode generatedObject : jsonLdGeneratedObjects) {
+				probeCount++;
+				accumulator.add(new ExtensionProbe().run(generatedObject, ctx));
+				if(broken(accumulator)) return abort(ctx, accumulator, probeCount);
+			}
+
+			// Embedded endorsements. Pass document loader because it has already cached documents, and it has localdomains for testing
+			OB20EndorsementInspector endorsementInspector = new OB20EndorsementInspector.Builder().documentLoader(documentLoader).build();
+
+			// get endorsements for all JSON_LD objects in the graph
+			List<JsonNode> endorsements = jsonLdGeneratedObjects.stream().flatMap(node -> {
+				// return endorsement node, filtering out the on inside @context
+				return asNodeList(node, "$..endorsement", jsonPath).stream().filter(endorsementNode -> !endorsementNode.isObject());
+			})
+			.collect(Collectors.toList());
 
 			for(JsonNode node : endorsements) {
 				probeCount++;

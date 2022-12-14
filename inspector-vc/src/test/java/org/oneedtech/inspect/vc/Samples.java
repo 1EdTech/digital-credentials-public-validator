@@ -91,6 +91,10 @@ public class Samples {
 			public final static Sample BADGE_WITH_COMPLEX_IMAGE_JSON = new Sample("ob20/assets/badgeclass-with-complex-image.json", true);
 			// original: test_validate_endorsements
 			public final static Sample ASSERTION_WITH_ENDORSEMENTS = new Sample("ob20/assertion-with-endorsements.json", true);
+			// original: test_validate_extensions: test_validate_extension_node_basic
+			public final static Sample ASSERTION_WITH_EXTENSION_NODE_BASIC_JSON = new Sample("ob20/assertion-with-extension-node-basic.json", true);
+			// original: test_validate_extensions: test_validate_extension_node_invalid
+			public final static Sample ASSERTION_WITH_EXTENSION_NODE_INVALID_JSON = new Sample("ob20/assertion-with-extension-node-invalid.json", true);
 		}
 
 		public static final class PNG {

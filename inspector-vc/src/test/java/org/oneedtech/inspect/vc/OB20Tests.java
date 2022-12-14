@@ -268,6 +268,24 @@ public class OB20Tests {
 		});
 	}
 
+	@Test
+	void testExtensionNode() {
+		assertDoesNotThrow(()->{
+			Report report = validator.run(Samples.OB20.JSON.ASSERTION_WITH_EXTENSION_NODE_BASIC_JSON.asFileResource());
+			if(verbose) PrintHelper.print(report, true);
+			assertValid(report);
+		});
+	}
+
+	@Test
+	void testInvalidExtensionNode() {
+		assertDoesNotThrow(()->{
+			Report report = validator.run(Samples.OB20.JSON.ASSERTION_WITH_EXTENSION_NODE_INVALID_JSON.asFileResource());
+			if(verbose) PrintHelper.print(report, true);
+			assertInvalid(report);
+		});
+	}
+
 	@Nested
 	static class WarningTests {
 		@BeforeAll
