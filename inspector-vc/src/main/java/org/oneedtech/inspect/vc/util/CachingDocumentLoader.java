@@ -126,6 +126,8 @@ public class CachingDocumentLoader extends ConfigurableDocumentLoader {
 			.put("https://w3id.org/security/suites/jws-2020/v1", Resources.getResource("contexts/suites-jws-2020.jsonld"))
 			.put("https://openbadgespec.org/v2/context.json", Resources.getResource("contexts/ob-v2p0.json"))
 			.put("https://w3id.org/openbadges/v2", Resources.getResource("contexts/obv2x.jsonld"))
+			.put("https://w3id.org/openbadges/extensions/exampleExtension/context.json", Resources.getResource("contexts/obv2x-extensions.json"))
+			.put("https://openbadgespec.org/extensions/exampleExtension/schema.json", Resources.getResource("catalog/openbadgespec.org/extensions/exampleExtension/schema.json"))
 
 			.build();
 
@@ -133,6 +135,7 @@ public class CachingDocumentLoader extends ConfigurableDocumentLoader {
 			.initialCapacity(32).maximumSize(64).expireAfterAccess(Duration.ofHours(24))
 			.build(new CacheLoader<Tuple<String, DocumentLoaderOptions>, Document>() {
 				public Document load(final Tuple<String, DocumentLoaderOptions> id) throws Exception {
+					System.out.println("CachingDocumentLoader " + id.t1 + ": " + bundled.containsKey(id.t1));
 					try (InputStream is = bundled.containsKey(id.t1)
 							? bundled.get(id.t1).openStream()
 							: new URI(id.t1).toURL().openStream();) {

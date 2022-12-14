@@ -36,10 +36,10 @@ public class JsonLDCompactionProve extends Probe<Credential> {
       try {
           // compact JSON
           JsonDocument jsonDocument = JsonDocument.of(new StringReader(crd.getJson().toString()));
-          CompactionApi compactApi = JsonLd.compact(jsonDocument, context);
-          compactApi.options(new JsonLdOptions((DocumentLoader) ctx.get(Key.JSON_DOCUMENT_LOADER)));
+          JsonObject compactedObject = JsonLd.compact(jsonDocument, context)
+            .options(new JsonLdOptions((DocumentLoader) ctx.get(Key.JSON_DOCUMENT_LOADER)))
+            .get();
 
-          JsonObject compactedObject = compactApi.get();
           ctx.addGeneratedObject(new JsonLdGeneratedObject(getId(crd), compactedObject.toString()));
 
           // Handle mismatch between URL node source and declared ID.

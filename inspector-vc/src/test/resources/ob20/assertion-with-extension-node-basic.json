@@ -1,5 +1,8 @@
 {
-	"@context": ["https://w3id.org/openbadges/v2","https://w3id.org/openbadges/extensions/exampleExtension/context.json"],
+	"@context": [
+		"https://w3id.org/openbadges/v2",
+		"https://w3id.org/openbadges/extensions/exampleExtension/context.json"
+	],
 	"id": "http://example.org/assertion",
 	"type": "Assertion",
 	"recipient": {
@@ -9,21 +12,21 @@
 		"identity": "sha256$ecf5409f3f4b91ab60cc5ef4c02aef7032354375e70cf4d8e43f6a1d29891942"
 	},
 	"image": "https://example.org/beths-robot-badge.png",
-	"issuedOn": "2016-12-31T23:59:59Z",
 	"badge": "https://example.org/robotics-badge.json",
+	"issuedOn": "2016-12-31T23:59:59Z",
 	"verification": {
 		"type": "hosted"
-	},
-	"evidence": {
-		"id": "_:b1",
-		"narrative": "Rocked the free world"
 	},
 	"extensions:exampleExtension": {
 		"id": "_:b0",
 		"type": [
 			"Extension",
-			"extensions:ExampleExtension"
+			"obi:extensions/#ExampleExtension"
 		],
-		"schema:text": "I'm a property, short and sweet"
+		"http://schema.org/text": "I'm a property, short and sweet"
+	},
+	"evidence": {
+		"id": "_:b1",
+		"narrative": "Rocked the free world"
 	}
 }

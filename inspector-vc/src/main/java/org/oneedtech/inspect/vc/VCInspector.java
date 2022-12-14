@@ -1,8 +1,16 @@
 package org.oneedtech.inspect.vc;
 
+import static java.util.stream.Collectors.toList;
+import static org.oneedtech.inspect.vc.util.JsonNodeUtil.asStringList;
+
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.Spliterators;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import org.oneedtech.inspect.core.Inspector;
 import org.oneedtech.inspect.core.probe.Outcome;
@@ -10,7 +18,10 @@ import org.oneedtech.inspect.core.probe.Probe;
 import org.oneedtech.inspect.core.probe.RunContext;
 import org.oneedtech.inspect.core.report.Report;
 import org.oneedtech.inspect.core.report.ReportItems;
+import org.oneedtech.inspect.util.code.Tuple;
+import org.oneedtech.inspect.vc.jsonld.probe.ExtensionProbe;
 import org.oneedtech.inspect.vc.util.CachingDocumentLoader;
+import org.oneedtech.inspect.vc.util.JsonNodeUtil;
 
 import com.apicatalog.jsonld.loader.DocumentLoader;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -69,6 +80,46 @@ public abstract class VCInspector extends Inspector {
 	 */
 	protected DocumentLoader getDocumentLoader() {
 		return new CachingDocumentLoader();
+	}
+
+	protected List<Tuple<ExtensionProbe, JsonNode>> getExtensionProbes(JsonNode node, String entryPath) {
+		List<Tuple<ExtensionProbe, JsonNode>> probes = new ArrayList<>();
+		if (!node.isObject()) {
+			return probes;
+		}
+
+		if (node.has("type")) {
+			List<String> types = asStringList(node.get("type"));
+
+			// only validate extension types
+			if (types.contains("Extension")) {
+				List<String> typesToTest = types.stream().filter(type -> !type.equals("Extension")).collect(toList());
+				// add an extension Probe
+				probes.add(new Tuple<ExtensionProbe,JsonNode>(new ExtensionProbe(entryPath, typesToTest), node));
+			}
+		}
+
+
+		probes.addAll(StreamSupport
+			.stream(Spliterators.spliteratorUnknownSize(node.fields(), 0), false)
+			.filter(e -> !e.getKey().equals("id") && !e.getKey().equals("type"))
+			.flatMap(entry -> {
+				if (entry.getValue().isArray()) {
+					// recursive call
+					List<JsonNode> childNodes = JsonNodeUtil.asNodeList(entry.getValue());
+					List<Tuple<ExtensionProbe, JsonNode>> subProbes = new ArrayList<>();
+					for (int i = 0; i < childNodes.size(); i++) {
+						JsonNode childNode = childNodes.get(i);
+						subProbes.addAll(getExtensionProbes(childNode, entryPath + "." + entry.getKey() + "[" + i + "]"));
+					}
+					return subProbes.stream();
+				} else {
+					return getExtensionProbes(entry.getValue(), entryPath + "." + entry.getKey()).stream();
+				}
+			})
+			.collect(Collectors.toList())
+		);
+		return probes;
 	}
 
     protected static final String REFRESHED = "is.refreshed.credential";

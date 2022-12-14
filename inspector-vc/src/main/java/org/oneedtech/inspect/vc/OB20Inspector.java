@@ -1,6 +1,7 @@
 package org.oneedtech.inspect.vc;
 
 import static java.lang.Boolean.TRUE;
+import static java.util.stream.Collectors.toList;
 import static org.oneedtech.inspect.core.Inspector.Behavior.RESET_CACHES_ON_RUN;
 import static org.oneedtech.inspect.core.report.ReportUtil.onProbeException;
 import static org.oneedtech.inspect.util.json.ObjectMapperCache.Config.DEFAULT;
@@ -13,9 +14,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.oneedtech.inspect.core.Inspector;
 import org.oneedtech.inspect.core.probe.GeneratedObject;
@@ -26,6 +24,7 @@ import org.oneedtech.inspect.core.probe.json.JsonPathEvaluator;
 import org.oneedtech.inspect.core.report.Report;
 import org.oneedtech.inspect.core.report.ReportItems;
 import org.oneedtech.inspect.schema.JsonSchemaCache;
+import org.oneedtech.inspect.util.code.Tuple;
 import org.oneedtech.inspect.util.json.ObjectMapperCache;
 import org.oneedtech.inspect.util.resource.Resource;
 import org.oneedtech.inspect.util.resource.ResourceType;
@@ -166,7 +165,7 @@ public class OB20Inspector extends VCInspector {
 				if(broken(accumulator)) return abort(ctx, accumulator, probeCount);
 			}
 
-			// extension validations
+			// get all json-ld generated objects for both extension and endorsements validation
 			List<JsonNode> jsonLdGeneratedObjects = ctx.getGeneratedObjects().values().stream()
 				.filter(generatedObject -> generatedObject instanceof JsonLdGeneratedObject)
 				.map(obj -> {
@@ -177,10 +176,15 @@ public class OB20Inspector extends VCInspector {
 						throw new IllegalArgumentException("Couldn't not parse " + obj.getId() + ": contains invalid JSON");
 					}
 				})
-				.collect(Collectors.toList());
-			for (JsonNode generatedObject : jsonLdGeneratedObjects) {
+				.collect(toList());
+
+			// validate extensions
+			List<Tuple<ExtensionProbe, JsonNode>> extensionProbeTuples = jsonLdGeneratedObjects.stream()
+				.flatMap(node -> getExtensionProbes(node, "id").stream())
+				.collect(toList());
+			for (Tuple<ExtensionProbe, JsonNode> extensionProbeTuple : extensionProbeTuples) {
 				probeCount++;
-				accumulator.add(new ExtensionProbe().run(generatedObject, ctx));
+				accumulator.add(extensionProbeTuple.t1.run(extensionProbeTuple.t2, ctx));
 				if(broken(accumulator)) return abort(ctx, accumulator, probeCount);
 			}
 
@@ -192,7 +196,7 @@ public class OB20Inspector extends VCInspector {
 				// return endorsement node, filtering out the on inside @context
 				return asNodeList(node, "$..endorsement", jsonPath).stream().filter(endorsementNode -> !endorsementNode.isObject());
 			})
-			.collect(Collectors.toList());
+			.collect(toList());
 
 			for(JsonNode node : endorsements) {
 				probeCount++;
