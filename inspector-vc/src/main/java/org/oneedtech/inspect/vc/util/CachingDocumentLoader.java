@@ -5,7 +5,10 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.time.Duration;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -24,6 +27,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.io.Resources;
 
 import foundation.identity.jsonld.ConfigurableDocumentLoader;
+import jakarta.json.JsonStructure;
 
 /**
  * A com.apicatalog DocumentLoader with a threadsafe static cache.
@@ -31,7 +35,7 @@ import foundation.identity.jsonld.ConfigurableDocumentLoader;
  * @author mgylling
  */
 public class CachingDocumentLoader extends ConfigurableDocumentLoader {
-
+	private Set<URI> contexts;
 
 	public CachingDocumentLoader() {
 		this(null);
@@ -42,6 +46,7 @@ public class CachingDocumentLoader extends ConfigurableDocumentLoader {
 		setEnableHttp(true);
 		setEnableHttps(true);
 		setDefaultHttpLoader(new HttpLoader(localDomains));
+		this.contexts = new HashSet<>();
 	}
 
 	@Override
@@ -51,7 +56,18 @@ public class CachingDocumentLoader extends ConfigurableDocumentLoader {
 			logger.error("documentCache not able to load {}", url);
 			throw new JsonLdError(JsonLdErrorCode.INVALID_REMOTE_CONTEXT);
 		}
+		// save context
+		this.contexts.add(url);
+
 		return document;
+	}
+
+	public Set<URI> getContexts() {
+		return contexts;
+	}
+
+	public void resetContexts() {
+		this.contexts.clear();
 	}
 
 	public class HttpLoader implements DocumentLoader {
