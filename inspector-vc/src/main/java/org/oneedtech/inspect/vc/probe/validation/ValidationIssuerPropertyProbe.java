@@ -16,12 +16,12 @@ import com.fasterxml.jackson.databind.JsonNode;
  */
 public class ValidationIssuerPropertyProbe extends ValidationPropertyProbe {
 
-    public ValidationIssuerPropertyProbe(Validation validation) {
-        super(ID, validation);
+    public ValidationIssuerPropertyProbe(String credentialType, Validation validation) {
+        this(credentialType, validation, true);
     }
 
-    public ValidationIssuerPropertyProbe(Validation validation, boolean fullValidate) {
-        super(ID, validation, fullValidate);
+    public ValidationIssuerPropertyProbe(String credentialType, Validation validation, boolean fullValidate) {
+        super(ID, credentialType, validation, fullValidate);
     }
 
     @Override

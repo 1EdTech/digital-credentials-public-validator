@@ -19,12 +19,12 @@ import com.fasterxml.jackson.databind.node.TextNode;
  * @author xaracil
  */
 public class ValidationRdfTypePropertyProbe extends ValidationPropertyProbe {
-    public ValidationRdfTypePropertyProbe(Validation validation) {
-        super(ID, validation);
+    public ValidationRdfTypePropertyProbe(String credentialType, Validation validation ) {
+        this(credentialType, validation, true);
     }
 
-    public ValidationRdfTypePropertyProbe(Validation validation, boolean fullValidate) {
-        super(ID, validation, fullValidate);
+    public ValidationRdfTypePropertyProbe(String credentialType, Validation validation, boolean fullValidate) {
+        super(ID, credentialType, validation, fullValidate);
     }
 
     @Override

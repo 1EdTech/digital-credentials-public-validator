@@ -18,7 +18,7 @@ public class TypePropertyProbe extends StringValuePropertyProbe {
 	private final CredentialEnum expected;
 
 	public TypePropertyProbe(CredentialEnum expected) {
-		super(ID, "type");
+		super(ID, expected.toString(), "type");
 		this.expected = checkNotNull(expected);
 		this.setValueValidations(this::validate);
 	}

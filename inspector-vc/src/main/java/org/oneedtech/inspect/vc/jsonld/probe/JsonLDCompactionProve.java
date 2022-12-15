@@ -51,7 +51,7 @@ public class JsonLDCompactionProve extends Probe<Credential> {
 
           return success(this, ctx);
       } catch (Exception e) {
-        return fatal("Error while parsing credential: " + e.getMessage(), ctx);
+        return fatal("Error while compacting JSON-LD: " + crd.getJson() + ". Caused by: " + e.getMessage(), ctx);
       }
     }
 

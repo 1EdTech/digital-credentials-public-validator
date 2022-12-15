@@ -92,6 +92,7 @@ public abstract class Credential extends GeneratedObject {
         List<String> getAllowedTypeValues();
         boolean isAllowedTypeValuesRequired();
         List<String> getContextUris();
+        String toString();
     }
 
 	public abstract static class Builder<B extends Credential> {

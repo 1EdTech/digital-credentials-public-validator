@@ -136,7 +136,7 @@ public class OB20Inspector extends VCInspector {
 			List<Validation> validations = assertion.getValidations();
 			for (Validation validation : validations) {
 				probeCount++;
-				accumulator.add(ValidationPropertyProbeFactory.of(validation).run(assertionNode, ctx));
+				accumulator.add(ValidationPropertyProbeFactory.of(assertion.getCredentialType().toString(), validation).run(assertionNode, ctx));
 				if(broken(accumulator)) return abort(ctx, accumulator, probeCount);
 			}
 

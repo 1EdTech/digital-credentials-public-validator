@@ -20,12 +20,12 @@ import com.fasterxml.jackson.databind.JsonNode;
  */
 public class ValidationImagePropertyProbe extends ValidationPropertyProbe {
 
-    public ValidationImagePropertyProbe(Validation validation) {
-        super(ID, validation);
+    public ValidationImagePropertyProbe(String credentialType, Validation validation) {
+        this(credentialType, validation, true);
     }
 
-    public ValidationImagePropertyProbe(Validation validation, boolean fullValidate) {
-        super(ID, validation, fullValidate);
+    public ValidationImagePropertyProbe(String credentialType, Validation validation, boolean fullValidate) {
+        super(ID, credentialType, validation, fullValidate);
     }
 
     @Override
