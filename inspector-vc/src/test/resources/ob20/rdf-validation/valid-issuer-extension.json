@@ -199,7 +199,7 @@
         "verify": "verification"
     },
 	"id": "http://example.com/badge1",
-	"type": ["Issuer", "Extension"],
+	"type": ["Issuer", "http://example.com/CoolClass"],
 	"name": "Chumley",
     "url": "https://example.org",
     "email": "contact@example.org"

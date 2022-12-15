@@ -6,7 +6,6 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.time.Duration;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -27,7 +26,6 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.io.Resources;
 
 import foundation.identity.jsonld.ConfigurableDocumentLoader;
-import jakarta.json.JsonStructure;
 
 /**
  * A com.apicatalog DocumentLoader with a threadsafe static cache.
@@ -128,6 +126,8 @@ public class CachingDocumentLoader extends ConfigurableDocumentLoader {
 			.put("https://w3id.org/openbadges/v2", Resources.getResource("contexts/obv2x.jsonld"))
 			.put("https://w3id.org/openbadges/extensions/exampleExtension/context.json", Resources.getResource("contexts/obv2x-extensions.json"))
 			.put("https://openbadgespec.org/extensions/exampleExtension/schema.json", Resources.getResource("catalog/openbadgespec.org/extensions/exampleExtension/schema.json"))
+			.put("https://w3id.org/openbadges/extensions/applyLinkExtension/context.json", Resources.getResource("contexts/obv2x-applylink-extensions.json"))
+			.put("https://openbadgespec.org/extensions/applyLinkExtension/schema.json", Resources.getResource("catalog/openbadgespec.org/extensions/applyLinkExtension/schema.json"))
 
 			.build();
 
@@ -135,7 +135,6 @@ public class CachingDocumentLoader extends ConfigurableDocumentLoader {
 			.initialCapacity(32).maximumSize(64).expireAfterAccess(Duration.ofHours(24))
 			.build(new CacheLoader<Tuple<String, DocumentLoaderOptions>, Document>() {
 				public Document load(final Tuple<String, DocumentLoaderOptions> id) throws Exception {
-					System.out.println("CachingDocumentLoader " + id.t1 + ": " + bundled.containsKey(id.t1));
 					try (InputStream is = bundled.containsKey(id.t1)
 							? bundled.get(id.t1).openStream()
 							: new URI(id.t1).toURL().openStream();) {

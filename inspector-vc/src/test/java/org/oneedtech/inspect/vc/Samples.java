@@ -95,6 +95,8 @@ public class Samples {
 			public final static Sample ASSERTION_WITH_EXTENSION_NODE_BASIC_JSON = new Sample("ob20/assertion-with-extension-node-basic.json", true);
 			// original: test_validate_extensions: test_validate_extension_node_invalid
 			public final static Sample ASSERTION_WITH_EXTENSION_NODE_INVALID_JSON = new Sample("ob20/assertion-with-extension-node-invalid.json", true);
+			// original: test_validate_extensions: test_validation_breaks_down_multiple_extensions
+			public final static Sample ASSERTION_WITH_MULTIPLE_EXTENSIONS_JSON = new Sample("ob20/assertion-with-multiple-extensions.json", true);
 		}
 
 		public static final class PNG {
