@@ -8,8 +8,6 @@ import static org.oneedtech.inspect.util.json.ObjectMapperCache.Config.DEFAULT;
 import static org.oneedtech.inspect.vc.Credential.CREDENTIAL_KEY;
 import static org.oneedtech.inspect.vc.util.JsonNodeUtil.asNodeList;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -48,14 +46,13 @@ import org.oneedtech.inspect.vc.probe.TypePropertyProbe;
 import org.oneedtech.inspect.vc.probe.VerificationDependenciesProbe;
 import org.oneedtech.inspect.vc.probe.VerificationJWTProbe;
 import org.oneedtech.inspect.vc.probe.validation.ValidationPropertyProbeFactory;
+import org.oneedtech.inspect.vc.resource.UriResourceFactory;
 import org.oneedtech.inspect.vc.util.CachingDocumentLoader;
 
 import com.apicatalog.jsonld.loader.DocumentLoader;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import foundation.identity.jsonld.ConfigurableDocumentLoader;
 
 /**
  * A verifier for Open Badges 2.0.
@@ -82,6 +79,7 @@ public class OB20Inspector extends VCInspector {
         ObjectMapper mapper = ObjectMapperCache.get(DEFAULT);
 		JsonPathEvaluator jsonPath = new JsonPathEvaluator(mapper);
 		DocumentLoader documentLoader = getDocumentLoader();
+		UriResourceFactory uriResourceFactory = getUriResourceFactory(documentLoader);
 
 		RunContext ctx = new RunContext.Builder()
 				.put(this)
@@ -93,6 +91,7 @@ public class OB20Inspector extends VCInspector {
 				.put(Key.SVG_CREDENTIAL_QNAME, SvgParser.QNames.OB20)
 				.put(Key.JSON_DOCUMENT_LOADER, documentLoader)
 				.put(Key.JWT_CREDENTIAL_NODE_NAME, Assertion.JWT_NODE_NAME)
+				.put(Key.URI_RESOURCE_FACTORY, uriResourceFactory)
 				.build();
 
 		List<ReportItems> accumulator = new ArrayList<>();
@@ -189,7 +188,10 @@ public class OB20Inspector extends VCInspector {
 			}
 
 			// Embedded endorsements. Pass document loader because it has already cached documents, and it has localdomains for testing
-			OB20EndorsementInspector endorsementInspector = new OB20EndorsementInspector.Builder().documentLoader(documentLoader).build();
+			OB20EndorsementInspector endorsementInspector = new OB20EndorsementInspector.Builder()
+				.documentLoader(documentLoader)
+				.uriResourceFactory(uriResourceFactory)
+				.build();
 
 			// get endorsements for all JSON_LD objects in the graph
 			List<JsonNode> endorsements = jsonLdGeneratedObjects.stream().flatMap(node -> {
@@ -201,7 +203,7 @@ public class OB20Inspector extends VCInspector {
 			for(JsonNode node : endorsements) {
 				probeCount++;
 				// get endorsement json from context
-				UriResource uriResource = resolveUriResource(ctx, node.asText());
+				UriResource uriResource = uriResourceFactory.of(node.asText());
 				JsonLdGeneratedObject resolved = (JsonLdGeneratedObject) ctx.getGeneratedObject(JsonLDCompactionProve.getId(uriResource));
 				if (resolved == null) {
 					throw new IllegalArgumentException("endorsement " + node.toString() + " not found in graph");
@@ -244,20 +246,4 @@ public class OB20Inspector extends VCInspector {
 		 */
 		public static final String ALLOW_LOCAL_REDIRECTION = "ALLOW_LOCAL_REDIRECTION";
 	}
-
-    protected UriResource resolveUriResource(RunContext ctx, String url) throws URISyntaxException {
-        URI uri = new URI(url);
-        UriResource initialUriResource = new UriResource(uri);
-        UriResource uriResource = initialUriResource;
-
-        // check if uri points to a local resource
-        if (ctx.get(Key.JSON_DOCUMENT_LOADER) instanceof ConfigurableDocumentLoader) {
-            if (ConfigurableDocumentLoader.getDefaultHttpLoader() instanceof CachingDocumentLoader.HttpLoader) {
-                URI resolvedUri = ((CachingDocumentLoader.HttpLoader) ConfigurableDocumentLoader.getDefaultHttpLoader()).resolve(uri);
-                uriResource = new UriResource(resolvedUri);
-            }
-        }
-        return uriResource;
-    }
-
 }

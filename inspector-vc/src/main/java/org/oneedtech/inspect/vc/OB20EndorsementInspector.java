@@ -7,6 +7,7 @@ import static org.oneedtech.inspect.core.probe.RunContext.Key.JSON_DOCUMENT_LOAD
 import static org.oneedtech.inspect.core.probe.RunContext.Key.JWT_CREDENTIAL_NODE_NAME;
 import static org.oneedtech.inspect.core.probe.RunContext.Key.PNG_CREDENTIAL_KEY;
 import static org.oneedtech.inspect.core.probe.RunContext.Key.SVG_CREDENTIAL_QNAME;
+import static org.oneedtech.inspect.core.probe.RunContext.Key.URI_RESOURCE_FACTORY;
 import static org.oneedtech.inspect.core.report.ReportUtil.onProbeException;
 import static org.oneedtech.inspect.util.code.Defensives.checkNotNull;
 import static org.oneedtech.inspect.util.json.ObjectMapperCache.Config.DEFAULT;
@@ -33,6 +34,7 @@ import org.oneedtech.inspect.vc.probe.AssertionRevocationListProbe;
 import org.oneedtech.inspect.vc.probe.ExpirationProbe;
 import org.oneedtech.inspect.vc.probe.IssuanceProbe;
 import org.oneedtech.inspect.vc.probe.VerificationDependenciesProbe;
+import org.oneedtech.inspect.vc.resource.UriResourceFactory;
 
 import com.apicatalog.jsonld.loader.DocumentLoader;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -45,10 +47,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class OB20EndorsementInspector extends VCInspector implements SubInspector {
 
 	private DocumentLoader documentLoader;
+	private UriResourceFactory uriResourceFactory;
 
 	protected OB20EndorsementInspector(OB20EndorsementInspector.Builder builder) {
 		super(builder);
 		this.documentLoader = builder.documentLoader;
+		this.uriResourceFactory = builder.uriResourceFactory;
 	}
 
 	@Override
@@ -78,6 +82,7 @@ public class OB20EndorsementInspector extends VCInspector implements SubInspecto
 				.put(SVG_CREDENTIAL_QNAME, SvgParser.QNames.OB20)
 				.put(JSON_DOCUMENT_LOADER, documentLoader)
 				.put(JWT_CREDENTIAL_NODE_NAME, Assertion.JWT_NODE_NAME)
+				.put(URI_RESOURCE_FACTORY, uriResourceFactory)
 				.build();
 
 		parentObjects.entrySet().stream().forEach(entry -> {
@@ -122,6 +127,7 @@ public class OB20EndorsementInspector extends VCInspector implements SubInspecto
 
 	public static class Builder extends VCInspector.Builder<OB20EndorsementInspector.Builder> {
 		private DocumentLoader documentLoader;
+		private UriResourceFactory uriResourceFactory;
 
 		@SuppressWarnings("unchecked")
 		@Override
@@ -133,6 +139,12 @@ public class OB20EndorsementInspector extends VCInspector implements SubInspecto
             this.documentLoader = documentLoader;
             return this;
         }
+
+		public Builder uriResourceFactory(UriResourceFactory uriResourceFactory) {
+            this.uriResourceFactory = uriResourceFactory;
+            return this;
+        }
+
 	}
 
 }

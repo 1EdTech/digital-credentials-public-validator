@@ -13,13 +13,11 @@ import org.oneedtech.inspect.core.report.ReportItems;
 import org.oneedtech.inspect.util.resource.UriResource;
 import org.oneedtech.inspect.vc.jsonld.JsonLdGeneratedObject;
 import org.oneedtech.inspect.vc.jsonld.probe.JsonLDCompactionProve;
-import org.oneedtech.inspect.vc.util.CachingDocumentLoader;
+import org.oneedtech.inspect.vc.resource.UriResourceFactory;
 import org.oneedtech.inspect.vc.util.JsonNodeUtil;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import foundation.identity.jsonld.ConfigurableDocumentLoader;
 
 /**
  * Verification probe for Open Badges 2.0
@@ -45,13 +43,14 @@ public class VerificationDependenciesProbe extends Probe<JsonLdGeneratedObject> 
     public ReportItems run(JsonLdGeneratedObject jsonLdGeneratedObject, RunContext ctx) throws Exception {
         ObjectMapper mapper = (ObjectMapper) ctx.get(Key.JACKSON_OBJECTMAPPER);
         JsonNode jsonNode = (mapper).readTree(jsonLdGeneratedObject.getJson());
+        UriResourceFactory uriResourceFactory = (UriResourceFactory) ctx.get(Key.URI_RESOURCE_FACTORY);
 
         JsonNode verificationNode = jsonNode.get("verification");
         checkNotNull(verificationNode);
         String type = null;
         if (verificationNode.isTextual()) {
             // get verification from graph
-            UriResource verificationUriResource = resolveUriResource(ctx, verificationNode.asText().strip());
+            UriResource verificationUriResource = uriResourceFactory.of(verificationNode.asText().strip());
             JsonLdGeneratedObject verificationObject = (JsonLdGeneratedObject) ctx.getGeneratedObject(
                 JsonLDCompactionProve.getId(verificationUriResource));
             JsonNode verificationRootNode = ((ObjectMapper) ctx.get(Key.JACKSON_OBJECTMAPPER))
@@ -63,14 +62,14 @@ public class VerificationDependenciesProbe extends Probe<JsonLdGeneratedObject> 
 
         if ("HostedBadge".equals(type)) {
             // get badge
-            UriResource badgeUriResource = resolveUriResource(ctx, getBadgeClaimId(jsonNode));
+            UriResource badgeUriResource = uriResourceFactory.of(getBadgeClaimId(jsonNode));
             JsonLdGeneratedObject badgeObject = (JsonLdGeneratedObject) ctx.getGeneratedObject(
                 JsonLDCompactionProve.getId(badgeUriResource));
             JsonNode badgeNode = ((ObjectMapper) ctx.get(Key.JACKSON_OBJECTMAPPER))
                 .readTree(badgeObject.getJson());
 
             // get issuer from badge
-            UriResource issuerUriResource = resolveUriResource(ctx, badgeNode.get("issuer").asText().strip());
+            UriResource issuerUriResource = uriResourceFactory.of(badgeNode.get("issuer").asText().strip());
 
             JsonLdGeneratedObject issuerObject = (JsonLdGeneratedObject) ctx.getGeneratedObject(
                 JsonLDCompactionProve.getId(issuerUriResource));
@@ -137,21 +136,6 @@ public class VerificationDependenciesProbe extends Probe<JsonLdGeneratedObject> 
     private String getDefaultAllowedOrigins(String issuerId) throws URISyntaxException {
         URI issuerUri = new URI(issuerId);
         return issuerUri.getAuthority();
-    }
-
-    protected UriResource resolveUriResource(RunContext ctx, String url) throws URISyntaxException {
-        URI uri = new URI(url);
-        UriResource initialUriResource = new UriResource(uri);
-        UriResource uriResource = initialUriResource;
-
-        // check if uri points to a local resource
-        if (ctx.get(Key.JSON_DOCUMENT_LOADER) instanceof ConfigurableDocumentLoader) {
-            if (ConfigurableDocumentLoader.getDefaultHttpLoader() instanceof CachingDocumentLoader.HttpLoader) {
-                URI resolvedUri = ((CachingDocumentLoader.HttpLoader) ConfigurableDocumentLoader.getDefaultHttpLoader()).resolve(uri);
-                uriResource = new UriResource(resolvedUri);
-            }
-        }
-        return uriResource;
     }
 
     /**

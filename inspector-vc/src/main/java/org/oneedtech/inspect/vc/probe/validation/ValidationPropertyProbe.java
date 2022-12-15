@@ -22,6 +22,7 @@ import org.oneedtech.inspect.vc.Validation;
 import org.oneedtech.inspect.vc.jsonld.JsonLdGeneratedObject;
 import org.oneedtech.inspect.vc.jsonld.probe.JsonLDCompactionProve;
 import org.oneedtech.inspect.vc.probe.PropertyProbe;
+import org.oneedtech.inspect.vc.resource.UriResourceFactory;
 import org.oneedtech.inspect.vc.util.CachingDocumentLoader;
 import org.oneedtech.inspect.vc.util.JsonNodeUtil;
 
@@ -126,7 +127,7 @@ public class ValidationPropertyProbe extends PropertyProbe {
                     }
 
                     // get node from context
-                    UriResource uriResource = resolveUriResource(ctx, childNode.asText());
+                    UriResource uriResource = ((UriResourceFactory) ctx.get(Key.URI_RESOURCE_FACTORY)).of(childNode.asText().strip());
                     JsonLdGeneratedObject resolved = (JsonLdGeneratedObject) ctx.getGeneratedObject(JsonLDCompactionProve.getId(uriResource));
                     if (resolved == null) {
                         if (validation.isAllowRemoteUrl() && URL.getValidationFunction().apply(childNode)) {
@@ -151,21 +152,6 @@ public class ValidationPropertyProbe extends PropertyProbe {
         }
 
         return result.size() > 0 ? result : success(ctx);
-    }
-
-    protected UriResource resolveUriResource(RunContext ctx, String url) throws URISyntaxException {
-        URI uri = new URI(url);
-        UriResource initialUriResource = new UriResource(uri);
-        UriResource uriResource = initialUriResource;
-
-        // check if uri points to a local resource
-        if (ctx.get(Key.JSON_DOCUMENT_LOADER) instanceof ConfigurableDocumentLoader) {
-            if (ConfigurableDocumentLoader.getDefaultHttpLoader() instanceof CachingDocumentLoader.HttpLoader) {
-                URI resolvedUri = ((CachingDocumentLoader.HttpLoader) ConfigurableDocumentLoader.getDefaultHttpLoader()).resolve(uri);
-                uriResource = new UriResource(resolvedUri);
-            }
-        }
-        return uriResource;
     }
 
     private ReportItems validatePrerequisites(JsonNode node, RunContext ctx) {

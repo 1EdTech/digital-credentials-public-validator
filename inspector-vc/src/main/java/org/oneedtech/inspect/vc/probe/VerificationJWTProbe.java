@@ -15,6 +15,7 @@ import org.oneedtech.inspect.core.report.ReportItems;
 import org.oneedtech.inspect.util.resource.UriResource;
 import org.oneedtech.inspect.vc.jsonld.JsonLdGeneratedObject;
 import org.oneedtech.inspect.vc.jsonld.probe.JsonLDCompactionProve;
+import org.oneedtech.inspect.vc.resource.UriResourceFactory;
 import org.oneedtech.inspect.vc.util.CachingDocumentLoader;
 import org.oneedtech.inspect.vc.util.JsonNodeUtil;
 
@@ -44,16 +45,17 @@ public class VerificationJWTProbe extends Probe<JsonLdGeneratedObject> {
     public ReportItems run(JsonLdGeneratedObject assertion, RunContext ctx) throws Exception {
         ObjectMapper mapper = (ObjectMapper) ctx.get(Key.JACKSON_OBJECTMAPPER);
         JsonNode assertionNode = (mapper).readTree(assertion.getJson());
+        UriResourceFactory uriResourceFactory = (UriResourceFactory) ctx.get(Key.URI_RESOURCE_FACTORY);
 
         // get badge from assertion
-        UriResource badgeUriResource = resolveUriResource(ctx, assertionNode.get("badge").asText().strip());
+        UriResource badgeUriResource = uriResourceFactory.of(assertionNode.get("badge").asText().strip());
         JsonLdGeneratedObject badgeObject = (JsonLdGeneratedObject) ctx.getGeneratedObject(
             JsonLDCompactionProve.getId(badgeUriResource));
         JsonNode badgeNode = ((ObjectMapper) ctx.get(Key.JACKSON_OBJECTMAPPER))
             .readTree(badgeObject.getJson());
 
         // get issuer from badge
-        UriResource issuerUriResource = resolveUriResource(ctx, badgeNode.get("issuer").asText().strip());
+        UriResource issuerUriResource = uriResourceFactory.of(badgeNode.get("issuer").asText().strip());
 
         JsonLdGeneratedObject issuerObject = (JsonLdGeneratedObject) ctx.getGeneratedObject(
             JsonLDCompactionProve.getId(issuerUriResource));
@@ -71,7 +73,7 @@ public class VerificationJWTProbe extends Probe<JsonLdGeneratedObject> {
         }
 
         // get creator from id
-        UriResource creatorUriResource = resolveUriResource(ctx, creatorId);
+        UriResource creatorUriResource = uriResourceFactory.of(creatorId);
         JsonLdGeneratedObject creatorObject = (JsonLdGeneratedObject) ctx.getGeneratedObject(
             JsonLDCompactionProve.getId(creatorUriResource));
         JsonNode creatorNode = ((ObjectMapper) ctx.get(Key.JACKSON_OBJECTMAPPER))
@@ -104,21 +106,6 @@ public class VerificationJWTProbe extends Probe<JsonLdGeneratedObject> {
             return fatal("Signature for node " + assertionNode.get("id") + " failed verification " + e.getLocalizedMessage(), ctx);
         }
         return success(ctx);
-    }
-
-    protected UriResource resolveUriResource(RunContext ctx, String url) throws URISyntaxException {
-        URI uri = new URI(url);
-        UriResource initialUriResource = new UriResource(uri);
-        UriResource uriResource = initialUriResource;
-
-        // check if uri points to a local resource
-        if (ctx.get(Key.JSON_DOCUMENT_LOADER) instanceof ConfigurableDocumentLoader) {
-            if (ConfigurableDocumentLoader.getDefaultHttpLoader() instanceof CachingDocumentLoader.HttpLoader) {
-                URI resolvedUri = ((CachingDocumentLoader.HttpLoader) ConfigurableDocumentLoader.getDefaultHttpLoader()).resolve(uri);
-                uriResource = new UriResource(resolvedUri);
-            }
-        }
-        return uriResource;
     }
 
     private static final List<String> allowedTypes = List.of("id", "email", "url", "telephone");

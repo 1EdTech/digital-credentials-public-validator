@@ -5,10 +5,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.oneedtech.inspect.core.probe.RunContext;
+import org.oneedtech.inspect.core.probe.RunContext.Key;
 import org.oneedtech.inspect.core.report.ReportItems;
 import org.oneedtech.inspect.util.resource.MimeType;
 import org.oneedtech.inspect.util.resource.UriResource;
 import org.oneedtech.inspect.vc.Validation;
+import org.oneedtech.inspect.vc.resource.UriResourceFactory;
 import org.oneedtech.inspect.vc.util.PrimitiveValueValidator;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -56,7 +58,7 @@ public class ValidationImagePropertyProbe extends ValidationPropertyProbe {
             }
         } else if (!url.isEmpty()) {
             try {
-                UriResource uriResource = resolveUriResource(ctx, url);
+                UriResource uriResource = ((UriResourceFactory) ctx.get(Key.URI_RESOURCE_FACTORY)).of(url);
                 // TODO: load resource from cache
                 // TODO: check accept type -> 'Accept': 'application/ld+json, application/json, image/png, image/svg+xml'
                 uriResource.asByteSource();

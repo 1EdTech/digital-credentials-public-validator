@@ -20,6 +20,8 @@ import org.oneedtech.inspect.core.report.Report;
 import org.oneedtech.inspect.core.report.ReportItems;
 import org.oneedtech.inspect.util.code.Tuple;
 import org.oneedtech.inspect.vc.jsonld.probe.ExtensionProbe;
+import org.oneedtech.inspect.vc.resource.DefaultUriResourceFactory;
+import org.oneedtech.inspect.vc.resource.UriResourceFactory;
 import org.oneedtech.inspect.vc.util.CachingDocumentLoader;
 import org.oneedtech.inspect.vc.util.JsonNodeUtil;
 
@@ -80,6 +82,10 @@ public abstract class VCInspector extends Inspector {
 	 */
 	protected DocumentLoader getDocumentLoader() {
 		return new CachingDocumentLoader();
+	}
+
+	protected UriResourceFactory getUriResourceFactory(DocumentLoader documentLoader) {
+		return new DefaultUriResourceFactory();
 	}
 
 	protected List<Tuple<ExtensionProbe, JsonNode>> getExtensionProbes(JsonNode node, String entryPath) {

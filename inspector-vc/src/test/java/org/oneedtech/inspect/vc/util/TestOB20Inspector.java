@@ -8,6 +8,8 @@ import java.util.Map;
 import org.oneedtech.inspect.util.resource.ResourceType;
 import org.oneedtech.inspect.util.spec.Specification;
 import org.oneedtech.inspect.vc.OB20Inspector;
+import org.oneedtech.inspect.vc.resource.TestUriResourceFactory;
+import org.oneedtech.inspect.vc.resource.UriResourceFactory;
 
 import com.apicatalog.jsonld.loader.DocumentLoader;
 
@@ -30,6 +32,11 @@ public class TestOB20Inspector extends OB20Inspector {
     @Override
 	protected DocumentLoader getDocumentLoader() {
 		return new CachingDocumentLoader(localDomains);
+	}
+
+	@Override
+	protected UriResourceFactory getUriResourceFactory(DocumentLoader documentLoader) {
+		return new TestUriResourceFactory(documentLoader);
 	}
 
 	public static class TestBuilder extends OB20Inspector.Builder {

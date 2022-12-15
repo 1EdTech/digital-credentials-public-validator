@@ -12,7 +12,6 @@ import org.oneedtech.inspect.vc.jsonld.JsonLdGeneratedObject;
 
 import com.apicatalog.jsonld.JsonLd;
 import com.apicatalog.jsonld.JsonLdOptions;
-import com.apicatalog.jsonld.api.CompactionApi;
 import com.apicatalog.jsonld.document.JsonDocument;
 import com.apicatalog.jsonld.loader.DocumentLoader;
 

@@ -26,6 +26,7 @@ import org.oneedtech.inspect.vc.Assertion.ValueType;
 import org.oneedtech.inspect.vc.Validation;
 import org.oneedtech.inspect.vc.jsonld.JsonLdGeneratedObject;
 import org.oneedtech.inspect.vc.probe.CredentialParseProbe;
+import org.oneedtech.inspect.vc.resource.UriResourceFactory;
 import org.oneedtech.inspect.vc.util.CachingDocumentLoader;
 import org.oneedtech.inspect.vc.util.JsonNodeUtil;
 import org.oneedtech.inspect.vc.util.PrimitiveValueValidator;
@@ -126,9 +127,11 @@ public class GraphFetcherProbe extends Probe<JsonNode> {
 
     private ReportItems fetchNode(RunContext ctx, ReportItems result, JsonNode idNode)
             throws URISyntaxException, Exception, JsonProcessingException, JsonMappingException {
-        UriResource uriResource = resolveUriResource(ctx, idNode.asText().strip());
+        System.out.println("fetchNode " + idNode.asText().strip());
+        UriResource uriResource = ((UriResourceFactory) ctx.get(Key.URI_RESOURCE_FACTORY)).of(idNode.asText().strip());
         JsonLdGeneratedObject resolved = (JsonLdGeneratedObject) ctx.getGeneratedObject(JsonLDCompactionProve.getId(uriResource));
         if (resolved == null) {
+            System.out.println("parsing and loading " + idNode.asText().strip());
             result = new ReportItems(List.of(result, new CredentialParseProbe().run(uriResource, ctx)));
             if (!result.contains(Outcome.FATAL, Outcome.EXCEPTION)) {
                 Assertion fetchedAssertion = (Assertion) ctx.getGeneratedObject(uriResource.getID());
@@ -198,21 +201,6 @@ public class GraphFetcherProbe extends Probe<JsonNode> {
         final Pattern pattern = Pattern.compile(URN_REGEX, Pattern.CASE_INSENSITIVE);
         final Matcher matcher = pattern.matcher(idNode.asText());
         return matcher.matches();
-    }
-
-    protected UriResource resolveUriResource(RunContext ctx, String url) throws URISyntaxException {
-        URI uri = new URI(url);
-        UriResource initialUriResource = new UriResource(uri);
-        UriResource uriResource = initialUriResource;
-
-        // check if uri points to a local resource
-        if (ctx.get(Key.JSON_DOCUMENT_LOADER) instanceof ConfigurableDocumentLoader) {
-            if (ConfigurableDocumentLoader.getDefaultHttpLoader() instanceof CachingDocumentLoader.HttpLoader) {
-                URI resolvedUri = ((CachingDocumentLoader.HttpLoader) ConfigurableDocumentLoader.getDefaultHttpLoader()).resolve(uri);
-                uriResource = new UriResource(resolvedUri);
-            }
-        }
-        return uriResource;
     }
 
     public static final String ID = GraphFetcherProbe.class.getSimpleName();
