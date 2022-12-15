@@ -135,6 +135,7 @@ public class CachingDocumentLoader extends ConfigurableDocumentLoader {
 			.initialCapacity(32).maximumSize(64).expireAfterAccess(Duration.ofHours(24))
 			.build(new CacheLoader<Tuple<String, DocumentLoaderOptions>, Document>() {
 				public Document load(final Tuple<String, DocumentLoaderOptions> id) throws Exception {
+					// TODO: this loading will fail if the document is redirected (HTTP 301)
 					try (InputStream is = bundled.containsKey(id.t1)
 							? bundled.get(id.t1).openStream()
 							: new URI(id.t1).toURL().openStream();) {
