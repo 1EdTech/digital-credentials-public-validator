@@ -1,0 +1,35 @@
+{
+	"@context": [
+		"https://w3id.org/openbadges/v2",
+		"https://w3id.org/openbadges/extensions/exampleExtension/context.json",
+		"https://w3id.org/openbadges/extensions/applyLinkExtension/context.json"
+	],
+	"id": "http://example.org/assertion",
+	"type": "Assertion",
+	"recipient": {
+		"type": "email",
+		"hashed": true,
+		"salt": "deadsea",
+		"identity": "sha256$ecf5409f3f4b91ab60cc5ef4c02aef7032354375e70cf4d8e43f6a1d29891942"
+	},
+	"image": "https://example.org/beths-robot-badge.png",
+	"badge": "https://example.org/robotics-badge.json",
+	"issuedOn": "2016-12-31T23:59:59Z",
+	"verification": {
+		"type": "hosted"
+	},
+	"extensions:exampleExtension": {
+		"id": "_:b0",
+		"type": [
+			"Extension",
+			"obi:extensions/#ExampleExtension",
+			"extensions:ApplyLink"
+		],
+		"http://schema.org/text": "I'm a property, short and sweet",
+		"url": "http://www.1edtech.org"
+	},
+	"evidence": {
+		"id": "_:b1",
+		"narrative": "Rocked the free world"
+	}
+}

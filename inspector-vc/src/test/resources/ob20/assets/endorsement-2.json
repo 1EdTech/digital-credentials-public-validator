@@ -1,0 +1,14 @@
+{
+	"@context": "https://w3id.org/openbadges/v2",
+	"id": "http://example.org/endorsement-2.json",
+	"type": "Endorsement",
+	"claim": {
+		"id": "https://example.org/badgeclass-with-endorsements.json",
+		"endorsementComment": "Pretty good"
+	},
+	"issuedOn": "2017-10-01T00:00Z",
+	"issuer": "http://example.org/issuer1.json",
+	"verification": {
+		"type": "HostedBadge"
+	}
+}

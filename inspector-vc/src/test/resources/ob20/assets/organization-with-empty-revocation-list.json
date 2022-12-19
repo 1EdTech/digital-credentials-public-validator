@@ -1,0 +1,10 @@
+{
+	"@context": "https://w3id.org/openbadges/v2",
+	"type": "Issuer",
+	"id": "https://example.org/organization-with-empty-revocation-list.json",
+	"name": "An Example Badge Issuer",
+	"url": "https://example.org",
+	"email": "contact@example.org",
+	"revocationList": "http://example.org/empty-revocation-list.json",
+	"publicKey": "http://example.org/key2.json"
+}

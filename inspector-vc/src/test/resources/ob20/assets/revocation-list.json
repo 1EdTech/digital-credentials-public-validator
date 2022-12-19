@@ -1,0 +1,15 @@
+{
+	"@context": "https://w3id.org/openbadges/v2",
+	"id": "http://example.org/revocation-list.json",
+	"type": "RevocationList",
+	"revokedAssertions": [
+		{
+			"id": "https://example.org/beths-robotics-badge-revoked.json",
+			"revocationReason": "A good reason, for sure"
+		},
+		{
+			"id": "urn:uuid:52e4c6b3-8c13-4fa8-8482-a5cf34ef37a9"
+		},
+		"urn:uuid:6deb4a00-ebce-4b28-8cc2-afa705ef7be4"
+	]
+}

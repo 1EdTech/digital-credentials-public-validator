@@ -1,0 +1,10 @@
+{
+	"@context": "https://w3id.org/openbadges/v2",
+	"id": "http://example.org/badgeclass",
+	"@language": "en-US",
+    "name": "Example Badge",
+    "description": "An example",
+    "criteria": "http://example.com/badgecriteria.json",
+	"issuer": "http://example.org/issuer1.json",
+	"type": "BadgeClass"
+}

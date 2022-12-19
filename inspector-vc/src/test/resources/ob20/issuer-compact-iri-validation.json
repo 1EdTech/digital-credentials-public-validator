@@ -1,0 +1,11 @@
+{
+  "@context": "https://w3id.org/openbadges/v2",
+  "type": "Issuer",
+  "id": "https://example.org/organization.json",
+  "url": "https://example.org",
+  "name": "An Example Badge Issuer",
+  "email": "contact@example.org",
+  "verification": {
+    "verificationProperty": "id"
+  }
+}
