@@ -1,0 +1,8 @@
+{
+  "@context": "https://w3id.org/openbadges/v2",
+  "type": "Issuer",
+  "id": "https://example.org/organization-no-public-key.json",
+  "name": "An Example Badge Issuer",
+  "url": "https://example.org",
+  "email": "contact@example.org"
+}

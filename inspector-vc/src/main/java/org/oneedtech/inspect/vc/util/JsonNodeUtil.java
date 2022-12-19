@@ -17,11 +17,11 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 public class JsonNodeUtil {
 
 	public static List<JsonNode> asNodeList(JsonNode root, String jsonPath, JsonPathEvaluator evaluator) {
-		List<JsonNode> list = new ArrayList<>();		
-		ArrayNode array = evaluator.eval(jsonPath, root);	
+		List<JsonNode> list = new ArrayList<>();
+		ArrayNode array = evaluator.eval(jsonPath, root);
 		for(JsonNode node : array) {
 			if(!(node instanceof ArrayNode)) {
-				list.add(node); 			
+				list.add(node);
 			} else {
 				ArrayNode values = (ArrayNode) node;
 				for(JsonNode value : values) {
@@ -31,28 +31,39 @@ public class JsonNodeUtil {
 		}
 		return list;
 	}
-			
+
 	public static List<String> asStringList(JsonNode node) {
 		if(!(node instanceof ArrayNode)) {
+			if (node.isObject()) {
+				return List.of();
+			}
 			return List.of(node.asText());
 		} else {
-			ArrayNode arrayNode = (ArrayNode)node;			
+			ArrayNode arrayNode = (ArrayNode)node;
 			return StreamSupport
 					.stream(arrayNode.spliterator(), false)
 					.map(n->n.asText().strip())
-					.collect(Collectors.toList());	
+					.collect(Collectors.toList());
 		}
 	}
-	
+
 	public static List<JsonNode> asNodeList(JsonNode node) {
 		if(node == null) return null;
 		if(!(node instanceof ArrayNode)) {
 			return List.of(node);
 		} else {
-			ArrayNode arrayNode = (ArrayNode)node;			
+			ArrayNode arrayNode = (ArrayNode)node;
 			return StreamSupport
 					.stream(arrayNode.spliterator(), false)
-					.collect(Collectors.toList());	
+					.collect(Collectors.toList());
 		}
+	}
+
+	public static boolean isNotEmpty(JsonNode node) {
+		return node != null && !node.isNull() && !node.isEmpty();
+	}
+
+	public static boolean isEmpty(JsonNode node) {
+		return node == null || node.isNull() || node.isEmpty();
 	}
 }

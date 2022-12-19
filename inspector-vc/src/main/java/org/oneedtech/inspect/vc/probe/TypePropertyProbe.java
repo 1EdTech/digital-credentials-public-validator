@@ -3,61 +3,60 @@ package org.oneedtech.inspect.vc.probe;
 import static org.oneedtech.inspect.util.code.Defensives.checkNotNull;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
-import org.oneedtech.inspect.core.probe.Probe;
 import org.oneedtech.inspect.core.probe.RunContext;
 import org.oneedtech.inspect.core.report.ReportItems;
-import org.oneedtech.inspect.vc.Credential;
-import org.oneedtech.inspect.vc.Credential.Type;
-import org.oneedtech.inspect.vc.util.JsonNodeUtil;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
+import org.oneedtech.inspect.vc.Credential.CredentialEnum;
 
 /**
  * A Probe that verifies a credential's type property.
- * 
+ *
  * @author mgylling
  */
-public class TypePropertyProbe extends Probe<JsonNode> {
-	private final Credential.Type expected;
+public class TypePropertyProbe extends StringValuePropertyProbe {
+	private final CredentialEnum expected;
 
-	public TypePropertyProbe(Credential.Type expected) {
-		super(ID);
+	public TypePropertyProbe(CredentialEnum expected) {
+		super(ID, expected.toString(), "type");
 		this.expected = checkNotNull(expected);
+		this.setValueValidations(this::validate);
 	}
 
-	@Override
-	public ReportItems run(JsonNode root, RunContext ctx) throws Exception {
-
-		ArrayNode typeNode = (ArrayNode) root.get("type");
-		if (typeNode == null)
-			return fatal("No type property", ctx);
-
-		List<String> values = JsonNodeUtil.asStringList(typeNode);
-
-		if (!values.contains("VerifiableCredential")) {
-			return fatal("The type property does not contain the entry 'VerifiableCredential'", ctx);
+	public ReportItems validate(List<String> values, RunContext ctx) {
+		List<String> requiredTypeValues = expected.getRequiredTypeValues();
+		if (!requiredTypeValues.isEmpty()) {
+			if (!requiredTypeValues.stream().allMatch(requiredValue -> values.contains(requiredValue))) {
+				return fatal(formatMessage(requiredTypeValues), ctx);
+			}
 		}
 
-		if (expected == Credential.Type.OpenBadgeCredential) {
-			if (!values.contains("OpenBadgeCredential") && !values.contains("AchievementCredential")) {
-				return fatal("The type property does not contain one of 'OpenBadgeCredential' or 'AchievementCredential'", ctx);
+		if (expected.isAllowedTypeValuesRequired()) {
+			List<String> allowedValues = expected.getAllowedTypeValues();
+			if (allowedValues.isEmpty()) {
+				return fatal("The type property is invalid", ctx);
 			}
-		} else if (expected == Credential.Type.ClrCredential) {
-			if (!values.contains("ClrCredential")) {
-				return fatal("The type property does not contain the entry 'ClrCredential'", ctx);
+			if (!values.stream().anyMatch(v -> allowedValues.contains(v))) {
+				return fatal(formatMessage(values), ctx);
 			}
-		} else if (expected == Credential.Type.EndorsementCredential) {
-			if (!values.contains("EndorsementCredential")) {
-				return fatal("The type property does not contain the entry 'EndorsementCredential'", ctx);
-			}
-		} else {
-			// TODO implement
-			throw new IllegalStateException();
 		}
 
 		return success(ctx);
+	}
+
+	private String formatMessage(List<String> values) {
+		StringBuffer buffer = new StringBuffer("The type property does not contain ");
+		if (values.size() > 1) {
+			buffer.append("one of");
+			buffer.append(values.stream()
+				.map(value -> "'" + value + "'")
+				.collect(Collectors.joining(" or "))
+			);
+
+		} else {
+			buffer.append("the entry '" + values.get(0) + "'");
+		}
+		return buffer.toString();
 	}
 
 	public static final String ID = TypePropertyProbe.class.getSimpleName();

@@ -22,11 +22,15 @@ public final class JwtParser extends PayloadParser {
 	}
 
 	@Override
-	public Credential parse(Resource resource, RunContext ctx)  throws Exception {		
+	public Credential parse(Resource resource, RunContext ctx)  throws Exception {
 		checkTrue(resource.getType() == ResourceType.JWT);
 		String jwt = resource.asByteSource().asCharSource(UTF_8).read();
-		JsonNode node = fromJwt(jwt, ctx);		
-		return new Credential(resource, node, jwt);				
+		JsonNode node = fromJwt(jwt, ctx);
+		return getBuilder(ctx)
+			.resource(resource)
+			.jsonData(node)
+			.jwt(jwt)
+			.build();
 	}
 
 }

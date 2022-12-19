@@ -1,0 +1,10 @@
+{
+	"@context": "https://w3id.org/openbadges/v2",
+	"type": "BadgeClass",
+	"id": "https://example.org/badge-from-organization-with-revocation-list.json",
+	"name": "Awesome Robotics Badge",
+	"description": "For doing awesome things with robots that people think is pretty great.",
+	"image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mOUMyqsBwACeQFChxlltgAAAABJRU5ErkJggg==",
+	"criteria": "http://example.com/badgecriteria.json",
+	"issuer": "https://example.org/organization-with-revocation-list.json"
+}
