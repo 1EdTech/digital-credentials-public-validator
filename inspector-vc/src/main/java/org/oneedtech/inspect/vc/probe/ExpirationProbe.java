@@ -26,7 +26,7 @@ public class ExpirationProbe extends Probe<Credential> {
 		 *	and the expiration date is prior to the current date, the credential has expired.
 		 */
 		JsonNode node = crd.getJson().get(crd.getExpiresAtPropertyName());
-		if(node != null) {
+		if(node != null && !node.isNull()) {
 			try {
 				ZonedDateTime expirationDate = ZonedDateTime.parse(node.textValue());
 				if (ZonedDateTime.now().isAfter(expirationDate)) {
