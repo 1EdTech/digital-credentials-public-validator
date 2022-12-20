@@ -52,4 +52,6 @@ public class CredentialParseProbe extends Probe<Resource> {
 		}
 	}
 
+	public static final String ID = CredentialParseProbe.class.getSimpleName();
+
 }
