@@ -4,11 +4,11 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.oneedtech.inspect.test.Assertions.assertFatalCount;
 import static org.oneedtech.inspect.test.Assertions.assertHasProbeID;
 import static org.oneedtech.inspect.test.Assertions.assertInvalid;
+import static org.oneedtech.inspect.test.Assertions.assertValid;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.oneedtech.inspect.core.Inspector.Behavior;
-import org.oneedtech.inspect.core.probe.json.JsonSchemaProbe;
 import org.oneedtech.inspect.core.report.Report;
 import org.oneedtech.inspect.test.PrintHelper;
 import org.oneedtech.inspect.vc.probe.CredentialParseProbe;
@@ -23,6 +23,15 @@ public class Endorsement30Tests {
 				.set(Behavior.TEST_INCLUDE_SUCCESS, true)	
 				.set(Behavior.VALIDATOR_FAIL_FAST, false)
 				.build();	
+	}
+
+	@Test
+	void testEndorsementWithoutErrors() {
+		assertDoesNotThrow(()->{
+			Report report = validator.run(Samples.OB30.JSON.ENDORSEMENT_VALID.asFileResource());
+			if(verbose) PrintHelper.print(report, true);
+			assertValid(report);
+		});	
 	}
 
 	@Test
