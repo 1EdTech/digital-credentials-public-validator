@@ -115,12 +115,12 @@ public class Assertion extends Credential {
                         return found;
                     }
                 }
-			}
 
-            // check external type
-            if (validateIri(typeNode)) {
-                return External;
-            }
+                // check external type
+                if (validateIri(typeNode)) {
+                    return External;
+                }
+			}
 
 			return Unknown;
         }
