@@ -3,6 +3,7 @@ package org.oneedtech.inspect.vc.jsonld.probe;
 import static org.oneedtech.inspect.vc.Assertion.ValueType.DATA_URI_OR_URL;
 
 import java.io.IOException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
@@ -26,6 +27,7 @@ import org.oneedtech.inspect.vc.Validation;
 import org.oneedtech.inspect.vc.jsonld.JsonLdGeneratedObject;
 import org.oneedtech.inspect.vc.probe.CredentialParseProbe;
 import org.oneedtech.inspect.vc.resource.UriResourceFactory;
+import org.oneedtech.inspect.vc.util.CachingDocumentLoader;
 import org.oneedtech.inspect.vc.util.JsonNodeUtil;
 import org.oneedtech.inspect.vc.util.PrimitiveValueValidator;
 
@@ -35,6 +37,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.google.common.io.Resources;
+
+import foundation.identity.jsonld.ConfigurableDocumentLoader;
 
 /**
  * Probe for fetching all elements in the graph for Open Badges 2.0 validation
@@ -68,10 +72,47 @@ public class GraphFetcherProbe extends Probe<JsonNode> {
 
             // flatten embeded resource
             if (validation.isAllowFlattenEmbeddedResource()) {
-                result = flatten(ctx, result, root, node, validation);
+                if (!node.isTextual()) {
+                    if (!node.isObject()) {
+                        return error("Property " + validation.getName() + " referenced from " + assertion.getJson().toString() + " is not a JSON object or string as expected", ctx);
+                    }
+
+                    JsonNode idNode = node.get("id");
+                    if (idNode == null) {
+                        // add a new node to the graph
+                        UUID newId = UUID.randomUUID();
+                        JsonNode merged = createNewJson(ctx, "{\"id\": \"_:" + newId + "\"}");
+                        ctx.addGeneratedObject(new JsonLdGeneratedObject(JsonLDCompactionProve.getId(newId.toString()), merged.toString()));
+
+                        // update existing node with new id
+                        updateNode(validation, idNode, ctx);
+
+                        return warning("Node id missing at " + node.toString() + ". A blank node ID has been assigned", ctx);
+                    } else if (!idNode.isTextual() || !PrimitiveValueValidator.validateIri(idNode)) {
+                        return error("Embedded JSON object at " + node.asText() + " has no proper assigned id.", ctx);
+                    } else if (assertion.getCredentialType() == Type.Assertion && !PrimitiveValueValidator.validateUrl(idNode)) {
+                        if (!isUrn(idNode)) {
+                            logger.info("ID format for " + idNode.toString() + " at " + assertion.getCredentialType() + " not in an expected HTTP or URN:UUID scheme");
+                        }
+
+                        // add a new node to the graph
+                        JsonNode merged = createNewJson(ctx, node);
+                        ctx.addGeneratedObject(new JsonLdGeneratedObject(JsonLDCompactionProve.getId(idNode.asText().strip()), merged.toString()));
+
+                        // update existing node with new id
+                        updateNode(validation, idNode, ctx);
+
+                    } else {
+
+                        // update existing node with new id
+                        updateNode(validation, idNode, ctx);
+
+                        // fetch node and add it to the graph
+                        result = fetchNode(ctx, result, idNode);
+                    }
+                }
             }
 
-            // fetch
             List<JsonNode> nodeList = JsonNodeUtil.asNodeList(node);
             for (JsonNode childNode : nodeList) {
                 if (shouldFetch(childNode, validation)) {
@@ -82,60 +123,6 @@ public class GraphFetcherProbe extends Probe<JsonNode> {
 
         }
         return success(ctx);
-    }
-
-    private ReportItems flatten(RunContext ctx, ReportItems result, JsonNode parentNode, JsonNode node, Validation validation) throws URISyntaxException, Exception {
-        if (!node.isTextual()) {
-            if (!node.isObject()) {
-                result = new ReportItems(List.of(result, error("Property " + validation.getName() + " referenced from " + assertion.getJson().toString() + " is not a JSON object or string as expected", ctx)));
-            }
-
-            JsonNode idNode = node.get("id");
-            if (idNode == null) {
-                // add a new node to the graph
-                UUID newId = UUID.randomUUID();
-                JsonNode merged = createNewJson(ctx, "{\"id\": \"_:" + newId + "\"}");
-                ctx.addGeneratedObject(new JsonLdGeneratedObject(JsonLDCompactionProve.getId(newId.toString()), merged.toString()));
-
-                // update existing node with new id
-                updateNode(validation, parentNode.get("id").asText().strip(), idNode, ctx);
-
-                return warning("Node id missing at " + node.toString() + ". A blank node ID has been assigned", ctx);
-            } else if (!idNode.isTextual() || !PrimitiveValueValidator.validateIri(idNode)) {
-                return new ReportItems(List.of(result, error("Embedded JSON object at " + node.asText() + " has no proper assigned id.", ctx)));
-            } else { // if (assertion.getCredentialType() == Type.Assertion && !PrimitiveValueValidator.validateUrl(idNode)) {
-                if (!isUrn(idNode)) {
-                    logger.info("ID format for " + idNode.toString() + " at " + assertion.getCredentialType() + " not in an expected HTTP or URN:UUID scheme");
-                }
-
-                // add a new node to the graph
-                JsonNode merged = createNewJson(ctx, node);
-                ctx.addGeneratedObject(new JsonLdGeneratedObject(JsonLDCompactionProve.getId(idNode.asText().strip()), merged.toString()));
-
-                // update existing node with new id
-                updateNode(validation, parentNode.get("id").asText().strip(), idNode, ctx);
-
-            // } else {
-            //     // update existing node with new id
-            //     updateNode(validation, idNode, ctx);
-
-            //     // fetch node and add it to the graph
-            //     result = new ReportItems(List.of(result, fetchNode(ctx, result, idNode)));
-            }
-
-            // recursive call
-            List<Validation> flattenValidations = Type.valueOf(node.get("type")).getValidations().stream()
-                .filter(val -> val.getType() == ValueType.ID && val.isAllowFlattenEmbeddedResource())
-                .filter(val -> node.hasNonNull(val.getName()))
-                .collect(Collectors.toList());
-
-            for (Validation val : flattenValidations) {
-                if (node.hasNonNull(val.getName())) {
-                    result = new ReportItems(List.of(result, flatten(ctx, result, node, node.get(val.getName()), val)));
-                }
-            }
-        }
-        return result;
     }
 
     private ReportItems fetchNode(RunContext ctx, ReportItems result, JsonNode idNode)
@@ -178,8 +165,8 @@ public class GraphFetcherProbe extends Probe<JsonNode> {
             (validation.isAllowDataUri() || ValueType.IRI.getValidationFunction().apply(node));
     }
 
-    private void updateNode(Validation validation, String parentId, JsonNode idNode, RunContext ctx) throws IOException {
-        JsonLdGeneratedObject jsonLdGeneratedObject = ctx.getGeneratedObject(JsonLDCompactionProve.getId(parentId));
+    private void updateNode(Validation validation, JsonNode idNode, RunContext ctx) throws IOException {
+        JsonLdGeneratedObject jsonLdGeneratedObject = ctx.getGeneratedObject(JsonLDCompactionProve.getId(assertion));
         JsonNode merged = createNewJson(ctx, jsonLdGeneratedObject.getJson(), "{\"" + validation.getName() + "\": \"" + idNode.asText().strip() + "\"}");
         jsonLdGeneratedObject.setJson(merged.toString());
 
