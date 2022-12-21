@@ -23,6 +23,8 @@ public class Samples {
 			public final static Sample SIMPLE_JSON_ISSUED = new Sample("ob30/simple-err-issued.json", false);
 			public final static Sample SIMPLE_JSON_ISSUER = new Sample("ob30/simple-err-issuer.json", false);
 			public final static Sample SIMPLE_JSON_ERR_CONTEXT = new Sample("ob30/simple-err-context.json", false);
+			public final static Sample ENDORSEMENT_ERR_SCHEMA_STATUS_REFRESH = new Sample("ob30/endorsement-err-schema-status-refresh.json", false);
+			public final static Sample ENDORSEMENT_VALID = new Sample("ob30/endorsement-valid.json", false);
 		}
 		public static final class PNG {
 			public final static Sample SIMPLE_JWT_PNG = new Sample("ob30/simple-jwt.png", true);
