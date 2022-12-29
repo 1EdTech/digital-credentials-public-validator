@@ -40,6 +40,7 @@ public class Samples {
 			public final static Sample SIMPLE_JSON = new Sample("clr20/simple.json", true);
 			public final static Sample SIMPLE_JSON_NOPROOF = new Sample("clr20/simple-noproof.json", true);
 			public final static Sample SIMPLE_JWT = new Sample("clr20/simple.jwt", true);
+			public final static Sample COMPLEX_JSON = new Sample("clr20/complex.json", true);
 		}
 	}
 
