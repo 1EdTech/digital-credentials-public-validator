@@ -17,6 +17,7 @@ import com.apicatalog.multibase.Multibase;
 import com.apicatalog.multicodec.Multicodec;
 import com.apicatalog.multicodec.Multicodec.Codec;
 
+import foundation.identity.jsonld.ConfigurableDocumentLoader;
 import info.weboftrust.ldsignatures.LdProof;
 import info.weboftrust.ldsignatures.verifier.Ed25519Signature2020LdVerifier;
 import jakarta.json.JsonObject;
@@ -43,7 +44,10 @@ public class EmbeddedProofProbe extends Probe<VerifiableCredential> {
 		// TODO: What there are multiple proofs?
 
 		com.danubetech.verifiablecredentials.VerifiableCredential vc = com.danubetech.verifiablecredentials.VerifiableCredential.fromJson(new StringReader(crd.getJson().toString()));
-		vc.setDocumentLoader(new CachingDocumentLoader());
+		ConfigurableDocumentLoader documentLoader = new ConfigurableDocumentLoader();
+		documentLoader.setEnableHttp(true);
+		documentLoader.setEnableHttps(true);
+		vc.setDocumentLoader(documentLoader);
 
 		LdProof proof = vc.getLdProof();
 		if (proof == null) {
