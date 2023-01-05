@@ -41,7 +41,7 @@ public class EmbeddedProofProbe extends Probe<VerifiableCredential> {
 	@Override
 	public ReportItems run(VerifiableCredential crd, RunContext ctx) throws Exception {
 
-		// TODO: What there are multiple proofs?
+		// TODO: What there are multiple proofs? com.danubetech.verifiablecredentials.VerifiableCredential returns the first element, which is ok
 
 		com.danubetech.verifiablecredentials.VerifiableCredential vc = com.danubetech.verifiablecredentials.VerifiableCredential.fromJson(new StringReader(crd.getJson().toString()));
 		ConfigurableDocumentLoader documentLoader = new ConfigurableDocumentLoader();
