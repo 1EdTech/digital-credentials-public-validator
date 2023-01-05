@@ -170,7 +170,7 @@ public class OB30Inspector extends VCInspector implements SubInspector {
 
 			//credentialSubject
 			probeCount++;
-			accumulator.add(new CredentialSubjectProbe().run(ob.getJson(), ctx));
+			accumulator.add(new CredentialSubjectProbe("AchievementSubject", true).run(ob.getJson(), ctx));
 
 			//signatures, proofs
 			probeCount++;
