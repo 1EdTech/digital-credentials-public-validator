@@ -174,6 +174,16 @@ public class OB30Inspector extends VCInspector implements SubInspector {
 			probeCount++;
 			accumulator.add(new CredentialSubjectProbe("AchievementSubject", true).run(ob.getJson(), ctx));
 
+			// evidence
+			probeCount++;
+			accumulator.add(new EvidenceProbe().run(ob.getJson(), ctx));
+			if(broken(accumulator)) return abort(ctx, accumulator, probeCount);
+
+			// issuer
+			probeCount++;
+			accumulator.add(new IssuerProbe().run(ob.getJson(), ctx));
+			if(broken(accumulator)) return abort(ctx, accumulator, probeCount);
+
 			//signatures, proofs
 			probeCount++;
 			if(ob.getProofType() == EXTERNAL){
@@ -203,16 +213,6 @@ public class OB30Inspector extends VCInspector implements SubInspector {
 				accumulator.add(probe.run(ob, ctx));
 				if(broken(accumulator)) return abort(ctx, accumulator, probeCount);
 			}
-
-			// evidence
-			probeCount++;
-			accumulator.add(new EvidenceProbe().run(ob.getJson(), ctx));
-			if(broken(accumulator)) return abort(ctx, accumulator, probeCount);
-
-			// issuer
-			probeCount++;
-			accumulator.add(new IssuerProbe().run(ob.getJson(), ctx));
-			if(broken(accumulator)) return abort(ctx, accumulator, probeCount);
 
 			//embedded endorsements
 			EndorsementInspector endorsementInspector = new EndorsementInspector.Builder().build();
