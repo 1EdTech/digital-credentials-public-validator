@@ -16,6 +16,7 @@ import org.oneedtech.inspect.vc.probe.ExpirationProbe;
 import org.oneedtech.inspect.vc.probe.InlineJsonSchemaProbe;
 import org.oneedtech.inspect.vc.probe.IssuanceProbe;
 import org.oneedtech.inspect.vc.probe.EmbeddedProofProbe;
+import org.oneedtech.inspect.vc.probe.EvidenceProbe;
 import org.oneedtech.inspect.vc.probe.TypePropertyProbe;
 
 import com.google.common.collect.Iterables;
@@ -249,6 +250,18 @@ public class OB30Tests {
 			assertInvalid(report);
 			// assertFatalCount(report, 1);
 			assertHasProbeID(report, CredentialSubjectProbe.ID, true);
+		});
+	}
+
+	@Test
+	void testSimpleJsonInvalidEvidenceType() {
+		//add a dumb value to .type and remove the ob type
+		assertDoesNotThrow(()->{
+			Report report = validator.run(Samples.OB30.JSON.SIMPLE_JSON_UNKNOWN_EVIDENCE_TYPE.asFileResource());
+			if(verbose) PrintHelper.print(report, true);
+			assertInvalid(report);
+			// assertFatalCount(report, 1);
+			assertHasProbeID(report, EvidenceProbe.ID, true);
 		});
 	}
 

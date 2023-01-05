@@ -44,6 +44,7 @@ import org.oneedtech.inspect.vc.probe.ExpirationProbe;
 import org.oneedtech.inspect.vc.probe.InlineJsonSchemaProbe;
 import org.oneedtech.inspect.vc.probe.IssuanceProbe;
 import org.oneedtech.inspect.vc.probe.EmbeddedProofProbe;
+import org.oneedtech.inspect.vc.probe.EvidenceProbe;
 import org.oneedtech.inspect.vc.probe.RevocationListProbe;
 import org.oneedtech.inspect.vc.probe.ExternalProofProbe;
 import org.oneedtech.inspect.vc.probe.TypePropertyProbe;
@@ -201,6 +202,11 @@ public class OB30Inspector extends VCInspector implements SubInspector {
 				accumulator.add(probe.run(ob, ctx));
 				if(broken(accumulator)) return abort(ctx, accumulator, probeCount);
 			}
+
+			// evidence
+			probeCount++;
+			accumulator.add(new EvidenceProbe().run(ob.getJson(), ctx));
+			if(broken(accumulator)) return abort(ctx, accumulator, probeCount);
 
 			//embedded endorsements
 			EndorsementInspector endorsementInspector = new EndorsementInspector.Builder().build();

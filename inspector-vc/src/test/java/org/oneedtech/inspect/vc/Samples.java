@@ -19,6 +19,7 @@ public class Samples {
 			public final static Sample SIMPLE_JSON_UNKNOWN_CREDENTIAL_SUBJECT_RESULT_TYPE = new Sample("ob30/simple-err-credential-subject-result-type.json", false);
 			public final static Sample SIMPLE_JSON_UNKNOWN_CREDENTIAL_SUBJECT_ACHIEVEMENT_RESULT_DESCRIPTION_TYPE = new Sample("ob30/simple-err-credential-subject-achievement-result-description-type.json", false);
 			public final static Sample SIMPLE_JSON_UNKNOWN_CREDENTIAL_SUBJECT_PROFILE_TYPE = new Sample("ob30/simple-err-credential-subject-profile-type.json", false);
+			public final static Sample SIMPLE_JSON_UNKNOWN_EVIDENCE_TYPE = new Sample("ob30/simple-err-evidence-type.json", false);
 			public final static Sample SIMPLE_JSON_PROOF_METHOD_ERROR = new Sample("ob30/simple-err-proof-method.json", false);
 			public final static Sample SIMPLE_JSON_PROOF_METHOD_NO_SCHEME_ERROR = new Sample("ob30/simple-err-proof-method-no-scheme.json", false);
 			public final static Sample SIMPLE_JSON_PROOF_METHOD_UNKNOWN_SCHEME_ERROR = new Sample("ob30/simple-err-proof-method-unknown-scheme.json", false);
