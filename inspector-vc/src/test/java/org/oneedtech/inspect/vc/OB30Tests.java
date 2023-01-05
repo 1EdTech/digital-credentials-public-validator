@@ -15,6 +15,7 @@ import org.oneedtech.inspect.vc.probe.CredentialSubjectProbe;
 import org.oneedtech.inspect.vc.probe.ExpirationProbe;
 import org.oneedtech.inspect.vc.probe.InlineJsonSchemaProbe;
 import org.oneedtech.inspect.vc.probe.IssuanceProbe;
+import org.oneedtech.inspect.vc.probe.IssuerProbe;
 import org.oneedtech.inspect.vc.probe.EmbeddedProofProbe;
 import org.oneedtech.inspect.vc.probe.EvidenceProbe;
 import org.oneedtech.inspect.vc.probe.TypePropertyProbe;
@@ -262,6 +263,42 @@ public class OB30Tests {
 			assertInvalid(report);
 			// assertFatalCount(report, 1);
 			assertHasProbeID(report, EvidenceProbe.ID, true);
+		});
+	}
+
+	@Test
+	void testSimpleJsonInvalidIssuerType() {
+		//add a dumb value to .type and remove the ob type
+		assertDoesNotThrow(()->{
+			Report report = validator.run(Samples.OB30.JSON.SIMPLE_JSON_UNKNOWN_ISSUER_TYPE.asFileResource());
+			if(verbose) PrintHelper.print(report, true);
+			assertInvalid(report);
+			// assertFatalCount(report, 1);
+			assertHasProbeID(report, IssuerProbe.ID, true);
+		});
+	}
+
+	@Test
+	void testSimpleJsonInvalidIssuerParentOrgType() {
+		//add a dumb value to .type and remove the ob type
+		assertDoesNotThrow(()->{
+			Report report = validator.run(Samples.OB30.JSON.SIMPLE_JSON_UNKNOWN_ISSUER_PARENTORG_TYPE.asFileResource());
+			if(verbose) PrintHelper.print(report, true);
+			assertInvalid(report);
+			// assertFatalCount(report, 1);
+			assertHasProbeID(report, IssuerProbe.ID, true);
+		});
+	}
+
+	@Test
+	void testSimpleJsonInvalidIssuerOtherIdentifierType() {
+		//add a dumb value to .type and remove the ob type
+		assertDoesNotThrow(()->{
+			Report report = validator.run(Samples.OB30.JSON.SIMPLE_JSON_UNKNOWN_ISSUER_OTHERIDENTIFIER_TYPE.asFileResource());
+			if(verbose) PrintHelper.print(report, true);
+			assertInvalid(report);
+			// assertFatalCount(report, 1);
+			assertHasProbeID(report, IssuerProbe.ID, true);
 		});
 	}
 
