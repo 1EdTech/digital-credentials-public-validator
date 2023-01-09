@@ -43,7 +43,7 @@ public class EmbeddedProofProbe extends Probe<VerifiableCredential> {
 
 		W3CVCHolder credentiaHolder = new W3CVCHolder(com.danubetech.verifiablecredentials.VerifiableCredential.fromJson(new StringReader(crd.getJson().toString())));
 
-		List<LdProof> proofs = credentiaHolder.getLdProofs();
+		List<LdProof> proofs = credentiaHolder.getProofs();
 		if (proofs == null || proofs.size() == 0) {
 			return error("The verifiable credential is missing a proof.", ctx);
 		}

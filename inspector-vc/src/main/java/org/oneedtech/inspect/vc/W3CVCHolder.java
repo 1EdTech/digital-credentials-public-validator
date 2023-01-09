@@ -29,7 +29,7 @@ public class W3CVCHolder {
      * returns a list of all proofs defined in the credential.
      * @return proofs defined in the credential
      */
-    public List<LdProof> getLdProofs() {
+    public List<LdProof> getProofs() {
         return JsonLDObjectUtils.getListFromJsonLDObject(LdProof.class, credential);
     }
 
