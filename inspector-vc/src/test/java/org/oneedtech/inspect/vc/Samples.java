@@ -12,6 +12,7 @@ public class Samples {
 			public final static Sample COMPLETE_JSON = new Sample("ob30/complete.json", false);
 			public final static Sample SIMPLE_JSON = new Sample("ob30/simple.json", true);
 			public final static Sample SIMPLE_DID_METHOD_JSON = new Sample("ob30/simple-did-method.json", true);
+			public final static Sample SIMPLE_MULTIPLE_PROOF_JSON = new Sample("ob30/simple-multiple-proofs.json", true);
 			public final static Sample SIMPLE_JSON_NOPROOF = new Sample("ob30/simple-noproof.json", false);
 			public final static Sample SIMPLE_JSON_UNKNOWN_TYPE = new Sample("ob30/simple-err-type.json", false);
 			public final static Sample SIMPLE_JSON_UNKNOWN_CREDENTIAL_SUBJECT_TYPE = new Sample("ob30/simple-err-credential-subject-type.json", false);

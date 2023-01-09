@@ -53,6 +53,15 @@ public class OB30Tests {
 	}
 
 	@Test
+	void testSimpleMultipleProofsJsonValid() {
+		assertDoesNotThrow(()->{
+			Report report = validator.run(Samples.OB30.JSON.SIMPLE_MULTIPLE_PROOF_JSON.asFileResource());
+			if(verbose) PrintHelper.print(report, true);
+			assertValid(report);
+		});
+	}
+
+	@Test
 	void testSimplePNGPlainValid() {
 		assertDoesNotThrow(()->{
 			Report report = validator.run(Samples.OB30.PNG.SIMPLE_JSON_PNG.asFileResource());
