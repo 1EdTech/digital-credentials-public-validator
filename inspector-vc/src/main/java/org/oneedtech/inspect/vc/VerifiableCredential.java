@@ -9,10 +9,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.oneedtech.inspect.schema.Catalog;
 import org.oneedtech.inspect.schema.SchemaKey;
+import org.oneedtech.inspect.util.resource.MimeType;
 import org.oneedtech.inspect.util.resource.Resource;
 import org.oneedtech.inspect.vc.util.JsonNodeUtil;
 
@@ -160,4 +160,5 @@ public class VerifiableCredential extends Credential  {
 	private static final String ISSUED_ON_PROPERTY_NAME = "issuanceDate";
 	private static final String EXPIRES_AT_PROPERTY_NAME = "expirationDate";
 	public static final String JWT_NODE_NAME = "vc";
+	public static final List<MimeType> REFRESH_SERVICE_MIME_TYPES = List.of(MimeType.JSON, MimeType.JSON_LD, MimeType.TEXT_PLAIN);
 }
