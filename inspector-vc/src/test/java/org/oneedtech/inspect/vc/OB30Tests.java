@@ -193,6 +193,26 @@ public class OB30Tests {
 	}
 
 	@Test
+	void testSimpleJsonContextAlias() {
+		//removed one of the reqd context uris
+		assertDoesNotThrow(()->{
+			Report report = validator.run(Samples.OB30.JSON.SIMPLE_JSON_ALIAS_CONTEXT.asFileResource());
+			if(verbose) PrintHelper.print(report, true);
+			assertValid(report);
+		});
+	}
+
+	@Test
+	void testSimpleJsonContextVersion() {
+		//removed one of the reqd context uris
+		assertDoesNotThrow(()->{
+			Report report = validator.run(Samples.OB30.JSON.SIMPLE_JSON_VERSION_CONTEXT.asFileResource());
+			if(verbose) PrintHelper.print(report, true);
+			assertHasValidProbeID(report, ContextPropertyProbe.ID);
+		});
+	}
+
+	@Test
 	void testSimpleJsonSchemaError() throws Exception {
 		//issuer removed
 		assertDoesNotThrow(()->{
