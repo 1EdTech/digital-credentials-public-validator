@@ -36,7 +36,7 @@ public class ContextPropertyProbe extends StringValuePropertyProbe {
 
 			int pos = 0;
 			for (String uri : contextUris) {
-				if ((nodeValues.size() < pos + 1) || !nodeValues.get(pos).equals(uri)) {
+				if ((nodeValues.size() < pos + 1) || !contains(uri, nodeValues.get(pos))) {
 					return error("missing required @context uri " + uri + " at position " + (pos + 1), ctx);
 				}
 				pos++;
@@ -44,6 +44,26 @@ public class ContextPropertyProbe extends StringValuePropertyProbe {
 		}
 
 		return success(ctx);
+	}
+
+	private boolean contains(String uri, String nodeValue) {
+		// check equal case
+		if (nodeValue.equals(uri)) {
+			return true;
+		}
+		// check aliases
+		if (type.getContextAliases().containsKey(uri)) {
+			if (type.getContextAliases().get(uri).stream().anyMatch(alias -> nodeValue.equals(alias))) {
+				return true;
+			}
+		}
+		// check versioning
+		if (type.getContextVersionPatterns().containsKey(uri)) {
+			if (type.getContextVersionPatterns().get(uri).stream().anyMatch(version -> nodeValue.matches(version))) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public static final String ID = ContextPropertyProbe.class.getSimpleName();
