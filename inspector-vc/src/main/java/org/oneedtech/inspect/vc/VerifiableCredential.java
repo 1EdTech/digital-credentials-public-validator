@@ -53,15 +53,22 @@ public class VerifiableCredential extends Credential  {
 	private static final Map<Set<VerifiableCredential.Type>, List<String>> contextMap = new ImmutableMap.Builder<Set<VerifiableCredential.Type>, List<String>>()
 			.put(Set.of(Type.OpenBadgeCredential, AchievementCredential, EndorsementCredential),
 					List.of("https://www.w3.org/2018/credentials/v1",
-							//"https://purl.imsglobal.org/spec/ob/v3p0/context.json")) //dev legacy
 							"https://purl.imsglobal.org/spec/ob/v3p0/context.json"))
 			.put(Set.of(ClrCredential),
 					List.of("https://www.w3.org/2018/credentials/v1",
-		//							"https://dc.imsglobal.org/draft/clr/v2p0/context", //dev legacy
-		//							"https://purl.imsglobal.org/spec/ob/v3p0/context.json")) //dev legacy
 							"https://purl.imsglobal.org/spec/clr/v2p0/context.json",
 							"https://purl.imsglobal.org/spec/ob/v3p0/context.json"))
 
+			.build();
+
+	private static final Map<String, List<String>> contextAliasesMap = new ImmutableMap.Builder<String, List<String>>()
+			.put("https://purl.imsglobal.org/spec/ob/v3p0/context.json",
+					List.of("https://purl.imsglobal.org/spec/ob/v3p0/context/ob_v3p0.jsonld"))
+			.build();
+
+	private static final Map<String, List<String>> contextVersioningPatternMap = new ImmutableMap.Builder<String, List<String>>()
+			.put("https://purl.imsglobal.org/spec/ob/v3p0/context.json",
+					List.of("https:\\/\\/purl\\.imsglobal\\.org\\/spec\\/ob\\/v3p0\\/context(-\\d+\\.\\d+\\.\\d+)*\\.json"))
 			.build();
 
 	public enum Type implements CredentialEnum {
@@ -118,6 +125,14 @@ public class VerifiableCredential extends Credential  {
 				.filter(s->s.contains(this))
 				.findFirst()
 				.orElseThrow(()-> new IllegalArgumentException(this.name() + " not recognized")));
+		}
+		@Override
+		public Map<String, List<String>> getContextAliases() {
+			return contextAliasesMap;
+		}
+		@Override
+		public Map<String, List<String>> getContextVersionPatterns() {
+			return contextVersioningPatternMap;
 		}
 	}
 
