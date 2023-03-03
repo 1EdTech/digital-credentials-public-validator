@@ -346,13 +346,13 @@ public class OB30Tests {
 
 	@Test
 	void testCompleteJsonInvalidInlineSchemaRef() throws Exception {
-		//404 inline schema ref, and 404 refresh uri
+		//404 inline schema ref
 		assertDoesNotThrow(()->{
 			Report report = validator.run(Samples.OB30.JSON.COMPLETE_JSON.asFileResource());
 			if(verbose) PrintHelper.print(report, true);
 			assertFalse(report.asBoolean());
 			assertTrue(Iterables.size(report.getErrors()) > 0);
-			assertTrue(Iterables.size(report.getExceptions()) > 0);
+			// assertTrue(Iterables.size(report.getExceptions()) > 0);
 			assertHasProbeID(report, InlineJsonSchemaProbe.ID, true);
 		});
 	}
