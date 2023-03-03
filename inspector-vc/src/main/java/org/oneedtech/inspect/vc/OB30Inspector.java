@@ -6,6 +6,7 @@ import static org.oneedtech.inspect.core.report.ReportUtil.onProbeException;
 import static org.oneedtech.inspect.util.code.Defensives.*;
 import static org.oneedtech.inspect.util.json.ObjectMapperCache.Config.DEFAULT;
 import static org.oneedtech.inspect.vc.Credential.CREDENTIAL_KEY;
+import static org.oneedtech.inspect.vc.VerifiableCredential.REFRESH_SERVICE_MIME_TYPES;
 import static org.oneedtech.inspect.vc.VerifiableCredential.ProofType.EXTERNAL;
 import static org.oneedtech.inspect.vc.payload.PayloadParser.fromJwt;
 import static org.oneedtech.inspect.vc.util.JsonNodeUtil.asNodeList;
@@ -43,7 +44,9 @@ import org.oneedtech.inspect.vc.probe.CredentialSubjectProbe;
 import org.oneedtech.inspect.vc.probe.ExpirationProbe;
 import org.oneedtech.inspect.vc.probe.InlineJsonSchemaProbe;
 import org.oneedtech.inspect.vc.probe.IssuanceProbe;
+import org.oneedtech.inspect.vc.probe.IssuerProbe;
 import org.oneedtech.inspect.vc.probe.EmbeddedProofProbe;
+import org.oneedtech.inspect.vc.probe.EvidenceProbe;
 import org.oneedtech.inspect.vc.probe.RevocationListProbe;
 import org.oneedtech.inspect.vc.probe.ExternalProofProbe;
 import org.oneedtech.inspect.vc.probe.TypePropertyProbe;
@@ -170,7 +173,17 @@ public class OB30Inspector extends VCInspector implements SubInspector {
 
 			//credentialSubject
 			probeCount++;
-			accumulator.add(new CredentialSubjectProbe().run(ob.getJson(), ctx));
+			accumulator.add(new CredentialSubjectProbe("AchievementSubject", true).run(ob.getJson(), ctx));
+
+			// evidence
+			probeCount++;
+			accumulator.add(new EvidenceProbe().run(ob.getJson(), ctx));
+			if(broken(accumulator)) return abort(ctx, accumulator, probeCount);
+
+			// issuer
+			probeCount++;
+			accumulator.add(new IssuerProbe().run(ob.getJson(), ctx));
+			if(broken(accumulator)) return abort(ctx, accumulator, probeCount);
 
 			//signatures, proofs
 			probeCount++;
@@ -188,9 +201,11 @@ public class OB30Inspector extends VCInspector implements SubInspector {
 			if(resource.getContext().get(REFRESHED) != TRUE) {
 				Optional<String> newID = checkRefreshService(ob, ctx);
 				if(newID.isPresent()) {
-					return this.run(
-						new UriResource(new URI(newID.get()))
-							.setContext(new ResourceContext(REFRESHED, TRUE)));
+					// If the refresh is not successful, continue the verification process using the original OpenBadgeCredential.
+					UriResource uriResource = new UriResource(new URI(newID.get()), null, REFRESH_SERVICE_MIME_TYPES);
+					if (uriResource.exists()) {
+						return this.run(uriResource.setContext(new ResourceContext(REFRESHED, TRUE)));
+					}
 				}
 			}
 

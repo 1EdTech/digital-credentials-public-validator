@@ -148,6 +148,14 @@ public class Assertion extends Credential {
         public List<Validation> getValidations() {
             return validationMap.get(this);
         }
+        @Override
+        public Map<String, List<String>> getContextAliases() {
+            return Collections.emptyMap();
+        }
+        @Override
+        public Map<String, List<String>> getContextVersionPatterns() {
+            return Collections.emptyMap();
+        }
 	}
 
     public enum ValueType {

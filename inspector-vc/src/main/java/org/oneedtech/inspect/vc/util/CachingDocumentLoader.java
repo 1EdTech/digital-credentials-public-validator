@@ -108,6 +108,7 @@ public class CachingDocumentLoader extends ConfigurableDocumentLoader {
 
 	static final ImmutableMap<String, URL> bundled = ImmutableMap.<String, URL>builder()
 			.put("https://purl.imsglobal.org/spec/clr/v2p0/context.json",Resources.getResource("contexts/clr-v2p0.json"))
+			.put("https://purl.imsglobal.org/spec/ob/v3p0/context/ob_v3p0.jsonld",Resources.getResource("contexts/ob-v3p0.json"))
 			.put("https://purl.imsglobal.org/spec/ob/v3p0/context.json",Resources.getResource("contexts/ob-v3p0.json"))
 			.put("https://purl.imsglobal.org/spec/ob/v3p0/extensions.json",Resources.getResource("contexts/ob-v3p0-extensions.json"))
 			.put("https://www.w3.org/ns/did/v1", Resources.getResource("contexts/did-v1.jsonld"))

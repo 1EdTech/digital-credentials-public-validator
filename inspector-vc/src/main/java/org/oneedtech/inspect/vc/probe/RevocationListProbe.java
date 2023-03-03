@@ -3,6 +3,7 @@ package org.oneedtech.inspect.vc.probe;
 import static org.oneedtech.inspect.core.probe.RunContext.Key.JACKSON_OBJECTMAPPER;
 
 import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.List;
 import org.oneedtech.inspect.core.probe.Probe;
 import org.oneedtech.inspect.core.probe.RunContext;
 import org.oneedtech.inspect.core.report.ReportItems;
+import org.oneedtech.inspect.util.resource.MimeType;
 import org.oneedtech.inspect.vc.Credential;
 import org.oneedtech.inspect.vc.VerifiableCredential;
 import org.oneedtech.inspect.vc.util.JsonNodeUtil;
@@ -45,7 +47,9 @@ public class RevocationListProbe extends Probe<Credential> {
 				if(listID != null) {
 					try {
 						URL url = new URI(listID.asText().strip()).toURL();
-						try (InputStream is = url.openStream()) {
+						HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+						connection.setRequestProperty("Accept", MimeType.JSON.toString());
+						try (InputStream is = connection.getInputStream()) {
 					        JsonNode revocList = ((ObjectMapper)ctx.get(JACKSON_OBJECTMAPPER)).readTree(is.readAllBytes());
 
 					        /* To check if a credential has been revoked, the verifier issues a GET request

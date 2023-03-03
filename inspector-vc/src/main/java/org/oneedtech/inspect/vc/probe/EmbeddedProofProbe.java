@@ -2,13 +2,14 @@ package org.oneedtech.inspect.vc.probe;
 
 import java.io.StringReader;
 import java.net.URI;
+import java.util.List;
 import java.util.Optional;
 
 import org.oneedtech.inspect.core.probe.Probe;
 import org.oneedtech.inspect.core.probe.RunContext;
 import org.oneedtech.inspect.core.report.ReportItems;
 import org.oneedtech.inspect.vc.VerifiableCredential;
-import org.oneedtech.inspect.vc.util.CachingDocumentLoader;
+import org.oneedtech.inspect.vc.W3CVCHolder;
 
 import com.apicatalog.jsonld.StringUtils;
 import com.apicatalog.jsonld.document.Document;
@@ -17,7 +18,6 @@ import com.apicatalog.multibase.Multibase;
 import com.apicatalog.multicodec.Multicodec;
 import com.apicatalog.multicodec.Multicodec.Codec;
 
-import foundation.identity.jsonld.ConfigurableDocumentLoader;
 import info.weboftrust.ldsignatures.LdProof;
 import info.weboftrust.ldsignatures.verifier.Ed25519Signature2020LdVerifier;
 import jakarta.json.JsonObject;
@@ -41,18 +41,23 @@ public class EmbeddedProofProbe extends Probe<VerifiableCredential> {
 	@Override
 	public ReportItems run(VerifiableCredential crd, RunContext ctx) throws Exception {
 
-		// TODO: What there are multiple proofs?
+		W3CVCHolder credentiaHolder = new W3CVCHolder(com.danubetech.verifiablecredentials.VerifiableCredential.fromJson(new StringReader(crd.getJson().toString())));
 
-		com.danubetech.verifiablecredentials.VerifiableCredential vc = com.danubetech.verifiablecredentials.VerifiableCredential.fromJson(new StringReader(crd.getJson().toString()));
-		ConfigurableDocumentLoader documentLoader = new ConfigurableDocumentLoader();
-		documentLoader.setEnableHttp(true);
-		documentLoader.setEnableHttps(true);
-		vc.setDocumentLoader(documentLoader);
-
-		LdProof proof = vc.getLdProof();
-		if (proof == null) {
+		List<LdProof> proofs = credentiaHolder.getProofs();
+		if (proofs == null || proofs.size() == 0) {
 			return error("The verifiable credential is missing a proof.", ctx);
 		}
+
+		// get proof of standard type and purpose
+		Optional<LdProof> selectedProof = proofs.stream().filter(proof -> proof.isType("Ed25519Signature2020") && proof.getProofPurpose().equals("assertionMethod"))
+			.findFirst();
+
+		if (!selectedProof.isPresent()) {
+			return error("No proof with type \"Ed25519Signature2020\" or proof purpose \"assertionMethod\" found", ctx);
+		}
+
+		LdProof proof = selectedProof.get();
+
 		if (!proof.isType("Ed25519Signature2020")) {
 			return error("Unknown proof type: " + proof.getType(), ctx);
 		}
@@ -92,7 +97,7 @@ public class EmbeddedProofProbe extends Probe<VerifiableCredential> {
 				}
 			} else if (method.getScheme().equals("http") || method.getScheme().equals("https")) {
 				try {
-					Document keyDocument = vc.getDocumentLoader().loadDocument(method, new DocumentLoaderOptions());
+					Document keyDocument = credentiaHolder.getCredential().getDocumentLoader().loadDocument(method, new DocumentLoaderOptions());
 					Optional<JsonStructure> keyStructure = keyDocument.getJsonContent();
 					if (keyStructure.isEmpty()) {
 						return error("Key document not found at " + method, ctx);
@@ -135,8 +140,8 @@ public class EmbeddedProofProbe extends Probe<VerifiableCredential> {
 		}
 
 		if (controller != null) {
-			if (!controller.equals(vc.getIssuer().toString())) {
-				return error("Key controller does not match issuer: " + vc.getIssuer(), ctx);
+			if (!controller.equals(credentiaHolder.getCredential().getIssuer().toString())) {
+				return error("Key controller does not match issuer: " + credentiaHolder.getCredential().getIssuer(), ctx);
 			}
 		}
 
@@ -146,7 +151,7 @@ public class EmbeddedProofProbe extends Probe<VerifiableCredential> {
 		Ed25519Signature2020LdVerifier verifier = new Ed25519Signature2020LdVerifier(publicKey);
 
 		try {
-			boolean verify = verifier.verify(vc);
+			boolean verify = verifier.verify(credentiaHolder.getCredential(), proof);
 			if (!verify) {
 				return error("Embedded proof verification failed.", ctx);
 			}

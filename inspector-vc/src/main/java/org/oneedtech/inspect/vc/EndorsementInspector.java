@@ -188,8 +188,8 @@ public class EndorsementInspector extends VCInspector implements SubInspector {
 
 			//credentialSubject
 			probeCount++;
-			accumulator.add(new CredentialSubjectProbe().run(endorsement.getJson(), ctx));
-			
+			accumulator.add(new CredentialSubjectProbe("EndorsementSubject").run(endorsement.getJson(), ctx));
+
 			//signatures, proofs
 			probeCount++;
 			if(endorsement.getProofType() == EXTERNAL){

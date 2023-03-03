@@ -12,6 +12,7 @@ import org.oneedtech.inspect.core.probe.json.JsonSchemaProbe;
 import org.oneedtech.inspect.core.report.ReportItems;
 import org.oneedtech.inspect.schema.SchemaKey;
 import org.oneedtech.inspect.vc.VerifiableCredential;
+import org.oneedtech.inspect.vc.util.JsonNodeUtil;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -42,7 +43,7 @@ public class InlineJsonSchemaProbe extends Probe<JsonNode> {
 		JsonNode credentialSchemaNode = root.get("credentialSchema");
 		if(credentialSchemaNode == null) return success(ctx);
 
-		ArrayNode schemas = (ArrayNode)	credentialSchemaNode; //TODO guard this cast
+		List<JsonNode> schemas = JsonNodeUtil.asNodeList(credentialSchemaNode);
 
 		for(JsonNode schemaNode : schemas) {
 			JsonNode typeNode = schemaNode.get("type");

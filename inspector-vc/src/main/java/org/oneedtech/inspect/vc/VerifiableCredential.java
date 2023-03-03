@@ -9,10 +9,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.oneedtech.inspect.schema.Catalog;
 import org.oneedtech.inspect.schema.SchemaKey;
+import org.oneedtech.inspect.util.resource.MimeType;
 import org.oneedtech.inspect.util.resource.Resource;
 import org.oneedtech.inspect.vc.util.JsonNodeUtil;
 
@@ -53,15 +53,22 @@ public class VerifiableCredential extends Credential  {
 	private static final Map<Set<VerifiableCredential.Type>, List<String>> contextMap = new ImmutableMap.Builder<Set<VerifiableCredential.Type>, List<String>>()
 			.put(Set.of(Type.OpenBadgeCredential, AchievementCredential, EndorsementCredential),
 					List.of("https://www.w3.org/2018/credentials/v1",
-							//"https://purl.imsglobal.org/spec/ob/v3p0/context.json")) //dev legacy
 							"https://purl.imsglobal.org/spec/ob/v3p0/context.json"))
 			.put(Set.of(ClrCredential),
 					List.of("https://www.w3.org/2018/credentials/v1",
-		//							"https://dc.imsglobal.org/draft/clr/v2p0/context", //dev legacy
-		//							"https://purl.imsglobal.org/spec/ob/v3p0/context.json")) //dev legacy
 							"https://purl.imsglobal.org/spec/clr/v2p0/context.json",
 							"https://purl.imsglobal.org/spec/ob/v3p0/context.json"))
 
+			.build();
+
+	private static final Map<String, List<String>> contextAliasesMap = new ImmutableMap.Builder<String, List<String>>()
+			.put("https://purl.imsglobal.org/spec/ob/v3p0/context.json",
+					List.of("https://purl.imsglobal.org/spec/ob/v3p0/context/ob_v3p0.jsonld"))
+			.build();
+
+	private static final Map<String, List<String>> contextVersioningPatternMap = new ImmutableMap.Builder<String, List<String>>()
+			.put("https://purl.imsglobal.org/spec/ob/v3p0/context.json",
+					List.of("https:\\/\\/purl\\.imsglobal\\.org\\/spec\\/ob\\/v3p0\\/context(-\\d+\\.\\d+\\.\\d+)*\\.json"))
 			.build();
 
 	public enum Type implements CredentialEnum {
@@ -119,6 +126,14 @@ public class VerifiableCredential extends Credential  {
 				.findFirst()
 				.orElseThrow(()-> new IllegalArgumentException(this.name() + " not recognized")));
 		}
+		@Override
+		public Map<String, List<String>> getContextAliases() {
+			return contextAliasesMap;
+		}
+		@Override
+		public Map<String, List<String>> getContextVersionPatterns() {
+			return contextVersioningPatternMap;
+		}
 	}
 
 	public enum ProofType {
@@ -145,4 +160,5 @@ public class VerifiableCredential extends Credential  {
 	private static final String ISSUED_ON_PROPERTY_NAME = "issuanceDate";
 	private static final String EXPIRES_AT_PROPERTY_NAME = "expirationDate";
 	public static final String JWT_NODE_NAME = "vc";
+	public static final List<MimeType> REFRESH_SERVICE_MIME_TYPES = List.of(MimeType.JSON, MimeType.JSON_LD, MimeType.TEXT_PLAIN);
 }

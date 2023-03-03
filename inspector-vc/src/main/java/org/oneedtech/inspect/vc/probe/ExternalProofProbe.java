@@ -50,7 +50,7 @@ public class ExternalProofProbe extends Probe<VerifiableCredential> {
 		try {
 			verifySignature(crd, ctx);
 		} catch (Exception e) {
-			return fatal("Error verifying jwt signature: " + e.getMessage(), ctx);
+			return fatal("Error verifying jwt signature: " + e.getMessage() + (e.getCause() != null ? ". Reason: " + e.getCause().getMessage() : ""), ctx);
 		}
 		return success(ctx);
 	}
@@ -75,7 +75,9 @@ public class ExternalProofProbe extends Probe<VerifiableCredential> {
 		JsonNode alg = headerObj.get("alg");
 		if(alg == null || !alg.textValue().equals("RS256")) { throw new Exception("alg must be present and must be 'RS256'"); }
 
-		//TODO: decoded jwt will check timestamps, but shall we explicitly break these out?
+		// decoded jwt will check timestamps, but shall we explicitly break these out?
+		// JWT verifier throws and exception with the cause when claims are invalid. Adding that cause
+		// to the probe result can avoid having to explicitly check the claims.
 
 		//Option 1, fetch directly from header
 		JsonNode jwk = headerObj.get("jwk");
