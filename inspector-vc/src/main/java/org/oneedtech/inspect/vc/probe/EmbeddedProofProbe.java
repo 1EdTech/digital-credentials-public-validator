@@ -2,6 +2,8 @@ package org.oneedtech.inspect.vc.probe;
 
 import java.io.StringReader;
 import java.net.URI;
+import java.net.URLEncoder;
+import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,8 +22,10 @@ import com.apicatalog.multicodec.Multicodec.Codec;
 
 import info.weboftrust.ldsignatures.LdProof;
 import info.weboftrust.ldsignatures.verifier.Ed25519Signature2020LdVerifier;
+import jakarta.json.JsonArray;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonStructure;
+import jakarta.json.JsonValue;
 
 /**
  * A Probe that verifies a credential's embedded proof.
@@ -75,6 +79,7 @@ public class EmbeddedProofProbe extends Probe<VerifiableCredential> {
 		//
 		// [controller]#[publicKeyMultibase]
 		// did:key:[publicKeyMultibase]
+		// did:web:[url-encoded domain-name][:path]*
 		// http/s://[location of a Ed25519VerificationKey2020 document]
 		// http/s://[location of a controller document with a 'verificationMethod' with a Ed25519VerificationKey2020]
 
@@ -92,6 +97,63 @@ public class EmbeddedProofProbe extends Probe<VerifiableCredential> {
 			} else if (method.getScheme().equals("did")) {
 				if (method.getSchemeSpecificPart().startsWith("key:")) {
 					publicKeyMultibase = method.getSchemeSpecificPart().substring("key:".length());
+				} else if (method.getSchemeSpecificPart().startsWith("web:")) {
+					String specificId = method.getSchemeSpecificPart().substring("web:".length());
+
+					// read algorithm at https://w3c-ccg.github.io/did-method-web/#read-resolve. Steps in comments
+
+					// 1. Replace ":" with "/" in the method specific identifier to obtain the fully qualified domain name and optional path.
+					specificId = specificId.replaceAll(":", "/");
+
+					// 2. If the domain contains a port percent decode the colon.
+					String portPercentEncoded = URLEncoder.encode(":", Charset.forName("UTF-8"));
+					int index = specificId.indexOf(portPercentEncoded);
+					if (index >= 0 && index < specificId.indexOf("/")) {
+						specificId = specificId.replace(portPercentEncoded, ":");
+					}
+
+					// 3. Generate an HTTPS URL to the expected location of the DID document by prepending https://.
+					URI uri = new URI("https://" + specificId);
+
+					// 4. If no path has been specified in the URL, append /.well-known.
+					if (uri.getPath() == null) {
+						uri = uri.resolve("/well-known");
+					}
+
+					// 5. Append /did.json to complete the URL.
+					uri = uri.resolve("/did.json");
+
+					// 6. Perform an HTTP GET request to the URL using an agent that can successfully negotiate a secure HTTPS connection, which enforces the security requirements as described in 2.6 Security and privacy considerations.
+					// 7. When performing the DNS resolution during the HTTP GET request, the client SHOULD utilize [RFC8484] in order to prevent tracking of the identity being resolved.
+					Document keyDocument = credentiaHolder.getCredential().getDocumentLoader().loadDocument(uri, new DocumentLoaderOptions());
+					Optional<JsonStructure> keyStructure = keyDocument.getJsonContent();
+					if (keyStructure.isEmpty()) {
+						return error("Key document not found at " + method + ". Uri " + uri + " doesn't return a valid document", ctx);
+					}
+
+					// check did in "assertionMethod"
+					JsonArray assertionMethod = keyStructure.get().asJsonObject()
+						.getJsonArray("assertionMethod");
+					if (assertionMethod != null && !assertionMethod.stream().anyMatch(n -> n.toString().equals(method.toString()))) {
+						return error("Assertion method " + method + " not found in DID document.", ctx);
+					}
+
+					// get keys from "verificationMethod"
+					JsonArray keyVerificationMethod = keyStructure.get().asJsonObject()
+						.getJsonArray("verificationMethod");
+					if (keyVerificationMethod == null) {
+						return error("Document doesn't have a list of verification methods at uri " + uri, ctx);
+					}
+					Optional<JsonValue> verificationMethodMaybe = keyVerificationMethod.stream().filter(n -> n.asJsonObject().getString("id").equals(method.toString()))
+						.findFirst();
+					if (verificationMethodMaybe.isEmpty()) {
+						return error("Verification method " + method + " not found in DID document.", ctx);
+					}
+					JsonObject verificationMethod = verificationMethodMaybe.get().asJsonObject();
+					// assuming a Ed25519VerificationKey2020 document
+					controller = verificationMethod.getString("controller");
+					publicKeyMultibase = verificationMethod.getString("publicKeyMultibase");
+
 				} else {
 					return error("Unknown verification method: " + method, ctx);
 				}
