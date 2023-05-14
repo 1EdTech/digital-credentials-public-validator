@@ -42,9 +42,9 @@ public class IssuerProbe extends Probe<JsonNode> {
         if (issuer.hasNonNull("otherIdentifier")) {
 			List<JsonNode> otherIdentifiers = JsonNodeUtil.asNodeList(issuer.get("otherIdentifier"));
 			for (JsonNode otherIdentifier : otherIdentifiers) {
-				// check that type contains "IdentityObject"
-				if (!JsonNodeUtil.asStringList(otherIdentifier.get("type")).contains("IdentityObject")) {
-					return error("otherIdentifier in issuer is not of type \"IdentityObject\"", ctx);
+				// check that type contains "IdentifierEntry"
+				if (!JsonNodeUtil.asStringList(otherIdentifier.get("type")).contains("IdentifierEntry")) {
+					return error("otherIdentifier in issuer is not of type \"IdentifierEntry\"", ctx);
 				}
 			}
         }
