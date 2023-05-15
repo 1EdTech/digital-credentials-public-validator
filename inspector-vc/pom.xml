@@ -34,14 +34,14 @@
 			<groupId>com.danubetech</groupId>
 			<artifactId>verifiable-credentials-java</artifactId>
 			<!--  <version>1.1-20220818.090353-4</version>  -->
-			<version>1.1-SNAPSHOT</version>
+			<version>1.2-SNAPSHOT</version>
 		</dependency>
 
 		<!--  https://repo.danubetech.com/#browse/browse:maven-public:com%2Fdanubetech%2Fkey-formats-java%2F1.6-SNAPSHOT -->
 		<dependency>
 			<groupId>com.danubetech</groupId>
 			<artifactId>key-formats-java</artifactId>
-			<version>1.6-SNAPSHOT</version>
+			<version>1.8-SNAPSHOT</version>
 		</dependency>
 
 		<!-- https://github.com/filip26/iron-verifiable-credentials -->
