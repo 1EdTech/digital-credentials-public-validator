@@ -11,15 +11,15 @@
     "AchievementCredential"
   ],
   "issuer": {
-    "id": "did:web:dc.1edtech.org:wellspring2022:wellspring-portal:profiles:7ad80b28-4f3f-414d-85ec-6c0684344e5c",
+    "id": "did:web:dc.1edtech.org:wellspring2022:wellspring-portal:org:7ad80b28-4f3f-414d-85ec-6c0684344e5c",
     "type": "Profile",
     "name": "Wellspring School"
   },
   "awardedDate": "2023-05-16T11:27:00Z",
-  "issuanceDate": "2023-05-16T03:06:16Z",
+  "issuanceDate": "2023-05-16T07:18:52Z",
   "name": "Simple assertion of achievement 1",
   "credentialSubject": {
-    "id": "did:web:dc.1edtech.org:wellspring2022:wellspring-portal:profiles:d4e1f6ad-9696-41cb-8729-8ff741f96c6a",
+    "id": "did:web:dc.1edtech.org:wellspring2022:wellspring-portal:learner:d4e1f6ad-9696-41cb-8729-8ff741f96c6a",
     "type": "AchievementSubject",
     "achievement": {
       "id": "http://dc.1edtech.org/wellspring2022/wellspring-portal/achievements/c44d8939-c237-4420-902c-9af305b15e2f",
@@ -32,16 +32,16 @@
       "name": "Achievement 1"
     },
     "source": {
-      "id": "did:web:dc.1edtech.org:wellspring2022:wellspring-portal:profiles:7ad80b28-4f3f-414d-85ec-6c0684344e5c",
+      "id": "did:web:dc.1edtech.org:wellspring2022:wellspring-portal:org:7ad80b28-4f3f-414d-85ec-6c0684344e5c",
       "type": "Profile",
       "name": "Wellspring School"
     }
   },
   "proof": {
     "type": "Ed25519Signature2020",
-    "created": "2023-05-16T03:06:16Z",
+    "created": "2023-05-16T07:18:52Z",
     "proofPurpose": "assertionMethod",
-    "verificationMethod": "did:web:dc.1edtech.org:wellspring2022:wellspring-portal:profiles:7ad80b28-4f3f-414d-85ec-6c0684344e5c#key-0",
-    "proofValue": "z3hxUKSkeLNyk9dj9RuY8K6Zp7SjdQz6C3ueM9KiD24ex5oAQ1K4txZ92jXybLYwp42fzMtR4fNqvFuev6NkQJKyP"
+    "verificationMethod": "did:web:dc.1edtech.org:wellspring2022:wellspring-portal:org:7ad80b28-4f3f-414d-85ec-6c0684344e5c#key-0",
+    "proofValue": "zYQ6iszNf2qCqisuWvk1AkerTTp69RiofNWWzWp4s5TJwzBfFgieBSA5Knyjco6crJbPkJ1mvM1hzA2HLYfU8w8C"
   }
 }
