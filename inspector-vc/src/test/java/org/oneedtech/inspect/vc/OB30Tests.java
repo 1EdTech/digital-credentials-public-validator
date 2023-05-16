@@ -44,9 +44,18 @@ public class OB30Tests {
 	}
 
 	@Test
-	void testSimpleDidMethodJsonValid() {
+	void testSimpleDidKeyMethodJsonValid() {
 		assertDoesNotThrow(()->{
-			Report report = validator.run(Samples.OB30.JSON.SIMPLE_DID_METHOD_JSON.asFileResource());
+			Report report = validator.run(Samples.OB30.JSON.SIMPLE_DID_KEY_METHOD_JSON.asFileResource());
+			if(verbose) PrintHelper.print(report, true);
+			assertValid(report);
+		});
+	}
+
+	@Test
+	void testSimpleDidWebMethodJsonValid() {
+		assertDoesNotThrow(()->{
+			Report report = validator.run(Samples.OB30.JSON.SIMPLE_DID_WEB_METHOD_JSON.asFileResource());
 			if(verbose) PrintHelper.print(report, true);
 			assertValid(report);
 		});
