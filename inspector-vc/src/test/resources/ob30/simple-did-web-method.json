@@ -5,130 +5,43 @@
     "https://purl.imsglobal.org/spec/ob/v3p0/extensions.json",
     "https://w3id.org/security/suites/ed25519-2020/v1"
   ],
-  "id": "http://localhost:8082/credentials/a9821486-26fc-4a89-924b-ed2521395003",
+  "id": "http://dc.1edtech.org/wellspring2022/wellspring-portal/credentials/5d7b7ff6-b1d5-47d5-83df-faf22533ba8f",
   "type": [
     "VerifiableCredential",
     "AchievementCredential"
   ],
   "issuer": {
-    "id": "did:web:localhost%3A8082:profiles:1bb90bff-8fda-49eb-884c-0fa9d209d178",
+    "id": "did:web:dc.1edtech.org:wellspring2022:wellspring-portal:profiles:7ad80b28-4f3f-414d-85ec-6c0684344e5c",
     "type": "Profile",
     "name": "Wellspring School"
   },
-  "awardedDate": "2023-05-02T00:33:00Z",
-  "issuanceDate": "2023-05-15T23:56:14Z",
-  "expirationDate": "2024-05-02T02:47:00Z",
-  "name": "Achievement 2",
-  "description": "This is a short description.",
-  "evidence": [
-    {
-      "type": "Evidence",
-      "audience": "General",
-      "description": "My photos",
-      "genre": "Photography",
-      "name": "Photography portfolio",
-      "narrative": "This is __all__ of my photos"
-    }
-  ],
+  "awardedDate": "2023-05-16T11:27:00Z",
+  "issuanceDate": "2023-05-16T03:06:16Z",
+  "name": "Simple assertion of achievement 1",
   "credentialSubject": {
-    "id": "did:web:localhost%3A8082:profiles:abb48d60-5619-4b6f-9f3f-699b7c4b49cd",
+    "id": "did:web:dc.1edtech.org:wellspring2022:wellspring-portal:profiles:d4e1f6ad-9696-41cb-8729-8ff741f96c6a",
     "type": "AchievementSubject",
     "achievement": {
-      "id": "http://localhost:8082/achievements/5e5f7f83-cf05-49d1-81a7-d9cb6b0ffece",
+      "id": "http://dc.1edtech.org/wellspring2022/wellspring-portal/achievements/c44d8939-c237-4420-902c-9af305b15e2f",
       "type": "Achievement",
-      "achievementType": "Course",
-      "alignment": [
-        {
-          "type": "Alignment",
-          "targetFramework": "Construction Accounting",
-          "targetName": "Preparing cost estimates and bids",
-          "targetType": "CFItem",
-          "targetUrl": "https://casenetwork.imsglobal.org/uri/c865f9de-aea3-11eb-86a8-0242ac140003",
-          "targetFrameworkIdentifier": "bdf9b670-aea3-11eb-85bc-0242ac140003",
-          "targetIdentifier": "c865f9de-aea3-11eb-86a8-0242ac140003"
-        }
-      ],
-      "creditsAvailable": 3,
+      "achievementType": "Achievement",
       "criteria": {
-        "narrative": "This is the criteria:\r\n1. First criteria\r\n1. Second criteria"
+        "narrative": "The credential must pass verification."
       },
-      "description": "This is a short description",
-      "fieldOfStudy": "Biology",
-      "humanCode": "B-101",
-      "@language": "en",
-      "name": "Achievement 2",
-      "resultDescription": [
-        {
-          "id": "25838e15-81af-4582-97a9-932e07a8f3ce",
-          "type": "ResultDescription",
-          "allowedValue": [
-            "A",
-            "B",
-            "C",
-            "D",
-            "F"
-          ],
-          "name": "Grade",
-          "requiredLevel": "431eff1b-0981-4656-9b0c-8a3957f481e7",
-          "requiredValue": "C",
-          "resultType": "LetterGrade",
-          "rubricCriterionLevel": [
-            {
-              "id": "a6204c1f-f2e9-4cd7-b06b-727ca7564778",
-              "type": "RubricCriterionLevel",
-              "description": "Basic level",
-              "level": "Basic",
-              "name": "Basic",
-              "points": "1"
-            },
-            {
-              "id": "431eff1b-0981-4656-9b0c-8a3957f481e7",
-              "type": "RubricCriterionLevel",
-              "description": "Advanced level",
-              "level": "Advanced",
-              "name": "Advanced",
-              "points": "2"
-            }
-          ],
-          "valueMax": "A",
-          "valueMin": "C"
-        }
-      ],
-      "specialization": "Nanotechnology",
-      "tag": [
-        "this",
-        " that",
-        " the other"
-      ],
-      "version": "1"
+      "description": "This is a test achievement.",
+      "name": "Achievement 1"
     },
-    "activityEndDate": "2023-03-31T02:47:00Z",
-    "activityStartDate": "2023-01-01T02:47:00Z",
-    "creditsEarned": 3,
-    "licenseNumber": "1234567890",
-    "narrative": "This is a **longer** description.",
-    "result": [
-      {
-        "type": "Result",
-        "achievedLevel": "a6204c1f-f2e9-4cd7-b06b-727ca7564778",
-        "resultDescription": "25838e15-81af-4582-97a9-932e07a8f3ce",
-        "status": "Completed",
-        "value": "A"
-      }
-    ],
-    "role": "Arbitrator",
     "source": {
-      "id": "did:web:localhost%3A8082:profiles:1bb90bff-8fda-49eb-884c-0fa9d209d178",
+      "id": "did:web:dc.1edtech.org:wellspring2022:wellspring-portal:profiles:7ad80b28-4f3f-414d-85ec-6c0684344e5c",
       "type": "Profile",
       "name": "Wellspring School"
-    },
-    "term": "Winter"
+    }
   },
   "proof": {
     "type": "Ed25519Signature2020",
-    "created": "2023-05-15T23:56:14Z",
+    "created": "2023-05-16T03:06:16Z",
     "proofPurpose": "assertionMethod",
-    "verificationMethod": "did:web:localhost%3A8082:profiles:1bb90bff-8fda-49eb-884c-0fa9d209d178#key-0",
-    "proofValue": "zpwCWNLeW5GUaJCzNxUPeLB2S7eXyukudaqKbVDUcZtQUJpTtXu2evP73Siv63V6FYipcP8WrVYovgZ1HrsKHKZZ"
+    "verificationMethod": "did:web:dc.1edtech.org:wellspring2022:wellspring-portal:profiles:7ad80b28-4f3f-414d-85ec-6c0684344e5c#key-0",
+    "proofValue": "z3hxUKSkeLNyk9dj9RuY8K6Zp7SjdQz6C3ueM9KiD24ex5oAQ1K4txZ92jXybLYwp42fzMtR4fNqvFuev6NkQJKyP"
   }
 }

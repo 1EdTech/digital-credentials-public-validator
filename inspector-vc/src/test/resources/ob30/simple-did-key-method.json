@@ -1,0 +1,33 @@
+{
+  "@context" : [ "https://www.w3.org/2018/credentials/v1", "https://purl.imsglobal.org/spec/ob/v3p0/context.json", "https://purl.imsglobal.org/spec/ob/v3p0/extensions.json", "https://w3id.org/security/suites/ed25519-2020/v1" ],
+  "id" : "urn:uuid:280c19b6-9680-4a37-ba84-e38b1a4e4584",
+  "type" : [ "VerifiableCredential", "AchievementCredential" ],
+  "issuer" : {
+    "type" : [ "Profile" ],
+    "name" : "Andy F. Miller",
+    "id" : "urn:uuid:6f2e33e5-7a29-4155-840a-59483ba10164"
+  },
+  "issuanceDate" : "2022-11-10T07:38:00-08:00",
+  "name" : "test 1",
+  "credentialSubject" : {
+    "id" : "urn:uuid:6f2e33e5-7a29-4155-840a-59483ba10164",
+    "type" : [ "AchievementSubject" ],
+    "achievement" : {
+      "id" : "urn:uuid:35258e6f-4c05-4215-8ada-38a5a5b80510",
+      "type" : [ "Achievement" ],
+      "achievementType" : "Achievement",
+      "name" : "test 1",
+      "description" : "This is a test achievement",
+      "criteria" : {
+        "narrative" : "There is no criteria"
+      }
+    }
+  },
+  "proof" : [ {
+    "type" : "Ed25519Signature2020",
+    "created" : "2022-11-16T20:39:53Z",
+    "proofPurpose" : "assertionMethod",
+    "verificationMethod" : "did:key:z6MkwAQmEfso8UjHJZTQajRtqR5hDxAD95iJD4z53XnKCFms",
+    "proofValue" : "z361ueyGzREPvsWdnWUfkzTKXEd6u2DPPu2kDw3pDERJmzDFCqsuaPneqcRgz2hk9ycaNDYmC4Fy9c6S6BDDt5fVB"
+  } ]
+}
