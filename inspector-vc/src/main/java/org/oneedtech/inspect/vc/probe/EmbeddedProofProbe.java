@@ -2,6 +2,8 @@ package org.oneedtech.inspect.vc.probe;
 
 import java.io.StringReader;
 import java.net.URI;
+import java.net.URLEncoder;
+import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,8 +22,11 @@ import com.apicatalog.multicodec.Multicodec.Codec;
 
 import info.weboftrust.ldsignatures.LdProof;
 import info.weboftrust.ldsignatures.verifier.Ed25519Signature2020LdVerifier;
+import jakarta.json.JsonArray;
 import jakarta.json.JsonObject;
+import jakarta.json.JsonString;
 import jakarta.json.JsonStructure;
+import jakarta.json.JsonValue;
 
 /**
  * A Probe that verifies a credential's embedded proof.
@@ -41,16 +46,18 @@ public class EmbeddedProofProbe extends Probe<VerifiableCredential> {
 	@Override
 	public ReportItems run(VerifiableCredential crd, RunContext ctx) throws Exception {
 
-		W3CVCHolder credentiaHolder = new W3CVCHolder(com.danubetech.verifiablecredentials.VerifiableCredential.fromJson(new StringReader(crd.getJson().toString())));
+		W3CVCHolder credentialHolder = new W3CVCHolder(com.danubetech.verifiablecredentials.VerifiableCredential
+				.fromJson(new StringReader(crd.getJson().toString())));
 
-		List<LdProof> proofs = credentiaHolder.getProofs();
+		List<LdProof> proofs = credentialHolder.getProofs();
 		if (proofs == null || proofs.size() == 0) {
 			return error("The verifiable credential is missing a proof.", ctx);
 		}
 
 		// get proof of standard type and purpose
-		Optional<LdProof> selectedProof = proofs.stream().filter(proof -> proof.isType("Ed25519Signature2020") && proof.getProofPurpose().equals("assertionMethod"))
-			.findFirst();
+		Optional<LdProof> selectedProof = proofs.stream().filter(
+				proof -> proof.isType("Ed25519Signature2020") && proof.getProofPurpose().equals("assertionMethod"))
+				.findFirst();
 
 		if (!selectedProof.isPresent()) {
 			return error("No proof with type \"Ed25519Signature2020\" or proof purpose \"assertionMethod\" found", ctx);
@@ -70,13 +77,15 @@ public class EmbeddedProofProbe extends Probe<VerifiableCredential> {
 		// The verification method must dereference to an Ed25519VerificationKey2020.
 		// Danubetech's Ed25519Signature2020LdVerifier expects the decoded public key
 		// from the Ed25519VerificationKey2020 (32 bytes).
-        //
+		//
 		// Formats accepted:
 		//
 		// [controller]#[publicKeyMultibase]
 		// did:key:[publicKeyMultibase]
+		// did:web:[url-encoded domain-name][:path]*
 		// http/s://[location of a Ed25519VerificationKey2020 document]
-		// http/s://[location of a controller document with a 'verificationMethod' with a Ed25519VerificationKey2020]
+		// http/s://[location of a controller document with a 'verificationMethod' with
+		// a Ed25519VerificationKey2020]
 
 		String publicKeyMultibase;
 		String controller = null;
@@ -92,12 +101,98 @@ public class EmbeddedProofProbe extends Probe<VerifiableCredential> {
 			} else if (method.getScheme().equals("did")) {
 				if (method.getSchemeSpecificPart().startsWith("key:")) {
 					publicKeyMultibase = method.getSchemeSpecificPart().substring("key:".length());
+				} else if (method.getSchemeSpecificPart().startsWith("web:")) {
+					String methodSpecificId = method.getRawSchemeSpecificPart().substring("web:".length());
+
+					// read algorithm at https://w3c-ccg.github.io/did-method-web/#read-resolve.
+					// Steps in comments
+
+					// 1. Replace ":" with "/" in the method specific identifier to obtain the fully
+					// qualified domain name and optional path.
+					methodSpecificId = methodSpecificId.replaceAll(":", "/");
+
+					// 2. If the domain contains a port percent decode the colon.
+					String portPercentEncoded = URLEncoder.encode(":", Charset.forName("UTF-8"));
+					int index = methodSpecificId.indexOf(portPercentEncoded);
+					if (index >= 0 && index < methodSpecificId.indexOf("/")) {
+						methodSpecificId = methodSpecificId.replace(portPercentEncoded, ":");
+					}
+
+					// 3. Generate an HTTPS URL to the expected location of the DID document by
+					// prepending https://.
+					URI uri = new URI("https://" + methodSpecificId);
+
+					// 4. If no path has been specified in the URL, append /.well-known.
+					if (uri.getPath() == null) {
+						uri = uri.resolve("/well-known");
+					}
+
+					// 5. Append /did.json to complete the URL.
+					uri = uri.resolve(uri.getPath() + "/did.json");
+
+					// 6. Perform an HTTP GET request to the URL using an agent that can
+					// successfully negotiate a secure HTTPS connection, which enforces the security
+					// requirements as described in 2.6 Security and privacy considerations.
+					// 7. When performing the DNS resolution during the HTTP GET request, the client
+					// SHOULD utilize [RFC8484] in order to prevent tracking of the identity being
+					// resolved.
+					Optional<JsonStructure> keyStructure;
+					try {
+						Document keyDocument = credentialHolder.getCredential().getDocumentLoader().loadDocument(uri,
+								new DocumentLoaderOptions());
+						keyStructure = keyDocument.getJsonContent();
+					} catch (Exception e) {
+						return error("Key document not found at " + method + ". URI: " + uri
+								+ " doesn't return a valid document. Reason: " + e.getMessage() + " ", ctx);
+					}
+					if (keyStructure.isEmpty()) {
+						return error("Key document not found at " + method + ". URI: " + uri
+								+ " doesn't return a valid document. Reason: The document is empty.", ctx);
+					}
+
+					// check did in "assertionMethod"
+					JsonArray assertionMethod = keyStructure.get().asJsonObject()
+							.getJsonArray("assertionMethod");
+					if (assertionMethod == null) {
+						return error("Document doesn't have a list of assertion methods at URI: " + uri, ctx);
+					} else {
+						Boolean anyMatch = false;
+						for(int i = 0; i < assertionMethod.size(); i++) {
+							String assertionMethodValue = assertionMethod.getString(i);
+							if (assertionMethodValue.equals(method.toString())) {
+								anyMatch = true;
+								break;
+							}
+						}
+						if (!anyMatch) {
+							return error("Assertion method " + method + " not found in DID document.", ctx);
+						}	
+					}
+
+					// get keys from "verificationMethod"
+					JsonArray keyVerificationMethod = keyStructure.get().asJsonObject()
+							.getJsonArray("verificationMethod");
+					if (keyVerificationMethod == null) {
+						return error("Document doesn't have a list of verification methods at URI: " + uri, ctx);
+					}
+					Optional<JsonValue> verificationMethodMaybe = keyVerificationMethod.stream()
+							.filter(n -> n.asJsonObject().getString("id").equals(method.toString()))
+							.findFirst();
+					if (verificationMethodMaybe.isEmpty()) {
+						return error("Verification method " + method + " not found in DID document.", ctx);
+					}
+					JsonObject verificationMethod = verificationMethodMaybe.get().asJsonObject();
+					// assuming a Ed25519VerificationKey2020 document
+					controller = verificationMethod.getString("controller");
+					publicKeyMultibase = verificationMethod.getString("publicKeyMultibase");
+
 				} else {
 					return error("Unknown verification method: " + method, ctx);
 				}
 			} else if (method.getScheme().equals("http") || method.getScheme().equals("https")) {
 				try {
-					Document keyDocument = credentiaHolder.getCredential().getDocumentLoader().loadDocument(method, new DocumentLoaderOptions());
+					Document keyDocument = credentialHolder.getCredential().getDocumentLoader().loadDocument(method,
+							new DocumentLoaderOptions());
 					Optional<JsonStructure> keyStructure = keyDocument.getJsonContent();
 					if (keyStructure.isEmpty()) {
 						return error("Key document not found at " + method, ctx);
@@ -106,7 +201,8 @@ public class EmbeddedProofProbe extends Probe<VerifiableCredential> {
 					// First look for a Ed25519VerificationKey2020 document
 					controller = keyStructure.get().asJsonObject().getString("controller");
 					if (StringUtils.isBlank(controller)) {
-						// Then look for a controller document (e.g. DID Document) with a 'verificationMethod'
+						// Then look for a controller document (e.g. DID Document) with a
+						// 'verificationMethod'
 						// that is a Ed25519VerificationKey2020 document
 						JsonObject keyVerificationMethod = keyStructure.get().asJsonObject()
 								.getJsonObject("verificationMethod");
@@ -140,8 +236,9 @@ public class EmbeddedProofProbe extends Probe<VerifiableCredential> {
 		}
 
 		if (controller != null) {
-			if (!controller.equals(credentiaHolder.getCredential().getIssuer().toString())) {
-				return error("Key controller does not match issuer: " + credentiaHolder.getCredential().getIssuer(), ctx);
+			if (!controller.equals(credentialHolder.getCredential().getIssuer().toString())) {
+				return error("Key controller does not match issuer: " + credentialHolder.getCredential().getIssuer(),
+						ctx);
 			}
 		}
 
@@ -151,7 +248,7 @@ public class EmbeddedProofProbe extends Probe<VerifiableCredential> {
 		Ed25519Signature2020LdVerifier verifier = new Ed25519Signature2020LdVerifier(publicKey);
 
 		try {
-			boolean verify = verifier.verify(credentiaHolder.getCredential(), proof);
+			boolean verify = verifier.verify(credentialHolder.getCredential(), proof);
 			if (!verify) {
 				return error("Embedded proof verification failed.", ctx);
 			}
