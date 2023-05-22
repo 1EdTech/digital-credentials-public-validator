@@ -38,6 +38,7 @@ public class Samples {
 			public final static Sample ENDORSEMENT_VALID = new Sample("ob30/endorsement-valid.json", false);
 			public final static Sample SIMPLE_JSON_ALIAS_CONTEXT = new Sample("ob30/simple-context-alias.json", true);
 			public final static Sample SIMPLE_JSON_VERSION_CONTEXT = new Sample("ob30/simple-context-version.json", true);
+			public final static Sample CREDENTIAL_STATUS_REVOKED = new Sample("ob30/credential-status-revoked.json", false);
 		}
 		public static final class PNG {
 			public final static Sample SIMPLE_JWT_PNG = new Sample("ob30/simple-jwt.png", true);

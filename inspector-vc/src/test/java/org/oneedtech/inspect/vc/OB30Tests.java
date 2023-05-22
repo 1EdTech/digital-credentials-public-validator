@@ -16,6 +16,7 @@ import org.oneedtech.inspect.vc.probe.ExpirationProbe;
 import org.oneedtech.inspect.vc.probe.InlineJsonSchemaProbe;
 import org.oneedtech.inspect.vc.probe.IssuanceProbe;
 import org.oneedtech.inspect.vc.probe.IssuerProbe;
+import org.oneedtech.inspect.vc.probe.RevocationListProbe;
 import org.oneedtech.inspect.vc.probe.EmbeddedProofProbe;
 import org.oneedtech.inspect.vc.probe.EvidenceProbe;
 import org.oneedtech.inspect.vc.probe.TypePropertyProbe;
@@ -366,4 +367,16 @@ public class OB30Tests {
 		});
 	}
 
+	@Test
+	void testCredentialStatusRevoked() {
+		// the credential is valid, but credentialStatus reveals it is revoked
+		assertDoesNotThrow(()->{
+			Report report = validator.run(Samples.OB30.JSON.CREDENTIAL_STATUS_REVOKED.asFileResource());
+			if(verbose) PrintHelper.print(report, true);
+			assertInvalid(report);
+			assertErrorCount(report, 0);
+			assertFatalCount(report, 1);
+			assertHasProbeID(report, RevocationListProbe.ID, true);
+		});
+	}
 }
