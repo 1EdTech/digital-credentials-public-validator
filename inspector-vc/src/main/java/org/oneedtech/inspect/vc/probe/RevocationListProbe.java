@@ -59,7 +59,7 @@ public class RevocationListProbe extends Probe<Credential> {
 
 					        JsonNode crdID = crd.getJson().get("id"); //TODO these != checks sb removed (trigger warning)
 					        if(crdID != null) {
-					        	List<JsonNode> list = JsonNodeUtil.asNodeList(revocList.get("revokedCredentials"));
+					        	List<JsonNode> list = JsonNodeUtil.asNodeList(revocList.get("revokedCredential"));
 					        	if(list != null) {
 					        		for(JsonNode item : list) {
 					        			JsonNode revID = item.get("id");
