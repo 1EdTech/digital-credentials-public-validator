@@ -114,6 +114,7 @@ public class CachingDocumentLoader extends ConfigurableDocumentLoader {
 			.put("https://www.w3.org/ns/did/v1", Resources.getResource("contexts/did-v1.jsonld"))
 			.put("https://www.w3.org/ns/odrl.jsonld", Resources.getResource("contexts/odrl.jsonld"))
 			.put("https://w3id.org/security/suites/ed25519-2020/v1",Resources.getResource("contexts/security-suites-ed25519-2020-v1.jsonld"))
+			.put("https://w3id.org/security/data-integrity/v1",Resources.getResource("contexts/data-integrity-v1.jsonld"))
 			.put("https://www.w3.org/2018/credentials/v1", Resources.getResource("contexts/2018-credentials-v1.jsonld"))
 			.put("https://w3id.org/security/v1", Resources.getResource("contexts/security-v1.jsonld"))
 			.put("https://w3id.org/security/v2", Resources.getResource("contexts/security-v2.jsonld"))
