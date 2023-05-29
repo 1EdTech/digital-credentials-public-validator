@@ -12,6 +12,7 @@ import org.oneedtech.inspect.core.probe.RunContext;
 import org.oneedtech.inspect.core.report.ReportItems;
 import org.oneedtech.inspect.vc.VerifiableCredential;
 import org.oneedtech.inspect.vc.W3CVCHolder;
+import org.oneedtech.inspect.vc.verification.Ed25519Signature2022LdVerifier;
 
 import com.apicatalog.jsonld.StringUtils;
 import com.apicatalog.jsonld.document.Document;
@@ -22,6 +23,7 @@ import com.apicatalog.multicodec.Multicodec.Codec;
 
 import info.weboftrust.ldsignatures.LdProof;
 import info.weboftrust.ldsignatures.verifier.Ed25519Signature2020LdVerifier;
+import info.weboftrust.ldsignatures.verifier.LdVerifier;
 import jakarta.json.JsonArray;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonString;
@@ -55,22 +57,17 @@ public class EmbeddedProofProbe extends Probe<VerifiableCredential> {
 		}
 
 		// get proof of standard type and purpose
-		Optional<LdProof> selectedProof = proofs.stream().filter(
-				proof -> proof.isType("Ed25519Signature2020") && proof.getProofPurpose().equals("assertionMethod"))
-				.findFirst();
+		Optional<LdProof> selectedProof = proofs.stream()
+			.filter(proof -> proof.getProofPurpose().equals("assertionMethod"))
+			.filter(proof -> proof.isType("Ed25519Signature2020") ||
+				(proof.isType("DataIntegrityProof") && proof.getJsonObject().containsKey("cryptosuite") && proof.getJsonObject().get("cryptosuite").equals("eddsa-2022")))
+			.findFirst();
 
 		if (!selectedProof.isPresent()) {
-			return error("No proof with type \"Ed25519Signature2020\" or proof purpose \"assertionMethod\" found", ctx);
+			return error("No proof with type any of (\"Ed25519Signature2020\", \"DataIntegrityProof\" with cryptosuite attr of \"eddsa-2022\") or proof purpose \"assertionMethod\" found", ctx);
 		}
 
 		LdProof proof = selectedProof.get();
-
-		if (!proof.isType("Ed25519Signature2020")) {
-			return error("Unknown proof type: " + proof.getType(), ctx);
-		}
-		if (!proof.getProofPurpose().equals("assertionMethod")) {
-			return error("Invalid proof purpose: " + proof.getProofPurpose(), ctx);
-		}
 
 		URI method = proof.getVerificationMethod();
 
@@ -166,7 +163,7 @@ public class EmbeddedProofProbe extends Probe<VerifiableCredential> {
 						}
 						if (!anyMatch) {
 							return error("Assertion method " + method + " not found in DID document.", ctx);
-						}	
+						}
 					}
 
 					// get keys from "verificationMethod"
@@ -245,7 +242,8 @@ public class EmbeddedProofProbe extends Probe<VerifiableCredential> {
 		// Extract the publicKey bytes from the Multicodec
 		byte[] publicKey = Multicodec.decode(Codec.Ed25519PublicKey, publicKeyMulticodec);
 
-		Ed25519Signature2020LdVerifier verifier = new Ed25519Signature2020LdVerifier(publicKey);
+		// choose verifier
+		LdVerifier<?> verifier = getVerifier(proof, publicKey);
 
 		try {
 			boolean verify = verifier.verify(credentialHolder.getCredential(), proof);
@@ -257,6 +255,12 @@ public class EmbeddedProofProbe extends Probe<VerifiableCredential> {
 		}
 
 		return success(ctx);
+	}
+
+	private LdVerifier<?> getVerifier(LdProof proof, byte[] publicKey) {
+		return proof.isType("Ed25519Signature2020")
+				? new Ed25519Signature2020LdVerifier(publicKey)
+				: new Ed25519Signature2022LdVerifier(publicKey);
 	}
 
 	private Boolean IsValidPublicKeyMultibase(String publicKeyMultibase) {
