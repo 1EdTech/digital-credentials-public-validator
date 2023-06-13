@@ -16,7 +16,7 @@ import org.oneedtech.inspect.vc.probe.CredentialParseProbe;
 
 public class Endorsement30Tests {
     private static EndorsementInspector validator;
-	private static boolean verbose = false;
+	private static boolean verbose = true;
 
 	@BeforeAll
 	static void setup() {
@@ -26,7 +26,7 @@ public class Endorsement30Tests {
 				.build();
 	}
 
-	@Disabled @Test
+	@Test
 	void testEndorsementWithoutErrors() {
 		assertDoesNotThrow(()->{
 			Report report = validator.run(Samples.OB30.JSON.ENDORSEMENT_VALID.asFileResource());
