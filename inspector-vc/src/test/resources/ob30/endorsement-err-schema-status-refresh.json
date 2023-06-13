@@ -15,6 +15,7 @@
       "type": "Profile",
       "name": "State Department of Education"
     },
+    "name": "Example endorsement",
     "issuanceDate": "2010-01-01T00:00:00Z",
     "expirationDate": "2030-01-01T00:00:00Z",
     "credentialSubject": {

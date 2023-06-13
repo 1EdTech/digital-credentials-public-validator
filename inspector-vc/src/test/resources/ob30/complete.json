@@ -107,6 +107,7 @@
                             ],
                             "name": "Example Accrediting Agency"
                         },
+                        "name": "Example endorsement",
                         "issuanceDate": "2010-01-01T00:00:00Z",
                         "expirationDate": "2020-01-01T00:00:00Z",
                         "credentialSubject": {
@@ -267,6 +268,7 @@
                         ],
                         "name": "Example Accrediting Agency"
                     },
+                    "name": "Example endorsement",
                     "issuanceDate": "2010-01-01T00:00:00Z",
                     "expirationDate": "2020-01-01T00:00:00Z",
                     "credentialSubject": {
@@ -514,6 +516,7 @@
                 ],
                 "name": "Example Accrediting Agency"
             },
+            "name": "Example endorsement",
             "issuanceDate": "2010-01-01T00:00:00Z",
             "expirationDate": "2020-01-01T00:00:00Z",
             "credentialSubject": {
@@ -602,6 +605,7 @@
                     ],
                     "name": "Example Accrediting Agency"
                 },
+                "name": "Example endorsement",
                 "issuanceDate": "2010-01-01T00:00:00Z",
                 "expirationDate": "2020-01-01T00:00:00Z",
                 "credentialSubject": {
