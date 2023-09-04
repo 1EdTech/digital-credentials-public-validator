@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>org.1edtech</groupId>
+  <artifactId>vc-public-validator</artifactId>
+  <version>1.0.0</version>
+  <name>vc-public-validator</name>
+  <packaging>pom</packaging>
+  <developers>
+    <developer>
+      <id>xaracil</id>
+      <email>xaracil@1edtech.org</email>
+    </developer>
+  </developers>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <java.version>11</java.version>
+    <log4j.version>2.17.2</log4j.version>
+    <skipTests>false</skipTests>
+    <public.core.version>1.0.0</public.core.version>
+  </properties>
+
+  <modules>
+    <!-- impl modules -->
+    <module>inspector-vc</module>
+
+    <!-- apps, services -->
+    <module>inspector-vc-web</module>
+  </modules>
+
+  <repositories>
+		<repository>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
+				<checksumPolicy>fail</checksumPolicy>
+			</snapshots>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<name>1EdTech Public Snapshot</name>
+			<id>1edtech-public-snapshots</id>
+			<url>https://nexus.1edtech.net/repository/1edtech-public-snapshot/</url>
+			<layout>default</layout>
+		</repository>
+		<repository>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<releases>
+				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
+				<checksumPolicy>fail</checksumPolicy>
+			</releases>
+			<name>1EdTech Public Release</name>
+			<id>1edtech-public-release</id>
+			<url>https://nexus.1edtech.net/repository/1edtech-public-release/</url>
+			<layout>default</layout>
+		</repository>
+	</repositories>
+	<distributionManagement>
+		<snapshotRepository>
+			<id>1edtech-public-snapshots</id>
+			<url>https://nexus.1edtech.net/repository/1edtech-public-snapshot/</url>
+		</snapshotRepository>
+		<repository>
+			<id>1edtech-public-releases</id>
+			<url>https://nexus.1edtech.net/repository/1edtech-public-release/</url>
+		</repository>
+	</distributionManagement>
+
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.8.1</version>
+        <configuration>
+          <source>${java.version}</source>
+          <target>${java.version}</target>
+          <encoding>UTF-8</encoding>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>3.0.0-M5</version>
+        <configuration>
+          <skipTests>${skipTests}</skipTests>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>flatten-maven-plugin</artifactId>
+        <version>1.2.7</version>
+        <configuration>
+          <updatePomFile>true</updatePomFile>
+          <flattenMode>resolveCiFriendliesOnly</flattenMode>
+        </configuration>
+        <executions>
+          <execution>
+            <id>flatten</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>flatten</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>flatten.clean</id>
+            <phase>clean</phase>
+            <goals>
+              <goal>clean</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.networknt</groupId>
+      <artifactId>json-schema-validator</artifactId>
+    </dependency>
+    <dependency>
+      <!-- ? needed? getting syser prints from slf4j if not here -->
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-slf4j-impl</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-api</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+    </dependency>
+
+  </dependencies>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.1edtech</groupId>
+        <artifactId>inspector-schema</artifactId>
+        <version>${public.core.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.1edtech</groupId>
+        <artifactId>inspector-core</artifactId>
+        <version>${public.core.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.1edtech</groupId>
+        <artifactId>inspector-provider</artifactId>
+        <version>${public.core.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.1edtech</groupId>
+        <artifactId>inspector-util</artifactId>
+        <version>${public.core.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.1edtech</groupId>
+        <artifactId>inspector-web-public</artifactId>
+        <version>${public.core.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.1edtech</groupId>
+        <artifactId>inspector-web-common</artifactId>
+        <version>${public.core.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.1edtech</groupId>
+        <artifactId>inspector-vc</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
+      <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava</artifactId>
+        <version>30.1-jre</version>
+      </dependency>
+
+      <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-databind</artifactId>
+        <version>2.12.5</version>
+      </dependency>
+
+      <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.datatype/jackson-datatype-jdk8 -->
+      <dependency>
+        <groupId>com.fasterxml.jackson.datatype</groupId>
+        <artifactId>jackson-datatype-jdk8</artifactId>
+        <version>2.12.5</version>
+      </dependency>
+
+      <!-- https://mvnrepository.com/artifact/com.jayway.jsonpath/json-path -->
+      <dependency>
+        <groupId>com.jayway.jsonpath</groupId>
+        <artifactId>json-path</artifactId>
+        <version>2.7.0</version>
+      </dependency>
+
+      <!-- https://mvnrepository.com/artifact/com.networknt/json-schema-validator -->
+      <dependency>
+        <groupId>com.networknt</groupId>
+        <artifactId>json-schema-validator</artifactId>
+        <version>1.0.71</version>
+      </dependency>
+
+      <!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-api -->
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-api</artifactId>
+        <version>${log4j.version}</version>
+      </dependency>
+
+      <!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-core -->
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-core</artifactId>
+        <version>${log4j.version}</version>
+      </dependency>
+
+      <dependency> <!-- ? needed? getting syser prints from slf4j if not here -->
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-slf4j-impl</artifactId>
+        <version>${log4j.version}</version>
+      </dependency>
+
+      <!-- https://mvnrepository.com/artifact/net.sf.saxon/Saxon-HE -->
+      <dependency>
+        <groupId>net.sf.saxon</groupId>
+        <artifactId>Saxon-HE</artifactId>
+        <version>9.5.1-5</version>
+      </dependency>
+
+      <!-- https://mvnrepository.com/artifact/com.fasterxml.woodstox/woodstox-core -->
+      <dependency>
+        <groupId>com.fasterxml.woodstox</groupId>
+        <artifactId>woodstox-core</artifactId>
+        <version>6.2.6</version>
+      </dependency>
+
+      <!-- https://mvnrepository.com/artifact/xerces/xercesImpl -->
+      <dependency>
+        <groupId>xerces</groupId>
+        <artifactId>xercesImpl</artifactId>
+        <version>2.12.2</version>
+        <exclusions>
+          <exclusion>
+            <groupId>xml-apis</groupId>
+            <artifactId>xml-apis</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <!-- https://mvnrepository.com/artifact/org.relaxng/jing -->
+      <dependency>
+        <groupId>org.relaxng</groupId>
+        <artifactId>jing</artifactId>
+        <version>20181204</version>
+        <exclusions>
+          <exclusion>
+            <groupId>xml-apis</groupId>
+            <artifactId>xml-apis</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api -->
+      <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-api</artifactId>
+        <version>5.8.2</version>
+        <scope>test</scope>
+      </dependency>
+
+    </dependencies>
+  </dependencyManagement>
+
+</project>
