@@ -1,0 +1,45 @@
+{
+	"groups": [
+		{
+			"id": "vc",
+			"name": "Verifiable Credentials",
+			"desc": "Verifiers for the Open Badges and Comprehensive Learner Record specifications"
+		}
+	],
+	"validators" : [
+		{
+			"id": "OB30Inspector",
+			"name": "Open Badges 3.0 Verifier",
+			"pkg": "org.oneedtech.inspect.vc",
+			"desc": "Verifies Open Badges 3.0 files",
+			"instr": "This validator supports Open Badges 3.0 files.",
+			"spec": "ob",
+			"group": "vc",
+			"supportsCertification": false,
+			"submissionTypes": ["upload","uri"]
+		},
+		{
+			"id": "OB20Inspector",
+			"name": "Open Badges 2.0 Verifier",
+			"pkg": "org.oneedtech.inspect.vc",
+			"desc": "Verifies Open Badges 2.0 files",
+			"instr": "This validator supports Open Badges 2.0 files.",
+			"spec": "ob",
+			"group": "vc",
+			"supportsCertification": false,
+			"submissionTypes": ["upload","uri"]
+		},
+		{
+			"id": "CLR20Inspector",
+			"name": "CLR 2.0 Verifier",
+			"pkg": "org.oneedtech.inspect.vc",
+			"desc": "Verifies Comprehensive Learner Record (CLR) 2.0 files",
+			"instr": "This validator supports Comprehensive Learner Record (CLR) 2.0 files.",
+			"spec": "clr",
+			"group": "vc",
+			"supportsCertification": false,
+			"submissionTypes": ["upload","uri"]
+		}
+	]
+
+}
