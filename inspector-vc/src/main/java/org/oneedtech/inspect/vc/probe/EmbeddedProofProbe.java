@@ -37,6 +37,8 @@ import jakarta.json.JsonValue;
  */
 public class EmbeddedProofProbe extends Probe<VerifiableCredential> {
 
+	private final static List<String> ALLOWED_CRYPTOSUITES = List.of("eddsa-2022", "eddsa-rdfc-2022");
+
 	public EmbeddedProofProbe() {
 		super(ID);
 	}
@@ -60,11 +62,11 @@ public class EmbeddedProofProbe extends Probe<VerifiableCredential> {
 		Optional<LdProof> selectedProof = proofs.stream()
 			.filter(proof -> proof.getProofPurpose().equals("assertionMethod"))
 			.filter(proof -> proof.isType("Ed25519Signature2020") ||
-				(proof.isType("DataIntegrityProof") && proof.getJsonObject().containsKey("cryptosuite") && proof.getJsonObject().get("cryptosuite").equals("eddsa-2022")))
+				(proof.isType("DataIntegrityProof") && proof.getJsonObject().containsKey("cryptosuite") && ALLOWED_CRYPTOSUITES.contains(proof.getJsonObject().get("cryptosuite"))))
 			.findFirst();
 
 		if (!selectedProof.isPresent()) {
-			return error("No proof with type any of (\"Ed25519Signature2020\", \"DataIntegrityProof\" with cryptosuite attr of \"eddsa-2022\") or proof purpose \"assertionMethod\" found", ctx);
+			return error("No proof with type any of (\"Ed25519Signature2020\", \"DataIntegrityProof\" with cryptosuite attr of \"eddsa-rdfc-2022\" or \"eddsa-2022\") or proof purpose \"assertionMethod\" found", ctx);
 		}
 
 		LdProof proof = selectedProof.get();

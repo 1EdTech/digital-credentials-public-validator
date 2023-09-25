@@ -39,7 +39,7 @@ public class Eddsa2022LdProof extends LdProof {
 			super.build();
 
 			if (addCryptosuite) {
-				JsonLDUtils.jsonLdAdd(this.jsonLdObject, "cryptosuite", "eddsa-2022");
+				JsonLDUtils.jsonLdAdd(this.jsonLdObject, "cryptosuite", "eddsa-rdfc-2022");
 			}
 
 			return (LdProof) this.jsonLdObject;
