@@ -2,6 +2,7 @@ package org.oneedtech.inspect.vc.probe;
 
 import java.io.StringReader;
 import java.net.URI;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.util.List;
@@ -111,7 +112,7 @@ public class EmbeddedProofProbe extends Probe<VerifiableCredential> {
 					methodSpecificId = methodSpecificId.replaceAll(":", "/");
 
 					// 2. If the domain contains a port percent decode the colon.
-					String portPercentEncoded = URLEncoder.encode(":", Charset.forName("UTF-8"));
+					String portPercentEncoded = URLDecoder.decode(":", Charset.forName("UTF-8"));
 					int index = methodSpecificId.indexOf(portPercentEncoded);
 					if (index >= 0 && index < methodSpecificId.indexOf("/")) {
 						methodSpecificId = methodSpecificId.replace(portPercentEncoded, ":");
