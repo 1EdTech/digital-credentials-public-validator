@@ -95,7 +95,7 @@ public class CredentialSubjectProbe extends Probe<JsonNode> {
 			}
 			// criteria must have id or narrative
 			JsonNode criteria = achievement.get("criteria");
-			if (!criteria.has("id") && !criteria.has("narrative")) {
+			if (!criteria.hasNonNull("id") && !criteria.hasNonNull("narrative")) {
 				return error("criteria in achievement of credentialSubject must have id or narrative", ctx);
 			}
 		} else if (achivementRequired) {
