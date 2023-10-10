@@ -63,7 +63,6 @@ Constains the inspector implementations for:
 
 - Open Badges 2.0: `org.oneedtech.inspect.vc.OB20Inspector`
 - Open Badges 3.0: `org.oneedtech.inspect.vc.OB30Inspector`
-- Comprehensive Learned Record 2.0: `org.oneedtech.inspect.vc.CLR20Inspector`
 
 These inspectors contains all the probes to perform to an artifact for validating its conformance to that specification, building a `Report` with the results.
 
