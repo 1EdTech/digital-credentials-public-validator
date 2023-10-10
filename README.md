@@ -10,6 +10,18 @@ This is primarily a validator for Open Badges 3.0 and Comprehensive Learner Reco
 
 ## User Documentation
 
+### Requirements
+
+- Java installed (tested with Java 17)
+- Maven installed (tested with Maven 3.8.6)
+
+### Installation & Run
+
+Navigate to main folder and run `mvn clean verify`. There's no need to install the packages in your repository.
+
+Run the webapp by navigate to the `inspector-vc-web` folder and run `mvn spring-boot:run`
+
+### Usage
 Run the webapp in the module `inspector-vc-web` and open a browser into `http://localhost:8080`. Once in the main page, select which validator to run from the list and provide your artifact / uri to validate.
 
 If you want to use the validator via API, point the browser to `http://localhost:8080/swagger-ui.html` for more documentation about the API.
