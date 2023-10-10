@@ -62,6 +62,20 @@
 			<url>https://nexus.1edtech.net/repository/1edtech-public-release/</url>
 			<layout>default</layout>
 		</repository>
+		<repository>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+			<releases>
+				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
+				<checksumPolicy>fail</checksumPolicy>
+			</releases>
+			<name>Danubetech Public</name>
+			<id>danubetech-public</id>
+			<url>https://repo.danubetech.com/repository/maven-public</url>
+			<layout>default</layout>
+		</repository>
 	</repositories>
 	<distributionManagement>
 		<snapshotRepository>
