@@ -3,11 +3,9 @@ package org.oneedtech.inspect.vc;
 import static java.util.stream.Collectors.toList;
 import static org.oneedtech.inspect.vc.util.JsonNodeUtil.asStringList;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.Spliterators;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -141,6 +139,10 @@ public abstract class VCInspector extends Inspector {
 		public VCInspector.Builder<B> add(Probe<VerifiableCredential> probe) {
 			probes.add(probe);
 			return this;
+		}
+
+		public List<Probe<VerifiableCredential>> getProbes() {
+			return probes;
 		}
 	}
 }
