@@ -7,7 +7,6 @@ import static org.oneedtech.inspect.test.Assertions.assertInvalid;
 import static org.oneedtech.inspect.test.Assertions.assertValid;
 
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.oneedtech.inspect.core.Inspector.Behavior;
 import org.oneedtech.inspect.core.report.Report;
