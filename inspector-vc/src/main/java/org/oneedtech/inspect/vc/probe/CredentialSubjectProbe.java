@@ -1,6 +1,7 @@
 package org.oneedtech.inspect.vc.probe;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.oneedtech.inspect.core.probe.Probe;
 import org.oneedtech.inspect.core.probe.RunContext;
@@ -83,21 +84,11 @@ public class CredentialSubjectProbe extends Probe<JsonNode> {
 		 * Check achievement result description
 		 */
 		if (subject.hasNonNull("achievement")) {
-			JsonNode achievement = subject.get("achievement");
-			if (achievement.hasNonNull("resultDescription")) {
-				List<JsonNode> resultDescriptions = JsonNodeUtil.asNodeList(achievement.get("resultDescription"));
-				for (JsonNode resultDescription : resultDescriptions) {
-					// check that type contains "ResultDescription"
-					if (!JsonNodeUtil.asStringList(resultDescription.get("type")).contains("ResultDescription")) {
-						return error("resultDescription in achievement of credentialSubject is not of type \"ResultDescription\"", ctx);
-					}
-				}
+			Optional<ReportItems> achievementResult = checkAchievement(subject.get("achievement"), ctx);
+			if (achievementResult.isPresent()) {
+				return achievementResult.get();
 			}
-			// criteria must have id or narrative
-			JsonNode criteria = achievement.get("criteria");
-			if (!criteria.hasNonNull("id") && !criteria.hasNonNull("narrative")) {
-				return error("criteria in achievement of credentialSubject must have id or narrative", ctx);
-			}
+
 		} else if (achivementRequired) {
 			return error("missing required achievement in credentialSubject", ctx);
 		}
@@ -115,6 +106,23 @@ public class CredentialSubjectProbe extends Probe<JsonNode> {
 		return success(ctx);
 	}
 
+	protected Optional<ReportItems> checkAchievement(JsonNode achievement, RunContext ctx) {
+		if (achievement.hasNonNull("resultDescription")) {
+			List<JsonNode> resultDescriptions = JsonNodeUtil.asNodeList(achievement.get("resultDescription"));
+			for (JsonNode resultDescription : resultDescriptions) {
+				// check that type contains "ResultDescription"
+				if (!JsonNodeUtil.asStringList(resultDescription.get("type")).contains("ResultDescription")) {
+					return Optional.of(error("resultDescription in achievement of credentialSubject is not of type \"ResultDescription\"", ctx));
+				}
+			}
+		}
+		// criteria must have id or narrative
+		JsonNode criteria = achievement.get("criteria");
+		if (!criteria.hasNonNull("id") && !criteria.hasNonNull("narrative")) {
+			return Optional.of(error("criteria in achievement of credentialSubject must have id or narrative", ctx));
+		}
+		return Optional.empty();
+	}
 	private boolean idAndIdentifierEmpty(JsonNode root) {
 		JsonNode id = root.get("id");
 		if (id != null && id.textValue().strip().length() > 0) return false;
