@@ -3,10 +3,10 @@ package org.oneedtech.inspect.vc;
 import java.util.List;
 
 import org.oneedtech.inspect.vc.jsonld.JsonLDObjectUtils;
+import org.oneedtech.inspect.vc.util.CachingDocumentLoader;
 
 import com.danubetech.verifiablecredentials.VerifiableCredential;
 
-import foundation.identity.jsonld.ConfigurableDocumentLoader;
 import info.weboftrust.ldsignatures.LdProof;
 
 /**
@@ -17,10 +17,7 @@ public class W3CVCHolder {
 
     public W3CVCHolder(VerifiableCredential credential) {
         this.credential = credential;
-		ConfigurableDocumentLoader documentLoader = new ConfigurableDocumentLoader();
-		documentLoader.setEnableHttp(true);
-		documentLoader.setEnableHttps(true);
-		credential.setDocumentLoader(documentLoader);
+        credential.setDocumentLoader(new CachingDocumentLoader());
     }
 
     /**
