@@ -7,6 +7,7 @@ import static org.oneedtech.inspect.core.report.ReportUtil.onProbeException;
 import static org.oneedtech.inspect.util.code.Defensives.checkNotNull;
 import static org.oneedtech.inspect.util.json.ObjectMapperCache.Config.DEFAULT;
 import static org.oneedtech.inspect.vc.Credential.CREDENTIAL_KEY;
+import static org.oneedtech.inspect.vc.VerifiableCredential.REFRESH_SERVICE_MIME_TYPES;
 import static org.oneedtech.inspect.vc.VerifiableCredential.ProofType.EXTERNAL;
 
 import java.net.URI;
@@ -115,10 +116,11 @@ public class EndorsementInspector extends VCInspector implements SubInspector {
 			if(resource.getContext().get(REFRESHED) != TRUE) {
 				Optional<String> newID = checkRefreshService(endorsement, ctx);
 				if(newID.isPresent()) {
-					//TODO resource.type
-					return this.run(
-						new UriResource(new URI(newID.get()))
-							.setContext(new ResourceContext(REFRESHED, TRUE)));
+					// If the refresh is not successful, continue the verification process using the original EndorsementCredential.
+					UriResource uriResource = new UriResource(new URI(newID.get()), null, REFRESH_SERVICE_MIME_TYPES);
+					if (uriResource.exists()) {
+						return this.run(uriResource.setContext(new ResourceContext(REFRESHED, TRUE)));
+					}
 				}
 			}
 
