@@ -1,12 +1,12 @@
-# Public Validator for Open Badges and Comprehensive Learner Record
+# Public Validator for Open Badges
 
-Public Validator for Open Badges and Comprehensive Learner Record is a webapp designed to verify the validity of Open Badges and Comprehensive Learner Record based on a variety of input sources and present a useful interface for accessing their properties and validation information. HTTP and APIs are provided.
+Public Validator for Open Badges is a webapp designed to verify the validity of Open Badges based on a variety of input sources and present a useful interface for accessing their properties and validation information. HTTP and APIs are provided.
 
-Public Validator for Open Badges and Comprehensive Learner Record is released by [1EdTech](https://www.1edtech.org).
+Public Validator for Open Badges is released by [1EdTech](https://www.1edtech.org).
 
 ## What versions of Open Badges does this validator support?
 
-This is primarily a validator for Open Badges 3.0 and Comprehensive Learner Record 2.0. You can submit badges that were created under Open Badges 2.0 specification as well, but we recommend using [Open Badges Validator Core](https://github.com/1EdTech/openbadges-validator-core) if you plan to validate Open Badges 2.0 and lower.
+This is primarily a validator for Open Badges 3.0. You can submit badges that were created under Open Badges 2.0 specification as well, but we recommend using [Open Badges Validator Core](https://github.com/1EdTech/openbadges-validator-core) if you plan to validate Open Badges 2.0 and lower.
 
 ## User Documentation
 
@@ -46,7 +46,7 @@ Note that the open source license of this project will apply to your inbound con
 
 This is a multi module maven project with two modules:
 
-- `inspector-vc`: the validator for Open Badges 3.0 and Comprehensive Learner Record 2.0.
+- `inspector-vc`: the validator for Open Badges 3.0.
 - `inspector-vc-web`: the webapp which runs the validator and presents the results to the user.
 
 
