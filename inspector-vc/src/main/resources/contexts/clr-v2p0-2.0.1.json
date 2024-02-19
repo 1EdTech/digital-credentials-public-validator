@@ -15,7 +15,7 @@
         "id": "@id",
         "type": "@type",
         "cred": "https://www.w3.org/2018/credentials#",
-        "obi": "https://purl.imsglobal.org/spec/ob/v3p0/vocab.html#",
+        "obi": "https://purl.imsglobal.org/spec/vc/ob/vocab.html#",
         "achievement": {
           "@id": "https://purl.imsglobal.org/spec/vc/clr/vocab.html#achievement",
           "@type": "obi:Achievement",
@@ -29,6 +29,11 @@
         "verifiableCredential": {
           "@id": "https://purl.imsglobal.org/spec/vc/clr/vocab.html#verifiableCredential",
           "@type": "cred:verifiableCredential",
+          "@container": "@set"
+        },
+        "identifier": {
+          "@id": "https://purl.imsglobal.org/spec/vc/clr/vocab.html#identifier-1",
+          "@type": "obi:Identifier",
           "@container": "@set"
         }
       }
