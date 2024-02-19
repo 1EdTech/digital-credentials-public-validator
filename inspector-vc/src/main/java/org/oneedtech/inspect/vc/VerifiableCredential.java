@@ -69,6 +69,8 @@ public class VerifiableCredential extends Credential  {
 	private static final Map<String, List<String>> contextVersioningPatternMap = new ImmutableMap.Builder<String, List<String>>()
 			.put("https://purl.imsglobal.org/spec/ob/v3p0/context.json",
 					List.of("https:\\/\\/purl\\.imsglobal\\.org\\/spec\\/ob\\/v3p0\\/context(-\\d+\\.\\d+\\.\\d+)*\\.json"))
+			.put("https://purl.imsglobal.org/spec/clr/v2p0/context.json",
+					List.of("https:\\/\\/purl\\.imsglobal\\.org\\/spec\\/clr\\/v2p0\\/context(-\\d+\\.\\d+\\.\\d+)*\\.json"))
 			.build();
 
 	public enum Type implements CredentialEnum {
