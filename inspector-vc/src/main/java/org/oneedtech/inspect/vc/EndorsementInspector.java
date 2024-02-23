@@ -2,7 +2,9 @@ package org.oneedtech.inspect.vc;
 
 import static java.lang.Boolean.TRUE;
 import static org.oneedtech.inspect.core.Inspector.Behavior.RESET_CACHES_ON_RUN;
-import static org.oneedtech.inspect.core.probe.RunContext.Key.*;
+import static org.oneedtech.inspect.core.probe.RunContext.Key.GENERATED_OBJECT_BUILDER;
+import static org.oneedtech.inspect.core.probe.RunContext.Key.JACKSON_OBJECTMAPPER;
+import static org.oneedtech.inspect.core.probe.RunContext.Key.JSONPATH_EVALUATOR;
 import static org.oneedtech.inspect.core.report.ReportUtil.onProbeException;
 import static org.oneedtech.inspect.util.code.Defensives.checkNotNull;
 import static org.oneedtech.inspect.util.json.ObjectMapperCache.Config.DEFAULT;
@@ -21,7 +23,6 @@ import org.oneedtech.inspect.core.probe.GeneratedObject;
 import org.oneedtech.inspect.core.probe.Probe;
 import org.oneedtech.inspect.core.probe.RunContext;
 import org.oneedtech.inspect.core.probe.json.JsonPathEvaluator;
-import org.oneedtech.inspect.core.probe.json.JsonSchemaProbe;
 import org.oneedtech.inspect.core.report.Report;
 import org.oneedtech.inspect.core.report.ReportItems;
 import org.oneedtech.inspect.schema.JsonSchemaCache;
@@ -39,6 +40,7 @@ import org.oneedtech.inspect.vc.probe.ExpirationProbe;
 import org.oneedtech.inspect.vc.probe.ExternalProofProbe;
 import org.oneedtech.inspect.vc.probe.InlineJsonSchemaProbe;
 import org.oneedtech.inspect.vc.probe.IssuanceProbe;
+import org.oneedtech.inspect.vc.probe.JsonSchemasProbe;
 import org.oneedtech.inspect.vc.probe.RevocationListProbe;
 import org.oneedtech.inspect.vc.probe.TypePropertyProbe;
 import org.oneedtech.inspect.vc.util.CachingDocumentLoader;
@@ -180,13 +182,16 @@ public class EndorsementInspector extends VCInspector implements SubInspector {
 				if(broken(accumulator)) return abort(ctx, accumulator, probeCount);
 			}
 
-            //canonical schema and inline schema
+			//canonical schema
 			SchemaKey schema = endorsement.getSchemaKey().orElseThrow();
-			for(Probe<JsonNode> probe : List.of(new JsonSchemaProbe(schema), new InlineJsonSchemaProbe(schema))) {
-                probeCount++;
-                accumulator.add(probe.run(endorsement.getJson(), ctx));
-                if(broken(accumulator)) return abort(ctx, accumulator, probeCount);
-            }
+			probeCount++;
+			accumulator.add(new JsonSchemasProbe(schema).run(endorsement, ctx));
+			if(broken(accumulator)) return abort(ctx, accumulator, probeCount);
+
+			// inline schema
+			probeCount++;
+			accumulator.add(new InlineJsonSchemaProbe(schema).run(endorsement.getJson(), ctx));
+			if(broken(accumulator)) return abort(ctx, accumulator, probeCount);
 
 			//credentialSubject
 			probeCount++;

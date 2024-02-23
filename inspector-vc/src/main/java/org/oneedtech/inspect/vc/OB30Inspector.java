@@ -3,7 +3,7 @@ package org.oneedtech.inspect.vc;
 import static java.lang.Boolean.TRUE;
 import static org.oneedtech.inspect.core.Inspector.Behavior.RESET_CACHES_ON_RUN;
 import static org.oneedtech.inspect.core.report.ReportUtil.onProbeException;
-import static org.oneedtech.inspect.util.code.Defensives.*;
+import static org.oneedtech.inspect.util.code.Defensives.checkNotNull;
 import static org.oneedtech.inspect.util.json.ObjectMapperCache.Config.DEFAULT;
 import static org.oneedtech.inspect.vc.Credential.CREDENTIAL_KEY;
 import static org.oneedtech.inspect.vc.VerifiableCredential.REFRESH_SERVICE_MIME_TYPES;
@@ -23,12 +23,10 @@ import org.oneedtech.inspect.core.probe.Probe;
 import org.oneedtech.inspect.core.probe.RunContext;
 import org.oneedtech.inspect.core.probe.RunContext.Key;
 import org.oneedtech.inspect.core.probe.json.JsonPathEvaluator;
-import org.oneedtech.inspect.core.probe.json.JsonSchemaProbe;
 import org.oneedtech.inspect.core.report.Report;
 import org.oneedtech.inspect.core.report.ReportItems;
 import org.oneedtech.inspect.schema.JsonSchemaCache;
 import org.oneedtech.inspect.schema.SchemaKey;
-import org.oneedtech.inspect.util.code.Defensives;
 import org.oneedtech.inspect.util.json.ObjectMapperCache;
 import org.oneedtech.inspect.util.resource.Resource;
 import org.oneedtech.inspect.util.resource.ResourceType;
@@ -41,14 +39,15 @@ import org.oneedtech.inspect.vc.payload.SvgParser;
 import org.oneedtech.inspect.vc.probe.ContextPropertyProbe;
 import org.oneedtech.inspect.vc.probe.CredentialParseProbe;
 import org.oneedtech.inspect.vc.probe.CredentialSubjectProbe;
+import org.oneedtech.inspect.vc.probe.EmbeddedProofProbe;
+import org.oneedtech.inspect.vc.probe.EvidenceProbe;
 import org.oneedtech.inspect.vc.probe.ExpirationProbe;
+import org.oneedtech.inspect.vc.probe.ExternalProofProbe;
 import org.oneedtech.inspect.vc.probe.InlineJsonSchemaProbe;
 import org.oneedtech.inspect.vc.probe.IssuanceProbe;
 import org.oneedtech.inspect.vc.probe.IssuerProbe;
-import org.oneedtech.inspect.vc.probe.EmbeddedProofProbe;
-import org.oneedtech.inspect.vc.probe.EvidenceProbe;
+import org.oneedtech.inspect.vc.probe.JsonSchemasProbe;
 import org.oneedtech.inspect.vc.probe.RevocationListProbe;
-import org.oneedtech.inspect.vc.probe.ExternalProofProbe;
 import org.oneedtech.inspect.vc.probe.TypePropertyProbe;
 import org.oneedtech.inspect.vc.util.CachingDocumentLoader;
 
@@ -163,13 +162,16 @@ public class OB30Inspector extends VCInspector implements SubInspector {
 				if(broken(accumulator)) return abort(ctx, accumulator, probeCount);
 			}
 
-			//canonical schema and inline schemata
+			//canonical schema
 			SchemaKey schema = ob.getSchemaKey().orElseThrow();
-			for(Probe<JsonNode> probe : List.of(new JsonSchemaProbe(schema), new InlineJsonSchemaProbe(schema))) {
-				probeCount++;
-				accumulator.add(probe.run(ob.getJson(), ctx));
-				if(broken(accumulator)) return abort(ctx, accumulator, probeCount);
-			}
+			probeCount++;
+			accumulator.add(new JsonSchemasProbe(schema).run(ob, ctx));
+			if(broken(accumulator)) return abort(ctx, accumulator, probeCount);
+
+			// inline schema
+			probeCount++;
+			accumulator.add(new InlineJsonSchemaProbe(schema).run(ob.getJson(), ctx));
+			if(broken(accumulator)) return abort(ctx, accumulator, probeCount);
 
 			//credentialSubject
 			probeCount++;
