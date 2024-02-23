@@ -8,7 +8,7 @@
   "id": "http://www.1edtech.org/ob/1",
   "issuanceDate": "2022-11-27T00:00:00Z",
   "credentialSubject": {
-    "type": "AchievementSubject",
+    "type": ["AchievementSubject"],
     "id": "did:1edtech:1",
     "achievement": {
       "id": "did:1edtech:achievement:1",
@@ -20,12 +20,12 @@
   },
   "name": "Some name",
   "issuer": { "id": "https://example.com/issuers/876543", "type": ["Profile"] },
-  "proof": {
+  "proof": [{
     "type": "DataIntegrityProof",
     "created": "2023-05-29T08:42:26Z",
     "proofPurpose": "assertionMethod",
     "verificationMethod": "https://example.com/issuers/876543#z6MkjZRZv3aez3r18pB1RBFJR1kwUVJ5jHt92JmQwXbd5hwi",
     "cryptosuite": "eddsa-2022",
     "proofValue": "z2H1miRAGKPRCPUSudNTPrsWyvpRZzgtgjPBmnMkbcwR8StwEv8dr3NigviBgvZwBu8yA7wAyF5qLjyo3zN1UqLR2"
-  }
+  }]
 }

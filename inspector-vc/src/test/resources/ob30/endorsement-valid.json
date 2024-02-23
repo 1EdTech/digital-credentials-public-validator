@@ -12,7 +12,7 @@
     ],
     "issuer": {
       "id": "https://state.gov/issuers/565049",
-      "type": "Profile",
+      "type": ["Profile"],
       "name": "State Department of Education"
     },
     "issuanceDate": "2010-01-01T00:00:00Z",
@@ -20,7 +20,7 @@
     "name": "Example endorsement",
     "credentialSubject": {
       "id": "https://1edtech.edu/issuers/565049",
-      "type": "EndorsementSubject",
+      "type": ["EndorsementSubject"],
       "endorsementComment": "1EdTech University is in good standing"
     },
     "credentialSchema": [
@@ -29,11 +29,11 @@
         "type": "1EdTechJsonSchemaValidator2019"
       }
     ],
-    "proof": {
+    "proof": [{
       "type": "Ed25519Signature2020",
       "created": "2010-01-01T19:23:24Z",
       "verificationMethod": "https://state.gov/issuers/565049#z6MkjZRZv3aez3r18pB1RBFJR1kwUVJ5jHt92JmQwXbd5hwi",
       "proofPurpose": "assertionMethod",
       "proofValue": "z347N8ntbL3usCGshtUZiyrBeGBhYVAqyi4HUhz4fBmU1zVwk5eRfPZJvKoendfyGaeSbJcAfQEVNpvcHLzVhDtQC"
-    }
+    }]
   }
