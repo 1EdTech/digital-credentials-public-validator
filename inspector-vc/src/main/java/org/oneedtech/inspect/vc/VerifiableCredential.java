@@ -8,6 +8,8 @@ import static org.oneedtech.inspect.vc.VerifiableCredential.Type.VerifiablePrese
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableMap;
+
+import java.net.URI;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -26,18 +28,19 @@ import org.oneedtech.inspect.vc.util.JsonNodeUtil;
  */
 public class VerifiableCredential extends Credential {
   final VerifiableCredential.Type credentialType;
+  final VCVersion version;
 
   protected VerifiableCredential(
       Resource resource,
       JsonNode data,
       String jwt,
       Map<CredentialEnum, SchemaKey> schemas,
-      String issuedOnPropertyName,
-      String expiresAtPropertyName) {
-    super(ID, resource, data, jwt, schemas, issuedOnPropertyName, expiresAtPropertyName);
+      VCVersion version) {
+    super(ID, resource, data, jwt, schemas, version.issuanceDateField, version.expirationDateField);
 
     JsonNode typeNode = jsonData.get("type");
     this.credentialType = VerifiableCredential.Type.valueOf(typeNode);
+    this.version = version;
   }
 
   public CredentialEnum getCredentialType() {
@@ -48,6 +51,10 @@ public class VerifiableCredential extends Credential {
     return jwt == null ? ProofType.EMBEDDED : ProofType.EXTERNAL;
   }
 
+  public VCVersion getVersion() {
+      return version;
+  }
+
   private static final Map<CredentialEnum, SchemaKey> schemas =
       new ImmutableMap.Builder<CredentialEnum, SchemaKey>()
           .put(AchievementCredential, Catalog.OB_30_ANY_ACHIEVEMENTCREDENTIAL_JSON)
@@ -56,17 +63,19 @@ public class VerifiableCredential extends Credential {
           .put(EndorsementCredential, Catalog.OB_30_ANY_ENDORSEMENTCREDENTIAL_JSON)
           .build();
 
-  private static final Map<Set<VerifiableCredential.Type>, List<String>> contextMap =
+    public static final String JSONLD_CONTEXT_W3C_CREDENTIALS_V2 = "https://www.w3.org/ns/credentials/v2";
+
+    private static final Map<Set<VerifiableCredential.Type>, List<String>> contextMap =
       new ImmutableMap.Builder<Set<VerifiableCredential.Type>, List<String>>()
           .put(
               Set.of(Type.OpenBadgeCredential, AchievementCredential, EndorsementCredential),
               List.of(
-                  "https://www.w3.org/ns/credentials/v2",
+                  JSONLD_CONTEXT_W3C_CREDENTIALS_V2,
                   "https://purl.imsglobal.org/spec/ob/v3p0/context-3.0.3.json"))
           .put(
               Set.of(ClrCredential),
               List.of(
-                  "https://www.w3.org/ns/credentials/v2",
+                  JSONLD_CONTEXT_W3C_CREDENTIALS_V2,
                   "https://purl.imsglobal.org/spec/clr/v2p0/context-2.0.1.json",
                   "https://purl.imsglobal.org/spec/ob/v3p0/context-3.0.3.json"))
           .build();
@@ -82,7 +91,7 @@ public class VerifiableCredential extends Credential {
               "https://purl.imsglobal.org/spec/clr/v2p0/context-2.0.1.json",
               List.of("https://purl.imsglobal.org/spec/clr/v2p0/context.json"))
           .put(
-              "https://www.w3.org/ns/credentials/v2",
+              JSONLD_CONTEXT_W3C_CREDENTIALS_V2,
               List.of("https://www.w3.org/2018/credentials/v1"))
           .build();
 
@@ -183,20 +192,39 @@ public class VerifiableCredential extends Credential {
         .toString();
   }
 
+  public static enum VCVersion {
+    VCDMv2p0(ISSUED_ON_PROPERTY_NAME_V20, EXPIRES_AT_PROPERTY_NAME_V20),
+    VCDMv1p1(ISSUED_ON_PROPERTY_NAME_V11, EXPIRES_AT_PROPERTY_NAME_V11);
+
+    final String issuanceDateField;
+    final String expirationDateField;
+
+    VCVersion(String issuanceDateField, String expirationDateField) {
+      this.issuanceDateField = issuanceDateField;
+      this.expirationDateField = expirationDateField;
+    }
+
+    static VCVersion of(JsonNode context) {
+      if (JsonNodeUtil.asNodeList(context)
+			.stream()
+			.anyMatch(node -> node.isTextual() && node.asText().equals(JSONLD_CONTEXT_W3C_CREDENTIALS_V2)) )
+      return VCDMv2p0;
+
+      return VCDMv1p1;
+    }
+  }
+
   public static class Builder extends Credential.Builder<VerifiableCredential> {
     @Override
     public VerifiableCredential build() {
-		boolean is2p0VC = JsonNodeUtil.asNodeList(getJsonData().get("@context"))
-			.stream()
-			.anyMatch(node -> node.isTextual() && node.asText().equals("https://www.w3.org/ns/credentials/v2"));
+      VCVersion version = VCVersion.of(getJsonData().get("@context"));
 
       return new VerifiableCredential(
           getResource(),
           getJsonData(),
           getJwt(),
           schemas,
-          is2p0VC ? ISSUED_ON_PROPERTY_NAME_V20 : ISSUED_ON_PROPERTY_NAME_V11,
-          is2p0VC ? EXPIRES_AT_PROPERTY_NAME_V20 : EXPIRES_AT_PROPERTY_NAME_V11);
+          version);
     }
   }
 
