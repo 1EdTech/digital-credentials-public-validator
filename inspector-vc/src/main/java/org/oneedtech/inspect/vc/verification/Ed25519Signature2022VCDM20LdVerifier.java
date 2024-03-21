@@ -9,19 +9,19 @@ import io.ipfs.multibase.Multibase;
 
 import java.security.GeneralSecurityException;
 
-public class Ed25519Signature2022LdVerifier extends LdVerifier<Ed25519Signature2022SignatureSuite> {
+public class Ed25519Signature2022VCDM20LdVerifier extends LdVerifier<Ed25519Signature2022SignatureSuite> {
 
-    public Ed25519Signature2022LdVerifier(ByteVerifier verifier) {
+    public Ed25519Signature2022VCDM20LdVerifier(ByteVerifier verifier) {
 
-        super(SignatureSuites.SIGNATURE_SUITE_ED25519SIGNATURE2022, verifier, new URDNA2015Canonicalizer(Eddsa2022LdProof.builder()));
+        super(SignatureSuites.SIGNATURE_SUITE_ED25519SIGNATURE2022, verifier, new URDNA2015Canonicalizer(Eddsa2022v2LdProof.builder()));
     }
 
-    public Ed25519Signature2022LdVerifier(byte[] publicKey) {
+    public Ed25519Signature2022VCDM20LdVerifier(byte[] publicKey) {
 
         this(new Ed25519_EdDSA_PublicKeyVerifier(publicKey));
     }
 
-    public Ed25519Signature2022LdVerifier() {
+    public Ed25519Signature2022VCDM20LdVerifier() {
 
         this((ByteVerifier) null);
     }
@@ -50,3 +50,4 @@ public class Ed25519Signature2022LdVerifier extends LdVerifier<Ed25519Signature2
     }
 
 }
+
