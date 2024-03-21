@@ -1,15 +1,14 @@
 {
   "@context": [
-    "https://www.w3.org/2018/credentials/v1",
-    "https://purl.imsglobal.org/spec/ob/v3p0/context.json",
-    "https://w3id.org/security/suites/ed25519-2020/v1"
+    "https://www.w3.org/ns/credentials/v2",
+    "https://purl.imsglobal.org/spec/ob/v3p0/context-3.0.3.json"
   ],
   "id": "http://example.edu/credentials/3732",
   "type": [
     "VerifiableCredential",
     "OpenBadgeCredential"
   ],
-  "issuanceDate": "2010-01-01T00:00:00Z",
+  "validFrom": "2010-01-01T00:00:00Z",
   "name": "Example University Degree",
   "credentialSubject": {
     "id": "did:example:ebfeb1f712ebc6f1c276e12ec21",
@@ -17,13 +16,12 @@
       "AchievementSubject"
     ]
   },
-  "proof": [
-    {
-      "type": "Ed25519Signature2020",
-      "created": "2022-06-28T16:28:36Z",
-      "verificationMethod": "did:key:z6MkkUD3J14nkYzn46QeuaVSnp7dF85QJKwKvJvfsjx79aXj",
-      "proofPurpose": "assertionMethod",
-      "proofValue": "z3MUt2ZuU8Byqivxh6GphEM65AFYyNaGYibm97xLTafM7uGufZQLKvJR8itZwxKskvtFM3CUty46v26DZidMNoQnM"
-    }
-  ]
+  "proof": {
+    "type": "DataIntegrityProof",
+    "created": "2010-01-01T19:23:24Z",
+    "verificationMethod": "https://example.com/issuers/876543#z6MkjZRZv3aez3r18pB1RBFJR1kwUVJ5jHt92JmQwXbd5hwi",
+    "cryptosuite": "eddsa-rdfc-2022",
+    "proofPurpose": "assertionMethod",
+    "proofValue": "z5ZjnJNPeQznivpmedtQZDAy9vXVz2BbhZp13fGpTfMnsgzccs2Z3Se2BRWeECSMo92cUsQP63LhMb6veWuD223j2"
+  }
 }

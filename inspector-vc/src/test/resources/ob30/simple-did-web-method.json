@@ -1,9 +1,7 @@
 {
   "@context": [
-    "https://www.w3.org/2018/credentials/v1",
-    "https://purl.imsglobal.org/spec/ob/v3p0/context-3.0.1.json",
-    "https://purl.imsglobal.org/spec/ob/v3p0/extensions.json",
-    "https://w3id.org/security/suites/ed25519-2020/v1"
+    "https://www.w3.org/ns/credentials/v2",
+    "https://purl.imsglobal.org/spec/ob/v3p0/context-3.0.3.json"
   ],
   "id": "https://dc.1edtech.org/wellspring2022/wellspring-portal/credential/d002b4e9-6fd9-4af0-b1f7-faa9237b46ca",
   "type": [
@@ -12,22 +10,30 @@
   ],
   "issuer": {
     "id": "did:web:dc.1edtech.org:wellspring2022:wellspring-portal:org:da1e96e9-afcc-4eed-b9a2-2ddf7353214c",
-    "type": ["Profile"],
+    "type": [
+      "Profile"
+    ],
     "address": {
-      "type": ["Address"],
+      "type": [
+        "Address"
+      ],
       "addressCountry": "Japan"
     },
     "name": "1EdTech Testing"
   },
   "awardedDate": "2023-05-22T14:09:00Z",
-  "issuanceDate": "2023-05-23T01:07:22Z",
+  "validFrom": "2023-05-23T01:07:22Z",
   "name": "ob3-simple-did-web-method.json",
   "credentialSubject": {
     "id": "did:web:dc.1edtech.org:wellspring2022:wellspring-portal:learner:6896f98f-6b42-4c75-98ec-8befd0dc0b29",
-    "type": ["AchievementSubject"],
+    "type": [
+      "AchievementSubject"
+    ],
     "achievement": {
       "id": "https://dc.1edtech.org/wellspring2022/wellspring-portal/achievement/66457db3-fb3d-4ae3-8f32-bc8c79c9f0db",
-      "type": ["Achievement"],
+      "type": [
+        "Achievement"
+      ],
       "achievementType": "Achievement",
       "criteria": {
         "narrative": "Passes tests"
@@ -37,9 +43,13 @@
     },
     "source": {
       "id": "did:web:dc.1edtech.org:wellspring2022:wellspring-portal:org:da1e96e9-afcc-4eed-b9a2-2ddf7353214c",
-      "type": ["Profile"],
+      "type": [
+        "Profile"
+      ],
       "address": {
-        "type": ["Address"],
+        "type": [
+          "Address"
+        ],
         "addressCountry": "Japan"
       },
       "name": "1EdTech Testing"
@@ -54,10 +64,11 @@
     "type": "1EdTechCredentialRefresh"
   },
   "proof": [{
-    "type": "Ed25519Signature2020",
-    "created": "2023-05-23T01:07:22Z",
-    "proofPurpose": "assertionMethod",
+    "type": "DataIntegrityProof",
+    "created": "2010-01-01T19:23:24Z",
     "verificationMethod": "did:web:dc.1edtech.org:wellspring2022:wellspring-portal:org:da1e96e9-afcc-4eed-b9a2-2ddf7353214c#key-0",
-    "proofValue": "z5tVhex5rV9aTxTrGh26uyVdC6BWXG8dQCkzNjgkPWtwAjGzMyYXzrQYJ2XrKUsNpYE3fTXsgUSBwDCY11vbyGBw7"
+    "cryptosuite": "eddsa-rdfc-2022",
+    "proofPurpose": "assertionMethod",
+    "proofValue": "z54xk5KNnchymcgxxaTECoREb3n9t8AeUU7AV5mNXhF56D82KPBtoXrPrR9DuEDL5oJtDxL3Cdv42Bt5QCJYcG4gc"
   }]
 }

@@ -1,36 +1,34 @@
 {
-    "@context": [
-      "https://www.w3.org/2018/credentials/v1",
-      "https://purl.imsglobal.org/spec/ob/v3p0/context.json",
-      "https://w3id.org/security/suites/ed25519-2020/v1"
-    ],
-    "id": "http://example.edu/credentials/3732",
+  "@context": [
+    "https://www.w3.org/ns/credentials/v2",
+    "https://purl.imsglobal.org/spec/ob/v3p0/context-3.0.3.json"
+  ],
+  "id": "http://example.edu/credentials/3732",
+  "type": [
+    "VerifiableCredential",
+    "OtherCredential"
+  ],
+  "issuer": {
+    "id": "https://example.edu/issuers/565049",
     "type": [
-      "VerifiableCredential",
-      "OtherCredential"
+      "Profile"
     ],
-    "issuer": {
-      "id": "https://example.edu/issuers/565049",
-      "type": [
-        "Profile"
-      ],
-      "name": "Example University"
-    },
-    "issuanceDate": "2010-01-01T00:00:00Z",
-    "name": "Example University Degree",
-    "credentialSubject": {
-      "id": "did:example:ebfeb1f712ebc6f1c276e12ec21",
-      "type": [
-        "AchievementSubject"
-      ]
-    },
-    "proof": [
-      {
-        "type": "Ed25519Signature2020",
-        "created": "2022-06-09T22:56:28Z",
-        "verificationMethod": "https://example.edu/issuers/565049#key-1",
-        "proofPurpose": "assertionMethod",
-        "proofValue": "z58ieJCh4kN6eE2Vq4TyYURKSC4hWWEK7b75NNUL2taZMhKqwTteuByG1wRoGDdCqqNLW5Gq1diUi4qyZ63tQRtyN"
-      }
+    "name": "Example University"
+  },
+  "validFrom": "2010-01-01T00:00:00Z",
+  "name": "Example University Degree",
+  "credentialSubject": {
+    "id": "did:example:ebfeb1f712ebc6f1c276e12ec21",
+    "type": [
+      "AchievementSubject"
     ]
+  },
+  "proof": {
+    "type": "DataIntegrityProof",
+    "created": "2010-01-01T19:23:24Z",
+    "verificationMethod": "https://example.edu/issuers/565049#z6MkjZRZv3aez3r18pB1RBFJR1kwUVJ5jHt92JmQwXbd5hwi",
+    "cryptosuite": "eddsa-rdfc-2022",
+    "proofPurpose": "assertionMethod",
+    "proofValue": "z662W1sSqKoA8ryTKK7PPVGKRrBkx5id3aDvdFNtguJcVFHJggDnkwJFntbo2cWfSwumCh9mgcYUe2RgpK1GZFyxa"
   }
+}
