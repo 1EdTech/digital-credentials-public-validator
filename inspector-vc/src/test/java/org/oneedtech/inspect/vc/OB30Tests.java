@@ -45,6 +45,15 @@ public class OB30Tests {
 	}
 
 	@Test
+	void testSimpleV1JsonValid() {
+		assertDoesNotThrow(()->{
+			Report report = validator.run(Samples.OB30.JSON.SIMPLE_V1_JSON.asFileResource());
+			if(verbose) PrintHelper.print(report, true);
+			assertWarning(report);
+		});
+	}
+
+	@Test
 	void testSimpleDidKeyMethodJsonValid() {
 		assertDoesNotThrow(()->{
 			Report report = validator.run(Samples.OB30.JSON.SIMPLE_DID_KEY_METHOD_JSON.asFileResource());
@@ -219,7 +228,7 @@ public class OB30Tests {
 		assertDoesNotThrow(()->{
 			Report report = validator.run(Samples.OB30.JSON.SIMPLE_JSON_VERSION_CONTEXT.asFileResource());
 			if(verbose) PrintHelper.print(report, true);
-			assertHasValidProbeID(report, ContextPropertyProbe.ID);
+			assertHasProbeID(report, ContextPropertyProbe.ID, true);
 		});
 	}
 
@@ -342,7 +351,6 @@ public class OB30Tests {
 		});
 	}
 
-	@Disabled //TODO IssuanceVerifierProbe is not run because FATAL: InvalidSignature terminates
 	@Test
 	void testSimpleJsonNotIssued() {
 		//"issuanceDate": "2040-01-01T00:00:00Z",
