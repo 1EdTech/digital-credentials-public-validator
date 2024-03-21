@@ -259,7 +259,7 @@ public class EmbeddedProofProbe extends Probe<VerifiableCredential> {
       return error("Invalid public key: " + e.getMessage(), ctx);
     }
 
-    if (controller != null) {
+    if (controller != null && credentialHolder.getCredential().getIssuer() != null) {
       if (!controller.equals(credentialHolder.getCredential().getIssuer().toString())) {
         return error(
             "Key controller does not match issuer: " + credentialHolder.getCredential().getIssuer(),
