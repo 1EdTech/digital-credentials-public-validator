@@ -390,11 +390,11 @@ public class OB30Tests {
 	}
 
 	@Test
-	void testEddsa2022Valid() {
+	void testEddsa2022Warning() {
 		assertDoesNotThrow(()->{
 			Report report = validator.run(Samples.OB30.JSON.SIMPLE_EDDSA_20222_JSON.asFileResource());
 			if(verbose) PrintHelper.print(report, true);
-			assertValid(report);
+			assertWarning(report);
 		});
 
 	}
