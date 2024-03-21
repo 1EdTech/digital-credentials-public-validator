@@ -10,7 +10,6 @@ public class Samples {
 		}
 		public static final class JSON {
 			public final static Sample COMPLETE_JSON = new Sample("ob30/complete.json", false);
-			public final static Sample BUG_JSON = new Sample("ob30/bug.json", false);
 			public final static Sample SIMPLE_JSON = new Sample("ob30/simple.json", true);
 			public final static Sample SIMPLE_V1_JSON = new Sample("ob30/simple_v1.json", true);
 			public final static Sample SIMPLE_EDDSA_20222_JSON = new Sample("ob30/simple-eddsa-2022.json", true);
