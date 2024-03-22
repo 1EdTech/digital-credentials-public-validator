@@ -95,7 +95,11 @@ public class OB30Tests {
 		assertDoesNotThrow(()->{
 			Report report = validator.run(Samples.OB30.PNG.SIMPLE_JWT_PNG.asFileResource());
 			if(verbose) PrintHelper.print(report, true);
-			assertValid(report);
+			// TODO: moved to warning due to:
+			// - json schema validation error against canonical schema (json-ld schema validates)
+			// - outdated context version
+			// assertValid(report);
+			assertWarning(report);
 		});
 	}
 
@@ -113,7 +117,11 @@ public class OB30Tests {
 		assertDoesNotThrow(()->{
 			Report report = validator.run(Samples.OB30.SVG.SIMPLE_JWT_SVG.asFileResource());
 			if(verbose) PrintHelper.print(report, true);
-			assertValid(report);
+			// TODO: moved to warning due to:
+			// - json schema validation error against canonical schema (json-ld schema validates)
+			// - outdated context version
+			// assertValid(report);
+			assertWarning(report);
 		});
 	}
 
@@ -137,7 +145,9 @@ public class OB30Tests {
 			Report report = validator.run(Samples.OB30.JSON.SIMPLE_JSON_PROOF_METHOD_ERROR.asFileResource());
 			if(verbose) PrintHelper.print(report, true);
 			assertInvalid(report);
-			assertErrorCount(report, 1);
+			// Changed to two until we publish new schemas
+			// assertErrorCount(report, 1);
+			assertErrorCount(report, 2);
 			assertHasProbeID(report, EmbeddedProofProbe.ID, true);
 		});
 	}
