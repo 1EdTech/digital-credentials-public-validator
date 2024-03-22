@@ -1,28 +1,29 @@
 package org.oneedtech.inspect.vc.verification;
 
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.List;
+
 import foundation.identity.jsonld.JsonLDException;
 import foundation.identity.jsonld.JsonLDObject;
 import info.weboftrust.ldsignatures.LdProof;
 import info.weboftrust.ldsignatures.canonicalizer.Canonicalizer;
 import info.weboftrust.ldsignatures.util.SHAUtil;
 
-import java.io.IOException;
-import java.security.GeneralSecurityException;
-import java.util.List;
-
 public class URDNA2015Canonicalizer extends Canonicalizer {
 
-    public URDNA2015Canonicalizer() {
+    private LdProof.Builder<?> proofBuilder;
 
+    public URDNA2015Canonicalizer(LdProof.Builder<?> proofBuilder) {
         super(List.of("urdna2015"));
+        this.proofBuilder = proofBuilder;
     }
 
     @Override
     public byte[] canonicalize(LdProof ldProof, JsonLDObject jsonLdObject) throws IOException, GeneralSecurityException, JsonLDException {
 
         // construct the LD proof without proof values
-
-        LdProof ldProofWithoutProofValues = Eddsa2022LdProof.builder()
+        LdProof ldProofWithoutProofValues = proofBuilder
                 .base(ldProof)
                 .defaultContexts(true)
                 .build();

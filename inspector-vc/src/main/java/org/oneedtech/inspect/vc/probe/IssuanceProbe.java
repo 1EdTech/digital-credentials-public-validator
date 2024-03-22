@@ -22,7 +22,7 @@ public class IssuanceProbe extends Probe<Credential> {
 	@Override
 	public ReportItems run(Credential crd, RunContext ctx) throws Exception {
 		/*
-		 * If the AchievementCredential or EndorsementCredential “issuanceDate”
+		 * If the AchievementCredential or EndorsementCredential “issuanceDate” or "validFrom"
 		 * property after the current date, the credential is not yet valid.
 		 */
 		JsonNode node = crd.getJson().get(crd.getIssuedOnPropertyName());
@@ -30,10 +30,10 @@ public class IssuanceProbe extends Probe<Credential> {
 			try {
 				ZonedDateTime issuanceDate = ZonedDateTime.parse(node.textValue());
 				if (issuanceDate.isAfter(ZonedDateTime.now())) {
-					return fatal("The credential is not yet issued (issuance date is " + node.asText() + ").", ctx);
+					return fatal("The credential is not yet issued or valid (issuance date or validFrom is " + node.asText() + ").", ctx);
 				}
 			} catch (Exception e) {
-				return exception("Error while checking issuanceDate: " + e.getMessage(), ctx.getResource());
+				return exception("Error while checking issuanceDate or ValidFrom: " + e.getMessage(), ctx.getResource());
 			}
 		}
 		return success(ctx);

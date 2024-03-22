@@ -1,7 +1,6 @@
 {
   "@context": [
-    "https://purl.imsglobal.org/spec/ob/v3p0/context.json",
-    "https://w3id.org/security/suites/ed25519-2020/v1"
+    "https://purl.imsglobal.org/spec/ob/v3p0/context-3.0.3.json"
   ],
   "id": "http://example.edu/credentials/3732",
   "type": [
@@ -25,11 +24,12 @@
   },
   "proof": [
     {
-      "type": "Ed25519Signature2020",
-      "created": "2022-06-28T16:28:36Z",
-      "verificationMethod": "did:key:z6MkkUD3J14nkYzn46QeuaVSnp7dF85QJKwKvJvfsjx79aXj",
+      "type": "DataIntegrityProof",
+      "created": "2024-03-20T14:53:19Z",
+      "verificationMethod": "https://example.com/issuers/876543#z6MkrvfzkMnvCroEUP2DVc9SHPE48CRsvHiVSusHioxTYu1x",
+      "cryptosuite": "eddsa-rdfc-2022",
       "proofPurpose": "assertionMethod",
-      "proofValue": "z3MUt2ZuU8Byqivxh6GphEM65AFYyNaGYibm97xLTafM7uGufZQLKvJR8itZwxKskvtFM3CUty46v26DZidMNoQnM"
+      "proofValue": "z76jrNcyxHg5fV17h96yCRwqUaTQZD2QQivyNqHyLSvqu3aWGC3nLShzZEGbH3LnVFodwov9rPQxi3QRP7adCrzV"
     }
   ]
 }

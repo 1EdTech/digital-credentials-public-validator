@@ -2,6 +2,7 @@ package org.oneedtech.inspect.vc.probe;
 
 import static org.oneedtech.inspect.util.code.Defensives.checkNotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.oneedtech.inspect.core.probe.RunContext;
@@ -35,11 +36,19 @@ public class ContextPropertyProbe extends StringValuePropertyProbe {
 			checkNotNull(contextUris);
 
 			int pos = 0;
+			List<ReportItems> warnings = new ArrayList<>();
 			for (String uri : contextUris) {
 				if ((nodeValues.size() < pos + 1) || !contains(uri, nodeValues.get(pos))) {
 					return error("missing required @context uri " + uri + " at position " + (pos + 1), ctx);
 				}
+				if (!nodeValues.get(pos).equals(uri)) {
+					warnings.add(warning("expected @context uri " + uri + " at position " + (pos + 1) + ", gotten " + nodeValues.get(pos).toString() + " instead", ctx));
+				}
+
 				pos++;
+			}
+			if (!warnings.isEmpty()) {
+				return new ReportItems(warnings);
 			}
 		}
 

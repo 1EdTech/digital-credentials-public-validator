@@ -1,8 +1,7 @@
 {
   "@context": [
-    "https://www.w3.org/2018/credentials/v1",
-    "https://purl.imsglobal.org/spec/ob/v3p0/context.json",
-    "https://w3id.org/security/suites/ed25519-2020/v1"
+    "https://www.w3.org/ns/credentials/v2",
+    "https://purl.imsglobal.org/spec/ob/v3p0/context-3.0.3.json"
   ],
   "id": "http://example.com/credentials/3527",
   "type": [
@@ -16,8 +15,8 @@
     ],
     "name": "Example Corp"
   },
-  "issuanceDate": "2010-01-01T00:00:00Z",
-  "expirationDate": "2010-01-01T00:00:00Z",
+  "validFrom": "2010-01-01T00:00:00Z",
+  "validUntil": "2010-01-01T00:00:00Z",
   "name": "Teamwork Badge",
   "credentialSubject": {
     "id": "did:example:ebfeb1f712ebc6f1c276e12ec21",
@@ -36,13 +35,12 @@
       "name": "Teamwork"
     }
   },
-  "proof": [
-    {
-      "type": "Ed25519Signature2020",
-      "created": "2022-11-16T18:54:22Z",
-      "verificationMethod": "https://example.com/issuers/876543#z6MknNHHrBzPytzu6CUBP9Lg7fg4KSBjzimc2Frh693YbMiv",
-      "proofPurpose": "assertionMethod",
-      "proofValue": "z5gJZKchSJEYPGeq6bsqiLKuxT6mXqAovPbqYX66CB7u9CSNFdV41vHtysjHFiitvoyhfPxsaZnWftrZZZW2txPQK"
-    }
-  ]
+  "proof": [{
+    "type": "DataIntegrityProof",
+    "created": "2010-01-01T19:23:24Z",
+    "verificationMethod": "https://example.com/issuers/876543#z6MkjZRZv3aez3r18pB1RBFJR1kwUVJ5jHt92JmQwXbd5hwi",
+    "cryptosuite": "eddsa-rdfc-2022",
+    "proofPurpose": "assertionMethod",
+    "proofValue": "z2mAP6ezimojRWSHDhS1VfJgDdMCqa4oPbmJT1tCs43t5bRiwsrrhHxrmTEeAF2EBjErrzxoJj3HCKsdkyVkno11f"
+  }]
 }

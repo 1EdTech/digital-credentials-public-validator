@@ -1,34 +1,23 @@
 {
   "@context": [
-    "https://www.w3.org/2018/credentials/v1",
-    "https://purl.imsglobal.org/spec/ob/v3p0/context.json",
-    "https://purl.imsglobal.org/spec/ob/v3p0/extensions.json",
-    "https://w3id.org/security/suites/ed25519-2020/v1"
+    "https://www.w3.org/ns/credentials/v2",
+    "https://purl.imsglobal.org/spec/ob/v3p0/context-3.0.3.json"
   ],
-  "id": "http://example.edu/credentials/3732",
-  "type": [
-    "VerifiableCredential",
-    "OpenBadgeCredential"
-  ],
+  "id": "http://example.com/credentials/3527",
+  "type": ["VerifiableCredential", "OpenBadgeCredential"],
   "issuer": {
-    "id": "https://example.edu/issuers/565049",
-    "type": [
-      "Profile"
-    ],
-    "name": "Example University"
+    "id": "https://example.com/issuers/876543",
+    "type": ["Profile"],
+    "name": "Example Corp"
   },
-  "issuanceDate": "2010-01-01T00:00:00Z",
-  "name": "Example University Degree",
+  "validFrom": "2010-01-01T00:00:00Z",
+  "name": "Teamwork Badge",
   "credentialSubject": {
     "id": "did:example:ebfeb1f712ebc6f1c276e12ec21",
-    "type": [
-      "AchievementSubject"
-    ],
+    "type": ["AchievementSubject"],
     "achievement": {
       "id": "https://example.com/achievements/21st-century-skills/teamwork",
-      "type": [
-        "Achievement"
-      ],
+      "type": ["Achievement"],
       "criteria": {
         "narrative": "Team members are nominated for this badge by their peers and recognized upon review by Example Corp management."
       },
@@ -36,19 +25,14 @@
       "name": "Teamwork"
     }
   },
-  "credentialSchema": [
-    {
-      "id": "https://purl.imsglobal.org/spec/ob/v3p0/schema/json/ob_v3p0_achievementcredential_schema.json",
-      "type": "1EdTechJsonSchemaValidator2019"
-    }
-  ],
   "proof": [
     {
-      "type": "Ed25519Signature2020",
-      "created": "2022-09-15T15:48:32Z",
-      "verificationMethod": "https://example.edu/issuers/565049#z6MkmY1R6tG2NEdRHzphdRT6JqxeYpHwLAHwbrDfQULpkMAj",
+      "type": "DataIntegrityProof",
+      "created": "2024-03-20T14:53:19Z",
+      "verificationMethod": "https://example.com/issuers/876543#z6MkrvfzkMnvCroEUP2DVc9SHPE48CRsvHiVSusHioxTYu1x",
+      "cryptosuite": "eddsa-rdfc-2022",
       "proofPurpose": "assertionMethod",
-      "proofValue": "z3fQCWGpz7b1HSH6DTwYiH5vutqtpJb5SHiP1VFK22xeBEW2D61tC9j3SktwPLNxPnTNZnPt4GeAZJPdVYserRqs4"
+      "proofValue": "z76jrNcyxHg5fV17h96yCRwqUaTQZD2QQivyNqHyLSvqu3aWGC3nLShzZEGbH3LvNFodwov9rPQxi3QRP7adCrzV"
     }
   ]
 }
