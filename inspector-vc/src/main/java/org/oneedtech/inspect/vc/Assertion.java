@@ -354,4 +354,5 @@ public class Assertion extends Credential {
 	private static final String ISSUED_ON_PROPERTY_NAME = "issuedOn";
 	private static final String EXPIRES_AT_PROPERTY_NAME = "expires";
 	public static final String JWT_NODE_NAME = ""; // empty because the whole payload is the assertion
+    public static final Boolean JWT_ALLOW_WHOLE_PAYLOAD = true;
 }

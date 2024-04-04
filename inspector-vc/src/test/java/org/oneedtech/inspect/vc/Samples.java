@@ -7,6 +7,7 @@ public class Samples {
 		public static final class SVG {
 			public final static Sample SIMPLE_JSON_SVG = new Sample("ob30/simple-json.svg", true);
 			public final static Sample SIMPLE_JWT_SVG = new Sample("ob30/simple-jwt.svg", true);
+			public final static Sample SIMPLE_V1_JWT_SVG = new Sample("ob30/simple-jwt_v1.svg", true);
 		}
 		public static final class JSON {
 			public final static Sample COMPLETE_JSON = new Sample("ob30/complete.json", false);
@@ -45,6 +46,7 @@ public class Samples {
 		public static final class PNG {
 			public final static Sample SIMPLE_JWT_PNG = new Sample("ob30/simple-jwt.png", true);
 			public final static Sample SIMPLE_JSON_PNG = new Sample("ob30/simple-json.png", true);
+			public final static Sample SIMPLE_V1_JWT_PNG = new Sample("ob30/simple-jwt_v1.png", true);
 		}
 		public static final class JWT {
 			public final static Sample SIMPLE_JWT = new Sample("ob30/simple.jwt", true);

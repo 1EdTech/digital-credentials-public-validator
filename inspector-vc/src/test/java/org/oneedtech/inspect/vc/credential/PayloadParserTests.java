@@ -120,6 +120,7 @@ public class PayloadParserTests {
 				.put(Key.PNG_CREDENTIAL_KEY, PngParser.Keys.OB30)
 				.put(Key.SVG_CREDENTIAL_QNAME, SvgParser.QNames.OB30)
 				.put(Key.JWT_CREDENTIAL_NODE_NAME, VerifiableCredential.JWT_NODE_NAME)
+				.put(Key.JWT_CREDENTIAL_ALLOW_WHOLE_PAYLOAD, VerifiableCredential.JWT_ALLOW_WHOLE_PAYLOAD)
 				.build();
 	}
 }
