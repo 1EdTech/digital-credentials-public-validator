@@ -91,6 +91,7 @@ public class OB20Inspector extends VCInspector {
 				.put(Key.SVG_CREDENTIAL_QNAME, SvgParser.QNames.OB20)
 				.put(Key.JSON_DOCUMENT_LOADER, documentLoader)
 				.put(Key.JWT_CREDENTIAL_NODE_NAME, Assertion.JWT_NODE_NAME)
+				.put(Key.JWT_CREDENTIAL_ALLOW_WHOLE_PAYLOAD, Assertion.JWT_ALLOW_WHOLE_PAYLOAD)
 				.put(Key.URI_RESOURCE_FACTORY, uriResourceFactory)
 				.build();
 

@@ -234,6 +234,7 @@ public class VerifiableCredential extends Credential {
   private static final String EXPIRES_AT_PROPERTY_NAME_V11 = "expirationDate";
   private static final String EXPIRES_AT_PROPERTY_NAME_V20 = "validUntil";
   public static final String JWT_NODE_NAME = "vc";
+  public static final Boolean JWT_ALLOW_WHOLE_PAYLOAD = true;
   public static final List<MimeType> REFRESH_SERVICE_MIME_TYPES =
       List.of(MimeType.JSON, MimeType.JSON_LD, MimeType.TEXT_PLAIN);
 }

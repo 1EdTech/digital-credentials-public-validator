@@ -57,6 +57,9 @@ public abstract class PayloadParser {
 			return outerPayload;
 		}
 		JsonNode vcNode = outerPayload.get(nodeName);
+		if (vcNode == null && (Boolean) context.get(Key.JWT_CREDENTIAL_ALLOW_WHOLE_PAYLOAD)) {
+			return outerPayload;
+		}
 
 		return vcNode;
 	}
