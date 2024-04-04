@@ -95,6 +95,15 @@ public class OB30Tests {
 		assertDoesNotThrow(()->{
 			Report report = validator.run(Samples.OB30.PNG.SIMPLE_JWT_PNG.asFileResource());
 			if(verbose) PrintHelper.print(report, true);
+			assertValid(report);
+		});
+	}
+
+	@Test
+	void testSimpleV1PNGJWTValid() {
+		assertDoesNotThrow(()->{
+			Report report = validator.run(Samples.OB30.PNG.SIMPLE_V1_JWT_PNG.asFileResource());
+			if(verbose) PrintHelper.print(report, true);
 			// TODO: moved to warning due to:
 			// - json schema validation error against canonical schema (json-ld schema validates)
 			// - outdated context version
@@ -117,10 +126,17 @@ public class OB30Tests {
 		assertDoesNotThrow(()->{
 			Report report = validator.run(Samples.OB30.SVG.SIMPLE_JWT_SVG.asFileResource());
 			if(verbose) PrintHelper.print(report, true);
-			// TODO: moved to warning due to:
+			assertValid(report);
+		});
+	}
+
+	@Test
+	void testSimpleV1JsonSVGJWTValid() {
+		assertDoesNotThrow(()->{
+			Report report = validator.run(Samples.OB30.SVG.SIMPLE_V1_JWT_SVG.asFileResource());
+			if(verbose) PrintHelper.print(report, true);
 			// - json schema validation error against canonical schema (json-ld schema validates)
 			// - outdated context version
-			// assertValid(report);
 			assertWarning(report);
 		});
 	}
