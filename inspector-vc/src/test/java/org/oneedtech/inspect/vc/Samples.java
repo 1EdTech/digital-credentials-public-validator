@@ -11,8 +11,10 @@ public class Samples {
 		}
 		public static final class JSON {
 			public final static Sample COMPLETE_JSON = new Sample("ob30/complete.json", false);
+			public final static Sample COMPLETE_V1_JSON = new Sample("ob30/complete_v1.json", false);
 			public final static Sample SIMPLE_JSON = new Sample("ob30/simple.json", true);
 			public final static Sample SIMPLE_V1_JSON = new Sample("ob30/simple_v1.json", true);
+			public final static Sample SIMPLE_1OB = new Sample("ob30/simple.1ob", true);
 			public final static Sample SIMPLE_EDDSA_20222_JSON = new Sample("ob30/simple-eddsa-2022.json", true);
 			public final static Sample SIMPLE_DID_KEY_METHOD_JSON = new Sample("ob30/simple-did-key-method.json", true);
 			public final static Sample SIMPLE_DID_WEB_METHOD_JSON = new Sample("ob30/simple-did-web-method.json", true);

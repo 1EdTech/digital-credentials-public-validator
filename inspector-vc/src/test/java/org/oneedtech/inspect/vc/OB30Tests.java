@@ -1,10 +1,16 @@
 package org.oneedtech.inspect.vc;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.oneedtech.inspect.test.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.oneedtech.inspect.test.Assertions.assertErrorCount;
+import static org.oneedtech.inspect.test.Assertions.assertFatalCount;
+import static org.oneedtech.inspect.test.Assertions.assertHasProbeID;
+import static org.oneedtech.inspect.test.Assertions.assertInvalid;
+import static org.oneedtech.inspect.test.Assertions.assertValid;
+import static org.oneedtech.inspect.test.Assertions.assertWarning;
 
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.oneedtech.inspect.core.Inspector.Behavior;
 import org.oneedtech.inspect.core.probe.json.JsonSchemaProbe;
@@ -12,13 +18,13 @@ import org.oneedtech.inspect.core.report.Report;
 import org.oneedtech.inspect.test.PrintHelper;
 import org.oneedtech.inspect.vc.probe.ContextPropertyProbe;
 import org.oneedtech.inspect.vc.probe.CredentialSubjectProbe;
+import org.oneedtech.inspect.vc.probe.EmbeddedProofProbe;
+import org.oneedtech.inspect.vc.probe.EvidenceProbe;
 import org.oneedtech.inspect.vc.probe.ExpirationProbe;
 import org.oneedtech.inspect.vc.probe.InlineJsonSchemaProbe;
 import org.oneedtech.inspect.vc.probe.IssuanceProbe;
 import org.oneedtech.inspect.vc.probe.IssuerProbe;
 import org.oneedtech.inspect.vc.probe.RevocationListProbe;
-import org.oneedtech.inspect.vc.probe.EmbeddedProofProbe;
-import org.oneedtech.inspect.vc.probe.EvidenceProbe;
 import org.oneedtech.inspect.vc.probe.TypePropertyProbe;
 
 import com.google.common.collect.Iterables;
@@ -39,6 +45,15 @@ public class OB30Tests {
 	void testSimpleJsonValid() {
 		assertDoesNotThrow(()->{
 			Report report = validator.run(Samples.OB30.JSON.SIMPLE_JSON.asFileResource());
+			if(verbose) PrintHelper.print(report, true);
+			assertValid(report);
+		});
+	}
+
+	@Test
+	void testSimple1ObValid() {
+		assertDoesNotThrow(()->{
+			Report report = validator.run(Samples.OB30.JSON.SIMPLE_1OB.asFileResource());
 			if(verbose) PrintHelper.print(report, true);
 			assertValid(report);
 		});
@@ -394,6 +409,19 @@ public class OB30Tests {
 		//404 inline schema ref
 		assertDoesNotThrow(()->{
 			Report report = validator.run(Samples.OB30.JSON.COMPLETE_JSON.asFileResource());
+			if(verbose) PrintHelper.print(report, true);
+			assertFalse(report.asBoolean());
+			assertTrue(Iterables.size(report.getErrors()) > 0);
+			// assertTrue(Iterables.size(report.getExceptions()) > 0);
+			assertHasProbeID(report, InlineJsonSchemaProbe.ID, true);
+		});
+	}
+
+	@Test
+	void testCompleteV1JsonInvalidInlineSchemaRef() throws Exception {
+		//404 inline schema ref
+		assertDoesNotThrow(()->{
+			Report report = validator.run(Samples.OB30.JSON.COMPLETE_V1_JSON.asFileResource());
 			if(verbose) PrintHelper.print(report, true);
 			assertFalse(report.asBoolean());
 			assertTrue(Iterables.size(report.getErrors()) > 0);
