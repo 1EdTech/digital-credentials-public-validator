@@ -82,8 +82,7 @@ public class OB30Tests {
 		assertDoesNotThrow(()->{
 			Report report = validator.run(Samples.OB30.JSON.SIMPLE_DID_WEB_METHOD_JSON.asFileResource());
 			if(verbose) PrintHelper.print(report, true);
-			// warning due to json schema validation error against canonical schema (json-ld schema validates)
-			assertWarning(report);
+			assertValid(report);
 		});
 	}
 
