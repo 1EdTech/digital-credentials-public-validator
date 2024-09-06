@@ -6,17 +6,28 @@ import com.apicatalog.jsonld.loader.DocumentLoaderOptions;
 import com.apicatalog.multibase.Multibase;
 import com.apicatalog.multicodec.Multicodec;
 import com.apicatalog.multicodec.Multicodec.Codec;
+
 import info.weboftrust.ldsignatures.LdProof;
 import info.weboftrust.ldsignatures.verifier.Ed25519Signature2020LdVerifier;
 import info.weboftrust.ldsignatures.verifier.LdVerifier;
+import jakarta.json.Json;
 import jakarta.json.JsonArray;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonStructure;
 import jakarta.json.JsonValue;
+import jakarta.json.JsonReader;
+import uniresolver.client.ClientUniResolver;
+import uniresolver.result.ResolveRepresentationResult;
+
+import java.io.Reader;
+import java.io.StringReader;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import org.oneedtech.inspect.core.probe.Probe;
 import org.oneedtech.inspect.core.probe.RunContext;
@@ -169,46 +180,34 @@ public class EmbeddedProofProbe extends Probe<VerifiableCredential> {
                 ctx);
           }
 
-          // check did in "assertionMethod"
-          JsonArray assertionMethod =
-              keyStructure.get().asJsonObject().getJsonArray("assertionMethod");
-          if (assertionMethod == null) {
-            return error("Document doesn't have a list of assertion methods at URI: " + uri, ctx);
-          } else {
-            Boolean anyMatch = false;
-            for (int i = 0; i < assertionMethod.size(); i++) {
-              String assertionMethodValue = assertionMethod.getString(i);
-              if (assertionMethodValue.equals(method.toString())) {
-                anyMatch = true;
-                break;
-              }
-            }
-            if (!anyMatch) {
-              return error("Assertion method " + method + " not found in DID document.", ctx);
-            }
-          }
-
-          // get keys from "verificationMethod"
-          JsonArray keyVerificationMethod =
-              keyStructure.get().asJsonObject().getJsonArray("verificationMethod");
-          if (keyVerificationMethod == null) {
-            return error(
-                "Document doesn't have a list of verification methods at URI: " + uri, ctx);
-          }
-          Optional<JsonValue> verificationMethodMaybe =
-              keyVerificationMethod.stream()
-                  .filter(n -> n.asJsonObject().getString("id").equals(method.toString()))
-                  .findFirst();
-          if (verificationMethodMaybe.isEmpty()) {
-            return error("Verification method " + method + " not found in DID document.", ctx);
-          }
-          JsonObject verificationMethod = verificationMethodMaybe.get().asJsonObject();
-          // assuming a Ed25519VerificationKey2020 document
-          controller = verificationMethod.getString("controller");
-          publicKeyMultibase = verificationMethod.getString("publicKeyMultibase");
+		  try {
+			  JsonObject verificationMethod = this.extractVerificationMethodFromDocument(method, keyStructure.get().asJsonObject());
+			  // assuming a Ed25519VerificationKey2020 document
+			  controller = verificationMethod.getString("controller");
+			  publicKeyMultibase = verificationMethod.getString("publicKeyMultibase");
+		  } catch (Exception e) {
+			  return error(e.getMessage(), ctx);
+		  }
 
         } else {
-          return error("Unknown verification method: " + method, ctx);
+			try {
+				Map<String, Object> resolveOptions = new HashMap<>();
+				resolveOptions.put("accept", "application/did+ld+json");
+
+				ClientUniResolver uniResolver = new ClientUniResolver();
+				uniResolver.setResolveUri("http://dev.uniresolver.io/1.0/identifiers/");
+
+				String did = "did:" + method.getSchemeSpecificPart();
+				ResolveRepresentationResult resolveRepresentationResult = uniResolver.resolveRepresentation(did, resolveOptions);
+				JsonReader jsonReader = Json.createReader(new StringReader(new String(resolveRepresentationResult.getDidDocumentStream(), StandardCharsets.UTF_8)));
+				JsonObject document = jsonReader.readObject();
+				JsonObject verificationMethod = this.extractVerificationMethodFromDocument(method, document);
+          		// assuming a Ed25519VerificationKey2020 document
+				controller = verificationMethod.getString("controller");
+				publicKeyMultibase = verificationMethod.getString("publicKeyMultibase");
+			} catch (Exception e) {
+				return error(e.getMessage(), ctx);
+			}
         }
       } else if (method.getScheme().equals("http") || method.getScheme().equals("https")) {
         try {
@@ -247,28 +246,28 @@ public class EmbeddedProofProbe extends Probe<VerifiableCredential> {
       }
     }
 
-    // Decode the Multibase to Multicodec and check that it is an Ed25519 public key
-    // https://w3c-ccg.github.io/di-eddsa-2020/#ed25519verificationkey2020
-    byte[] publicKeyMulticodec;
-    try {
-      publicKeyMulticodec = Multibase.decode(publicKeyMultibase);
-      if (publicKeyMulticodec[0] != (byte) 0xed || publicKeyMulticodec[1] != (byte) 0x01) {
-        return error("Verification method does not contain an Ed25519 public key", ctx);
-      }
-    } catch (Exception e) {
-      return error("Invalid public key: " + e.getMessage(), ctx);
-    }
+	// Decode the Multibase to Multicodec and check that it is an Ed25519 public key
+	// https://w3c-ccg.github.io/di-eddsa-2020/#ed25519verificationkey2020
+	byte[] publicKeyMulticodec;
+	try {
+	  publicKeyMulticodec = Multibase.decode(publicKeyMultibase);
+	  if (publicKeyMulticodec[0] != (byte) 0xed || publicKeyMulticodec[1] != (byte) 0x01) {
+		return error("Verification method does not contain an Ed25519 public key", ctx);
+	  }
+	} catch (Exception e) {
+	  return error("Invalid public key: " + e.getMessage(), ctx);
+	}
 
-    if (controller != null && credentialHolder.getCredential().getIssuer() != null) {
-      if (!controller.equals(credentialHolder.getCredential().getIssuer().toString())) {
-        return error(
-            "Key controller does not match issuer: " + credentialHolder.getCredential().getIssuer(),
-            ctx);
-      }
-    }
+	if (controller != null && credentialHolder.getCredential().getIssuer() != null) {
+	  if (!controller.equals(credentialHolder.getCredential().getIssuer().toString())) {
+		return error(
+			"Key controller does not match issuer: " + credentialHolder.getCredential().getIssuer(),
+			ctx);
+	  }
+	}
 
-    // Extract the publicKey bytes from the Multicodec
-    byte[] publicKey = Multicodec.decode(Codec.Ed25519PublicKey, publicKeyMulticodec);
+	// Extract the publicKey bytes from the Multicodec
+	byte[] publicKey = Multicodec.decode(Codec.Ed25519PublicKey, publicKeyMulticodec);
 
     // choose verifier
     LdVerifier<?> verifier = getVerifier(proof, publicKey, crd);
@@ -301,6 +300,43 @@ public class EmbeddedProofProbe extends Probe<VerifiableCredential> {
     } catch (Exception e) {
       return false;
     }
+  }
+
+  private JsonObject extractVerificationMethodFromDocument(URI method, JsonObject document) throws Exception {
+	  // check did in "assertionMethod"
+	  JsonArray assertionMethod =
+		  document.getJsonArray("assertionMethod");
+	  if (assertionMethod == null) {
+		  throw new Exception("Document for " + method + " doesn't have a list of assertion methods: ");
+	  } else {
+		  Boolean anyMatch = false;
+		  for (int i = 0; i < assertionMethod.size(); i++) {
+			  String assertionMethodValue = assertionMethod.getString(i);
+			  if (assertionMethodValue.equals(method.toString())) {
+				  anyMatch = true;
+				  break;
+			  }
+		  }
+		  if (!anyMatch) {
+			  throw new Exception("Assertion method " + method + " not found in DID document.");
+		  }
+	  }
+
+	  // get keys from "verificationMethod"
+	  JsonArray keyVerificationMethod =
+		  document.getJsonArray("verificationMethod");
+	  if (keyVerificationMethod == null) {
+		  throw new Exception("Document for " + method + "doesn't have a list of verification methods at DID: ");
+	  }
+	  Optional<JsonValue> verificationMethodMaybe =
+		  keyVerificationMethod.stream()
+		  .filter(n -> n.asJsonObject().getString("id").equals(method.toString()))
+		  .findFirst();
+	  if (verificationMethodMaybe.isEmpty()) {
+		  throw new Exception("Verification method " + method + " not found in DID document.");
+	  }
+	  JsonObject verificationMethod = verificationMethodMaybe.get().asJsonObject();
+	  return verificationMethod;
   }
 
   public static final String ID = EmbeddedProofProbe.class.getSimpleName();
