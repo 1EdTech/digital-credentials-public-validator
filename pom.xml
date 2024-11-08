@@ -7,7 +7,7 @@
 
   <groupId>org.1edtech</groupId>
   <artifactId>vc-public-validator</artifactId>
-  <version>1.0.13</version>
+  <version>1.0.14</version>
   <name>vc-public-validator</name>
   <packaging>pom</packaging>
   <developers>
