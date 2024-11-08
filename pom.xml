@@ -22,7 +22,7 @@
     <java.version>11</java.version>
     <log4j.version>2.17.2</log4j.version>
     <skipTests>false</skipTests>
-    <public.core.version>1.0.14</public.core.version>
+    <public.core.version>1.0.15</public.core.version>
   </properties>
 
   <modules>
