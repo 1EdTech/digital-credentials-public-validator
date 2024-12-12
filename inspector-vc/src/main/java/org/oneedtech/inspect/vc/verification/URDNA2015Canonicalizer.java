@@ -14,6 +14,13 @@ public class URDNA2015Canonicalizer extends Canonicalizer {
 
     private LdProof.Builder<?> proofBuilder;
 
+    // expose intermediate values for reporting
+    private LdProof ldProofWithoutProofValues;
+    private JsonLDObject jsonLdObjectWithoutProof;
+    private String canonicalizedLdProofWithoutProofValues;
+    private String canonicalizedJsonLdObjectWithoutProof;
+    private byte[] canonicalizationResult;
+
     public URDNA2015Canonicalizer(LdProof.Builder<?> proofBuilder) {
         super(List.of("urdna2015"));
         this.proofBuilder = proofBuilder;
@@ -23,7 +30,7 @@ public class URDNA2015Canonicalizer extends Canonicalizer {
     public byte[] canonicalize(LdProof ldProof, JsonLDObject jsonLdObject) throws IOException, GeneralSecurityException, JsonLDException {
 
         // construct the LD proof without proof values
-        LdProof ldProofWithoutProofValues = proofBuilder
+        ldProofWithoutProofValues = proofBuilder
                 .base(ldProof)
                 .defaultContexts(true)
                 .build();
@@ -31,7 +38,7 @@ public class URDNA2015Canonicalizer extends Canonicalizer {
 
         // construct the LD object without proof
 
-        JsonLDObject jsonLdObjectWithoutProof = JsonLDObject.builder()
+        jsonLdObjectWithoutProof = JsonLDObject.builder()
                 .base(jsonLdObject)
                 .build();
         jsonLdObjectWithoutProof.setDocumentLoader(jsonLdObject.getDocumentLoader());
@@ -39,15 +46,35 @@ public class URDNA2015Canonicalizer extends Canonicalizer {
 
         // canonicalize the LD proof and LD object
 
-        String canonicalizedLdProofWithoutProofValues = ldProofWithoutProofValues.normalize("urdna2015");
-        String canonicalizedJsonLdObjectWithoutProof = jsonLdObjectWithoutProof.normalize("urdna2015");
+        canonicalizedLdProofWithoutProofValues = ldProofWithoutProofValues.normalize("urdna2015");
+        canonicalizedJsonLdObjectWithoutProof = jsonLdObjectWithoutProof.normalize("urdna2015");
 
         // construct the canonicalization result
 
-        byte[] canonicalizationResult = new byte[64];
+        canonicalizationResult = new byte[64];
         System.arraycopy(SHAUtil.sha256(canonicalizedLdProofWithoutProofValues), 0, canonicalizationResult, 0, 32);
         System.arraycopy(SHAUtil.sha256(canonicalizedJsonLdObjectWithoutProof), 0, canonicalizationResult, 32, 32);
 
+        return canonicalizationResult;
+    }
+
+    public LdProof getLdProofWithoutProofValues() {
+        return ldProofWithoutProofValues;
+    }
+
+    public JsonLDObject getJsonLdObjectWithoutProof() {
+        return jsonLdObjectWithoutProof;
+    }
+
+    public String getCanonicalizedLdProofWithoutProofValues() {
+        return canonicalizedLdProofWithoutProofValues;
+    }
+
+    public String getCanonicalizedJsonLdObjectWithoutProof() {
+        return canonicalizedJsonLdObjectWithoutProof;
+    }
+
+    public byte[] getCanonicalizationResult() {
         return canonicalizationResult;
     }
 }

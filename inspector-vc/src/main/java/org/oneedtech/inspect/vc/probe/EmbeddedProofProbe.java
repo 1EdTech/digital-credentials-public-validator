@@ -7,6 +7,7 @@ import com.apicatalog.multibase.Multibase;
 import com.apicatalog.multicodec.Multicodec;
 import com.apicatalog.multicodec.Multicodec.Codec;
 import info.weboftrust.ldsignatures.LdProof;
+import info.weboftrust.ldsignatures.canonicalizer.Canonicalizer;
 import info.weboftrust.ldsignatures.verifier.Ed25519Signature2020LdVerifier;
 import info.weboftrust.ldsignatures.verifier.LdVerifier;
 import jakarta.json.JsonArray;
@@ -16,15 +17,24 @@ import jakarta.json.JsonValue;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
+import java.util.HexFormat;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.oneedtech.inspect.core.location.Location;
+import org.oneedtech.inspect.core.probe.GeneratedObject;
+import org.oneedtech.inspect.core.probe.Outcome;
 import org.oneedtech.inspect.core.probe.Probe;
 import org.oneedtech.inspect.core.probe.RunContext;
+import org.oneedtech.inspect.core.report.ReportItem;
 import org.oneedtech.inspect.core.report.ReportItems;
 import org.oneedtech.inspect.vc.VerifiableCredential;
 import org.oneedtech.inspect.vc.W3CVCHolder;
 import org.oneedtech.inspect.vc.verification.Ed25519Signature2022LdVerifier;
 import org.oneedtech.inspect.vc.verification.Ed25519Signature2022VCDM20LdVerifier;
+import org.oneedtech.inspect.vc.verification.URDNA2015Canonicalizer;
 
 /**
  * A Probe that verifies a credential's embedded proof.
@@ -276,6 +286,16 @@ public class EmbeddedProofProbe extends Probe<VerifiableCredential> {
     try {
       boolean verify = verifier.verify(credentialHolder.getCredential(), proof);
       if (!verify) {
+        // add proof calculations to the report
+        Canonicalizer canonicalizer = verifier.getCanonicalizer();
+        if (canonicalizer != null) {
+          if (canonicalizer instanceof URDNA2015Canonicalizer) {
+            URDNA2015Canonicalizer urdna2015Canonicalizer = (URDNA2015Canonicalizer) canonicalizer;
+            EmbeddedProofModelGenerator modelGenerator =
+                new EmbeddedProofModelGenerator(urdna2015Canonicalizer);
+            return error("Embedded proof verification failed.", modelGenerator.getGeneratedObject(), ctx);
+          }
+        }
         return error("Embedded proof verification failed.", ctx);
       }
     } catch (Exception e) {
@@ -301,6 +321,10 @@ public class EmbeddedProofProbe extends Probe<VerifiableCredential> {
     } catch (Exception e) {
       return false;
     }
+  }
+
+  protected ReportItems error(String msg, GeneratedObject object, RunContext context) {
+    return new ReportItems(List.of(error(msg, context).iterator().next()), List.of(object));
   }
 
   public static final String ID = EmbeddedProofProbe.class.getSimpleName();

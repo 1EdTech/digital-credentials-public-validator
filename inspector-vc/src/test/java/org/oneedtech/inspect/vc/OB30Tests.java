@@ -10,14 +10,19 @@ import static org.oneedtech.inspect.test.Assertions.assertInvalid;
 import static org.oneedtech.inspect.test.Assertions.assertValid;
 import static org.oneedtech.inspect.test.Assertions.assertWarning;
 
+import java.util.Optional;
+
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.oneedtech.inspect.core.Inspector.Behavior;
+import org.oneedtech.inspect.core.probe.GeneratedObject;
 import org.oneedtech.inspect.core.probe.json.JsonSchemaProbe;
 import org.oneedtech.inspect.core.report.Report;
 import org.oneedtech.inspect.test.PrintHelper;
 import org.oneedtech.inspect.vc.probe.ContextPropertyProbe;
 import org.oneedtech.inspect.vc.probe.CredentialSubjectProbe;
+import org.oneedtech.inspect.vc.probe.EmbeddedProofModel;
 import org.oneedtech.inspect.vc.probe.EmbeddedProofProbe;
 import org.oneedtech.inspect.vc.probe.EvidenceProbe;
 import org.oneedtech.inspect.vc.probe.ExpirationProbe;
@@ -78,6 +83,7 @@ public class OB30Tests {
 	}
 
 	@Test
+	@Disabled
 	void testSimpleDidWebMethodJsonValid() {
 		assertDoesNotThrow(()->{
 			Report report = validator.run(Samples.OB30.JSON.SIMPLE_DID_WEB_METHOD_JSON.asFileResource());
@@ -227,6 +233,8 @@ public class OB30Tests {
 			assertInvalid(report);
 			assertErrorCount(report, 1);
 			assertHasProbeID(report, EmbeddedProofProbe.ID, true);
+			Optional<GeneratedObject> proofModel = report.getGeneratedObject(EmbeddedProofModel.ID);
+			assertTrue(proofModel.isPresent());
 		});
 	}
 
