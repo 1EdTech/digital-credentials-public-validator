@@ -48,7 +48,10 @@ import org.oneedtech.inspect.vc.probe.IssuanceProbe;
 import org.oneedtech.inspect.vc.probe.IssuerProbe;
 import org.oneedtech.inspect.vc.probe.JsonSchemasProbe;
 import org.oneedtech.inspect.vc.probe.RevocationListProbe;
+import org.oneedtech.inspect.vc.probe.RunContextKey;
 import org.oneedtech.inspect.vc.probe.TypePropertyProbe;
+import org.oneedtech.inspect.vc.probe.did.DidResolver;
+import org.oneedtech.inspect.vc.probe.did.SimpleDidResolver;
 import org.oneedtech.inspect.vc.util.CachingDocumentLoader;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -139,6 +142,7 @@ public class OB30Inspector extends VCInspector implements SubInspector {
 
 		ObjectMapper mapper = ObjectMapperCache.get(DEFAULT);
 		JsonPathEvaluator jsonPath = new JsonPathEvaluator(mapper);
+		DidResolver didResolver = new SimpleDidResolver();
 		VerifiableCredential.Builder credentialBuilder = new VerifiableCredential.Builder();
 		RunContext ctx = new RunContext.Builder()
 				.put(this)
@@ -148,6 +152,7 @@ public class OB30Inspector extends VCInspector implements SubInspector {
 				.put(Key.GENERATED_OBJECT_BUILDER, credentialBuilder)
 				.put(Key.PNG_CREDENTIAL_KEY, PngParser.Keys.OB30)
 				.put(Key.SVG_CREDENTIAL_QNAME, SvgParser.QNames.OB30)
+				.put(RunContextKey.DID_RESOLVER, didResolver)
 				.build();
 
 		List<ReportItems> accumulator = new ArrayList<>();

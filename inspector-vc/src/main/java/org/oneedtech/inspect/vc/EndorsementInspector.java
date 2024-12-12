@@ -42,7 +42,10 @@ import org.oneedtech.inspect.vc.probe.InlineJsonSchemaProbe;
 import org.oneedtech.inspect.vc.probe.IssuanceProbe;
 import org.oneedtech.inspect.vc.probe.JsonSchemasProbe;
 import org.oneedtech.inspect.vc.probe.RevocationListProbe;
+import org.oneedtech.inspect.vc.probe.RunContextKey;
 import org.oneedtech.inspect.vc.probe.TypePropertyProbe;
+import org.oneedtech.inspect.vc.probe.did.DidResolver;
+import org.oneedtech.inspect.vc.probe.did.SimpleDidResolver;
 import org.oneedtech.inspect.vc.util.CachingDocumentLoader;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -78,12 +81,14 @@ public class EndorsementInspector extends VCInspector implements SubInspector {
 
 		ObjectMapper mapper = ObjectMapperCache.get(DEFAULT);
 		JsonPathEvaluator jsonPath = new JsonPathEvaluator(mapper);
+		DidResolver didResolver = new SimpleDidResolver();
 
 		RunContext ctx = new RunContext.Builder()
 				.put(this)
 				.put(resource)
 				.put(JACKSON_OBJECTMAPPER, mapper)
 				.put(JSONPATH_EVALUATOR, jsonPath)
+				.put(RunContextKey.DID_RESOLVER, didResolver)
 				.build();
 
 		List<ReportItems> accumulator = new ArrayList<>();
