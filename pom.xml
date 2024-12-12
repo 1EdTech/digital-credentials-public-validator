@@ -7,7 +7,7 @@
 
   <groupId>org.1edtech</groupId>
   <artifactId>vc-public-validator</artifactId>
-  <version>1.0.14</version>
+  <version>1.1.0</version>
   <name>vc-public-validator</name>
   <packaging>pom</packaging>
   <developers>
@@ -19,10 +19,10 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <java.version>11</java.version>
+    <java.version>17</java.version>
     <log4j.version>2.17.2</log4j.version>
     <skipTests>false</skipTests>
-    <public.core.version>1.0.15</public.core.version>
+    <public.core.version>1.1.0</public.core.version>
   </properties>
 
   <modules>
