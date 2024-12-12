@@ -3,72 +3,46 @@
     "https://www.w3.org/ns/credentials/v2",
     "https://purl.imsglobal.org/spec/ob/v3p0/context-3.0.3.json"
   ],
-  "id": "https://dc.1edtech.org/wellspring2022/wellspring-portal/credential/d002b4e9-6fd9-4af0-b1f7-faa9237b46ca",
+  "id": "http://example.com/credentials/3527",
   "type": [
     "VerifiableCredential",
-    "AchievementCredential"
+    "OpenBadgeCredential"
   ],
   "issuer": {
-    "id": "did:web:dc.1edtech.org:wellspring2022:wellspring-portal:org:da1e96e9-afcc-4eed-b9a2-2ddf7353214c",
+    "id": "https://1edtech.edu/issuers/565049",
     "type": [
       "Profile"
     ],
-    "address": {
-      "type": [
-        "Address"
-      ],
-      "addressCountry": "Japan"
-    },
-    "name": "1EdTech Testing"
+    "url": "https://www.imsglobal.org",
+    "name": "Example Corp"
   },
-  "awardedDate": "2023-05-22T14:09:00Z",
-  "validFrom": "2023-05-23T01:07:22Z",
-  "name": "ob3-simple-did-web-method.json",
+  "validFrom": "2010-01-01T00:00:00Z",
+  "awardedDate": "2010-01-01T00:00:00Z",
+  "name": "Teamwork Badge",
   "credentialSubject": {
-    "id": "did:web:dc.1edtech.org:wellspring2022:wellspring-portal:learner:6896f98f-6b42-4c75-98ec-8befd0dc0b29",
+    "id": "did:web:dc.1edtech.org:wellspring2022:wellspring-portal:learner:e42a88f4-7e1d-429b-bcea-0f3b31ee4e5d",
+    "name": "Xavi Aracil's Teamwork Badge",
     "type": [
       "AchievementSubject"
     ],
     "achievement": {
-      "id": "https://dc.1edtech.org/wellspring2022/wellspring-portal/achievement/66457db3-fb3d-4ae3-8f32-bc8c79c9f0db",
+      "id": "https://example.com/achievements/21st-century-skills/teamwork",
       "type": [
         "Achievement"
       ],
-      "achievementType": "Achievement",
       "criteria": {
-        "narrative": "Passes tests"
+        "narrative": "Team members are nominated for this badge by their peers and recognized upon review by Example Corp management."
       },
-      "description": "A second testing achievement",
-      "name": "Achievement 2"
-    },
-    "source": {
-      "id": "did:web:dc.1edtech.org:wellspring2022:wellspring-portal:org:da1e96e9-afcc-4eed-b9a2-2ddf7353214c",
-      "type": [
-        "Profile"
-      ],
-      "address": {
-        "type": [
-          "Address"
-        ],
-        "addressCountry": "Japan"
-      },
-      "name": "1EdTech Testing"
+      "description": "This badge recognizes the development of the capacity to collaborate within a group environment.",
+      "name": "Teamwork"
     }
   },
-  "credentialStatus": {
-    "id": "https://dc.1edtech.org/wellspring2022/wellspring-portal/api/revocations/da1e96e9-afcc-4eed-b9a2-2ddf7353214c",
-    "type": "1EdTechRevocationList"
-  },
-  "refreshService": {
-    "id": "https://dc.1edtech.org/wellspring2022/wellspring-portal/api/refresh/d002b4e9-6fd9-4af0-b1f7-faa9237b46ca",
-    "type": "1EdTechCredentialRefresh"
-  },
-  "proof": [{
+  "proof": {
     "type": "DataIntegrityProof",
     "created": "2010-01-01T19:23:24Z",
-    "verificationMethod": "did:web:dc.1edtech.org:wellspring2022:wellspring-portal:org:da1e96e9-afcc-4eed-b9a2-2ddf7353214c#key-0",
+    "verificationMethod": "https://1edtech.edu/issuers/565049#z6MkjZRZv3aez3r18pB1RBFJR1kwUVJ5jHt92JmQwXbd5hwi",
     "cryptosuite": "eddsa-rdfc-2022",
     "proofPurpose": "assertionMethod",
-    "proofValue": "z54xk5KNnchymcgxxaTECoREb3n9t8AeUU7AV5mNXhF56D82KPBtoXrPrR9DuEDL5oJtDxL3Cdv42Bt5QCJYcG4gc"
-  }]
+    "proofValue": "z5MAVhNZYag5uSBiiNFepcUuToSnqRrVHHFYZdxV94bbreyMaQBdmW5839wSPSzb2qMEYRyUjV2oz6hzQbiD24Rdx"
+  }
 }
