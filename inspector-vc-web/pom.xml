@@ -13,6 +13,7 @@
 		<mainClass>org.oneedtech.inspect.vc.web.ValidatorApplication</mainClass>
 		<spring-boot-starter-parent.version>2.6.7</spring-boot-starter-parent.version>
 		<spring-boot-maven-plugin.version>2.6.7</spring-boot-maven-plugin.version>
+		<maven-deploy-plugin.version>2.8.2</maven-deploy-plugin.version>
 		<imageName>gcr.io/staging-1edtech/ims/inspector-vc-public</imageName>
 	</properties>
 
@@ -174,6 +175,14 @@
 					</execution>
 				</executions>
 			</plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>${maven-deploy-plugin.version}</version>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
 		</plugins>
 	</build>
 </project>
