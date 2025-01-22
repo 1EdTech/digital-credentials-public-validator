@@ -3,6 +3,7 @@ package org.oneedtech.inspect.vc.probe;
 import static org.oneedtech.inspect.util.code.Defensives.checkTrue;
 
 import java.math.BigInteger;
+import java.net.URI;
 import java.security.KeyFactory;
 import java.security.PublicKey;
 import java.security.interfaces.RSAPublicKey;
@@ -22,6 +23,9 @@ import org.oneedtech.inspect.core.probe.Probe;
 import org.oneedtech.inspect.core.probe.RunContext;
 import org.oneedtech.inspect.core.report.ReportItems;
 import org.oneedtech.inspect.vc.VerifiableCredential;
+import org.oneedtech.inspect.vc.probe.did.DidResolution;
+import org.oneedtech.inspect.vc.probe.did.DidResolver;
+import org.oneedtech.inspect.vc.util.CachingDocumentLoader;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
@@ -90,7 +94,7 @@ public class ExternalProofProbe extends Probe<VerifiableCredential> {
 			//Load jwk JsonNode from url and do the rest the same below.
 			//TODO Consider additional testing.
 			String kidUrl = kid.textValue();
-			String jwkResponse = fetchJwk(kidUrl);
+			String jwkResponse = fetchJwk(kidUrl, ctx);
 			if(jwkResponse == null) { throw new Exception("Unable to retrieve jwk value from url specified in kid."); }
 
 			jwk = mapper.readTree(jwkResponse);
@@ -125,21 +129,28 @@ public class ExternalProofProbe extends Probe<VerifiableCredential> {
 		}
 	}
 
-	private String fetchJwk(String fetchUrl){
+	private String fetchJwk(String fetchUrl, RunContext ctx){
         String responseString = null;
 
         try {
-            CloseableHttpClient client = HttpClients.createDefault();
-            HttpGet httpGet = new HttpGet(fetchUrl);
+			URI kidUri = new URI(fetchUrl);
+			if (kidUri.getScheme() == null || kidUri.getScheme().equals("did")) {
+				DidResolver didResolver = ctx.get(RunContextKey.DID_RESOLVER);
+				DidResolution didResolution = didResolver.resolve(kidUri, CachingDocumentLoader.DOCUMENT_LOADER);
+				responseString = didResolution.getPublicKeyJwk();
+			} else {
+				CloseableHttpClient client = HttpClients.createDefault();
+				HttpGet httpGet = new HttpGet(fetchUrl);
 
-            CloseableHttpResponse response = client.execute(httpGet);
+				CloseableHttpResponse response = client.execute(httpGet);
 
-            if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-                HttpEntity entity = response.getEntity();
-                responseString = EntityUtils.toString(entity, "UTF-8");
-            }
+				if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+					HttpEntity entity = response.getEntity();
+					responseString = EntityUtils.toString(entity, "UTF-8");
+				}
 
-            client.close();
+				client.close();
+			}
         }
         catch(Exception ex){
             responseString = null;
