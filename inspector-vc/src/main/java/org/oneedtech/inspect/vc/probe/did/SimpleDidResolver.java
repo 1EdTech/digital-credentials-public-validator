@@ -125,6 +125,9 @@ public class SimpleDidResolver implements DidResolver {
       builder
           .controller(verificationMethod.getString("controller"))
           .publicKeyMultibase(verificationMethod.getString("publicKeyMultibase"));
+      // check JWK
+      if (verificationMethod.containsKey("publicKeyJwk"))
+          builder.publicKeyJwk(verificationMethod.getJsonObject("publicKeyJwk").toString());
 
     } else {
       throw new DidResolutionException("Unknown verification method: " + did);
