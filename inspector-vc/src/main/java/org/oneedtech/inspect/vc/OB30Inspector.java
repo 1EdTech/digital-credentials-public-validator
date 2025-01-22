@@ -152,6 +152,8 @@ public class OB30Inspector extends VCInspector implements SubInspector {
 				.put(Key.GENERATED_OBJECT_BUILDER, credentialBuilder)
 				.put(Key.PNG_CREDENTIAL_KEY, PngParser.Keys.OB30)
 				.put(Key.SVG_CREDENTIAL_QNAME, SvgParser.QNames.OB30)
+				.put(Key.JWT_CREDENTIAL_NODE_NAME, VerifiableCredential.JWT_NODE_NAME)
+				.put(Key.JWT_CREDENTIAL_ALLOW_WHOLE_PAYLOAD, VerifiableCredential.JWT_ALLOW_WHOLE_PAYLOAD)
 				.put(RunContextKey.DID_RESOLVER, didResolver)
 				.build();
 
@@ -241,7 +243,7 @@ public class OB30Inspector extends VCInspector implements SubInspector {
 				probeCount++;
 				String jwt = node.asText();
 				JsonNode vcNode = fromJwt(jwt, ctx);
-				VerifiableCredential endorsement = credentialBuilder.resource(resource).jsonData(node).jwt(jwt).build();
+				VerifiableCredential endorsement = credentialBuilder.resource(resource).jsonData(vcNode).jwt(jwt).build();
 				accumulator.add(endorsementInspector.run(resource, Map.of(CREDENTIAL_KEY, endorsement)));
 			}
 
