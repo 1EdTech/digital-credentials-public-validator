@@ -16,7 +16,7 @@ public class EmbeddedProofModel extends GeneratedObject {
     private final String canonicalizationResult;
 
     public EmbeddedProofModel(URDNA2015Canonicalizer canonicalizer) {
-        super(ID, Type.INTERNAL);
+        super(ID, Type.EXTERNAL);
         this.ldProofWithoutProofValues = canonicalizer.getLdProofWithoutProofValues().toJson(true);
         this.jsonLdObjectWithoutProof = canonicalizer.getJsonLdObjectWithoutProof().toJson(true);
         this.canonicalizedLdProofWithoutProofValues = canonicalizer.getCanonicalizedLdProofWithoutProofValues();
