@@ -189,7 +189,7 @@ public class EmbeddedProofProbe extends Probe<VerifiableCredential> {
             URDNA2015Canonicalizer urdna2015Canonicalizer = (URDNA2015Canonicalizer) canonicalizer;
             EmbeddedProofModelGenerator modelGenerator =
                 new EmbeddedProofModelGenerator(urdna2015Canonicalizer);
-            return error("Embedded proof verification failed.", modelGenerator.getGeneratedObject(), ctx);
+            return error("Embedded proof verification failed. You can see intermediate results for proof calculations by downloading the report.", modelGenerator.getGeneratedObject(), ctx);
           }
         }
         return error("Embedded proof verification failed.", ctx);
