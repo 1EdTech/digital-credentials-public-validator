@@ -11,6 +11,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
+import java.util.Base64;
 import java.util.Optional;
 
 public class SimpleDidResolver implements DidResolver {
@@ -22,6 +23,9 @@ public class SimpleDidResolver implements DidResolver {
     // resolve did using universal did resolver
     if (did.getSchemeSpecificPart().startsWith("key:")) {
       builder.publicKeyMultibase(did.getSchemeSpecificPart().substring("key:".length()));
+    } else if (did.getSchemeSpecificPart().startsWith("jwk:")) {
+      byte[] decodedJwk = Base64.getUrlDecoder().decode(did.getSchemeSpecificPart().substring("jwk:".length()));
+      builder.publicKeyJwk(new String(decodedJwk));
     } else if (did.getSchemeSpecificPart().startsWith("web:")) {
       String methodSpecificId = did.getRawSchemeSpecificPart().substring("web:".length());
 
