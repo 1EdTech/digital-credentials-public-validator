@@ -8,8 +8,6 @@ import static org.oneedtech.inspect.vc.VerifiableCredential.Type.VerifiablePrese
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableMap;
-
-import java.net.URI;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -52,7 +50,7 @@ public class VerifiableCredential extends Credential {
   }
 
   public VCVersion getVersion() {
-      return version;
+    return version;
   }
 
   private static final Map<CredentialEnum, SchemaKey> schemas =
@@ -63,9 +61,10 @@ public class VerifiableCredential extends Credential {
           .put(EndorsementCredential, Catalog.OB_30_ANY_ENDORSEMENTCREDENTIAL_JSON)
           .build();
 
-    public static final String JSONLD_CONTEXT_W3C_CREDENTIALS_V2 = "https://www.w3.org/ns/credentials/v2";
+  public static final String JSONLD_CONTEXT_W3C_CREDENTIALS_V2 =
+      "https://www.w3.org/ns/credentials/v2";
 
-    private static final Map<Set<VerifiableCredential.Type>, List<String>> contextMap =
+  private static final Map<Set<VerifiableCredential.Type>, List<String>> contextMap =
       new ImmutableMap.Builder<Set<VerifiableCredential.Type>, List<String>>()
           .put(
               Set.of(Type.OpenBadgeCredential, AchievementCredential, EndorsementCredential),
@@ -78,6 +77,9 @@ public class VerifiableCredential extends Credential {
                   JSONLD_CONTEXT_W3C_CREDENTIALS_V2,
                   "https://purl.imsglobal.org/spec/clr/v2p0/context-2.0.1.json",
                   "https://purl.imsglobal.org/spec/ob/v3p0/context-3.0.3.json"))
+          .put(
+              Set.of(Type.BitstringStatusListCredential),
+              List.of(JSONLD_CONTEXT_W3C_CREDENTIALS_V2))
           .build();
 
   private static final Map<String, List<String>> contextAliasesMap =
@@ -90,9 +92,7 @@ public class VerifiableCredential extends Credential {
           .put(
               "https://purl.imsglobal.org/spec/clr/v2p0/context-2.0.1.json",
               List.of("https://purl.imsglobal.org/spec/clr/v2p0/context.json"))
-          .put(
-              JSONLD_CONTEXT_W3C_CREDENTIALS_V2,
-              List.of("https://www.w3.org/2018/credentials/v1"))
+          .put(JSONLD_CONTEXT_W3C_CREDENTIALS_V2, List.of("https://www.w3.org/2018/credentials/v1"))
           .build();
 
   private static final Map<String, List<String>> contextVersioningPatternMap =
@@ -118,6 +118,7 @@ public class VerifiableCredential extends Credential {
     VerifiablePresentation(Collections.emptyList()),
     VerifiableCredential(
         List.of("VerifiableCredential")), // this is an underspecifier in our context
+    BitstringStatusListCredential(List.of("BitstringStatusListCredential")),
     Unknown(Collections.emptyList());
 
     private final List<String> allowedTypeValues;
@@ -138,6 +139,8 @@ public class VerifiableCredential extends Credential {
             return VerifiablePresentation;
           } else if (value.equals("EndorsementCredential")) {
             return EndorsementCredential;
+          } else if (value.equals("BitstringStatusListCredential")) {
+            return BitstringStatusListCredential;
           }
         }
       }
@@ -205,10 +208,10 @@ public class VerifiableCredential extends Credential {
     }
 
     static VCVersion of(JsonNode context) {
-      if (JsonNodeUtil.asNodeList(context)
-			.stream()
-			.anyMatch(node -> node.isTextual() && node.asText().equals(JSONLD_CONTEXT_W3C_CREDENTIALS_V2)) )
-      return VCDMv2p0;
+      if (JsonNodeUtil.asNodeList(context).stream()
+          .anyMatch(
+              node -> node.isTextual() && node.asText().equals(JSONLD_CONTEXT_W3C_CREDENTIALS_V2)))
+        return VCDMv2p0;
 
       return VCDMv1p1;
     }
@@ -219,12 +222,7 @@ public class VerifiableCredential extends Credential {
     public VerifiableCredential build() {
       VCVersion version = VCVersion.of(getJsonData().get("@context"));
 
-      return new VerifiableCredential(
-          getResource(),
-          getJsonData(),
-          getJwt(),
-          schemas,
-          version);
+      return new VerifiableCredential(getResource(), getJsonData(), getJwt(), schemas, version);
     }
   }
 
