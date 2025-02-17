@@ -127,4 +127,9 @@ public class Samples {
 			public final static Sample SIMPLE_REVOKED_JWT = new Sample("ob20/simple-revoked.jwt", true);
 		}
 	}
+
+	public static final class BSL {
+		public final static Sample SIMPLE_JSON = new Sample("ob30/bit-string-list/testlist", true);
+	}
+
 }
