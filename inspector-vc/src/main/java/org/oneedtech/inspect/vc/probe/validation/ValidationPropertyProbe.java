@@ -4,8 +4,6 @@ import static org.oneedtech.inspect.vc.Assertion.ValueType.DATA_URI;
 import static org.oneedtech.inspect.vc.Assertion.ValueType.DATA_URI_OR_URL;
 import static org.oneedtech.inspect.vc.Assertion.ValueType.URL;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -23,13 +21,10 @@ import org.oneedtech.inspect.vc.jsonld.JsonLdGeneratedObject;
 import org.oneedtech.inspect.vc.jsonld.probe.JsonLDCompactionProve;
 import org.oneedtech.inspect.vc.probe.PropertyProbe;
 import org.oneedtech.inspect.vc.resource.UriResourceFactory;
-import org.oneedtech.inspect.vc.util.CachingDocumentLoader;
 import org.oneedtech.inspect.vc.util.JsonNodeUtil;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import foundation.identity.jsonld.ConfigurableDocumentLoader;
 
 /**
  * Validator for properties of type other than ValueType.RDF_TYPE in Open Badges 2.0 types
