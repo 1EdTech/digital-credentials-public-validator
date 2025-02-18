@@ -31,6 +31,7 @@ import org.oneedtech.inspect.vc.probe.IssuanceProbe;
 import org.oneedtech.inspect.vc.probe.IssuerProbe;
 import org.oneedtech.inspect.vc.probe.RevocationListProbe;
 import org.oneedtech.inspect.vc.probe.TypePropertyProbe;
+import org.oneedtech.inspect.vc.status.bitstring.BitstringStatusListProbe;
 
 import com.google.common.collect.Iterables;
 
@@ -456,6 +457,19 @@ public class OB30Tests {
 			Report report = validator.run(Samples.OB30.JSON.SIMPLE_EDDSA_20222_JSON.asFileResource());
 			if(verbose) PrintHelper.print(report, true);
 			assertWarning(report);
+		});
+
+	}
+
+	@Test
+	void testBitstringStatusListRevoked() {
+		assertDoesNotThrow(()->{
+			Report report = validator.run(Samples.BSL.CREDENTIAL_STATUS_REVOKED.asFileResource());
+			if(verbose) PrintHelper.print(report, true);
+			assertInvalid(report);
+			assertErrorCount(report, 0);
+			assertFatalCount(report, 1);
+			assertHasProbeID(report, BitstringStatusListProbe.ID, true);
 		});
 
 	}

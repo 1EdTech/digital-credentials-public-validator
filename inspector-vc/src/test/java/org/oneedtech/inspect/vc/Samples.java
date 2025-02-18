@@ -130,6 +130,7 @@ public class Samples {
 
 	public static final class BSL {
 		public final static Sample SIMPLE_JSON = new Sample("ob30/bit-string-list/testlist", true);
+		public final static Sample CREDENTIAL_STATUS_REVOKED = new Sample("ob30/bit-string-list/credential-status-revoked.json", false);
 	}
 
 }
