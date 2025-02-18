@@ -20,9 +20,9 @@ import org.oneedtech.inspect.vc.verification.URDNA2015Canonicalizer;
 import com.apicatalog.jsonld.StringUtils;
 import com.apicatalog.jsonld.document.Document;
 import com.apicatalog.jsonld.loader.DocumentLoaderOptions;
-import com.apicatalog.multibase.Multibase;
-import com.apicatalog.multicodec.Multicodec;
-import com.apicatalog.multicodec.Multicodec.Codec;
+import com.apicatalog.multibase.MultibaseDecoder;
+import com.apicatalog.multicodec.MulticodecDecoder;
+import com.apicatalog.multicodec.codec.KeyCodec;
 
 import info.weboftrust.ldsignatures.LdProof;
 import info.weboftrust.ldsignatures.canonicalizer.Canonicalizer;
@@ -157,7 +157,7 @@ public class EmbeddedProofProbe extends Probe<VerifiableCredential> {
     // https://w3c-ccg.github.io/di-eddsa-2020/#ed25519verificationkey2020
     byte[] publicKeyMulticodec;
     try {
-      publicKeyMulticodec = Multibase.decode(publicKeyMultibase);
+      publicKeyMulticodec = MultibaseDecoder.getInstance().decode(publicKeyMultibase);
       if (publicKeyMulticodec[0] != (byte) 0xed || publicKeyMulticodec[1] != (byte) 0x01) {
         return error("Verification method does not contain an Ed25519 public key", ctx);
       }
@@ -174,7 +174,7 @@ public class EmbeddedProofProbe extends Probe<VerifiableCredential> {
     }
 
     // Extract the publicKey bytes from the Multicodec
-    byte[] publicKey = Multicodec.decode(Codec.Ed25519PublicKey, publicKeyMulticodec);
+    byte[] publicKey = MulticodecDecoder.getInstance(KeyCodec.ED25519_PUBLIC_KEY).decode(publicKeyMulticodec);
 
     // choose verifier
     LdVerifier<?> verifier = getVerifier(proof, publicKey, crd);
@@ -211,8 +211,8 @@ public class EmbeddedProofProbe extends Probe<VerifiableCredential> {
 
   private Boolean IsValidPublicKeyMultibase(String publicKeyMultibase) {
     try {
-      byte[] publicKeyMulticodec = Multibase.decode(publicKeyMultibase);
-      byte[] publicKey = Multicodec.decode(Codec.Ed25519PublicKey, publicKeyMulticodec);
+      byte[] publicKeyMulticodec = MultibaseDecoder.getInstance().decode(publicKeyMultibase);
+      byte[] publicKey = MulticodecDecoder.getInstance(KeyCodec.ED25519_PUBLIC_KEY).decode(publicKeyMulticodec);
       return publicKey.length == 32;
     } catch (Exception e) {
       return false;
