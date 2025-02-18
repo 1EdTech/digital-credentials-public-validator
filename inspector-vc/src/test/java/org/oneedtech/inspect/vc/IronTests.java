@@ -2,8 +2,6 @@ package org.oneedtech.inspect.vc;
 
 import java.io.StringWriter;
 import java.net.URI;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,13 +9,15 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
+import com.apicatalog.did.Did;
 import com.apicatalog.did.key.DidKey;
-import com.apicatalog.ld.signature.ed25519.Ed25519Proof2020Adapter;
+import com.apicatalog.ld.signature.eddsa.EdDSASignature2022;
 import com.apicatalog.ld.signature.key.KeyPair;
-import com.apicatalog.ld.signature.proof.ProofOptions;
-import com.apicatalog.ld.signature.proof.VerificationMethod;
-import com.apicatalog.vc.Vc;
-import com.apicatalog.vc.processor.Issuer;
+import com.apicatalog.vc.integrity.DataIntegrityProofDraft;
+import com.apicatalog.vc.issuer.ProofDraft;
+import com.apicatalog.vc.keygen.KeysGenerator;
+import com.apicatalog.vc.processor.ExpandedVerifiable;
+import com.apicatalog.vc.verifier.Verifier;
 
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
@@ -33,25 +33,27 @@ public class IronTests {
 		Assertions.assertDoesNotThrow(()->{
 
 
-			final DidKey didKey = DidKey.from(URI.create("did:key:z6MkpTHR8VNsBxYAAWHut2Geadd9jSwuBV8xRoAnwWsdvktH"));
+			final Did didKey = DidKey.from(URI.create("did:key:z6MkpTHR8VNsBxYAAWHut2Geadd9jSwuBV8xRoAnwWsdvktH"));
 
 			//https://w3id.org/security#Ed25519KeyPair2020
 			//https://w3id.org/security#Ed25519Signature2020
-			URI unsigned = Samples.OB30.JSON.SIMPLE_JSON_NOPROOF.asURL().toURI();
-			KeyPair kp = Vc.generateKeys("https://w3id.org/security#Ed25519Signature2020").get(URI.create("urn:1"), 256);
-			ProofOptions options = ProofOptions.create(
-					Ed25519Proof2020Adapter.TYPE,
-					//new VerificationMethod(URI.create("did:key:z6MkkUD3J14nkYzn46QeuaVSnp7dF85QJKwKvJvfsjx79aXj")),
-					new VerificationMethod(didKey.toUri()),
-					URI.create("https://w3id.org/security#assertionMethod")).created(Instant.now().truncatedTo(ChronoUnit.SECONDS));
+			EdDSASignature2022 suite = new EdDSASignature2022();
 
-			Issuer issuer = Vc.sign(unsigned, kp, options);
-			System.err.println(pretty(issuer.getCompacted()));
-			JsonObject signed = issuer.getCompacted();
+			URI unsigned = Samples.OB30.JSON.SIMPLE_JSON_NOPROOF.asURL().toURI();
+			KeyPair kp = KeysGenerator.with(EdDSASignature2022.CRYPTO).get();
+
+			ProofDraft options = new DataIntegrityProofDraft(suite,
+				EdDSASignature2022.CRYPTO,
+				didKey.toUri(),
+				URI.create("https://w3id.org/security#assertionMethod"));
+
+			ExpandedVerifiable issuerSignature = suite.createIssuer(kp).sign(unsigned, options);
+			System.err.println(pretty(issuerSignature.compacted()));
+			JsonObject signed = issuerSignature.compacted();
 			JsonObject proof = signed.getJsonObject("sec:proof");
 			Assertions.assertNotNull(proof);
 
-			Vc.verify(issuer.getCompacted()).isValid();
+			Verifier.with(suite).verify(signed).validate();
 		});
 	}
 
