@@ -25,7 +25,7 @@ public class BitstringStatusListCredentialInspectorTest {
 	@Test
 	void testSimpleJsonValid() {
 		assertDoesNotThrow(()->{
-			Report report = validator.run(Samples.BSL.SIMPLE_JSON.asFileResource(ResourceType.JSON));
+			Report report = validator.run(Samples.OB30.BSL.SIMPLE_JSON.asFileResource(ResourceType.JSON));
 			if(verbose) PrintHelper.print(report, true);
 			assertValid(report);
 		});

@@ -464,7 +464,7 @@ public class OB30Tests {
 	@Test
 	void testBitstringStatusListRevoked() {
 		assertDoesNotThrow(()->{
-			Report report = validator.run(Samples.BSL.CREDENTIAL_STATUS_REVOKED.asFileResource());
+			Report report = validator.run(Samples.OB30.BSL.CREDENTIAL_STATUS_REVOKED.asFileResource());
 			if(verbose) PrintHelper.print(report, true);
 			assertInvalid(report);
 			assertErrorCount(report, 0);
@@ -473,4 +473,19 @@ public class OB30Tests {
 		});
 
 	}
+
+	@Test
+	void testRevokedWithBlankNodes() {
+		assertDoesNotThrow(()->{
+			Report report = validator.run(Samples.OB30.BSL.CREDENTIAL_STATUS_REVOKED_WITH_BLANK_NODES.asFileResource());
+			if(verbose) PrintHelper.print(report, true);
+			assertInvalid(report);
+			assertInvalid(report);
+			assertErrorCount(report, 0);
+			assertFatalCount(report, 1);
+			assertHasProbeID(report, BitstringStatusListProbe.ID, true);
+		});
+
+	}
+
 }
