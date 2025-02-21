@@ -3,18 +3,38 @@ package org.oneedtech.inspect.vc.probe.did;
 import com.apicatalog.jsonld.document.Document;
 import com.apicatalog.jsonld.loader.DocumentLoader;
 import com.apicatalog.jsonld.loader.DocumentLoaderOptions;
+
+import jakarta.json.Json;
 import jakarta.json.JsonArray;
 import jakarta.json.JsonObject;
+import jakarta.json.JsonReader;
 import jakarta.json.JsonStructure;
 import jakarta.json.JsonValue;
+import uniresolver.client.ClientUniResolver;
+import uniresolver.result.ResolveRepresentationResult;
+
+import java.io.StringReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
+import org.oneedtech.inspect.vc.probe.did.DidResolution.Builder;
+
 public class SimpleDidResolver implements DidResolver {
+
+  private final ClientUniResolver uniResolver;
+
+
+  public SimpleDidResolver(String uniResolverUrl) {
+    this.uniResolver = new ClientUniResolver();
+    this.uniResolver.setResolveUri(uniResolverUrl);
+  }
 
   @Override
   public DidResolution resolve(URI did, DocumentLoader documentLoader)
@@ -89,54 +109,77 @@ public class SimpleDidResolver implements DidResolver {
                 + " doesn't return a valid document. Reason: The document is empty.");
       }
 
-      // check did in "assertionMethod"
-      JsonArray assertionMethod = keyStructure.get().asJsonObject().getJsonArray("assertionMethod");
-      if (assertionMethod == null) {
-        throw new DidResolutionException(
-            "Document doesn't have a list of assertion methods at URI: " + uri);
-      } else {
-        Boolean anyMatch = false;
-        for (int i = 0; i < assertionMethod.size(); i++) {
-          String assertionMethodValue = assertionMethod.getString(i);
-          if (assertionMethodValue.equals(did.toString())) {
-            anyMatch = true;
-            break;
-          }
-        }
-        if (!anyMatch) {
-          throw new DidResolutionException(
-              "Assertion method " + did + " not found in DID document.");
-        }
-      }
-
-      // get keys from "verificationMethod"
-      JsonArray keyVerificationMethod =
-          keyStructure.get().asJsonObject().getJsonArray("verificationMethod");
-      if (keyVerificationMethod == null) {
-        throw new DidResolutionException(
-            "Document doesn't have a list of verification methods at URI: " + uri);
-      }
-      Optional<JsonValue> verificationMethodMaybe =
-          keyVerificationMethod.stream()
-              .filter(n -> n.asJsonObject().getString("id").equals(did.toString()))
-              .findFirst();
-      if (verificationMethodMaybe.isEmpty()) {
-        throw new DidResolutionException(
-            "Verification method " + did + " not found in DID document.");
-      }
-      JsonObject verificationMethod = verificationMethodMaybe.get().asJsonObject();
-      // assuming a Ed25519VerificationKey2020 document
-      builder
-          .controller(verificationMethod.getString("controller"))
-          .publicKeyMultibase(verificationMethod.getString("publicKeyMultibase"));
-      // check JWK
-      if (verificationMethod.containsKey("publicKeyJwk"))
-          builder.publicKeyJwk(verificationMethod.getJsonObject("publicKeyJwk").toString());
+      JsonObject didDocument = keyStructure.get().asJsonObject();
+      this.extractFromVerificationMethod(did, didDocument, builder);
 
     } else {
-      throw new DidResolutionException("Unknown verification method: " + did);
+      try {
+        Map<String, Object> resolveOptions = new HashMap<>();
+        resolveOptions.put("accept", "application/did+ld+json");
+
+        ResolveRepresentationResult resolveRepresentationResult = uniResolver.resolveRepresentation(did.toString(), resolveOptions);
+        if (resolveRepresentationResult.getDidDocumentStream() == null) {
+          throw new DidResolutionException("No did document found for did: " + did);
+        }
+
+        // read resolveRepresentationResult.getDidDocumentStreamAsString() as JSON Object
+        JsonReader jsonReader = Json.createReader(new StringReader(new String(resolveRepresentationResult.getDidDocumentStream(), StandardCharsets.UTF_8)));
+        JsonObject didDocument = jsonReader.readObject();
+
+        this.extractFromVerificationMethod(did, didDocument, builder);
+
+      } catch (Exception e) {
+        throw new DidResolutionException("Error solvig did: " + did, e);
+      }
     }
 
     return builder.build();
+  }
+
+  private void extractFromVerificationMethod(URI did, JsonObject didDocument, Builder builder) throws DidResolutionException {
+    JsonArray assertionMethod = didDocument.getJsonArray("assertionMethod");
+
+    if (assertionMethod == null) {
+      throw new DidResolutionException(
+        "Did Document from " + did + " doesn't have a list of assertion methods");
+    } else {
+      Boolean anyMatch = false;
+      for (int i = 0; i < assertionMethod.size(); i++) {
+        String assertionMethodValue = assertionMethod.getString(i);
+        if (assertionMethodValue.equals(did.toString())) {
+          anyMatch = true;
+          break;
+        }
+      }
+      if (!anyMatch) {
+        throw new DidResolutionException(
+            "Assertion method " + did + " not found in DID document.");
+      }
+    }
+
+    // get keys from "verificationMethod"
+    JsonArray keyVerificationMethod =
+        didDocument.getJsonArray("verificationMethod");
+    if (keyVerificationMethod == null) {
+      throw new DidResolutionException(
+        "Did Document from " + did + " doesn't have a list of verification methods");
+    }
+    Optional<JsonValue> verificationMethodMaybe =
+        keyVerificationMethod.stream()
+            .filter(n -> n.asJsonObject().getString("id").equals(did.toString()))
+            .findFirst();
+    if (verificationMethodMaybe.isEmpty()) {
+      throw new DidResolutionException(
+          "Verification method " + did + " not found in DID document.");
+    }
+    JsonObject verificationMethod = verificationMethodMaybe.get().asJsonObject();
+    // assuming a Ed25519VerificationKey2020 document
+    builder
+        .controller(verificationMethod.getString("controller"))
+        .publicKeyMultibase(verificationMethod.getString("publicKeyMultibase"));
+    // check JWK
+    if (verificationMethod.containsKey("publicKeyJwk"))
+        builder.publicKeyJwk(verificationMethod.getJsonObject("publicKeyJwk").toString());
+
   }
 }
