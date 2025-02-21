@@ -56,7 +56,7 @@ public class Samples {
 		public static final class BSL {
 			public final static Sample SIMPLE_JSON = new Sample("ob30/bit-string-list/testlist", true);
 			public final static Sample CREDENTIAL_STATUS_REVOKED = new Sample("ob30/bit-string-list/credential-status-revoked.json", false);
-			public final static Sample CREDENTIAL_STATUS_REVOKED_WITH_BLANK_NODES = new Sample("ob30/rdf-error.json", true);
+			public final static Sample CREDENTIAL_STATUS_REVOKED_WITH_BLANK_NODES = new Sample("ob30/bit-string-list/credential-status-revoked-blank-nodes.json", true);
 		}
 	}
 
