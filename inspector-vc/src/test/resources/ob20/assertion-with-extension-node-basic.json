@@ -1,7 +1,6 @@
 {
 	"@context": [
-		"https://w3id.org/openbadges/v2",
-		"https://w3id.org/openbadges/extensions/exampleExtension/context.json"
+		"https://w3id.org/openbadges/v2"
 	],
 	"id": "http://example.org/assertion",
 	"type": "Assertion",
@@ -18,10 +17,10 @@
 		"type": "hosted"
 	},
 	"extensions:exampleExtension": {
-		"id": "_:b0",
+		"@context": ["https://w3id.org/openbadges/extensions/exampleExtension/context.json"],
 		"type": [
 			"Extension",
-			"obi:extensions/#ExampleExtension"
+			"extensions:ExampleExtension"
 		],
 		"http://schema.org/text": "I'm a property, short and sweet"
 	},
