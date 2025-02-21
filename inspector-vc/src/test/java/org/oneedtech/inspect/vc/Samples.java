@@ -53,6 +53,11 @@ public class Samples {
 		public static final class JWT {
 			public final static Sample SIMPLE_JWT = new Sample("ob30/simple.jwt", true);
 		}
+		public static final class BSL {
+			public final static Sample SIMPLE_JSON = new Sample("ob30/bit-string-list/testlist", true);
+			public final static Sample CREDENTIAL_STATUS_REVOKED = new Sample("ob30/bit-string-list/credential-status-revoked.json", false);
+			public final static Sample CREDENTIAL_STATUS_REVOKED_WITH_BLANK_NODES = new Sample("ob30/rdf-error.json", true);
+		}
 	}
 
 	public static final class OB20 {
@@ -127,10 +132,4 @@ public class Samples {
 			public final static Sample SIMPLE_REVOKED_JWT = new Sample("ob20/simple-revoked.jwt", true);
 		}
 	}
-
-	public static final class BSL {
-		public final static Sample SIMPLE_JSON = new Sample("ob30/bit-string-list/testlist", true);
-		public final static Sample CREDENTIAL_STATUS_REVOKED = new Sample("ob30/bit-string-list/credential-status-revoked.json", false);
-	}
-
 }

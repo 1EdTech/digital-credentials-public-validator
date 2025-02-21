@@ -131,7 +131,7 @@ public class CachingDocumentLoader extends ConfigurableDocumentLoader {
 			.put("https://w3id.org/security/suites/jws-2020/v1", Resources.getResource("contexts/suites-jws-2020.jsonld"))
 			.put("https://openbadgespec.org/v2/context.json", Resources.getResource("contexts/ob-v2p0.json"))
 			.put("https://w3id.org/openbadges/v2", Resources.getResource("contexts/obv2x.jsonld"))
-			.put("https://w3id.org/openbadges/extensions/exampleExtension/context.json", Resources.getResource("contexts/obv2x-extensions.json"))
+			.put("https://w3id.org/openbadges/extensions/exampleExtension/context.json", Resources.getResource("contexts/obv2x-example-extension.json"))
 			.put("https://openbadgespec.org/extensions/exampleExtension/schema.json", Resources.getResource("catalog/openbadgespec.org/extensions/exampleExtension/schema.json"))
 			.put("https://w3id.org/openbadges/extensions/applyLinkExtension/context.json", Resources.getResource("contexts/obv2x-applylink-extensions.json"))
 			.put("https://openbadgespec.org/extensions/applyLinkExtension/schema.json", Resources.getResource("catalog/openbadgespec.org/extensions/applyLinkExtension/schema.json"))

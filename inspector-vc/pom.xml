@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.1edtech</groupId>
 		<artifactId>vc-public-validator</artifactId>
-		<version>1.2.0</version>
+		<version>1.2.1</version>
 	</parent>
 	<artifactId>inspector-vc</artifactId>
 	<dependencies>
@@ -33,23 +33,22 @@
 		<dependency>
 			<groupId>com.danubetech</groupId>
 			<artifactId>verifiable-credentials-java</artifactId>
-			<!--  <version>1.1-20220818.090353-4</version>  -->
-			<version>1.2-SNAPSHOT</version>
+			<version>1.12.0</version>
 		</dependency>
 
 		<!--  https://repo.danubetech.com/#browse/browse:maven-public:com%2Fdanubetech%2Fkey-formats-java%2F1.6-SNAPSHOT -->
-		<dependency>
+		<!-- <dependency>
 			<groupId>com.danubetech</groupId>
 			<artifactId>key-formats-java</artifactId>
 			<version>1.8-SNAPSHOT</version>
-		</dependency>
+		</dependency> -->
 
 		<!-- https://github.com/filip26/iron-verifiable-credentials -->
-		<dependency>
+		<!-- <dependency>
 			<groupId>com.apicatalog</groupId>
 			<artifactId>iron-verifiable-credentials</artifactId>
 			<version>0.14.0</version>
-		</dependency>
+		</dependency> -->
 
 		<!-- https://github.com/filip26/iron-eddsa-rdfc-2022 -->
 		<dependency>
@@ -59,11 +58,11 @@
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/com.apicatalog/titanium-json-ld -->
 		<!-- https://github.com/filip26/titanium-json-ld -->
-		<dependency>
+		<!-- <dependency>
 			<groupId>com.apicatalog</groupId>
 			<artifactId>titanium-json-ld</artifactId>
-			<version>1.4.0</version>
-		</dependency>
+			<version>1.5.0</version>
+		</dependency> -->
 		<!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient -->
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
