@@ -64,10 +64,12 @@ import com.google.common.collect.ImmutableList;
  */
 public class OB30Inspector extends VCInspector implements SubInspector {
 	protected final List<Probe<VerifiableCredential>> userProbes;
+	protected final String didResolutionUrl;
 
 	protected OB30Inspector(OB30Inspector.Builder builder) {
 		super(builder);
 		this.userProbes = ImmutableList.copyOf(builder.probes);
+		this.didResolutionUrl = builder.didResolutionUrl;
 	}
 
 	//https://docs.google.com/document/d/1_imUl2K-5tMib0AUxwA9CWb0Ap1b3qif0sXydih68J0/edit#
@@ -142,7 +144,7 @@ public class OB30Inspector extends VCInspector implements SubInspector {
 
 		ObjectMapper mapper = ObjectMapperCache.get(DEFAULT);
 		JsonPathEvaluator jsonPath = new JsonPathEvaluator(mapper);
-		DidResolver didResolver = new SimpleDidResolver();
+		DidResolver didResolver = new SimpleDidResolver(this.didResolutionUrl);
 		VerifiableCredential.Builder credentialBuilder = new VerifiableCredential.Builder();
 		RunContext ctx = new RunContext.Builder()
 				.put(this)
@@ -228,7 +230,7 @@ public class OB30Inspector extends VCInspector implements SubInspector {
 			}
 
 			//embedded endorsements
-			EndorsementInspector endorsementInspector = new EndorsementInspector.Builder().build();
+			EndorsementInspector endorsementInspector = new EndorsementInspector.Builder().didResolutionUrl(this.didResolutionUrl).build();
 
 			List<JsonNode> endorsements = asNodeList(ob.getJson(), "$..endorsement", jsonPath);
 			for(JsonNode node : endorsements) {
@@ -256,12 +258,19 @@ public class OB30Inspector extends VCInspector implements SubInspector {
 	}
 
 	public static class Builder extends VCInspector.Builder<OB30Inspector.Builder> {
+		String didResolutionUrl = "http://dev.uniresolver.io/1.0/identifiers/"; // default to dev's environment
+
 		@SuppressWarnings("unchecked")
 		@Override
 		public OB30Inspector build() {
 			set(Specification.OB30);
 			set(ResourceType.OPENBADGE);
 			return new OB30Inspector(this);
+		}
+
+		public OB30Inspector.Builder didResolutionUrl(String didResolutionUrl) {
+			this.didResolutionUrl = didResolutionUrl;
+			return this;
 		}
 	}
 }

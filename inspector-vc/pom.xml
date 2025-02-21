@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.1edtech</groupId>
 		<artifactId>vc-public-validator</artifactId>
-		<version>1.2.1</version>
+		<version>1.3.0</version>
 	</parent>
 	<artifactId>inspector-vc</artifactId>
 	<dependencies>
@@ -36,33 +36,20 @@
 			<version>1.12.0</version>
 		</dependency>
 
-		<!--  https://repo.danubetech.com/#browse/browse:maven-public:com%2Fdanubetech%2Fkey-formats-java%2F1.6-SNAPSHOT -->
-		<!-- <dependency>
-			<groupId>com.danubetech</groupId>
-			<artifactId>key-formats-java</artifactId>
-			<version>1.8-SNAPSHOT</version>
-		</dependency> -->
-
-		<!-- https://github.com/filip26/iron-verifiable-credentials -->
-		<!-- <dependency>
-			<groupId>com.apicatalog</groupId>
-			<artifactId>iron-verifiable-credentials</artifactId>
-			<version>0.14.0</version>
-		</dependency> -->
-
 		<!-- https://github.com/filip26/iron-eddsa-rdfc-2022 -->
 		<dependency>
 			<groupId>com.apicatalog</groupId>
 			<artifactId>iron-eddsa-rdfc-2022</artifactId>
 			<version>0.14.0</version>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/com.apicatalog/titanium-json-ld -->
-		<!-- https://github.com/filip26/titanium-json-ld -->
-		<!-- <dependency>
-			<groupId>com.apicatalog</groupId>
-			<artifactId>titanium-json-ld</artifactId>
-			<version>1.5.0</version>
-		</dependency> -->
+
+		<!-- universal did resolver client -->
+		<dependency>
+			<groupId>decentralized-identity</groupId>
+			<artifactId>uni-resolver-client</artifactId>
+			<version>0.5.0</version>
+		</dependency>
+
 		<!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient -->
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
