@@ -59,10 +59,12 @@ import com.google.common.collect.ImmutableList;
 public class EndorsementInspector extends VCInspector implements SubInspector {
 
 	protected final List<Probe<VerifiableCredential>> userProbes;
+	protected final String didResolutionUrl;
 
-	protected <B extends VCInspector.Builder<?>> EndorsementInspector(B builder) {
+	protected EndorsementInspector(EndorsementInspector.Builder builder) {
 		super(builder);
 		this.userProbes = ImmutableList.copyOf(builder.probes);
+		this.didResolutionUrl = builder.didResolutionUrl;
 	}
 
 	@Override
@@ -81,7 +83,7 @@ public class EndorsementInspector extends VCInspector implements SubInspector {
 
 		ObjectMapper mapper = ObjectMapperCache.get(DEFAULT);
 		JsonPathEvaluator jsonPath = new JsonPathEvaluator(mapper);
-		DidResolver didResolver = new SimpleDidResolver();
+		DidResolver didResolver = new SimpleDidResolver(this.didResolutionUrl);
 
 		RunContext ctx = new RunContext.Builder()
 				.put(this)
@@ -245,10 +247,17 @@ public class EndorsementInspector extends VCInspector implements SubInspector {
 	}
 
 	public static class Builder extends VCInspector.Builder<EndorsementInspector.Builder> {
+		String didResolutionUrl = "http://dev.uniresolver.io/1.0/identifiers/"; // default to dev's environment
+
 		@SuppressWarnings("unchecked")
 		@Override
 		public EndorsementInspector build() {
 			return new EndorsementInspector(this);
+		}
+
+		public EndorsementInspector.Builder didResolutionUrl(String didResolutionUrl) {
+			this.didResolutionUrl = didResolutionUrl;
+			return this;
 		}
 	}
 
