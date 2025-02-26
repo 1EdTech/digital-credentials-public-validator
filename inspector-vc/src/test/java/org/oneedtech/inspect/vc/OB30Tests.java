@@ -15,6 +15,7 @@ import java.util.Optional;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.oneedtech.inspect.core.Inspector;
 import org.oneedtech.inspect.core.Inspector.Behavior;
 import org.oneedtech.inspect.core.probe.GeneratedObject;
 import org.oneedtech.inspect.core.probe.json.JsonSchemaProbe;
@@ -44,6 +45,7 @@ public class OB30Tests {
 		validator = new OB30Inspector.Builder()
 				.set(Behavior.TEST_INCLUDE_SUCCESS, true)
 				.set(Behavior.VALIDATOR_FAIL_FAST, true)
+				.inject(Inspector.InjectionKeys.DID_RESOLUTION_SERVICE_URL, "http://dev.uniresolver.io/1.0/identifiers/")
 				.build();
 	}
 

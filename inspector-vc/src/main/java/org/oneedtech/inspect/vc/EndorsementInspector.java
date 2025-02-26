@@ -2,6 +2,7 @@ package org.oneedtech.inspect.vc;
 
 import static java.lang.Boolean.TRUE;
 import static org.oneedtech.inspect.core.Inspector.Behavior.RESET_CACHES_ON_RUN;
+import static org.oneedtech.inspect.core.Inspector.InjectionKeys.DID_RESOLUTION_SERVICE_URL;
 import static org.oneedtech.inspect.core.probe.RunContext.Key.GENERATED_OBJECT_BUILDER;
 import static org.oneedtech.inspect.core.probe.RunContext.Key.JACKSON_OBJECTMAPPER;
 import static org.oneedtech.inspect.core.probe.RunContext.Key.JSONPATH_EVALUATOR;
@@ -64,7 +65,8 @@ public class EndorsementInspector extends VCInspector implements SubInspector {
 	protected EndorsementInspector(EndorsementInspector.Builder builder) {
 		super(builder);
 		this.userProbes = ImmutableList.copyOf(builder.probes);
-		this.didResolutionUrl = builder.didResolutionUrl;
+		Optional<Object> didResolutionServiceUrl = builder.getInjected(DID_RESOLUTION_SERVICE_URL);
+		this.didResolutionUrl = didResolutionServiceUrl.isPresent() ? didResolutionServiceUrl.get().toString(): null;
 	}
 
 	@Override
@@ -247,17 +249,10 @@ public class EndorsementInspector extends VCInspector implements SubInspector {
 	}
 
 	public static class Builder extends VCInspector.Builder<EndorsementInspector.Builder> {
-		String didResolutionUrl = "http://dev.uniresolver.io/1.0/identifiers/"; // default to dev's environment
-
 		@SuppressWarnings("unchecked")
 		@Override
 		public EndorsementInspector build() {
 			return new EndorsementInspector(this);
-		}
-
-		public EndorsementInspector.Builder didResolutionUrl(String didResolutionUrl) {
-			this.didResolutionUrl = didResolutionUrl;
-			return this;
 		}
 	}
 
