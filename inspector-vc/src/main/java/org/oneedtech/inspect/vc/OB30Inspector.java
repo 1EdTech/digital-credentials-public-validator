@@ -2,6 +2,7 @@ package org.oneedtech.inspect.vc;
 
 import static java.lang.Boolean.TRUE;
 import static org.oneedtech.inspect.core.Inspector.Behavior.RESET_CACHES_ON_RUN;
+import static org.oneedtech.inspect.core.Inspector.InjectionKeys.DID_RESOLUTION_SERVICE_URL;
 import static org.oneedtech.inspect.core.report.ReportUtil.onProbeException;
 import static org.oneedtech.inspect.util.code.Defensives.checkNotNull;
 import static org.oneedtech.inspect.util.json.ObjectMapperCache.Config.DEFAULT;
@@ -69,7 +70,8 @@ public class OB30Inspector extends VCInspector implements SubInspector {
 	protected OB30Inspector(OB30Inspector.Builder builder) {
 		super(builder);
 		this.userProbes = ImmutableList.copyOf(builder.probes);
-		this.didResolutionUrl = builder.didResolutionUrl;
+		Optional<Object> didResolutionServiceUrl = builder.getInjected(DID_RESOLUTION_SERVICE_URL);
+		this.didResolutionUrl = didResolutionServiceUrl.isPresent() ? didResolutionServiceUrl.get().toString(): null;
 	}
 
 	//https://docs.google.com/document/d/1_imUl2K-5tMib0AUxwA9CWb0Ap1b3qif0sXydih68J0/edit#
@@ -230,7 +232,7 @@ public class OB30Inspector extends VCInspector implements SubInspector {
 			}
 
 			//embedded endorsements
-			EndorsementInspector endorsementInspector = new EndorsementInspector.Builder().didResolutionUrl(this.didResolutionUrl).build();
+			EndorsementInspector endorsementInspector = new EndorsementInspector.Builder().inject(DID_RESOLUTION_SERVICE_URL, didResolutionUrl).build();
 
 			List<JsonNode> endorsements = asNodeList(ob.getJson(), "$..endorsement", jsonPath);
 			for(JsonNode node : endorsements) {
@@ -258,19 +260,12 @@ public class OB30Inspector extends VCInspector implements SubInspector {
 	}
 
 	public static class Builder extends VCInspector.Builder<OB30Inspector.Builder> {
-		String didResolutionUrl = "http://dev.uniresolver.io/1.0/identifiers/"; // default to dev's environment
-
 		@SuppressWarnings("unchecked")
 		@Override
 		public OB30Inspector build() {
 			set(Specification.OB30);
 			set(ResourceType.OPENBADGE);
 			return new OB30Inspector(this);
-		}
-
-		public OB30Inspector.Builder didResolutionUrl(String didResolutionUrl) {
-			this.didResolutionUrl = didResolutionUrl;
-			return this;
 		}
 	}
 }
