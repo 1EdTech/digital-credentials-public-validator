@@ -15,6 +15,9 @@
 			"instr": "This validator supports Open Badges 3.0 files.",
 			"spec": "ob",
 			"group": "vc",
+			"initParams": {
+				"DID_RESOLUTION_SERVICE_URL": "http://dev.uniresolver.io/1.0/identifiers/"
+			},
 			"supportsCertification": false,
 			"submissionTypes": ["upload","uri"]
 		},
