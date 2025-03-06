@@ -190,6 +190,7 @@ public class EmbeddedProofProbe extends Probe<VerifiableCredential> {
             urdna2015Canonicalizer = (URDNA2015Canonicalizer) canonicalizer;
           } else if (canonicalizer instanceof info.weboftrust.ldsignatures.canonicalizer.URDNA2015Canonicalizer) {
             urdna2015Canonicalizer = new URDNA2015Canonicalizer(info.weboftrust.ldsignatures.LdProof.builder());
+            urdna2015Canonicalizer.canonicalize(proof, credentialHolder.getCredential());
           }
           if (urdna2015Canonicalizer != null) {
             EmbeddedProofModelGenerator modelGenerator =
