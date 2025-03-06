@@ -185,8 +185,13 @@ public class EmbeddedProofProbe extends Probe<VerifiableCredential> {
         // add proof calculations to the report
         Canonicalizer canonicalizer = verifier.getCanonicalizer();
         if (canonicalizer != null) {
+          URDNA2015Canonicalizer urdna2015Canonicalizer = null;
           if (canonicalizer instanceof URDNA2015Canonicalizer) {
-            URDNA2015Canonicalizer urdna2015Canonicalizer = (URDNA2015Canonicalizer) canonicalizer;
+            urdna2015Canonicalizer = (URDNA2015Canonicalizer) canonicalizer;
+          } else if (canonicalizer instanceof info.weboftrust.ldsignatures.canonicalizer.URDNA2015Canonicalizer) {
+            urdna2015Canonicalizer = new URDNA2015Canonicalizer(info.weboftrust.ldsignatures.LdProof.builder());
+          }
+          if (urdna2015Canonicalizer != null) {
             EmbeddedProofModelGenerator modelGenerator =
                 new EmbeddedProofModelGenerator(urdna2015Canonicalizer);
             return error("Embedded proof verification failed. You can see intermediate results for proof calculations by downloading the report.", modelGenerator.getGeneratedObject(), ctx);
