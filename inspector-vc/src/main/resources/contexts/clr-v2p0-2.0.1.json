@@ -6,7 +6,11 @@
       "@id": "https://purl.imsglobal.org/spec/vc/clr/vocab.html#ClrCredential",
       "@context": {
         "id": "@id",
-        "type": "@type"
+        "type": "@type",
+        "partial": {
+          "@id": "https://purl.imsglobal.org/spec/vc/clr/vocab.html#partial",
+          "@type": "xsd:boolean"
+        }
       }
     },
     "ClrSubject": {
