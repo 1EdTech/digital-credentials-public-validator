@@ -73,8 +73,8 @@ public class SimpleDidResolver implements DidResolver {
       }
 
       // 4. If no path has been specified in the URL, append /.well-known.
-      if (uri.getPath() == null) {
-        uri = uri.resolve("/well-known");
+      if (uri.getPath() == null || uri.getPath().isEmpty()) {
+        uri = uri.resolve("/.well-known");
       }
 
       // 5. Append /did.json to complete the URL.
@@ -175,11 +175,13 @@ public class SimpleDidResolver implements DidResolver {
     JsonObject verificationMethod = verificationMethodMaybe.get().asJsonObject();
     // assuming a Ed25519VerificationKey2020 document
     builder
-        .controller(verificationMethod.getString("controller"))
-        .publicKeyMultibase(verificationMethod.getString("publicKeyMultibase"));
+            .controller(verificationMethod.getString("controller"));
     // check JWK
     if (verificationMethod.containsKey("publicKeyJwk"))
-        builder.publicKeyJwk(verificationMethod.getJsonObject("publicKeyJwk").toString());
+      builder.publicKeyJwk(verificationMethod.getJsonObject("publicKeyJwk").toString());
+    // check Multibase
+    if (verificationMethod.containsKey("publicKeyMultibase"))
+      builder.publicKeyMultibase(verificationMethod.getString("publicKeyMultibase"));
 
   }
 }
