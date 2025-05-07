@@ -28,6 +28,7 @@
   <modules>
     <!-- impl modules -->
     <module>inspector-vc</module>
+    <module>inspector-clr</module>
 
     <!-- apps, services -->
     <module>inspector-vc-web</module>

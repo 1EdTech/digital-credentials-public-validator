@@ -1,0 +1,457 @@
+{
+  "@context" : [ "https://www.w3.org/2018/credentials/v1", "https://purl.imsglobal.org/spec/clr/v2p0/context.json", "https://purl.imsglobal.org/spec/ob/v3p0/context.json", "https://purl.imsglobal.org/spec/ob/v3p0/extensions.json", "https://w3id.org/security/suites/ed25519-2020/v1" ],
+  "id" : "http://example.edu/credentials/3732",
+  "type" : [ "VerifiableCredential", "ClrCredential" ],
+  "issuer" : {
+    "address" : {
+      "streetAddress" : "4200 NW 185th Ave",
+      "postalCode" : "97229",
+      "addressLocality" : "Riverwell",
+      "type" : [ "Address" ],
+      "addressRegion" : "OR"
+    },
+    "type" : [ "Profile" ],
+    "url" : "https://western.riverwell.k12.or.us/",
+    "name" : "Western High School, RSD",
+    "id" : "urn:uuid:4ca4a241-fc3b-4d92-978e-f56fa96ae795",
+    "parentOrg" : {
+      "address" : {
+        "streetAddress" : "16550 SW Merlo Road",
+        "postalCode" : "97003",
+        "addressLocality" : "Riverwell",
+        "type" : [ "Address" ],
+        "addressRegion" : "OR"
+      },
+      "type" : [ "Profile" ],
+      "name" : "Riverwell School District",
+      "id" : "urn:uuid:9043d6f6-9aea-4095-a037-cf27860f696c"
+    }
+  },
+  "issuanceDate" : "2022-12-05T21:39:07Z",
+  "name" : "Ellis Monday",
+  "credentialSubject" : {
+    "id" : "urn:uuid:360a0e1e-c3f4-4fc4-9975-379889927d54",
+    "type" : "ClrSubject",
+    "association" : [ {
+      "sourceId" : "urn:uuid:3314c2c0-2ee9-4183-838b-470c15ddfb08",
+      "targetId" : "urn:uuid:bb9a27e6-3a2d-413b-b0c7-97ef9dfdde22",
+      "associationType" : "isParentOf",
+      "type" : "Association"
+    }, {
+      "sourceId" : "urn:uuid:3314c2c0-2ee9-4183-838b-470c15ddfb08",
+      "targetId" : "urn:uuid:0f09ae53-33ae-4472-8daa-d7381b859e6c",
+      "associationType" : "isParentOf",
+      "type" : "Association"
+    }, {
+      "sourceId" : "urn:uuid:3314c2c0-2ee9-4183-838b-470c15ddfb08",
+      "targetId" : "urn:uuid:6364db90-edf9-47b9-b92b-4b116cac19a5",
+      "associationType" : "isParentOf",
+      "type" : "Association"
+    }, {
+      "sourceId" : "urn:uuid:3314c2c0-2ee9-4183-838b-470c15ddfb08",
+      "targetId" : "urn:uuid:e935e820-d9a0-4e9e-8b84-6ec82caabaf7",
+      "associationType" : "isParentOf",
+      "type" : "Association"
+    }, {
+      "sourceId" : "urn:uuid:4072f4b6-75e9-42ed-8b95-b92711310dbe",
+      "targetId" : "urn:uuid:3314c2c0-2ee9-4183-838b-470c15ddfb08",
+      "associationType" : "isPartOf",
+      "type" : "Association"
+    } ],
+    "verifiableCredential" : [ {
+      "@context" : [ "https://www.w3.org/2018/credentials/v1", "https://purl.imsglobal.org/spec/ob/v3p0/context.json", "https://w3id.org/security/suites/ed25519-2020/v1" ],
+      "id" : "https://dc.imsglobal.org/wellspring/hub/ims/clr/v1p0/assertions/28326f9c00864ecf9c7065119658ca14",
+      "type" : [ "VerifiableCredential", "AchievementCredential" ],
+      "issuer" : {
+        "address" : {
+          "streetAddress" : "4200 NW 185th Ave",
+          "postalCode" : "97229",
+          "addressLocality" : "Riverwell",
+          "type" : "Address",
+          "addressRegion" : "OR"
+        },
+        "type" : "Profile",
+        "url" : "https://western.riverwell.k12.or.us/",
+        "name" : "Western High School, RSD",
+        "id" : "urn:uuid:4ca4a241-fc3b-4d92-978e-f56fa96ae795",
+        "parentOrg" : {
+          "address" : {
+            "streetAddress" : "16550 SW Merlo Road",
+            "postalCode" : "97003",
+            "addressLocality" : "Riverwell",
+            "type" : "Address",
+            "addressRegion" : "OR"
+          },
+          "type" : "Profile",
+          "name" : "Riverwell School District",
+          "id" : "urn:uuid:9043d6f6-9aea-4095-a037-cf27860f696c"
+        }
+      },
+      "issuanceDate" : "2018-06-06T00:00:00Z",
+      "credentialSubject" : {
+        "id" : "did:example:ebfeb1f712ebc6f1c276e12ec21",
+        "achievement" : {
+          "id" : "urn:uuid:3314c2c0-2ee9-4183-838b-470c15ddfb08",
+          "type" : "Achievement",
+          "name" : "Nurse Assistant 1 Program with Licensure",
+          "description" : "In this program, you'll: explore the human body, diseases, prevention, and treatment; practice proper patient care; measure vital signs and obtain certifications in CPR, AED, and first aid; develop healthcare specific communication skills interacting with co-workers, patients, and families; communicate health information accurately and professionally; adhere to safety, privacy, legal, and ethical practices essential in a healthcare workplace.",
+          "achievementType" : "Diploma",
+          "criteria" : {
+            "narrative" : "In this program, you'll: explore the human body, diseases, prevention, and treatment; practice proper patient care; measure vital signs and obtain certifications in CPR, AED, and first aid; develop healthcare specific communication skills interacting with co-workers, patients, and families; communicate health information accurately and professionally; adhere to safety, privacy, legal, and ethical practices essential in a healthcare workplace."
+          },
+          "endorsement" : [ {
+            "@context" : [ "https://www.w3.org/2018/credentials/v1", "https://purl.imsglobal.org/spec/ob/v3p0/context.json", "https://purl.imsglobal.org/spec/ob/v3p0/extensions.json", "https://w3id.org/security/suites/ed25519-2020/v1" ],
+            "id" : "https://dc.imsglobal.org/wellspring/hub/ims/clr/v1p0/endorsements/517fb460409a44b4bb3665e837c5f076",
+            "type" : [ "VerifiableCredential", "EndorsementCredential" ],
+            "issuer" : {
+              "address" : {
+                "streetAddress" : "17938 SW Upper Boones Ferry Rd.",
+                "postalCode" : "97224",
+                "addressLocality" : "Portland",
+                "type" : "Address",
+                "addressRegion" : "OR"
+              },
+              "type" : "Profile",
+              "url" : "https://www.oregon.gov/OSBN",
+              "name" : "Oregon State Board of Nursing",
+              "id" : "urn:uuid:319b0e91-9fb2-4f41-aff8-810f24aff284",
+              "email" : "oregon.bn.info@osbn.oregon.gov"
+            },
+            "issuanceDate" : "2012-08-01T00:00:00Z",
+            "credentialSubject" : {
+              "id" : "urn:uuid:3314c2c0-2ee9-4183-838b-470c15ddfb08",
+              "type" : "EndorsementSubject",
+              "endorsementComment" : "The Oregon State Board of Nursing endorses this program as preparation for the Nursing Assistant Certification."
+            },
+            "proof" : {
+              "type" : "Ed25519Signature2020",
+              "proofValue" : "z54HHCDQuALNt6Wu7PzjXzWibQ3bC4882THG9V6v6SzyALaMEhMzBYgv2L49riQZraQUEMwFgTm9D4fb9xpjFJgGa",
+              "created" : "2022-12-29T17:59:13Z",
+              "proofPurpose" : "assertionMethod",
+              "verificationMethod" : "did:key:z6MkkskrScNZZ2Gw9y6gLXfo7dDr61v3upfa8acp9nbF8bc2"
+            }
+          } ]
+        },
+        "type" : "AchievementSubject"
+      },
+      "proof" : {
+        "type" : "Ed25519Signature2020",
+        "proofValue" : "z3rPi1neYSzGEZNnG16irpj2VwE3tzvMxnEXkNaCrGgXDKj7Xf2xDVKxmXgSrorQfLfe6QjAQJNRg34jDWdABM9Te",
+        "created" : "2022-12-29T20:49:07Z",
+        "proofPurpose" : "assertionMethod",
+        "verificationMethod" : "did:key:z6Mks4vZNz8Jwyb85odUeZrissHSY7JeJcXkNTDCcXLhYAZ4"
+      },
+      "name" : "Nurse Assistant 1 Program with Licensure"
+    }, {
+      "@context" : [ "https://www.w3.org/2018/credentials/v1", "https://purl.imsglobal.org/spec/ob/v3p0/context.json", "https://w3id.org/security/suites/ed25519-2020/v1" ],
+      "id" : "https://dc.imsglobal.org/wellspring/hub/ims/clr/v1p0/assertions/ba186a42adf94ba4a9bd6d4ed5b9e5ca",
+      "type" : [ "VerifiableCredential", "AchievementCredential" ],
+      "issuer" : {
+        "address" : {
+          "streetAddress" : "4200 NW 185th Ave",
+          "postalCode" : "97229",
+          "addressLocality" : "Riverwell",
+          "type" : "Address",
+          "addressRegion" : "OR"
+        },
+        "type" : "Profile",
+        "url" : "https://western.riverwell.k12.or.us/",
+        "name" : "Western High School, RSD",
+        "id" : "urn:uuid:4ca4a241-fc3b-4d92-978e-f56fa96ae795",
+        "parentOrg" : {
+          "address" : {
+            "streetAddress" : "16550 SW Merlo Road",
+            "postalCode" : "97003",
+            "addressLocality" : "Riverwell",
+            "type" : "Address",
+            "addressRegion" : "OR"
+          },
+          "type" : "Profile",
+          "name" : "Riverwell School District",
+          "id" : "urn:uuid:9043d6f6-9aea-4095-a037-cf27860f696c"
+        }
+      },
+      "issuanceDate" : "2018-06-06T00:00:00Z",
+      "credentialSubject" : {
+        "id" : "urn:uuid:360a0e1e-c3f4-4fc4-9975-379889927d54",
+        "result" : [ {
+          "resultDescription" : "urn:uuid:40a1534b-dd30-48db-a6e9-a0de9e8dc46a",
+          "type" : "Result",
+          "value" : "A"
+        } ],
+        "achievement" : {
+          "id" : "urn:uuid:bb9a27e6-3a2d-413b-b0c7-97ef9dfdde22",
+          "type" : "Achievement",
+          "name" : "Health Careers 1",
+          "description" : "This full year introductory course is for the student who has an interest in exploring or pursuing a career in health services. Students will learn core knowledge and skills common to major health careers. Areas of emphasis are medical terminology, medical ethics, safety in health care, career exploration, self-assessment portfolios, empathy, and some basic health care skills. Students will be involved in community health projects such as elementary school health screenings, blood drives and other related community experience. These students have the opportunity to be involved with Health Occupations Students of America (HOSA), a pre-professional organization of potential health care workers. The Red Cross course, Responding to Emergencies is part of the curriculum in which students will explore and demonstrate basic first aid, first aid in remote settings, healthcare professional CPR for adult, child and infant, and educational training in Automated External Defibrillation (AED).",
+          "achievementType" : "Course",
+          "criteria" : {
+            "narrative" : "This full year introductory course is for the student who has an interest in exploring or pursuing a career in health services. Students will learn core knowledge and skills common to major health careers. Areas of emphasis are medical terminology, medical ethics, safety in health care, career exploration, self-assessment portfolios, empathy, and some basic health care skills. Students will be involved in community health projects such as elementary school health screenings, blood drives and other related community experience. These students have the opportunity to be involved with Health Occupations Students of America (HOSA), a pre-professional organization of potential health care workers. The Red Cross course, Responding to Emergencies is part of the curriculum in which students will explore and demonstrate basic first aid, first aid in remote settings, healthcare professional CPR for adult, child and infant, and educational training in Automated External Defibrillation (AED)."
+          },
+          "fieldOfStudy" : "Health Care",
+          "resultDescription" : [ {
+            "name" : "Grade",
+            "id" : "urn:uuid:40a1534b-dd30-48db-a6e9-a0de9e8dc46a",
+            "type" : "ResultDescription",
+            "resultType" : "LetterGrade"
+          } ]
+        },
+        "type" : "AchievementSubject"
+      },
+      "proof" : {
+        "type" : "Ed25519Signature2020",
+        "proofValue" : "z5CVj7L733vV1zjdGKr3mSMQUcNGpQ6TnMbs2wKJrXzPp65EJ2S9FCwFVpkSQDBKbLDndxanLRzafoTsACjo6EkXS",
+        "created" : "2022-12-29T20:49:11Z",
+        "proofPurpose" : "assertionMethod",
+        "verificationMethod" : "did:key:z6Mks4vZNz8Jwyb85odUeZrissHSY7JeJcXkNTDCcXLhYAZ4"
+      },
+      "name" : "Health Careers 1",
+      "description" : "This full year introductory course is for the student who has an interest in exploring or pursuing a career in health services. Students will learn core knowledge and skills common to major health careers. Areas of emphasis are medical terminology, medical ethics, safety in health care, career exploration, self-assessment portfolios, empathy, and some basic health care skills. Students will be involved in community health projects such as elementary school health screenings, blood drives and other related community experience. These students have the opportunity to be involved with Health Occupations Students of America (HOSA), a pre-professional organization of potential health care workers. The Red Cross course, Responding to Emergencies is part of the curriculum in which students will explore and demonstrate basic first aid, first aid in remote settings, healthcare professional CPR for adult, child and infant, and educational training in Automated External Defibrillation (AED)."
+    }, {
+      "@context" : [ "https://www.w3.org/2018/credentials/v1", "https://purl.imsglobal.org/spec/ob/v3p0/context.json", "https://w3id.org/security/suites/ed25519-2020/v1" ],
+      "id" : "https://dc.imsglobal.org/wellspring/hub/ims/clr/v1p0/assertions/4a89b287b59b4800ad7df8225d3915d4",
+      "type" : [ "VerifiableCredential", "AchievementCredential" ],
+      "issuer" : {
+        "address" : {
+          "streetAddress" : "4200 NW 185th Ave",
+          "postalCode" : "97229",
+          "addressLocality" : "Riverwell",
+          "type" : "Address",
+          "addressRegion" : "OR"
+        },
+        "type" : "Profile",
+        "url" : "https://western.riverwell.k12.or.us/",
+        "name" : "Western High School, RSD",
+        "id" : "urn:uuid:4ca4a241-fc3b-4d92-978e-f56fa96ae795",
+        "parentOrg" : {
+          "address" : {
+            "streetAddress" : "16550 SW Merlo Road",
+            "postalCode" : "97003",
+            "addressLocality" : "Riverwell",
+            "type" : "Address",
+            "addressRegion" : "OR"
+          },
+          "type" : "Profile",
+          "name" : "Riverwell School District",
+          "id" : "urn:uuid:9043d6f6-9aea-4095-a037-cf27860f696c"
+        }
+      },
+      "issuanceDate" : "2018-06-06T00:00:00Z",
+      "credentialSubject" : {
+        "id" : "urn:uuid:360a0e1e-c3f4-4fc4-9975-379889927d54",
+        "achievement" : {
+          "id" : "urn:uuid:0f09ae53-33ae-4472-8daa-d7381b859e6c",
+          "type" : "Achievement",
+          "name" : "Human Anatomy and Physiology",
+          "description" : "This year-long class specializes in the study of the human body. Lecture and discussions are complemented by labs involving microscopic studies, hands on discovery labs and some dissections. This class is for any junior or senior interested in the science of the human body; it also fulfills the science prerequisite to be accepted into Advanced Health Careers. This science course is not a requirement for the Nurse Assisting pathway.",
+          "achievementType" : "Course",
+          "criteria" : {
+            "narrative" : "Exercises include the identification of the cells and tissues and the body systems (skin, skeletal, muscular, nervous, endocrine, cardiovascular, respiratory, digestive, and urinary) as well as investigations in how those systems function. Lecture and discussions are complemented by labs involving microscopic studies, hands on discovery labs and some dissections."
+          },
+          "fieldOfStudy" : "Health Care",
+          "resultDescription" : [ {
+            "name" : "Grade",
+            "id" : "urn:uuid:00001dee-78d2-43b4-883c-35a39a551b04",
+            "type" : "ResultDescription",
+            "resultType" : "LetterGrade"
+          } ]
+        },
+        "type" : "AchievementSubject"
+      },
+      "proof" : {
+        "type" : "Ed25519Signature2020",
+        "proofValue" : "zCcNNgBizVK9BHcmv1Qhzc327CYVRqmghuFEocgU8D1GHNwbgAt9fjJCpkULKJNLQfxgJeuiUT9SSmUyrsjhDtrZ",
+        "created" : "2022-12-29T20:49:12Z",
+        "proofPurpose" : "assertionMethod",
+        "verificationMethod" : "did:key:z6Mks4vZNz8Jwyb85odUeZrissHSY7JeJcXkNTDCcXLhYAZ4"
+      },
+      "name" : "Human Anatomy and Physiology",
+      "description" : "This year-long class specializes in the study of the human body. Exercises include the identification of the cells and tissues and the body systems (skin, skeletal, muscular, nervous, endocrine, cardiovascular, respiratory, digestive, and urinary) as well as investigations in how those systems function. Lecture and discussions are complemented by labs involving microscopic studies, hands on discovery labs and some dissections. This class is for any junior or senior interested in the science of the human body; it also fulfills the science prerequisite to be accepted into Advanced Health Careers. This science course is not a requirement for the Nurse Assisting pathway."
+    }, {
+      "@context" : [ "https://www.w3.org/2018/credentials/v1", "https://purl.imsglobal.org/spec/ob/v3p0/context.json", "https://w3id.org/security/suites/ed25519-2020/v1" ],
+      "id" : "https://dc.imsglobal.org/wellspring/hub/ims/clr/v1p0/assertions/0d3fa355f31f467cbe1de54827879c76",
+      "type" : [ "VerifiableCredential", "AchievementCredential" ],
+      "issuer" : {
+        "address" : {
+          "streetAddress" : "4200 NW 185th Ave",
+          "postalCode" : "97229",
+          "addressLocality" : "Riverwell",
+          "type" : "Address",
+          "addressRegion" : "OR"
+        },
+        "type" : "Profile",
+        "url" : "https://western.riverwell.k12.or.us/",
+        "name" : "Western High School, RSD",
+        "id" : "urn:uuid:4ca4a241-fc3b-4d92-978e-f56fa96ae795",
+        "parentOrg" : {
+          "address" : {
+            "streetAddress" : "16550 SW Merlo Road",
+            "postalCode" : "97003",
+            "addressLocality" : "Riverwell",
+            "type" : "Address",
+            "addressRegion" : "OR"
+          },
+          "type" : "Profile",
+          "name" : "Riverwell School District",
+          "id" : "urn:uuid:9043d6f6-9aea-4095-a037-cf27860f696c"
+        }
+      },
+      "issuanceDate" : "2018-06-06T00:00:00Z",
+      "credentialSubject" : {
+        "id" : "urn:uuid:360a0e1e-c3f4-4fc4-9975-379889927d54",
+        "achievement" : {
+          "id" : "urn:uuid:0f09ae53-33ae-4472-8daa-d7381b859e6c",
+          "type" : "Achievement",
+          "name" : "Intro to Health Careers",
+          "description" : "The focus of this course is to introduce Health Careers to Intermediate or higher ELD students in preparation for taking Health Careers courses. Students need to be motivated with an interest in pursuing a health career after high school. This course includes an introduction to the human body, health care guest speakers and an emphasis on study skills and language acquisition.",
+          "achievementType" : "Course",
+          "criteria" : {
+            "narrative" : "The focus of this course is to introduce Health Careers to Intermediate or higher ELD students in preparation for taking Health Careers courses. Students need to be motivated with an interest in pursuing a health career after high school. This course includes an introduction to the human body, health care guest speakers and an emphasis on study skills and language acquisition."
+          },
+          "fieldOfStudy" : "Health Care",
+          "resultDescription" : [ {
+            "name" : "Grade",
+            "id" : "urn:uuid:2344a048-e1c2-4ce0-8d8a-ce3315c95402",
+            "type" : "ResultDescription",
+            "resultType" : "LetterGrade"
+          } ]
+        },
+        "type" : "AchievementSubject"
+      },
+      "proof" : {
+        "type" : "Ed25519Signature2020",
+        "proofValue" : "zmQokitdjWHttYPq88PvFSP4ck56w2JEiawyW28cUAewnVM45zz6qXJYxgB8FkRr8eh9FpamJf9puUB3EDvwRNs1",
+        "created" : "2022-12-29T20:49:13Z",
+        "proofPurpose" : "assertionMethod",
+        "verificationMethod" : "did:key:z6Mks4vZNz8Jwyb85odUeZrissHSY7JeJcXkNTDCcXLhYAZ4"
+      },
+      "name" : "Intro to Health Careers",
+      "description" : "The focus of this course is to introduce Health Careers to Intermediate or higher ELD students in preparation for taking Health Careers courses. Students need to be motivated with an interest in pursuing a health career after high school. This course includes an introduction to the human body, health care guest speakers and an emphasis on study skills and language acquisition."
+    }, {
+      "@context" : [ "https://www.w3.org/2018/credentials/v1", "https://purl.imsglobal.org/spec/ob/v3p0/context.json", "https://w3id.org/security/suites/ed25519-2020/v1" ],
+      "id" : "https://dc.imsglobal.org/wellspring/hub/ims/clr/v1p0/assertions/0b5446814ff64c8a8d17ef4c88d2e9d8",
+      "type" : [ "VerifiableCredential", "AchievementCredential" ],
+      "issuer" : {
+        "address" : {
+          "streetAddress" : "4200 NW 185th Ave",
+          "postalCode" : "97229",
+          "addressLocality" : "Riverwell",
+          "type" : "Address",
+          "addressRegion" : "OR"
+        },
+        "type" : "Profile",
+        "url" : "https://western.riverwell.k12.or.us/",
+        "name" : "Western High School, RSD",
+        "id" : "urn:uuid:4ca4a241-fc3b-4d92-978e-f56fa96ae795",
+        "parentOrg" : {
+          "address" : {
+            "streetAddress" : "16550 SW Merlo Road",
+            "postalCode" : "97003",
+            "addressLocality" : "Riverwell",
+            "type" : "Address",
+            "addressRegion" : "OR"
+          },
+          "type" : "Profile",
+          "name" : "Riverwell School District",
+          "id" : "urn:uuid:9043d6f6-9aea-4095-a037-cf27860f696c"
+        }
+      },
+      "issuanceDate" : "2018-06-06T00:00:00Z",
+      "credentialSubject" : {
+        "id" : "urn:uuid:360a0e1e-c3f4-4fc4-9975-379889927d54",
+        "achievement" : {
+          "id" : "urn:uuid:0f09ae53-33ae-4472-8daa-d7381b859e6c",
+          "type" : "Achievement",
+          "name" : "Nurse Assisting 1",
+          "description" : "This full year course is designed to prepare students to perform routine nursing assistant tasks to clients in the following venues: long-term and skilled nursing care facilities, home care and community health agencies. There will be a minimum of 80 hours of classroom/lab instruction as mandated by the Oregon State Board of Nursing and 75 hours of clinical training that prepare NA students perform routine assistant tasks to clients in hospitals, long-term, community and skilled care facilities. Students will sit for the state licensing examination at the end of this course.",
+          "achievementType" : "Course",
+          "criteria" : {
+            "narrative" : "This full year course is designed to prepare students to perform routine nursing assistant tasks to clients in the following venues: long-term and skilled nursing care facilities, home care and community health agencies. There will be a minimum of 80 hours of classroom/lab instruction as mandated by the Oregon State Board of Nursing and 75 hours of clinical training that prepare NA students perform routine assistant tasks to clients in hospitals, long-term, community and skilled care facilities. Students will sit for the state licensing examination at the end of this course."
+          },
+          "fieldOfStudy" : "Health Care",
+          "resultDescription" : [ {
+            "name" : "Grade",
+            "id" : "urn:uuid:49ce3694-37fd-4330-882a-0923deaa0628",
+            "type" : "ResultDescription",
+            "resultType" : "LetterGrade"
+          }, {
+            "name" : "Clinical Training Hours",
+            "id" : "urn:uuid:adee17db-2226-4c2b-a577-5d4de372a11e",
+            "type" : "ResultDescription",
+            "resultType" : "Result",
+            "requiredValue" : "75"
+          } ]
+        },
+        "type" : "AchievementSubject"
+      },
+      "proof" : {
+        "type" : "Ed25519Signature2020",
+        "proofValue" : "z2KmRARb9FBua6FfisuAiJ5B5fdb6VPXEBcGZjWjwPMiqXa1TGmHaym4rWdoio8VH8LoHRQfkuS3uoneRyDXNhaA9",
+        "created" : "2022-12-29T20:49:13Z",
+        "proofPurpose" : "assertionMethod",
+        "verificationMethod" : "did:key:z6Mks4vZNz8Jwyb85odUeZrissHSY7JeJcXkNTDCcXLhYAZ4"
+      },
+      "name" : "Nurse Assisting 1",
+      "description" : "This full year course is designed to prepare students to perform routine nursing assistant tasks to clients in the following venues: long-term and skilled nursing care facilities, home care and community health agencies. There will be a minimum of 80 hours of classroom/lab instruction as mandated by the Oregon State Board of Nursing and 75 hours of clinical training that prepare NA students perform routine assistant tasks to clients in hospitals, long-term, community and skilled care facilities. Students will sit for the state licensing examination at the end of this course."
+    }, {
+      "@context" : [ "https://www.w3.org/2018/credentials/v1", "https://purl.imsglobal.org/spec/ob/v3p0/context.json", "https://w3id.org/security/suites/ed25519-2020/v1" ],
+      "id" : "https://dc.imsglobal.org/wellspring/hub/ims/clr/v1p0/assertions/6fcd1f11c24c4be8991559c5dfb26e10",
+      "type" : [ "VerifiableCredential", "AchievementCredential" ],
+      "issuer" : {
+        "address" : {
+          "streetAddress" : "4200 NW 185th Ave",
+          "postalCode" : "97229",
+          "addressLocality" : "Riverwell",
+          "type" : "Address",
+          "addressRegion" : "OR"
+        },
+        "type" : "Profile",
+        "url" : "https://western.riverwell.k12.or.us/",
+        "name" : "Western High School, RSD",
+        "id" : "urn:uuid:4ca4a241-fc3b-4d92-978e-f56fa96ae795",
+        "parentOrg" : {
+          "address" : {
+            "streetAddress" : "16550 SW Merlo Road",
+            "postalCode" : "97003",
+            "addressLocality" : "Riverwell",
+            "type" : "Address",
+            "addressRegion" : "OR"
+          },
+          "type" : "Profile",
+          "name" : "Riverwell School District",
+          "id" : "urn:uuid:9043d6f6-9aea-4095-a037-cf27860f696c"
+        }
+      },
+      "issuanceDate" : "2018-06-06T00:00:00Z",
+      "credentialSubject" : {
+        "id" : "urn:uuid:360a0e1e-c3f4-4fc4-9975-379889927d54",
+        "achievement" : {
+          "id" : "urn:uuid:0f09ae53-33ae-4472-8daa-d7381b859e6c",
+          "type" : "Achievement",
+          "name" : "Oregon State Board of Nursing - Certified Nursing Assistant",
+          "description" : "Certification issued by the Oregon State Board of Nursing.",
+          "achievementType" : "Badge",
+          "criteria" : {
+            "narrative" : "Pass the Certified Nursing Assistant evaluation."
+          }
+        },
+        "type" : "AchievementSubject"
+      },
+      "proof" : {
+        "type" : "Ed25519Signature2020",
+        "proofValue" : "z32hF8EcACFhSHQG7nfwqJ1jpDNKEEfYTjsTPP5ErfxcwHHLVLy1p6PbDnxMqJ1GxrXPMVtSQ3d8E4SkuapETGE4t",
+        "created" : "2022-12-29T20:49:14Z",
+        "proofPurpose" : "assertionMethod",
+        "verificationMethod" : "did:key:z6Mks4vZNz8Jwyb85odUeZrissHSY7JeJcXkNTDCcXLhYAZ4"
+      },
+      "name" : "Oregon State Board of Nursing - Certified Nursing Assistant"
+    } ]
+  },
+  "proof" : {
+    "type" : "Ed25519Signature2020",
+    "created" : "2022-12-29T20:49:14Z",
+    "proofPurpose" : "assertionMethod",
+    "verificationMethod" : "did:key:z6Mks4vZNz8Jwyb85odUeZrissHSY7JeJcXkNTDCcXLhYAZ4",
+    "proofValue" : "z4AHu9NxGTTuM3gkcoMjMyTnzizf1NQPy3GcQeZ5ZgZo9ct5PUhoXJJ8n1DCcL9FP1Bd2GMvM1uNB4Usf4WfMBhcb"
+  }
+}
