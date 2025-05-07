@@ -31,6 +31,20 @@
 			"group": "vc",
 			"supportsCertification": false,
 			"submissionTypes": ["upload","uri"]
+		},
+		{
+			"id": "CLR20Inspector",
+			"name": "CLR 2.0 Verifier",
+			"pkg": "org.oneedtech.inspect.clr",
+			"desc": "Verifies Comprehensive Learner Record (CLR) 2.0 files",
+			"instr": "This validator supports Comprehensive Learner Record (CLR) 2.0 files.",
+			"spec": "spec-pid-todo",
+			"group": "vc",
+			"initParams": {
+				"DID_RESOLUTION_SERVICE_URL": "http://dev.uniresolver.io/1.0/identifiers/"
+			},
+			"supportsCertification": false,
+			"submissionTypes": ["upload","uri"]
 		}
 	]
 
