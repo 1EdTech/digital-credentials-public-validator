@@ -1,0 +1,160 @@
+{
+    "@context": [
+      "https://www.w3.org/2018/credentials/v1",
+      "https://dc.imsglobal.org/draft/clr/v2p0/context",
+      "https://purl.imsglobal.org/spec/ob/v3p0/context.json",
+      "https://w3id.org/security/suites/ed25519-2020/v1"
+    ],
+    "id": "http://example.edu/credentials/3732",
+    "type": [
+      "VerifiableCredential",
+      "ClrCredential"
+    ],
+    "issuer": {
+      "id": "https://example.edu/issuers/565049",
+      "type": [
+        "Profile"
+      ],
+      "name": "Example University"
+    },
+    "issuanceDate": "2010-01-01T00:00:00Z",
+    "name": "Sample Transcript",
+    "credentialSubject": {
+      "id": "did:example:ebfeb1f712ebc6f1c276e12ec21",
+      "type": [
+        "ClrSubject"
+      ],
+      "verifiableCredential": [
+        {
+          "@context": [
+            "https://www.w3.org/2018/credentials/v1",
+            "https://purl.imsglobal.org/spec/ob/v3p0/context.json",
+            "https://w3id.org/security/suites/ed25519-2020/v1"
+          ],
+          "id": "urn:uuid:91537dba-56cb-11ec-bf63-0242ac130002",
+          "type": [
+            "VerifiableCredential",
+            "AchievementCredential"
+          ],
+          "issuer": {
+            "id": "https://example.edu/issuers/565049",
+            "type": [
+              "Profile"
+            ],
+            "name": "Example University"
+          },
+          "issuanceDate": "2010-01-01T00:00:00Z",
+          "name": "Example University Degree",
+          "credentialSubject": {
+            "id": "did:example:ebfeb1f712ebc6f1c276e12ec21",
+            "type": [
+              "AchievementSubject"
+            ],
+            "achievement": {
+              "id": "urn:uuid:a7467ef6-56cb-11ec-bf63-0242ac130002",
+              "type": [
+                "Achievement"
+              ],
+              "creator": {
+                "id": "https://example.edu/issuers/565049",
+                "type": [
+                  "Profile"
+                ]
+              },
+              "name": "Achievement 1",
+              "criteria": {
+                "id": "https://example.edu/achievements/a7467ef6-56cb-11ec-bf63-0242ac130002/criteria"
+              },
+              "description": "Achievement 1",
+              "image": {
+                "id": "https://example.edu/achievements/sample.png",
+                "type": "Image"
+              }
+            }
+          },
+          "credentialSchema": [
+            {
+              "id": "https://purl.imsglobal.org/ClrCredential.json",
+              "type": "JsonSchemaValidator2020"
+            }
+          ],
+          "proof": [
+            {
+              "type": "Ed25519Signature2020",
+              "created": "2022-07-18T18:16:06Z",
+              "verificationMethod": "https://example.edu/issuers/565049#z6MkwA1498JfoCS3y4y3zggBDAosQEoCi5gsYH2PMXh1cFWK",
+              "proofPurpose": "assertionMethod",
+              "proofValue": "z3zTHJAHPn3pkfhYhfwFBrzLMu6Fs2dVa8MMqkjbrrSh5qADrUXbAL4eC2czVVurPRihFHYKB1nzFrBMYN2FMoqUy"
+            }
+          ]
+        }
+      ],
+      "achievement": [
+        {
+          "id": "urn:uuid:a7467ef6-56cb-11ec-bf63-0242ac130002",
+          "type": [
+            "Achievement"
+          ],
+          "creator": {
+            "id": "https://example.edu/issuers/565049",
+            "type": [
+              "Profile"
+            ]
+          },
+          "name": "Achievement 1",
+          "criteria": {
+            "id": "https://example.edu/achievements/a7467ef6-56cb-11ec-bf63-0242ac130002/criteria"
+          },
+          "description": "Achievement 1",
+          "image": {
+            "id": "https://example.edu/achievements/sample.png",
+            "type": "Image"
+          }
+        },
+        {
+          "id": "urn:uuid:dd887f0a-56cb-11ec-bf63-0242ac130002",
+          "type": [
+            "Achievement"
+          ],
+          "creator": {
+            "id": "https://example.edu/issuers/565049",
+            "type": [
+              "Profile"
+            ]
+          },
+          "name": "Achievement 2",
+          "criteria": {
+            "id": "https://example.edu/achievements/dd887f0a-56cb-11ec-bf63-0242ac130002/criteria"
+          },
+          "description": "Achievement 2",
+          "image": {
+            "id": "https://example.edu/achievements/sample.png",
+            "type": "Image"
+          }
+        }
+      ],
+      "association": [
+        {
+          "type": "Association",
+          "associationType": "isParentOf",
+          "sourceId": "urn:uuid:a7467ef6-56cb-11ec-bf63-0242ac130002",
+          "targetId": "urn:uuid:dd887f0a-56cb-11ec-bf63-0242ac130002"
+        }
+      ]
+    },
+    "credentialSchema": [
+      {
+        "id": "https://purl.imsglobal.org/AchievementCredential.json",
+        "type": "1EdTechJsonSchemaValidator2019"
+      }
+    ],
+    "proof": [
+      {
+        "type": "Ed25519Signature2020",
+        "created": "2022-07-18T18:16:06Z",
+        "verificationMethod": "https://example.edu/issuers/565049#z6MkwA1498JfoCS3y4y3zggBDAosQEoCi5gsYH2PMXh1cFWK",
+        "proofPurpose": "assertionMethod",
+        "proofValue": "zn81dPABsHNmfQvBgN5ZPG6dWBwqfVKY7BJj1HCLGh7VPwwH6KAYFfGT7aupeUny37rYkVT4BZdA2C5YmScdfPMK"
+      }
+    ]
+  }
