@@ -169,9 +169,11 @@ public class CLR20Inspector extends VCInspector {
 			}
 
 			//embedded endorsements
-			EndorsementInspector endorsementInspector = new EndorsementInspector.Builder()
-				.inject(DID_RESOLUTION_SERVICE_URL, this.didResolutionUrl)
-				.build();
+			EndorsementInspector.Builder endorsementInspectorBuilder = new EndorsementInspector.Builder();
+			if (didResolutionUrl != null) {
+				endorsementInspectorBuilder = endorsementInspectorBuilder.inject(DID_RESOLUTION_SERVICE_URL, didResolutionUrl);
+			}
+			EndorsementInspector endorsementInspector = endorsementInspectorBuilder.build();
 
 			List<JsonNode> endorsements = asNodeList(clr.getJson(), "$..endorsement", jsonPath);
 			for(JsonNode node : endorsements) {
@@ -193,9 +195,11 @@ public class CLR20Inspector extends VCInspector {
 			//embedded subject credentials
 			String path = "$.credentialSubject.verifiableCredential";
 			List<JsonNode> vcs = asNodeList(clr.getJson(), path, jsonPath);
-			OB30Inspector obInspector = new OB30Inspector.Builder()
-				.inject(DID_RESOLUTION_SERVICE_URL, this.didResolutionUrl)
-				.build();
+			OB30Inspector.Builder obInspectorBuilder = new OB30Inspector.Builder();
+			if (didResolutionUrl != null) {
+				obInspectorBuilder = obInspectorBuilder.inject(DID_RESOLUTION_SERVICE_URL, this.didResolutionUrl);
+			}
+			OB30Inspector obInspector = obInspectorBuilder.build();
 
 			for (int i = 0; i < vcs.size(); i++) {
 				JsonNode node = vcs.get(i);
