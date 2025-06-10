@@ -33,7 +33,9 @@ public class SimpleDidResolver implements DidResolver {
 
   public SimpleDidResolver(String uniResolverUrl) {
     this.uniResolver = new ClientUniResolver();
-    this.uniResolver.setResolveUri(uniResolverUrl);
+    if (uniResolverUrl != null && !uniResolverUrl.isEmpty()) {
+      this.uniResolver.setResolveUri(uniResolverUrl);
+    }
   }
 
   @Override
