@@ -232,7 +232,11 @@ public class OB30Inspector extends VCInspector implements SubInspector {
 			}
 
 			//embedded endorsements
-			EndorsementInspector endorsementInspector = new EndorsementInspector.Builder().inject(DID_RESOLUTION_SERVICE_URL, didResolutionUrl).build();
+			EndorsementInspector.Builder endorsementInspectorBuilder = new EndorsementInspector.Builder();
+			if (didResolutionUrl != null) {
+				endorsementInspectorBuilder = endorsementInspectorBuilder.inject(DID_RESOLUTION_SERVICE_URL, didResolutionUrl);
+			}
+			EndorsementInspector endorsementInspector = endorsementInspectorBuilder.build();
 
 			List<JsonNode> endorsements = asNodeList(ob.getJson(), "$..endorsement", jsonPath);
 			for(JsonNode node : endorsements) {
