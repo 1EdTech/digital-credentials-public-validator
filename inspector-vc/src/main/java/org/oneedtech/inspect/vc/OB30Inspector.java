@@ -58,6 +58,7 @@ import org.oneedtech.inspect.vc.util.CachingDocumentLoader;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableList;
+import org.velocitynetwork.contracts.VelocityNetworkDidResolver;
 
 /**
  * A verifier for Open Badges 3.0.
@@ -146,7 +147,8 @@ public class OB30Inspector extends VCInspector implements SubInspector {
 
 		ObjectMapper mapper = ObjectMapperCache.get(DEFAULT);
 		JsonPathEvaluator jsonPath = new JsonPathEvaluator(mapper);
-		DidResolver didResolver = new SimpleDidResolver(this.didResolutionUrl);
+		VelocityNetworkDidResolver velocityNetworkDidResolver = new VelocityNetworkDidResolver("https://stagingmember.velocitycareerlabs.io", "TestPrivateKey", "0x1550b4f24368c8Eb839073ac04673777D9dda60A", "BurnerDID");
+		DidResolver didResolver = new SimpleDidResolver(this.didResolutionUrl, velocityNetworkDidResolver);
 		VerifiableCredential.Builder credentialBuilder = new VerifiableCredential.Builder();
 		RunContext ctx = new RunContext.Builder()
 				.put(this)
