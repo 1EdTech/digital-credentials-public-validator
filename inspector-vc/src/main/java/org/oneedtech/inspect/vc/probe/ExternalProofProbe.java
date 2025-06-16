@@ -4,13 +4,16 @@ import static org.oneedtech.inspect.util.code.Defensives.checkTrue;
 
 import java.math.BigInteger;
 import java.net.URI;
+import java.security.AlgorithmParameters;
 import java.security.KeyFactory;
 import java.security.PublicKey;
+import java.security.interfaces.ECPublicKey;
 import java.security.interfaces.RSAPublicKey;
-import java.security.spec.RSAPublicKeySpec;
+import java.security.spec.*;
 import java.util.Base64;
 import java.util.Base64.Decoder;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
@@ -75,9 +78,12 @@ public class ExternalProofProbe extends Probe<VerifiableCredential> {
 		ObjectMapper mapper = ((ObjectMapper)ctx.get(RunContext.Key.JACKSON_OBJECTMAPPER));
     	JsonNode headerObj = mapper.readTree(joseHeader);
 
-		//MUST be "RS256"
+		//MUST be "RS256 or "ES256"
 		JsonNode alg = headerObj.get("alg");
-		if(alg == null || !alg.textValue().equals("RS256")) { throw new Exception("alg must be present and must be 'RS256'"); }
+		Set<String> allowedAlgs = Set.of("RS256", "ES256");
+		if (alg == null || !allowedAlgs.contains(alg.textValue())) {
+			throw new Exception("alg must be present and must be either 'RS256' or 'ES256'");
+		}
 
 		// decoded jwt will check timestamps, but shall we explicitly break these out?
 		// JWT verifier throws and exception with the cause when claims are invalid. Adding that cause
@@ -100,18 +106,48 @@ public class ExternalProofProbe extends Probe<VerifiableCredential> {
 			jwk = mapper.readTree(jwkResponse);
 		}
 
-		//Clean up may be required.  Currently need to cleanse extra double quoting.
-		String modulusString = jwk.get("n").textValue();
-		String exponentString = jwk.get("e").textValue();
+		String kty = jwk.get("kty").asText();
 
-		BigInteger modulus = new BigInteger(1, decoder.decode(modulusString));
-		BigInteger exponent = new BigInteger(1, decoder.decode(exponentString));
+		Algorithm algorithm; // Either RSA or ECDSA
 
-		PublicKey pub = KeyFactory.getInstance("RSA").generatePublic(new RSAPublicKeySpec(modulus, exponent));
+		if ("RSA".equalsIgnoreCase(kty)) {
+			// RSA Public Key
+			String modulusString = jwk.get("n").asText();
+			String exponentString = jwk.get("e").asText();
 
-		Algorithm algorithm = Algorithm.RSA256((RSAPublicKey)pub, null);
-		JWTVerifier verifier = JWT.require(algorithm)
-				.build(); //Reusable verifier instance
+			BigInteger modulus = new BigInteger(1, decoder.decode(modulusString));
+			BigInteger exponent = new BigInteger(1, decoder.decode(exponentString));
+
+			RSAPublicKeySpec pubSpec = new RSAPublicKeySpec(modulus, exponent);
+			KeyFactory factory = KeyFactory.getInstance("RSA");
+			RSAPublicKey pub = (RSAPublicKey) factory.generatePublic(pubSpec);
+
+			algorithm = Algorithm.RSA256(pub, null);
+
+		} else if ("EC".equalsIgnoreCase(kty)) {
+			// ECDSA Public Key
+			String xString = jwk.get("x").asText();
+			String yString = jwk.get("y").asText();
+			String crv = jwk.get("crv").asText(); // Should be P-256
+
+			ECParameterSpec ecSpec = getCurveFromCrv(crv); // helper function below
+
+			ECPoint ecPoint = new ECPoint(
+					new BigInteger(1, decoder.decode(xString)),
+					new BigInteger(1, decoder.decode(yString))
+			);
+
+			ECPublicKeySpec pubSpec = new ECPublicKeySpec(ecPoint, ecSpec);
+			KeyFactory factory = KeyFactory.getInstance("EC");
+			ECPublicKey pub = (ECPublicKey) factory.generatePublic(pubSpec);
+
+			algorithm = Algorithm.ECDSA256(pub, null);
+		} else {
+			throw new IllegalArgumentException("Unsupported key type: " + kty);
+		}
+
+		JWTVerifier verifier = JWT.require(algorithm).build();
+
 		try {
 			decodedJwt = verifier.verify(jwt);
 		}
@@ -136,7 +172,7 @@ public class ExternalProofProbe extends Probe<VerifiableCredential> {
 			URI kidUri = new URI(fetchUrl);
 			if (kidUri.getScheme() == null || kidUri.getScheme().equals("did")) {
 				DidResolver didResolver = ctx.get(RunContextKey.DID_RESOLVER);
-				DidResolution didResolution = didResolver.resolve(kidUri, CachingDocumentLoader.DOCUMENT_LOADER);
+				DidResolution didResolution = didResolver.resolve(kidUri, new CachingDocumentLoader()); // Not using the default document loader options
 				responseString = didResolution.getPublicKeyJwk();
 			} else {
 				CloseableHttpClient client = HttpClients.createDefault();
@@ -158,6 +194,16 @@ public class ExternalProofProbe extends Probe<VerifiableCredential> {
 
         return responseString;
     }
+
+	// Maps curve name from JWK to ECParameterSpec
+	private static ECParameterSpec getCurveFromCrv(String crv) throws Exception {
+		if ("P-256".equals(crv)) {
+			AlgorithmParameters parameters = AlgorithmParameters.getInstance("EC");
+			parameters.init(new ECGenParameterSpec("secp256r1"));
+			return parameters.getParameterSpec(ECParameterSpec.class);
+		}
+		throw new IllegalArgumentException("Unsupported curve: " + crv);
+	}
 
 	public static final String ID = ExternalProofProbe.class.getSimpleName();
 
