@@ -9,10 +9,6 @@
 	</parent>
 	<artifactId>inspector-vc</artifactId>
 
-	<properties>
-		<web3j.version>4.14.0</web3j.version>
-	</properties>
-
 	<dependencies>
 		<dependency>
 			<groupId>org.1edtech</groupId>
@@ -83,21 +79,18 @@
 		<dependency>
 			<groupId>org.web3j</groupId>
 			<artifactId>core</artifactId>
-			<version>${web3j.version}</version>
 		</dependency>
 
 		<!-- Web3j crypto utils -->
 		<dependency>
 			<groupId>org.web3j</groupId>
 			<artifactId>crypto</artifactId>
-			<version>${web3j.version}</version>
 		</dependency>
 
 		<!-- Bouncy Castle -->
 		<dependency>
 			<groupId>org.bouncycastle</groupId>
 			<artifactId>bcprov-jdk18on</artifactId>
-			<version>1.80</version>
 		</dependency>
 
 		<!-- Cose -->
