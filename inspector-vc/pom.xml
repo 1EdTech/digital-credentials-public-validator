@@ -29,11 +29,9 @@
 			<version>3.19.2</version>
 		</dependency>
 
-		<!--  https://repo.danubetech.com/#browse/browse:maven-public:com%2Fdanubetech%2Fverifiable-credentials-java%2F1.1-SNAPSHOT%2F1.1-20220818.090353-4 -->
 		<dependency>
 			<groupId>com.danubetech</groupId>
 			<artifactId>verifiable-credentials-java</artifactId>
-			<version>1.12.0</version>
 		</dependency>
 
 		<!-- https://github.com/filip26/copper-multibase -->

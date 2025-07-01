@@ -23,6 +23,7 @@
     <log4j.version>2.17.2</log4j.version>
     <skipTests>false</skipTests>
     <public.core.version>1.1.4</public.core.version>
+    <com.danubetech.verifiable.credentials.version>1.18.0</com.danubetech.verifiable.credentials.version>
   </properties>
 
   <modules>
@@ -310,6 +311,14 @@
         <version>5.8.2</version>
         <scope>test</scope>
       </dependency>
+
+
+      <!-- https://github.com/danubetech/verifiable-credentials-java -->
+      <dependency>
+			  <groupId>com.danubetech</groupId>
+			  <artifactId>verifiable-credentials-java</artifactId>
+        <version>${com.danubetech.verifiable.credentials.version}</version>
+		  </dependency>
 
     </dependencies>
   </dependencyManagement>
