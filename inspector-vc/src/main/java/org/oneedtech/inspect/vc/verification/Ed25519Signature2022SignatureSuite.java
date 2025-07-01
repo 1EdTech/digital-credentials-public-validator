@@ -17,7 +17,6 @@ public class Ed25519Signature2022SignatureSuite extends DataIntegritySuite {
         URI.create("http://w3id.org/security#ed25519"),
         Map.of(KeyTypeName.Ed25519, List.of(JWSAlgorithm.EdDSA)),
         List.of(
-            DataIntegrityContexts.JSONLD_CONTEXT_W3ID_SECURITY_DATAINTEGRITY_V1,
-            DataIntegrityContexts.JSONLD_CONTEXT_W3ID_SECURITY_V3));
+            DataIntegrityContexts.JSONLD_CONTEXT_W3ID_SECURITY_DATAINTEGRITY_V2));
   }
 }
