@@ -28,7 +28,7 @@ public class Ed25519Signature2022LdVerifier extends LdVerifier<Ed25519Signature2
 
   @Override
   public Canonicalizer getCanonicalizer(DataIntegrityProof dataIntegrityProof) {
-    return new URDNA2015Canonicalizer(Eddsa2022LdProof.builder());
+    return new URDNA2015Canonicalizer(Eddsa2022DataIntegrity.builder());
   }
 
   public static boolean verify(

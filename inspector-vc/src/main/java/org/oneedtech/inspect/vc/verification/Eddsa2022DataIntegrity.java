@@ -9,12 +9,12 @@ import com.danubetech.dataintegrity.jsonld.DataIntegrityContexts;
 import foundation.identity.jsonld.JsonLDObject;
 import foundation.identity.jsonld.JsonLDUtils;
 
-public class Eddsa2022LdProof extends DataIntegrityProof {
+public class Eddsa2022DataIntegrity extends DataIntegrityProof {
 	public static final URI[] DEFAULT_JSONLD_CONTEXTS = { DataIntegrityContexts.JSONLD_CONTEXT_W3ID_SECURITY_DATAINTEGRITY_V1 };
 	public static final DocumentLoader DEFAULT_DOCUMENT_LOADER = DataIntegrityContexts.DOCUMENT_LOADER;
 
 	public static Builder<? extends Builder<?>> builder() {
-		return new Builder(new Eddsa2022LdProof());
+		return new Builder(new Eddsa2022DataIntegrity());
 	}
 
 	/*

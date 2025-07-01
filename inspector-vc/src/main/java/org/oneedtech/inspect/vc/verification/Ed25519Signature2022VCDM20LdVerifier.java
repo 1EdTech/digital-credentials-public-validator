@@ -29,7 +29,7 @@ public class Ed25519Signature2022VCDM20LdVerifier
 
   @Override
   public Canonicalizer getCanonicalizer(DataIntegrityProof dataIntegrityProof) {
-    return new URDNA2015Canonicalizer(Eddsa2022v2LdProof.builder());
+    return new URDNA2015Canonicalizer(Eddsa2022v2DataIntegrity.builder());
   }
 
   public static boolean verify(
