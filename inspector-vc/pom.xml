@@ -36,12 +36,6 @@
 			<version>1.12.0</version>
 		</dependency>
 
-		<!-- https://github.com/filip26/iron-eddsa-rdfc-2022 -->
-		<!-- <dependency>
-			<groupId>com.apicatalog</groupId>
-			<artifactId>iron-eddsa-rdfc-2022</artifactId>
-			<version>0.14.0</version>
-		</dependency> -->
 		<!-- https://github.com/filip26/copper-multibase -->
 		<dependency>
 			<groupId>com.apicatalog</groupId>
