@@ -23,11 +23,12 @@ import com.apicatalog.jsonld.loader.DocumentLoaderOptions;
 import com.apicatalog.multibase.MultibaseDecoder;
 import com.apicatalog.multicodec.MulticodecDecoder;
 import com.apicatalog.multicodec.codec.KeyCodec;
+import com.danubetech.dataintegrity.DataIntegrityProof;
+import com.danubetech.dataintegrity.canonicalizer.Canonicalizer;
+import com.danubetech.dataintegrity.canonicalizer.URDNA2015SHA256Canonicalizer;
+import com.danubetech.dataintegrity.verifier.Ed25519Signature2020LdVerifier;
+import com.danubetech.dataintegrity.verifier.LdVerifier;
 
-import info.weboftrust.ldsignatures.LdProof;
-import info.weboftrust.ldsignatures.canonicalizer.Canonicalizer;
-import info.weboftrust.ldsignatures.verifier.Ed25519Signature2020LdVerifier;
-import info.weboftrust.ldsignatures.verifier.LdVerifier;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonStructure;
 
@@ -53,13 +54,13 @@ public class EmbeddedProofProbe extends Probe<VerifiableCredential> {
 
     W3CVCHolder credentialHolder = new W3CVCHolder(crd);
 
-    List<LdProof> proofs = credentialHolder.getProofs();
+    List<DataIntegrityProof> proofs = credentialHolder.getProofs();
     if (proofs == null || proofs.size() == 0) {
       return error("The verifiable credential is missing a proof.", ctx);
     }
 
     // get proof of standard type and purpose
-    Optional<LdProof> selectedProof =
+    Optional<DataIntegrityProof> selectedProof =
         proofs.stream()
             .filter(proof -> proof.getProofPurpose().equals("assertionMethod"))
             .filter(
@@ -79,7 +80,7 @@ public class EmbeddedProofProbe extends Probe<VerifiableCredential> {
           ctx);
     }
 
-    LdProof proof = selectedProof.get();
+    DataIntegrityProof proof = selectedProof.get();
 
     URI method = proof.getVerificationMethod();
 
@@ -165,10 +166,11 @@ public class EmbeddedProofProbe extends Probe<VerifiableCredential> {
       return error("Invalid public key: " + e.getMessage(), ctx);
     }
 
-    if (controller != null && credentialHolder.getCredential().getIssuer() != null) {
-      if (!controller.equals(credentialHolder.getCredential().getIssuer().toString())) {
+    URI credentialIssuer = credentialHolder.getIssuer();
+    if (controller != null && credentialIssuer != null) {
+      if (!controller.equals(credentialIssuer.toString())) {
         return error(
-            "Key controller does not match issuer: " + credentialHolder.getCredential().getIssuer(),
+            "Key controller does not match issuer: " + credentialIssuer,
             ctx);
       }
     }
@@ -183,16 +185,18 @@ public class EmbeddedProofProbe extends Probe<VerifiableCredential> {
       boolean verify = verifier.verify(credentialHolder.getCredential(), proof);
       if (!verify) {
         // add proof calculations to the report
-        Canonicalizer canonicalizer = verifier.getCanonicalizer();
+        Canonicalizer canonicalizer = verifier.getCanonicalizer(proof);
         if (canonicalizer != null) {
           URDNA2015Canonicalizer urdna2015Canonicalizer = null;
           if (canonicalizer instanceof URDNA2015Canonicalizer) {
             urdna2015Canonicalizer = (URDNA2015Canonicalizer) canonicalizer;
-          } else if (canonicalizer instanceof info.weboftrust.ldsignatures.canonicalizer.URDNA2015Canonicalizer) {
-            urdna2015Canonicalizer = new URDNA2015Canonicalizer(info.weboftrust.ldsignatures.LdProof.builder());
-            urdna2015Canonicalizer.canonicalize(proof, credentialHolder.getCredential());
+          } else if (canonicalizer instanceof URDNA2015SHA256Canonicalizer) {
+            urdna2015Canonicalizer = new URDNA2015Canonicalizer(DataIntegrityProof.builder());
           }
           if (urdna2015Canonicalizer != null) {
+            // canonicalize the proof and credential again to store intermediate results
+            urdna2015Canonicalizer.canonicalize(proof, credentialHolder.getCredential());
+
             EmbeddedProofModelGenerator modelGenerator =
                 new EmbeddedProofModelGenerator(urdna2015Canonicalizer);
             return error("Embedded proof verification failed. You can see intermediate results for proof calculations by downloading the report.", modelGenerator.getGeneratedObject(), ctx);
@@ -207,7 +211,7 @@ public class EmbeddedProofProbe extends Probe<VerifiableCredential> {
     return success(ctx);
   }
 
-  private LdVerifier<?> getVerifier(LdProof proof, byte[] publicKey, VerifiableCredential crd) {
+  private LdVerifier<?> getVerifier(DataIntegrityProof proof, byte[] publicKey, VerifiableCredential crd) {
     return proof.isType("Ed25519Signature2020")
         ? new Ed25519Signature2020LdVerifier(publicKey)
         : crd.getVersion() == VerifiableCredential.VCVersion.VCDMv1p1
