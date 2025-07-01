@@ -3,14 +3,15 @@ package org.oneedtech.inspect.vc.verification;
 import java.net.URI;
 
 import com.apicatalog.jsonld.loader.DocumentLoader;
+import com.danubetech.dataintegrity.DataIntegrityProof;
+import com.danubetech.dataintegrity.jsonld.DataIntegrityContexts;
 
 import foundation.identity.jsonld.JsonLDObject;
 import foundation.identity.jsonld.JsonLDUtils;
-import info.weboftrust.ldsignatures.LdProof;
 
-public class Eddsa2022LdProof extends LdProof {
-	public static final URI[] DEFAULT_JSONLD_CONTEXTS = { LDSecurityContexts.JSONLD_CONTEXT_W3ID_SUITES_ED25519_2022_V1 };
-	public static final DocumentLoader DEFAULT_DOCUMENT_LOADER = LDSecurityContexts.DOCUMENT_LOADER;
+public class Eddsa2022LdProof extends DataIntegrityProof {
+	public static final URI[] DEFAULT_JSONLD_CONTEXTS = { DataIntegrityContexts.JSONLD_CONTEXT_W3ID_SECURITY_DATAINTEGRITY_V1 };
+	public static final DocumentLoader DEFAULT_DOCUMENT_LOADER = DataIntegrityContexts.DOCUMENT_LOADER;
 
 	public static Builder<? extends Builder<?>> builder() {
 		return new Builder(new Eddsa2022LdProof());
@@ -20,11 +21,11 @@ public class Eddsa2022LdProof extends LdProof {
 	 * Factory methods
 	 */
 
-	public static class Builder<B extends Builder<B>> extends LdProof.Builder<B> {
+	public static class Builder<B extends Builder<B>> extends DataIntegrityProof.Builder<B> {
 
 		private boolean addCryptosuite = true;
 
-		public Builder(LdProof jsonLdObject) {
+		public Builder(DataIntegrityProof jsonLdObject) {
 			super(jsonLdObject);
 		}
 
@@ -35,14 +36,14 @@ public class Eddsa2022LdProof extends LdProof {
 		}
 
 		@Override
-		public LdProof build() {
+		public DataIntegrityProof build() {
 			super.build();
 
 			if (addCryptosuite) {
 				JsonLDUtils.jsonLdAdd(this.jsonLdObject, "cryptosuite", "eddsa-rdfc-2022");
 			}
 
-			return (LdProof) this.jsonLdObject;
+			return (DataIntegrityProof) this.jsonLdObject;
 
 		}
 	}
