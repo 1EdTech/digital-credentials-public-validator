@@ -24,6 +24,8 @@
     <skipTests>false</skipTests>
     <public.core.version>1.1.4</public.core.version>
     <com.danubetech.verifiable.credentials.version>1.18.0</com.danubetech.verifiable.credentials.version>
+    <cbor-java.version>0.9</cbor-java.version>
+    <!-- <iron.verifiable.credentials.version>0.14.0</iron.verifiable.credentials.version> -->
   </properties>
 
   <modules>
@@ -319,6 +321,22 @@
 			  <artifactId>verifiable-credentials-java</artifactId>
         <version>${com.danubetech.verifiable.credentials.version}</version>
 		  </dependency>
+
+      <!-- https://github.com/c-rack/cbor-java/tree/master -->
+      <dependency>
+        <groupId>co.nstant.in</groupId>
+        <artifactId>cbor</artifactId>
+        <version>${cbor-java.version}</version>
+      </dependency>
+
+      <!-- https://github.com/filip26/iron-verifiable-credentials -->
+      <!-- <dependency>
+          <groupId>com.apicatalog</groupId>
+          <artifactId>iron-verifiable-credentials</artifactId>
+          <version>${iron.verifiable.credentials.version}</version>
+      </dependency> -->
+
+
 
     </dependencies>
   </dependencyManagement>

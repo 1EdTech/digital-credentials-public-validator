@@ -33,6 +33,14 @@
 			<groupId>com.danubetech</groupId>
 			<artifactId>verifiable-credentials-java</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>co.nstant.in</groupId>
+			<artifactId>cbor</artifactId>
+		</dependency>
+      <!-- <dependency>
+          <groupId>com.apicatalog</groupId>
+          <artifactId>iron-verifiable-credentials</artifactId>
+      </dependency> -->
 
 		<!-- https://github.com/filip26/copper-multibase -->
 		<dependency>
