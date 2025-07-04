@@ -50,25 +50,15 @@ public class EcdsaSd2023LdVerifier extends LdVerifier<EcdsaSd2023SignatureSuite>
 
   private void updateVerifier(byte[] pubKey)
       throws NoSuchAlgorithmException, InvalidKeySpecException {
+    EcdsaSd2023SignatureSuite suite = (EcdsaSd2023SignatureSuite) getDataIntegritySuite();
     // determine the key type
     if (codec == KeyCodec.P256_PUBLIC_KEY) {
-      setVerifier(new P_256_ES256_PublicKeyVerifier(getPublicKeyFromBytes(pubKey, "secp256r1")));
+      setVerifier(new P_256_ES256_PublicKeyVerifier(suite.getPublicKeyFromBytes(pubKey, "secp256r1")));
     } else if (codec == KeyCodec.P384_PUBLIC_KEY) {
-      setVerifier(new P_384_ES384_PublicKeyVerifier(getPublicKeyFromBytes(pubKey, "secp384r1")));
+      setVerifier(new P_384_ES384_PublicKeyVerifier(suite.getPublicKeyFromBytes(pubKey, "secp384r1")));
     } else {
       throw new IllegalArgumentException("Unsupported codec: " + codec);
     }
-  }
-
-  private ECPublicKey getPublicKeyFromBytes(final byte[] pubKey, String curveName)
-      throws NoSuchAlgorithmException, InvalidKeySpecException {
-    final ECNamedCurveParameterSpec spec = ECNamedCurveTable.getParameterSpec(curveName);
-    final KeyFactory kf = KeyFactory.getInstance("EC", new BouncyCastleProvider());
-    final ECNamedCurveSpec params =
-        new ECNamedCurveSpec(curveName, spec.getCurve(), spec.getG(), spec.getN(), spec.getH());
-    final ECPoint point = ECPointUtil.decodePoint(params.getCurve(), pubKey);
-    final ECPublicKeySpec pubKeySpec = new ECPublicKeySpec(point, params);
-    return (ECPublicKey) kf.generatePublic(pubKeySpec);
   }
 
   public Canonicalizer getCanonicalizer(DataIntegrityProof dataIntegrityProof) {
