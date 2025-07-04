@@ -1,46 +1,24 @@
 package org.oneedtech.inspect.vc.probe;
 
-import java.util.HexFormat;
-
+import java.util.HashMap;
+import java.util.Map;
 import org.oneedtech.inspect.core.probe.GeneratedObject;
-import org.oneedtech.inspect.vc.verification.URDNA2015Canonicalizer;
 
 public class EmbeddedProofModel extends GeneratedObject {
-	public static final String ID = "vc.embedded.proof";
+  public static final String ID = "vc.embedded.proof";
 
+  private final Map<String, String> intermediateValues;
 
-    private final String ldProofWithoutProofValues;
-    private final String jsonLdObjectWithoutProof;
-    private final String canonicalizedLdProofWithoutProofValues;
-    private final String canonicalizedJsonLdObjectWithoutProof;
-    private final String canonicalizationResult;
+  public EmbeddedProofModel() {
+    super(ID, Type.EXTERNAL);
+    this.intermediateValues = new HashMap<>();
+  }
 
-    public EmbeddedProofModel(URDNA2015Canonicalizer canonicalizer) {
-        super(ID, Type.EXTERNAL);
-        this.ldProofWithoutProofValues = canonicalizer.getLdProofWithoutProofValues().toJson(true);
-        this.jsonLdObjectWithoutProof = canonicalizer.getJsonLdObjectWithoutProof().toJson(true);
-        this.canonicalizedLdProofWithoutProofValues = canonicalizer.getCanonicalizedLdProofWithoutProofValues();
-        this.canonicalizedJsonLdObjectWithoutProof = canonicalizer.getCanonicalizedJsonLdObjectWithoutProof();
-        this.canonicalizationResult = HexFormat.of().formatHex(canonicalizer.getCanonicalizationResult());
-    }
+  public Map<String, String> getIntermediateValues() {
+    return intermediateValues;
+  }
 
-    public String getLdProofWithoutProofValues() {
-        return ldProofWithoutProofValues;
-    }
-
-    public String getJsonLdObjectWithoutProof() {
-        return jsonLdObjectWithoutProof;
-    }
-
-    public String getCanonicalizedLdProofWithoutProofValues() {
-        return canonicalizedLdProofWithoutProofValues;
-    }
-
-    public String getCanonicalizedJsonLdObjectWithoutProof() {
-        return canonicalizedJsonLdObjectWithoutProof;
-    }
-
-    public String getCanonicalizationResult() {
-        return canonicalizationResult;
-    }
+  public void addIntermediateValue(String key, String value) {
+    intermediateValues.put(key, value);
+  }
 }

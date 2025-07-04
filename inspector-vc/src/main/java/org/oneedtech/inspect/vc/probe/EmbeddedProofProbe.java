@@ -1,23 +1,10 @@
 package org.oneedtech.inspect.vc.probe;
 
-import com.apicatalog.jsonld.StringUtils;
-import com.apicatalog.jsonld.document.Document;
-import com.apicatalog.jsonld.loader.DocumentLoaderOptions;
-import com.apicatalog.multibase.MultibaseDecoder;
-import com.apicatalog.multicodec.Multicodec;
-import com.apicatalog.multicodec.MulticodecDecoder;
-import com.apicatalog.multicodec.codec.KeyCodec;
-import com.danubetech.dataintegrity.DataIntegrityProof;
-import com.danubetech.dataintegrity.canonicalizer.Canonicalizer;
-import com.danubetech.dataintegrity.canonicalizer.URDNA2015SHA256Canonicalizer;
-import com.danubetech.dataintegrity.verifier.Ed25519Signature2020LdVerifier;
-import com.danubetech.dataintegrity.verifier.LdVerifier;
-import jakarta.json.JsonObject;
-import jakarta.json.JsonStructure;
 import java.net.URI;
 import java.security.spec.InvalidKeySpecException;
 import java.util.List;
 import java.util.Optional;
+
 import org.oneedtech.inspect.core.probe.GeneratedObject;
 import org.oneedtech.inspect.core.probe.Probe;
 import org.oneedtech.inspect.core.probe.RunContext;
@@ -30,7 +17,19 @@ import org.oneedtech.inspect.vc.probe.did.DidResolver;
 import org.oneedtech.inspect.vc.verification.EcdsaSd2023LdVerifier;
 import org.oneedtech.inspect.vc.verification.Ed25519Signature2022LdVerifier;
 import org.oneedtech.inspect.vc.verification.Ed25519Signature2022VCDM20LdVerifier;
-import org.oneedtech.inspect.vc.verification.URDNA2015Canonicalizer;
+
+import com.apicatalog.jsonld.StringUtils;
+import com.apicatalog.jsonld.document.Document;
+import com.apicatalog.jsonld.loader.DocumentLoaderOptions;
+import com.apicatalog.multibase.MultibaseDecoder;
+import com.apicatalog.multicodec.Multicodec;
+import com.apicatalog.multicodec.MulticodecDecoder;
+import com.apicatalog.multicodec.codec.KeyCodec;
+import com.danubetech.dataintegrity.DataIntegrityProof;
+import com.danubetech.dataintegrity.verifier.LdVerifier;
+
+import jakarta.json.JsonObject;
+import jakarta.json.JsonStructure;
 
 /**
  * A Probe that verifies a credential's embedded proof.
@@ -186,27 +185,13 @@ public class EmbeddedProofProbe extends Probe<VerifiableCredential> {
 
       boolean verify = verifier.verify(credentialHolder.getCredential(), proof);
       if (!verify) {
-        // add proof calculations to the report
-        Canonicalizer canonicalizer = verifier.getCanonicalizer(proof);
-        if (canonicalizer != null) {
-          URDNA2015Canonicalizer urdna2015Canonicalizer = null;
-          if (canonicalizer instanceof URDNA2015Canonicalizer) {
-            urdna2015Canonicalizer = (URDNA2015Canonicalizer) canonicalizer;
-          } else if (canonicalizer instanceof URDNA2015SHA256Canonicalizer) {
-            urdna2015Canonicalizer = new URDNA2015Canonicalizer(DataIntegrityProof.builder());
-          }
-          if (urdna2015Canonicalizer != null) {
-            // canonicalize the proof and credential again to store intermediate results
-            urdna2015Canonicalizer.canonicalize(proof, credentialHolder.getCredential());
-
-            EmbeddedProofModelGenerator modelGenerator =
-                new EmbeddedProofModelGenerator(urdna2015Canonicalizer);
-            return error(
-                "Embedded proof verification failed. You can see intermediate results for proof"
-                    + " calculations by downloading the report.",
-                modelGenerator.getGeneratedObject(),
-                ctx);
-          }
+        if (verifier instanceof EmbeddedProofModelGenerator) {
+          // if the verifier is an EmbeddedProofModelGenerator, we can generate a report
+          return error(
+              "Embedded proof verification failed. You can see intermediate results for proof"
+                  + " calculations by downloading the report.",
+              ((EmbeddedProofModelGenerator) verifier).getGeneratedObject(),
+              ctx);
         }
         return error("Embedded proof verification failed.", ctx);
       }
@@ -222,7 +207,7 @@ public class EmbeddedProofProbe extends Probe<VerifiableCredential> {
       throws Throwable, InvalidKeySpecException {
     // backwards compatibility for Ed25519Signature2020
     if (proof.isType("Ed25519Signature2020")) {
-      return new Ed25519Signature2020LdVerifier(publicKey);
+      return new EmbeddedProofModelGeneratorAwareEd25519Signature2020LdVerifier(publicKey);
     }
     if (proof.isType("DataIntegrityProof")) {
       // get cryptosuite from proof

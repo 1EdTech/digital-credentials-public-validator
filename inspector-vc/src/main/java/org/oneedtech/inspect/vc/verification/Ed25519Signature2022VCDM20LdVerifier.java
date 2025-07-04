@@ -8,9 +8,14 @@ import com.danubetech.keyformats.crypto.impl.Ed25519_EdDSA_PublicKeyVerifier;
 import com.danubetech.keyformats.jose.JWSAlgorithm;
 import io.ipfs.multibase.Multibase;
 import java.security.GeneralSecurityException;
+import java.util.HexFormat;
+import org.oneedtech.inspect.vc.probe.EmbeddedProofModel;
+import org.oneedtech.inspect.vc.probe.EmbeddedProofModelGenerator;
 
 public class Ed25519Signature2022VCDM20LdVerifier
-    extends LdVerifier<Ed25519Signature2022SignatureSuite> {
+    extends LdVerifier<Ed25519Signature2022SignatureSuite> implements EmbeddedProofModelGenerator {
+
+  private URDNA2015Canonicalizer canonicalizer;
 
   public Ed25519Signature2022VCDM20LdVerifier(ByteVerifier verifier) {
 
@@ -29,7 +34,10 @@ public class Ed25519Signature2022VCDM20LdVerifier
 
   @Override
   public Canonicalizer getCanonicalizer(DataIntegrityProof dataIntegrityProof) {
-    return new URDNA2015Canonicalizer(Eddsa2022v2DataIntegrity.builder());
+    if (canonicalizer == null) {
+      canonicalizer = new URDNA2015Canonicalizer(Eddsa2022v2DataIntegrity.builder());
+    }
+    return canonicalizer;
   }
 
   public static boolean verify(
@@ -56,5 +64,26 @@ public class Ed25519Signature2022VCDM20LdVerifier
       throws GeneralSecurityException {
 
     return verify(signingInput, dataIntegrityProof, this.getVerifier());
+  }
+
+  @Override
+  public EmbeddedProofModel getGeneratedObject() {
+    EmbeddedProofModel model = new EmbeddedProofModel();
+
+    model.addIntermediateValue(
+        "ldProofWithoutProofValues", canonicalizer.getLdProofWithoutProofValues().toJson(true));
+    model.addIntermediateValue(
+        "jsonLdObjectWithoutProof", canonicalizer.getJsonLdObjectWithoutProof().toJson(true));
+    model.addIntermediateValue(
+        "canonicalizedLdProofWithoutProofValues",
+        canonicalizer.getCanonicalizedLdProofWithoutProofValues());
+    model.addIntermediateValue(
+        "canonicalizedJsonLdObjectWithoutProof",
+        canonicalizer.getCanonicalizedJsonLdObjectWithoutProof());
+    model.addIntermediateValue(
+        "canonicalizationResult",
+        HexFormat.of().formatHex(canonicalizer.getCanonicalizationResult()));
+
+    return model;
   }
 }

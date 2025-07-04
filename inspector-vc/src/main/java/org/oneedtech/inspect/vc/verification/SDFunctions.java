@@ -142,10 +142,8 @@ public class SDFunctions {
     // 9 Return an object with properties matching baseSignature, proofHash, publicKey, signatures,
     // nonMandatory, and mandatoryHash.
     return new VerifyData(
-        disclosureData.getBaseSignature(),
+        disclosureData,
         proofHash,
-        disclosureData.getPublicKey(),
-        disclosureData.getSignatures(),
         nonMandatory,
         mandatoryHash);
   }
@@ -500,38 +498,57 @@ public class SDFunctions {
     public List<Integer> getMandatoryIndexes() {
       return mandatoryIndexes;
     }
+
+    @Override
+    public String toString() {
+      return "DisclosureData{"
+          + "baseSignature="
+          + new String(Hex.encode(baseSignature))
+          + ",\npublicKey="
+          + new String(Hex.encode(publicKey))
+          + ",\nsignatures="
+          + signatures.stream()
+              .map(sig -> new String(Hex.encode(sig)))
+              .collect(Collectors.joining(",\n"))
+          + ",\nlabelMap="
+          + labelMap.entrySet().stream()
+              .map(e -> e.getKey() + "=" + e.getValue())
+              .collect(Collectors.joining(",\n "))
+          + ",\nmandatoryIndexes="
+          + mandatoryIndexes.stream()
+              .map(String::valueOf)
+              .collect(Collectors.joining(",\n "))
+          + '}';
+    }
   }
 
   public static class VerifyData {
-    private byte[] baseSignature;
+    private DisclosureData disclosureData;
     private byte[] proofHash;
-    private byte[] publicKey;
-
-    private List<byte[]> signatures;
     private List<String> nonMandatory;
     private byte[] mandatoryHash;
 
     VerifyData(
-        byte[] baseSignature,
+      DisclosureData disclosureData,
         byte[] proofHash,
-        byte[] publicKey,
-        List<byte[]> signatures,
         List<String> nonMandatory,
         byte[] mandatoryHash) {
-      this.baseSignature = baseSignature;
+          this.disclosureData = disclosureData;
       this.proofHash = proofHash;
-      this.publicKey = publicKey;
-      this.signatures = signatures;
       this.nonMandatory = nonMandatory;
       this.mandatoryHash = mandatoryHash;
     }
 
+    public DisclosureData getDisclosureData() {
+      return disclosureData;
+    }
+
     public boolean sameLength() {
-      return signatures.size() == nonMandatory.size();
+      return getSignatures().size() == getNonMandatory().size();
     }
 
     public byte[] getBaseSignature() {
-      return baseSignature;
+        return disclosureData.getBaseSignature();
     }
 
     public byte[] getProofHash() {
@@ -539,11 +556,13 @@ public class SDFunctions {
     }
 
     public byte[] getPublicKey() {
-      return publicKey;
+              return disclosureData.getPublicKey();
+
     }
 
     public List<byte[]> getSignatures() {
-      return signatures;
+        return disclosureData.getSignatures();
+
     }
 
     public List<String> getNonMandatory() {
@@ -556,16 +575,10 @@ public class SDFunctions {
 
     public String toString() {
       return "VerifyData{"
-          + "baseSignature="
-          + new String(Hex.encode(baseSignature))
+          + "disclosureData="
+          + disclosureData.toString()
           + ",\nproofHash="
           + new String(Hex.encode(proofHash))
-          + ",\npublicKey="
-          + new String(Hex.encode(publicKey))
-          + ",\nsignatures="
-          + signatures.stream()
-              .map(sig -> new String(Hex.encode(sig)))
-              .collect(Collectors.joining(",\n"))
           + ",\nnonMandatory="
           + nonMandatory.stream().collect(Collectors.joining(",\n "))
           + ",\nmandatoryHash="
