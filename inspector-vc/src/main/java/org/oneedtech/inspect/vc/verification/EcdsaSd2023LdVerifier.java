@@ -95,7 +95,6 @@ public class EcdsaSd2023LdVerifier extends LdVerifier<EcdsaSd2023SignatureSuite>
 
     // 4. Initialize publicKeyBytes to the public key bytes expressed in publicKey. Instructions on
     // how to decode the public key value can be found in Section 2.1.1 Multikey.
-    updateVerifier(codec.decode(verifyData.getPublicKey()));
 
     // 5. Initialize toVerify to the result of calling the algorithm in Setion 3.5.1
     // serializeSignData, passing proofHash, publicKey, and mandatoryHash.
@@ -109,7 +108,6 @@ public class EcdsaSd2023LdVerifier extends LdVerifier<EcdsaSd2023SignatureSuite>
     // Elliptic Curve Digital Signature Algorithm (ECDSA) [FIPS-186-5], with toVerify as the data to
     // be verified against the baseSignature using the public key specified by publicKeyBytes. If
     // verificationCheck is false, set verified to false.
-
     boolean verificationCheck = verifySignature(toVerify, verifyData.getBaseSignature());
     if (!verificationCheck) {
       verified = false;
@@ -117,6 +115,7 @@ public class EcdsaSd2023LdVerifier extends LdVerifier<EcdsaSd2023SignatureSuite>
 
     // 8. For every entry (index, signature) in signatures, verify every signature for every
     // selectively disclosed (non-mandatory) statement:
+    updateVerifier(codec.decode(verifyData.getPublicKey()));
 
     // 8.1. Initialize verificationCheck to the result of applying the verification algorithm
     // Elliptic Curve Digital Signature Algorithm (ECDSA) [FIPS-186-5], with the UTF-8
@@ -138,8 +137,9 @@ public class EcdsaSd2023LdVerifier extends LdVerifier<EcdsaSd2023SignatureSuite>
   private boolean verifySignature(byte[] signingInput, byte[] signature)
       throws GeneralSecurityException {
 
-    System.out.println("Verifying data " + new String(Hex.encode(signingInput)) + " with signature: " + new String(Hex.encode(signature)));
-    return getVerifier().verify(signingInput, signature, JWSAlgorithm.ES256);
+      boolean verified = getVerifier().verify(signingInput, signature, JWSAlgorithm.ES256);
+      System.out.println("Verified data " + new String(Hex.encode(signingInput)) + " (" + signingInput.length + ") with signature: " + new String(Hex.encode(signature)) + " (" + signature.length + "): " + verified);
+      return verified;
   }
 
   @Override
