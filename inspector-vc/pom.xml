@@ -99,5 +99,12 @@
 			<artifactId>bcprov-jdk18on</artifactId>
 			<version>1.80</version>
 		</dependency>
+
+		<!-- Cose -->
+		<dependency>
+			<groupId>com.authlete</groupId>
+			<artifactId>cbor</artifactId>
+			<version>1.19</version>
+		</dependency>
 	</dependencies>
 </project>

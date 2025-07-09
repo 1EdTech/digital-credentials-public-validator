@@ -1,5 +1,9 @@
 package org.velocitynetwork.contracts;
 
+import com.authlete.cbor.CBORDecoder;
+import com.authlete.cbor.CBORItem;
+import com.authlete.cose.COSEEC2Key;
+import com.authlete.cose.COSEKey;
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
 import org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPublicKey;
@@ -59,10 +63,14 @@ public class VelocityNetworkDidResolver {
             }
 
             try {
-                String publicKey = AesGcmEncryptor.decrypt(entry.encryptedPublicKey, secret);
-                Secp256k1JWK publicKeyJwk = new Secp256k1JWK.Builder(fromRawPublicKey(publicKey.getBytes(StandardCharsets.UTF_8))).build();
+                byte[] publicKeyBytes = AesGcmEncryptor.decrypt(entry.encryptedPublicKey, secret);
+                CBORItem item = new CBORDecoder(publicKeyBytes).next();
+                COSEKey coseKey = COSEKey.build(item);
+                if ((Integer) coseKey.getKty() == 3) {
+                    coseKey = new COSERSAKey(coseKey.getPairs());
+                }
                 JsonObject issuerVcJwt = IssuerVc.deserializeIssuerVc(entry);
-                return VerificationMethod.buildVerificationMethod(id + "#key-1", issuerVcJwt.getJsonObject("payload").getString("iss"), publicKeyJwk);
+                return VerificationMethod.buildVerificationMethod(id + "#key-1", issuerVcJwt.getJsonObject("payload").getString("iss"), coseKey);
             } catch (Exception e) {
                 return VerificationMethod.buildVerificationMethod(id);
             }
@@ -82,7 +90,7 @@ public class VelocityNetworkDidResolver {
 
     public JsonObject resolveDid(String did) throws Exception {
         List<Tuple<VelocityNetworkMetadataRegistry.CredentialIdentifier, String>> parsedDid = parseVelocityV2Did(did);
-        TransactionReceipt transactionReceipt= this.metadataRegistryContract.getPaidEntries(parsedDid.stream().map(tuple -> tuple.t1).toList(), randomUUID().toString(), burnerDid, burnerDid).send();
+        TransactionReceipt transactionReceipt = this.metadataRegistryContract.getPaidEntries(parsedDid.stream().map(tuple -> tuple.t1).toList(), randomUUID().toString(), burnerDid, burnerDid).send();
         List<VelocityNetworkMetadataRegistry.CredentialMetadata> metadataEntries =
                 VelocityNetworkMetadataRegistry.getGotCredentialMetadataEvents(transactionReceipt).getLast().credentialMetadataList;
 
