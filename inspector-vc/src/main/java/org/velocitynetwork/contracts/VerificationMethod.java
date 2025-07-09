@@ -1,21 +1,20 @@
 package org.velocitynetwork.contracts;
 
+import com.authlete.cose.COSEKey;
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonObjectBuilder;
-import org.web3j.crypto.Secp256k1JWK;
+
+import java.util.Map;
 
 public class VerificationMethod {
-    public static JsonObject buildVerificationMethod(String id, String controller, Secp256k1JWK publicKeyJwk) {
-        JsonObjectBuilder publicKeyJwkJson = Json.createObjectBuilder()
-                .add("kty", publicKeyJwk.getKty())
-                .add("crv", publicKeyJwk.getCrv())
-                .add("x", publicKeyJwk.getX())
-                .add("y", publicKeyJwk.getY());
-        if (publicKeyJwk.getD() != null) {
-            publicKeyJwkJson.add("d", publicKeyJwk.getD());
-        }
-        return Json.createObjectBuilder().add("id", id).add("publicKeyJwk", publicKeyJwkJson).add("controller", controller).build();
+    public static JsonObject buildVerificationMethod(String id, String controller, COSEKey coseKey) {
+        Map<String, Object> jwk = coseKey.toJwk();
+        JsonObjectBuilder jwkJson = Json.createObjectBuilder()
+                .add("kty", (String) jwk.get("kty"))
+                .add("n", (String) jwk.get("n"))
+                .add("e", (String) jwk.get("e"));
+        return Json.createObjectBuilder().add("id", id).add("publicKeyJwk", jwkJson).add("controller", controller).build();
     }
 
     public static JsonObject buildVerificationMethod(String id) {

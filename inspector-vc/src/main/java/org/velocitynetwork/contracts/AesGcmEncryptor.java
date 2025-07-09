@@ -4,7 +4,6 @@ import javax.crypto.*;
 import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
-import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 
 public class AesGcmEncryptor {
@@ -15,7 +14,7 @@ public class AesGcmEncryptor {
     private static final int KEY_LENGTH_BIT = 256;
     private static final int PBKDF2_ITERATIONS = 2145;
 
-    public static byte[] encrypt(String plaintext, String secret) throws Exception {
+    public static byte[] encrypt(byte[] buffer, String secret) throws Exception {
         byte[] salt = new byte[SALT_LENGTH];
         byte[] iv = new byte[IV_LENGTH];
         SecureRandom random = new SecureRandom();
@@ -28,7 +27,7 @@ public class AesGcmEncryptor {
         GCMParameterSpec gcmSpec = new GCMParameterSpec(TAG_LENGTH_BIT, iv);
         cipher.init(Cipher.ENCRYPT_MODE, key, gcmSpec);
 
-        byte[] ciphertext = cipher.doFinal(plaintext.getBytes(StandardCharsets.UTF_8));
+        byte[] ciphertext = cipher.doFinal(buffer);
         byte[] tag = cipher.getIV(); // tag is internally appended in GCM
         byte[] authTag = cipher.getParameters().getParameterSpec(GCMParameterSpec.class).getIV(); // not always reliable
 
@@ -41,7 +40,7 @@ public class AesGcmEncryptor {
         return full;
     }
 
-    public static String decrypt(byte[] data, String secret) throws Exception {
+    public static byte[] decrypt(byte[] data, String secret) throws Exception {
         byte[] salt = new byte[SALT_LENGTH];
         byte[] iv = new byte[IV_LENGTH];
         byte[] tag = new byte[TAG_LENGTH_BIT / 8];
@@ -59,7 +58,7 @@ public class AesGcmEncryptor {
         cipher.init(Cipher.DECRYPT_MODE, key, gcmSpec);
         cipher.updateAAD(tag); // Optional, depending on tagging mode
 
-        return new String(cipher.doFinal(ciphertext), StandardCharsets.UTF_8);
+        return cipher.doFinal(ciphertext);
     }
 
     private static SecretKey deriveKey(String password, byte[] salt) throws Exception {
