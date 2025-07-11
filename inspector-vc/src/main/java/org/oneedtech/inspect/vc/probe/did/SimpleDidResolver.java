@@ -10,6 +10,7 @@ import jakarta.json.JsonObject;
 import jakarta.json.JsonReader;
 import jakarta.json.JsonStructure;
 import jakarta.json.JsonValue;
+import org.velocitynetwork.contracts.VelocityNetworkDidResolver;
 import uniresolver.client.ClientUniResolver;
 import uniresolver.result.ResolveRepresentationResult;
 
@@ -29,13 +30,15 @@ import org.oneedtech.inspect.vc.probe.did.DidResolution.Builder;
 public class SimpleDidResolver implements DidResolver {
 
   private final ClientUniResolver uniResolver;
+  private final VelocityNetworkDidResolver velocityNetworkDidResolver;
 
 
-  public SimpleDidResolver(String uniResolverUrl) {
+  public SimpleDidResolver(String uniResolverUrl, VelocityNetworkDidResolver velocityNetworkDidResolver) {
     this.uniResolver = new ClientUniResolver();
     if (uniResolverUrl != null && !uniResolverUrl.isEmpty()) {
       this.uniResolver.setResolveUri(uniResolverUrl);
     }
+    this.velocityNetworkDidResolver = velocityNetworkDidResolver;
   }
 
   @Override
@@ -114,7 +117,19 @@ public class SimpleDidResolver implements DidResolver {
       JsonObject didDocument = keyStructure.get().asJsonObject();
       this.extractFromVerificationMethod(did, didDocument, builder);
 
-    } else {
+    }
+    else if (did.getSchemeSpecificPart().startsWith("velocity:")) {
+      try {
+        JsonObject didDocument = velocityNetworkDidResolver.resolveDid(did.toString());
+
+        this.extractFromVerificationMethod(did, didDocument, builder);
+        throw new DidResolutionException("Velocity Network resolution not supported");
+
+      } catch (Exception e) {
+        throw new DidResolutionException("Error resolving did: " + did, e);
+      }
+    }
+    else {
       try {
         Map<String, Object> resolveOptions = new HashMap<>();
         resolveOptions.put("accept", "application/did+ld+json");
