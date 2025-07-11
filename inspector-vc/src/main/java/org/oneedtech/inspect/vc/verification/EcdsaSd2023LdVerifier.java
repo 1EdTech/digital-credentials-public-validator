@@ -84,7 +84,7 @@ public class EcdsaSd2023LdVerifier extends LdVerifier<EcdsaSd2023SignatureSuite>
         sdf.createVerifyData(
             unsecuredDocument, dataIntegrityProof, jsonLdObject.getDocumentLoader());
 
-    model.addIntermediateValue("disclosureData.", verifyData.toString());
+    model.addIntermediateValue("disclosureData", verifyData.toString());
     model.addIntermediateValue(
         "disclosureData.baseSignature",
         Hex.toHexString(verifyData.getDisclosureData().getBaseSignature()));
