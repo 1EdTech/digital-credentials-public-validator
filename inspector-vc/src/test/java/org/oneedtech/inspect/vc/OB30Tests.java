@@ -490,4 +490,13 @@ public class OB30Tests {
 
 	}
 
+	@Test
+	void testDerivedCredentialValid() {
+		assertDoesNotThrow(()->{
+			Report report = validator.run(Samples.OB30.SD.DERIVED_CREDENTIAL.asFileResource());
+			if(verbose) PrintHelper.print(report, true);
+			assertValid(report);
+		});
+	}
+
 }

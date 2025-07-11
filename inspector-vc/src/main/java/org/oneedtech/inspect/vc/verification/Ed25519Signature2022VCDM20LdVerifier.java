@@ -1,53 +1,89 @@
 package org.oneedtech.inspect.vc.verification;
 
+import com.danubetech.dataintegrity.DataIntegrityProof;
+import com.danubetech.dataintegrity.canonicalizer.Canonicalizer;
+import com.danubetech.dataintegrity.verifier.LdVerifier;
 import com.danubetech.keyformats.crypto.ByteVerifier;
 import com.danubetech.keyformats.crypto.impl.Ed25519_EdDSA_PublicKeyVerifier;
 import com.danubetech.keyformats.jose.JWSAlgorithm;
-import info.weboftrust.ldsignatures.LdProof;
-import info.weboftrust.ldsignatures.verifier.LdVerifier;
 import io.ipfs.multibase.Multibase;
-
 import java.security.GeneralSecurityException;
+import java.util.HexFormat;
+import org.oneedtech.inspect.vc.probe.EmbeddedProofModel;
+import org.oneedtech.inspect.vc.probe.EmbeddedProofModelGenerator;
 
-public class Ed25519Signature2022VCDM20LdVerifier extends LdVerifier<Ed25519Signature2022SignatureSuite> {
+public class Ed25519Signature2022VCDM20LdVerifier
+    extends LdVerifier<Ed25519Signature2022SignatureSuite> implements EmbeddedProofModelGenerator {
 
-    public Ed25519Signature2022VCDM20LdVerifier(ByteVerifier verifier) {
+  private URDNA2015Canonicalizer canonicalizer;
 
-        super(SignatureSuites.SIGNATURE_SUITE_ED25519SIGNATURE2022, verifier, new URDNA2015Canonicalizer(Eddsa2022v2LdProof.builder()));
+  public Ed25519Signature2022VCDM20LdVerifier(ByteVerifier verifier) {
+
+    super(SignatureSuites.SIGNATURE_SUITE_ED25519SIGNATURE2022, verifier);
+  }
+
+  public Ed25519Signature2022VCDM20LdVerifier(byte[] publicKey) {
+
+    this(new Ed25519_EdDSA_PublicKeyVerifier(publicKey));
+  }
+
+  public Ed25519Signature2022VCDM20LdVerifier() {
+
+    this((ByteVerifier) null);
+  }
+
+  @Override
+  public Canonicalizer getCanonicalizer(DataIntegrityProof dataIntegrityProof) {
+    if (canonicalizer == null) {
+      canonicalizer = new URDNA2015Canonicalizer(Eddsa2022v2DataIntegrity.builder());
     }
+    return canonicalizer;
+  }
 
-    public Ed25519Signature2022VCDM20LdVerifier(byte[] publicKey) {
+  public static boolean verify(
+      byte[] signingInput, DataIntegrityProof dataIntegrityProof, ByteVerifier verifier)
+      throws GeneralSecurityException {
 
-        this(new Ed25519_EdDSA_PublicKeyVerifier(publicKey));
-    }
+    // verify
 
-    public Ed25519Signature2022VCDM20LdVerifier() {
+    String proofValue = dataIntegrityProof.getProofValue();
+    if (proofValue == null) throw new GeneralSecurityException("No 'proofValue' in proof.");
 
-        this((ByteVerifier) null);
-    }
+    boolean verify;
 
-    public static boolean verify(byte[] signingInput, LdProof ldProof, ByteVerifier verifier) throws GeneralSecurityException {
+    byte[] bytes = Multibase.decode(proofValue);
+    verify = verifier.verify(signingInput, bytes, JWSAlgorithm.EdDSA);
 
-        // verify
+    // done
 
-        String proofValue = ldProof.getProofValue();
-        if (proofValue == null) throw new GeneralSecurityException("No 'proofValue' in proof.");
+    return verify;
+  }
 
-        boolean verify;
+  @Override
+  public boolean verify(byte[] signingInput, DataIntegrityProof dataIntegrityProof)
+      throws GeneralSecurityException {
 
-        byte[] bytes = Multibase.decode(proofValue);
-        verify = verifier.verify(signingInput, bytes, JWSAlgorithm.EdDSA);
+    return verify(signingInput, dataIntegrityProof, this.getVerifier());
+  }
 
-        // done
+  @Override
+  public EmbeddedProofModel getGeneratedObject() {
+    EmbeddedProofModel model = new EmbeddedProofModel();
 
-        return verify;
-    }
+    model.addIntermediateValue(
+        "ldProofWithoutProofValues", canonicalizer.getLdProofWithoutProofValues().toJson(true));
+    model.addIntermediateValue(
+        "jsonLdObjectWithoutProof", canonicalizer.getJsonLdObjectWithoutProof().toJson(true));
+    model.addIntermediateValue(
+        "canonicalizedLdProofWithoutProofValues",
+        canonicalizer.getCanonicalizedLdProofWithoutProofValues());
+    model.addIntermediateValue(
+        "canonicalizedJsonLdObjectWithoutProof",
+        canonicalizer.getCanonicalizedJsonLdObjectWithoutProof());
+    model.addIntermediateValue(
+        "canonicalizationResult",
+        HexFormat.of().formatHex(canonicalizer.getCanonicalizationResult()));
 
-    @Override
-    public boolean verify(byte[] signingInput, LdProof ldProof) throws GeneralSecurityException {
-
-        return verify(signingInput, ldProof, this.getVerifier());
-    }
-
+    return model;
+  }
 }
-
