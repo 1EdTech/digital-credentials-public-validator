@@ -37,8 +37,6 @@ public class COSERSAKey extends COSEKey {
             case -2:
                 this.e = validateE(value);
                 break;
-            default:
-                throw new IllegalArgumentException("RSA private keys are not supported");
         }
     }
 
@@ -64,11 +62,11 @@ public class COSERSAKey extends COSEKey {
 
     protected void addJwkProperties(Map<String, Object> map) {
         if (this.n != null) {
-            map.put("x", encodeByBase64Url(this.n));
+            map.put("n", encodeByBase64Url(this.n));
         }
 
         if (this.e != null) {
-            map.put("d", encodeByBase64Url(this.e));
+            map.put("e", encodeByBase64Url(this.e));
         }
     }
 

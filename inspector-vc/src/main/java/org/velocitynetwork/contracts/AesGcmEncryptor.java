@@ -56,9 +56,10 @@ public class AesGcmEncryptor {
         Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
         GCMParameterSpec gcmSpec = new GCMParameterSpec(TAG_LENGTH_BIT, iv);
         cipher.init(Cipher.DECRYPT_MODE, key, gcmSpec);
-        cipher.updateAAD(tag); // Optional, depending on tagging mode
-
-        return cipher.doFinal(ciphertext);
+        cipher.updateAAD(new byte[0]); // optional, remove if not using AAD
+        cipher.update(ciphertext);
+        cipher.update(tag); // optional; GCM tag is usually handled by init()
+        return cipher.doFinal();
     }
 
     private static SecretKey deriveKey(String password, byte[] salt) throws Exception {

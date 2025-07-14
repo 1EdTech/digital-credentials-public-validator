@@ -2,28 +2,21 @@ package org.velocitynetwork.contracts;
 
 import com.authlete.cbor.CBORDecoder;
 import com.authlete.cbor.CBORItem;
-import com.authlete.cose.COSEEC2Key;
 import com.authlete.cose.COSEKey;
+import com.nimbusds.jwt.JWT;
+import com.nimbusds.jwt.SignedJWT;
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
-import org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPublicKey;
-import org.bouncycastle.jce.spec.ECPublicKeySpec;
-import org.bouncycastle.jce.ECNamedCurveTable;
-import org.bouncycastle.jce.spec.ECNamedCurveParameterSpec;
-import org.bouncycastle.math.ec.ECPoint;
 import org.oneedtech.inspect.util.code.Tuple;
 import org.web3j.crypto.Credentials;
-import org.web3j.crypto.Secp256k1JWK;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.protocol.http.HttpService;
 import org.web3j.tx.gas.StaticGasProvider;
 
-import java.io.StringReader;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
-import java.security.KeyFactory;
-import java.security.PublicKey;
+import java.text.ParseException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.IntStream;
@@ -31,35 +24,24 @@ import java.util.stream.IntStream;
 import static java.util.UUID.randomUUID;
 
 public class VelocityNetworkDidResolver {
+
     static class IssuerVc {
-        public static JsonObject deserializeIssuerVc(VelocityNetworkMetadataRegistry.CredentialMetadata metadataEntry) {
-            return Json.createReader(new StringReader(new String(metadataEntry.issuerVc, StandardCharsets.UTF_8))).readObject();
+        public static JWT deserializeIssuerVc(VelocityNetworkMetadataRegistry.CredentialMetadata metadataEntry) throws ParseException {
+            String issuerVcString = new String(metadataEntry.issuerVc, StandardCharsets.UTF_8);
+            return SignedJWT.parse(issuerVcString);
         }
     }
 
-    static class PublicKeyResolver {
+    public static class PublicKeyResolver {
         private static final String VERSION = CryptoUtils.get2BytesHash("v1");
-        private static final String ALG_TYPE = CryptoUtils.get2BytesHash("secp256k1");
-
-        public static BCECPublicKey fromRawPublicKey(byte[] pubKeyBytes) throws Exception {
-            // 1. Get curve parameters
-            ECNamedCurveParameterSpec curveSpec = ECNamedCurveTable.getParameterSpec("secp256k1");
-
-            // 2. Decode the public key bytes to ECPoint
-            ECPoint point = curveSpec.getCurve().decodePoint(pubKeyBytes);
-
-            // 3. Build public key spec
-            ECPublicKeySpec pubKeySpec = new ECPublicKeySpec(point, curveSpec);
-
-            // 4. Create BCECPublicKey
-            KeyFactory keyFactory = KeyFactory.getInstance("EC", "BC");
-            PublicKey pubKey = keyFactory.generatePublic(pubKeySpec);
-            return (BCECPublicKey) pubKey;
-        }
+        private static final String ALG_TYPE = CryptoUtils.get2BytesHash("cosekey:aes-256-gcm");
 
         public static JsonObject resolvePublicKey(String id, VelocityNetworkMetadataRegistry.CredentialMetadata entry, String secret) {
-            if (!entry.version.equals((VERSION)) || !entry.algType.equals(ALG_TYPE)) {
-                throw new IllegalArgumentException("Unsupported encryption algorithm \"" + ALG_TYPE + "\" or version \"" + VERSION + "\"");
+            if (!CryptoUtils.bytesToHex(entry.version).equals((VERSION))) {
+                throw new IllegalArgumentException("Unsupported encryption version \"" + VERSION + "\"");
+            }
+            if (!CryptoUtils.bytesToHex(entry.algType).equals(ALG_TYPE)) {
+                throw new IllegalArgumentException("Unsupported encryption algorithm \"" + ALG_TYPE + "\"");
             }
 
             try {
@@ -69,9 +51,11 @@ public class VelocityNetworkDidResolver {
                 if ((Integer) coseKey.getKty() == 3) {
                     coseKey = new COSERSAKey(coseKey.getPairs());
                 }
-                JsonObject issuerVcJwt = IssuerVc.deserializeIssuerVc(entry);
-                return VerificationMethod.buildVerificationMethod(id + "#key-1", issuerVcJwt.getJsonObject("payload").getString("iss"), coseKey);
+                JWT issuerVcJwt = IssuerVc.deserializeIssuerVc(entry);
+                return VerificationMethod.buildVerificationMethod(id + "#key-1", issuerVcJwt.getJWTClaimsSet().getIssuer(), coseKey);
             } catch (Exception e) {
+                System.err.println("Could not decrypt public key");
+                System.err.println(e.getMessage());
                 return VerificationMethod.buildVerificationMethod(id);
             }
         }
@@ -91,8 +75,9 @@ public class VelocityNetworkDidResolver {
     public JsonObject resolveDid(String did) throws Exception {
         List<Tuple<VelocityNetworkMetadataRegistry.CredentialIdentifier, String>> parsedDid = parseVelocityV2Did(did);
         TransactionReceipt transactionReceipt = this.metadataRegistryContract.getPaidEntries(parsedDid.stream().map(tuple -> tuple.t1).toList(), randomUUID().toString(), burnerDid, burnerDid).send();
+        List<VelocityNetworkMetadataRegistry.GotCredentialMetadataEventResponse> credentialMetadataEvents = VelocityNetworkMetadataRegistry.getGotCredentialMetadataEvents(transactionReceipt);
         List<VelocityNetworkMetadataRegistry.CredentialMetadata> metadataEntries =
-                VelocityNetworkMetadataRegistry.getGotCredentialMetadataEvents(transactionReceipt).getLast().credentialMetadataList;
+                credentialMetadataEvents.get(credentialMetadataEvents.size() - 1).credentialMetadataList;
 
         List<JsonObject> verificationMethods =
                 IntStream
@@ -105,6 +90,10 @@ public class VelocityNetworkDidResolver {
                             )
                     )
                     .toList();
+
+        // Should verify issuerVc for every metadataEntry, by using a SimpleDidResolver and running verify on the jwt.
+        // If the entry does not verify then the public key should not be added to the verficationMethod. It should be part of
+        // establishing the controller of the verificationMethod.
         return Json.createObjectBuilder()
                 .add("id", did)
                 .add("verificationMethod", Json.createArrayBuilder(verificationMethods))

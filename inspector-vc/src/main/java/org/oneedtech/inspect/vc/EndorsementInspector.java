@@ -85,7 +85,7 @@ public class EndorsementInspector extends VCInspector implements SubInspector {
 
 		ObjectMapper mapper = ObjectMapperCache.get(DEFAULT);
 		JsonPathEvaluator jsonPath = new JsonPathEvaluator(mapper);
-		DidResolver didResolver = new SimpleDidResolver(this.didResolutionUrl);
+		DidResolver didResolver = new SimpleDidResolver(this.didResolutionUrl, null);
 
 		RunContext ctx = new RunContext.Builder()
 				.put(this)
