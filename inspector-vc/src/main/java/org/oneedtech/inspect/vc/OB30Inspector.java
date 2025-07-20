@@ -68,6 +68,21 @@ public class OB30Inspector extends VCInspector implements SubInspector {
   protected final List<Probe<VerifiableCredential>> userProbes;
   protected final String didResolutionUrl;
 
+  private Map<String, Map<String, String>> velocityNetworkConfigs = Map.of(
+    "staging", Map.of(
+      "rpcUrl", "https://stagingmember.velocitycareerlabs.io",
+      "privateKey", "TestPrivateKey",
+      "metadataContractAddress", "0x1550b4f24368c8Eb839073ac04673777D9dda60A",
+      "verifierDid", "BurnerDID"
+    ),
+    "localhost", Map.of(
+      "rpcUrl", "http://localhost:18545",
+      "privateKey", "c126f192e23c4a734dd94c7b69f558a57691a487c11d33a171e3530378040b6d",
+      "metadataContractAddress", "0xF535F2fC099B0A010EFe273Ae75De5bc57f2574e",
+      "verifierDid", "did:web:registrar%3A3000:d:www.acmecorp-pbdespsxjjkacunyeitpn.co"
+    )
+  );
+
   protected OB30Inspector(OB30Inspector.Builder builder) {
     super(builder);
     this.userProbes = ImmutableList.copyOf(builder.probes);
@@ -152,7 +167,8 @@ public class OB30Inspector extends VCInspector implements SubInspector {
 
     ObjectMapper mapper = ObjectMapperCache.get(DEFAULT);
     JsonPathEvaluator jsonPath = new JsonPathEvaluator(mapper);
-    VelocityNetworkDidResolver velocityNetworkDidResolver = new VelocityNetworkDidResolver("https://stagingmember.velocitycareerlabs.io", "TestPrivateKey", "0x1550b4f24368c8Eb839073ac04673777D9dda60A", "BurnerDID");
+    Map<String, String> velocityNetworkConfig = velocityNetworkConfigs.get("localhost");
+    VelocityNetworkDidResolver velocityNetworkDidResolver = new VelocityNetworkDidResolver(velocityNetworkConfig.get("rpcUrl"), velocityNetworkConfig.get("privateKey"), velocityNetworkConfig.get("metadataContractAddress"), velocityNetworkConfig.get("verifierDid"));
     DidResolver didResolver = new SimpleDidResolver(this.didResolutionUrl, velocityNetworkDidResolver);
     VerifiableCredential.Builder credentialBuilder = new VerifiableCredential.Builder();
     RunContext ctx =

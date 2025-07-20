@@ -3,13 +3,20 @@ package org.velocitynetwork.contracts;
 import org.bouncycastle.crypto.generators.Argon2BytesGenerator;
 import org.bouncycastle.crypto.params.Argon2Parameters;
 
-import java.util.Arrays;
+import java.nio.charset.StandardCharsets;
+import java.security.Security;
 
 public class CredentialMetadataKDF {
-    public static String derive(String contentHashHex) {
-        byte[] contentHash = CryptoUtils.hexToBytes(contentHashHex);
-        byte[] salt = Arrays.copyOfRange(contentHash, contentHash.length - 16, contentHash.length);
 
+    static {
+        Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
+    }
+
+    public static String derive(String passwordHex) {
+        // Extract last 16 hex characters as salt
+        byte[] salt = CryptoUtils.hexToBytes(passwordHex.substring(passwordHex.length() - 16));
+
+        // Argon2 parameters
         Argon2Parameters.Builder builder = new Argon2Parameters.Builder(Argon2Parameters.ARGON2_i)
                 .withSalt(salt)
                 .withMemoryAsKB(4096)
@@ -19,8 +26,10 @@ public class CredentialMetadataKDF {
         Argon2BytesGenerator generator = new Argon2BytesGenerator();
         generator.init(builder.build());
 
-        byte[] output = new byte[32];
-        generator.generateBytes(contentHash, output);
+        byte[] output = new byte[32]; // 256-bit key
+        byte[] passwordBytes = passwordHex.getBytes(StandardCharsets.UTF_8);
+
+        generator.generateBytes(passwordBytes, output, 0, output.length);
 
         return CryptoUtils.bytesToHex(output);
     }
