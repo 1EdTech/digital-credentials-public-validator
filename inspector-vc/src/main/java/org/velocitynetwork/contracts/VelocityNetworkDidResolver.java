@@ -33,7 +33,7 @@ public class VelocityNetworkDidResolver {
     }
 
     public static class PublicKeyResolver {
-        private static final String VERSION = CryptoUtils.get2BytesHash("v1");
+        private static final String VERSION = CryptoUtils.get2BytesHash("1");
         private static final String ALG_TYPE = CryptoUtils.get2BytesHash("cosekey:aes-256-gcm");
 
         public static JsonObject resolvePublicKey(String id, VelocityNetworkMetadataRegistry.CredentialMetadata entry, String secret) {
@@ -69,36 +69,47 @@ public class VelocityNetworkDidResolver {
         Web3j web3 = Web3j.build(new HttpService(rpcUrl));
         this.burnerDid = burnerDid;
         this.credentials = Credentials.create(privateKey);
-        this.metadataRegistryContract = org.velocitynetwork.contracts.VelocityNetworkMetadataRegistry.load(contractAddress, web3, credentials, new StaticGasProvider(BigInteger.ZERO, BigInteger.ZERO));
+        this.metadataRegistryContract = org.velocitynetwork.contracts.VelocityNetworkMetadataRegistry.load(contractAddress, web3, credentials, new StaticGasProvider(BigInteger.ZERO, BigInteger.valueOf(9_000_000)));
     }
 
-    public JsonObject resolveDid(String did) throws Exception {
-        List<Tuple<VelocityNetworkMetadataRegistry.CredentialIdentifier, String>> parsedDid = parseVelocityV2Did(did);
-        TransactionReceipt transactionReceipt = this.metadataRegistryContract.getPaidEntries(parsedDid.stream().map(tuple -> tuple.t1).toList(), randomUUID().toString(), burnerDid, burnerDid).send();
-        List<VelocityNetworkMetadataRegistry.GotCredentialMetadataEventResponse> credentialMetadataEvents = VelocityNetworkMetadataRegistry.getGotCredentialMetadataEvents(transactionReceipt);
-        List<VelocityNetworkMetadataRegistry.CredentialMetadata> metadataEntries =
-                credentialMetadataEvents.get(credentialMetadataEvents.size() - 1).credentialMetadataList;
+    public JsonObject resolveDid(String didUrl) throws Exception {
+        try {
+            String[] didParts = didUrl.split("#");
+            String did = didParts[0];
+            List<Tuple<VelocityNetworkMetadataRegistry.CredentialIdentifier, String>> parsedDid = parseVelocityV2Did(did);
+            TransactionReceipt transactionReceipt = this.metadataRegistryContract.getPaidEntries(parsedDid.stream().map(tuple -> tuple.t1).toList(), randomUUID().toString(), burnerDid, burnerDid).send();
+            List<VelocityNetworkMetadataRegistry.GotCredentialMetadataEventResponse> credentialMetadataEvents = VelocityNetworkMetadataRegistry.getGotCredentialMetadataEvents(transactionReceipt);
+            List<VelocityNetworkMetadataRegistry.CredentialMetadata> metadataEntries =
+                    credentialMetadataEvents.get(credentialMetadataEvents.size() - 1).credentialMetadataList;
 
-        List<JsonObject> verificationMethods =
-                IntStream
-                    .range(0, metadataEntries.size())
-                    .mapToObj(i ->
-                            PublicKeyResolver.resolvePublicKey(
-                                    did,
-                                    metadataEntries.get(i),
-                                    CredentialMetadataKDF.derive(parsedDid.get(i).t2)
+            List<JsonObject> verificationMethods =
+                    IntStream
+                            .range(0, metadataEntries.size())
+                            .mapToObj(i ->
+                                    PublicKeyResolver.resolvePublicKey(
+                                            did,
+                                            metadataEntries.get(i),
+                                            CredentialMetadataKDF.derive(parsedDid.get(i).t2)
+                                    )
                             )
-                    )
-                    .toList();
+                            .toList();
 
-        // Should verify issuerVc for every metadataEntry, by using a SimpleDidResolver and running verify on the jwt.
-        // If the entry does not verify then the public key should not be added to the verficationMethod. It should be part of
-        // establishing the controller of the verificationMethod.
-        return Json.createObjectBuilder()
-                .add("id", did)
-                .add("verificationMethod", Json.createArrayBuilder(verificationMethods))
-                .add("assertionMethod", Json.createArrayBuilder(verificationMethods.stream().map(verificationMethod -> verificationMethod.get("id")).toList()))
-                .build();
+            // Should verify issuerVc for every metadataEntry, by using a SimpleDidResolver and running verify on the jwt.
+            // If the entry does not verify then the public key should not be added to the verficationMethod. It should be part of
+            // establishing the controller of the verificationMethod.
+            return Json.createObjectBuilder()
+                    .add("id", did)
+                    .add("verificationMethod", Json.createArrayBuilder(verificationMethods))
+                    .add("assertionMethod", Json.createArrayBuilder(verificationMethods.stream().map(verificationMethod -> verificationMethod.get("id")).toList()))
+                    .build();
+        } catch (Exception e) {
+            System.err.println("Could not decrypt DID");
+            System.err.println(e.getMessage());
+            for (StackTraceElement ste : e.getStackTrace()) {
+                System.out.println(ste);
+            }
+            throw new Exception(e.getMessage());
+        }
     }
 
     public static List<Tuple<VelocityNetworkMetadataRegistry.CredentialIdentifier, String>> parseVelocityV2Did(String did) {

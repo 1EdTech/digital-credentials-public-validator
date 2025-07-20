@@ -327,7 +327,7 @@ public class VelocityNetworkMetadataRegistry extends Contract {
             String burnerDid) {
         final Function function = new Function(
                 FUNC_GETPAIDENTRIES, 
-                Arrays.<Type>asList(new org.web3j.abi.datatypes.DynamicArray<CredentialIdentifier>(CredentialIdentifier.class, _entryIndexes), 
+                Arrays.<Type>asList(new org.web3j.abi.datatypes.DynamicArray<CredentialIdentifier>(CredentialIdentifier.class, _entryIndexes),
                 new org.web3j.abi.datatypes.Utf8String(traceId), 
                 new org.web3j.abi.datatypes.Utf8String(caoDid), 
                 new org.web3j.abi.datatypes.Utf8String(burnerDid)), 

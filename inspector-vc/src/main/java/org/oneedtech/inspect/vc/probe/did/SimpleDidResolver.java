@@ -121,10 +121,7 @@ public class SimpleDidResolver implements DidResolver {
     else if (did.getSchemeSpecificPart().startsWith("velocity:")) {
       try {
         JsonObject didDocument = velocityNetworkDidResolver.resolveDid(did.toString());
-
         this.extractFromVerificationMethod(did, didDocument, builder);
-        throw new DidResolutionException("Velocity Network resolution not supported");
-
       } catch (Exception e) {
         throw new DidResolutionException("Error resolving did: " + did, e);
       }
