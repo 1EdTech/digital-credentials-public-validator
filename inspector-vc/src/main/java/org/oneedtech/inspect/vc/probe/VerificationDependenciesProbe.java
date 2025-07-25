@@ -12,7 +12,7 @@ import org.oneedtech.inspect.core.probe.RunContext.Key;
 import org.oneedtech.inspect.core.report.ReportItems;
 import org.oneedtech.inspect.util.resource.UriResource;
 import org.oneedtech.inspect.vc.jsonld.JsonLdGeneratedObject;
-import org.oneedtech.inspect.vc.jsonld.probe.JsonLDCompactionProve;
+import org.oneedtech.inspect.vc.jsonld.probe.JsonLDCompactionProbe;
 import org.oneedtech.inspect.vc.resource.UriResourceFactory;
 import org.oneedtech.inspect.vc.util.JsonNodeUtil;
 
@@ -52,7 +52,7 @@ public class VerificationDependenciesProbe extends Probe<JsonLdGeneratedObject> 
             // get verification from graph
             UriResource verificationUriResource = uriResourceFactory.of(verificationNode.asText().strip());
             JsonLdGeneratedObject verificationObject = (JsonLdGeneratedObject) ctx.getGeneratedObject(
-                JsonLDCompactionProve.getId(verificationUriResource));
+                JsonLDCompactionProbe.getId(verificationUriResource));
             JsonNode verificationRootNode = ((ObjectMapper) ctx.get(Key.JACKSON_OBJECTMAPPER))
                 .readTree(verificationObject.getJson());
             type = verificationRootNode.get("type").asText().strip();
@@ -64,7 +64,7 @@ public class VerificationDependenciesProbe extends Probe<JsonLdGeneratedObject> 
             // get badge
             UriResource badgeUriResource = uriResourceFactory.of(getBadgeClaimId(jsonNode));
             JsonLdGeneratedObject badgeObject = (JsonLdGeneratedObject) ctx.getGeneratedObject(
-                JsonLDCompactionProve.getId(badgeUriResource));
+                JsonLDCompactionProbe.getId(badgeUriResource));
             JsonNode badgeNode = ((ObjectMapper) ctx.get(Key.JACKSON_OBJECTMAPPER))
                 .readTree(badgeObject.getJson());
 
@@ -72,7 +72,7 @@ public class VerificationDependenciesProbe extends Probe<JsonLdGeneratedObject> 
             UriResource issuerUriResource = uriResourceFactory.of(badgeNode.get("issuer").asText().strip());
 
             JsonLdGeneratedObject issuerObject = (JsonLdGeneratedObject) ctx.getGeneratedObject(
-                JsonLDCompactionProve.getId(issuerUriResource));
+                JsonLDCompactionProbe.getId(issuerUriResource));
             JsonNode issuerNode = ((ObjectMapper) ctx.get(Key.JACKSON_OBJECTMAPPER))
                 .readTree(issuerObject.getJson());
 
@@ -83,7 +83,7 @@ public class VerificationDependenciesProbe extends Probe<JsonLdGeneratedObject> 
                 if (verificationPolicy.isTextual()) {
                     // get verification node
                     JsonLdGeneratedObject verificationPolicyObject = (JsonLdGeneratedObject) ctx.getGeneratedObject(
-                        JsonLDCompactionProve.getId(verificationPolicy.asText().strip()));
+                        JsonLDCompactionProbe.getId(verificationPolicy.asText().strip()));
                         verificationPolicy = ((ObjectMapper) ctx.get(Key.JACKSON_OBJECTMAPPER))
                             .readTree(verificationPolicyObject.getJson());
                 }

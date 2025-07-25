@@ -12,7 +12,7 @@ import org.oneedtech.inspect.core.probe.RunContext.Key;
 import org.oneedtech.inspect.core.report.ReportItems;
 import org.oneedtech.inspect.vc.Assertion;
 import org.oneedtech.inspect.vc.jsonld.JsonLdGeneratedObject;
-import org.oneedtech.inspect.vc.jsonld.probe.JsonLDCompactionProve;
+import org.oneedtech.inspect.vc.jsonld.probe.JsonLDCompactionProbe;
 import org.oneedtech.inspect.vc.util.JsonNodeUtil;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -36,7 +36,7 @@ public class VerificationRecipientProbe extends Probe<Assertion> {
         ReportItems warnings = new ReportItems();
         JsonNode recipientNode = assertion.getJson().get("recipient");
 
-        JsonLdGeneratedObject profileObject = (JsonLdGeneratedObject) ctx.getGeneratedObject(JsonLDCompactionProve.getId(profileId));
+        JsonLdGeneratedObject profileObject = (JsonLdGeneratedObject) ctx.getGeneratedObject(JsonLDCompactionProbe.getId(profileId));
         JsonNode profileNode = ((ObjectMapper) ctx.get(Key.JACKSON_OBJECTMAPPER)).readTree(profileObject.getJson());
 
         String type = recipientNode.get("type").asText().strip();

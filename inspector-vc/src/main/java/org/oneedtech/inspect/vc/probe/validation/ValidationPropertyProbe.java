@@ -18,7 +18,7 @@ import org.oneedtech.inspect.util.resource.UriResource;
 import org.oneedtech.inspect.vc.Assertion.ValueType;
 import org.oneedtech.inspect.vc.Validation;
 import org.oneedtech.inspect.vc.jsonld.JsonLdGeneratedObject;
-import org.oneedtech.inspect.vc.jsonld.probe.JsonLDCompactionProve;
+import org.oneedtech.inspect.vc.jsonld.probe.JsonLDCompactionProbe;
 import org.oneedtech.inspect.vc.probe.PropertyProbe;
 import org.oneedtech.inspect.vc.resource.UriResourceFactory;
 import org.oneedtech.inspect.vc.util.JsonNodeUtil;
@@ -123,7 +123,7 @@ public class ValidationPropertyProbe extends PropertyProbe {
 
                     // get node from context
                     UriResource uriResource = ((UriResourceFactory) ctx.get(Key.URI_RESOURCE_FACTORY)).of(childNode.asText().strip());
-                    JsonLdGeneratedObject resolved = (JsonLdGeneratedObject) ctx.getGeneratedObject(JsonLDCompactionProve.getId(uriResource));
+                    JsonLdGeneratedObject resolved = (JsonLdGeneratedObject) ctx.getGeneratedObject(JsonLDCompactionProbe.getId(uriResource));
                     if (resolved == null) {
                         if (validation.isAllowRemoteUrl() && URL.getValidationFunction().apply(childNode)) {
                             continue;

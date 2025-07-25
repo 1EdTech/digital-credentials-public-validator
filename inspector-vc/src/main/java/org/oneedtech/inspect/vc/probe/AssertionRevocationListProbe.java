@@ -14,7 +14,7 @@ import org.oneedtech.inspect.core.probe.RunContext.Key;
 import org.oneedtech.inspect.core.report.ReportItems;
 import org.oneedtech.inspect.util.resource.UriResource;
 import org.oneedtech.inspect.vc.jsonld.JsonLdGeneratedObject;
-import org.oneedtech.inspect.vc.jsonld.probe.JsonLDCompactionProve;
+import org.oneedtech.inspect.vc.jsonld.probe.JsonLDCompactionProbe;
 import org.oneedtech.inspect.vc.resource.UriResourceFactory;
 import org.oneedtech.inspect.vc.util.CachingDocumentLoader;
 import org.oneedtech.inspect.vc.util.JsonNodeUtil;
@@ -47,7 +47,7 @@ public class AssertionRevocationListProbe extends Probe<JsonLdGeneratedObject> {
         // get badge
         UriResource badgeUriResource = uriResourceFactory.of(getBadgeClaimId(jsonNode));
         JsonLdGeneratedObject badgeObject = (JsonLdGeneratedObject) ctx.getGeneratedObject(
-            JsonLDCompactionProve.getId(badgeUriResource));
+            JsonLDCompactionProbe.getId(badgeUriResource));
 
         // get issuer from badge
         JsonNode badgeNode = ((ObjectMapper) ctx.get(Key.JACKSON_OBJECTMAPPER))
@@ -55,7 +55,7 @@ public class AssertionRevocationListProbe extends Probe<JsonLdGeneratedObject> {
 
         UriResource issuerUriResource = uriResourceFactory.of(badgeNode.get("issuer").asText().strip());
         JsonLdGeneratedObject issuerObject = (JsonLdGeneratedObject) ctx.getGeneratedObject(
-            JsonLDCompactionProve.getId(issuerUriResource));
+            JsonLDCompactionProbe.getId(issuerUriResource));
         JsonNode issuerNode = ((ObjectMapper) ctx.get(Key.JACKSON_OBJECTMAPPER))
             .readTree(issuerObject.getJson());
 
@@ -67,7 +67,7 @@ public class AssertionRevocationListProbe extends Probe<JsonLdGeneratedObject> {
 
         UriResource revocationListUriResource = uriResourceFactory.of(revocationListIdNode.asText().strip());
         JsonLdGeneratedObject revocationListObject = (JsonLdGeneratedObject) ctx.getGeneratedObject(
-            JsonLDCompactionProve.getId(revocationListUriResource));
+            JsonLDCompactionProbe.getId(revocationListUriResource));
         JsonNode revocationListNode = ((ObjectMapper) ctx.get(Key.JACKSON_OBJECTMAPPER))
             .readTree(revocationListObject.getJson());
 

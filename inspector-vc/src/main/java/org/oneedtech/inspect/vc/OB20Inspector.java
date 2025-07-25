@@ -33,7 +33,7 @@ import org.oneedtech.inspect.vc.Credential.CredentialEnum;
 import org.oneedtech.inspect.vc.jsonld.JsonLdGeneratedObject;
 import org.oneedtech.inspect.vc.jsonld.probe.ExtensionProbe;
 import org.oneedtech.inspect.vc.jsonld.probe.GraphFetcherProbe;
-import org.oneedtech.inspect.vc.jsonld.probe.JsonLDCompactionProve;
+import org.oneedtech.inspect.vc.jsonld.probe.JsonLDCompactionProbe;
 import org.oneedtech.inspect.vc.jsonld.probe.JsonLDValidationProbe;
 import org.oneedtech.inspect.vc.payload.PngParser;
 import org.oneedtech.inspect.vc.payload.SvgParser;
@@ -116,11 +116,11 @@ public class OB20Inspector extends VCInspector {
 			}
 
 			// let's compact
-			accumulator.add(new JsonLDCompactionProve(assertion.getCredentialType().getContextUris().get(0)).run(assertion, ctx));
+			accumulator.add(new JsonLDCompactionProbe(assertion.getCredentialType().getContextUris().get(0)).run(assertion, ctx));
 			if(broken(accumulator, true)) return abort(ctx, accumulator, probeCount);
 
 			// validate JSON LD
-			JsonLdGeneratedObject jsonLdGeneratedObject = ctx.getGeneratedObject(JsonLDCompactionProve.getId(assertion));
+			JsonLdGeneratedObject jsonLdGeneratedObject = ctx.getGeneratedObject(JsonLDCompactionProbe.getId(assertion));
 			accumulator.add(new JsonLDValidationProbe(jsonLdGeneratedObject).run(assertion, ctx));
 			if(broken(accumulator, true)) return abort(ctx, accumulator, probeCount);
 
@@ -205,7 +205,7 @@ public class OB20Inspector extends VCInspector {
 				probeCount++;
 				// get endorsement json from context
 				UriResource uriResource = uriResourceFactory.of(node.asText());
-				JsonLdGeneratedObject resolved = (JsonLdGeneratedObject) ctx.getGeneratedObject(JsonLDCompactionProve.getId(uriResource));
+				JsonLdGeneratedObject resolved = (JsonLdGeneratedObject) ctx.getGeneratedObject(JsonLDCompactionProbe.getId(uriResource));
 				if (resolved == null) {
 					throw new IllegalArgumentException("endorsement " + node.toString() + " not found in graph");
 				}
