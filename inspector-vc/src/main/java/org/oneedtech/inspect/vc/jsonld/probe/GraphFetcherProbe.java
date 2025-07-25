@@ -82,7 +82,7 @@ public class GraphFetcherProbe extends Probe<JsonNode> {
                         // add a new node to the graph
                         UUID newId = UUID.randomUUID();
                         JsonNode merged = createNewJson(ctx, "{\"id\": \"_:" + newId + "\"}");
-                        ctx.addGeneratedObject(new JsonLdGeneratedObject(JsonLDCompactionProve.getId(newId.toString()), merged.toString()));
+                        ctx.addGeneratedObject(new JsonLdGeneratedObject(JsonLDCompactionProbe.getId(newId.toString()), merged.toString()));
 
                         // update existing node with new id
                         updateNode(validation, idNode, ctx);
@@ -97,7 +97,7 @@ public class GraphFetcherProbe extends Probe<JsonNode> {
 
                         // add a new node to the graph
                         JsonNode merged = createNewJson(ctx, node);
-                        ctx.addGeneratedObject(new JsonLdGeneratedObject(JsonLDCompactionProve.getId(idNode.asText().strip()), merged.toString()));
+                        ctx.addGeneratedObject(new JsonLdGeneratedObject(JsonLDCompactionProbe.getId(idNode.asText().strip()), merged.toString()));
 
                         // update existing node with new id
                         updateNode(validation, idNode, ctx);
@@ -129,7 +129,7 @@ public class GraphFetcherProbe extends Probe<JsonNode> {
             throws URISyntaxException, Exception, JsonProcessingException, JsonMappingException {
         System.out.println("fetchNode " + idNode.asText().strip());
         UriResource uriResource = ((UriResourceFactory) ctx.get(Key.URI_RESOURCE_FACTORY)).of(idNode.asText().strip());
-        JsonLdGeneratedObject resolved = (JsonLdGeneratedObject) ctx.getGeneratedObject(JsonLDCompactionProve.getId(uriResource));
+        JsonLdGeneratedObject resolved = (JsonLdGeneratedObject) ctx.getGeneratedObject(JsonLDCompactionProbe.getId(uriResource));
         if (resolved == null) {
             System.out.println("parsing and loading " + idNode.asText().strip());
             result = new ReportItems(List.of(result, new CredentialParseProbe().run(uriResource, ctx)));
@@ -137,9 +137,9 @@ public class GraphFetcherProbe extends Probe<JsonNode> {
                 Assertion fetchedAssertion = (Assertion) ctx.getGeneratedObject(uriResource.getID());
 
                 // compact ld
-                result = new ReportItems(List.of(result, new JsonLDCompactionProve(fetchedAssertion.getCredentialType().getContextUris().get(0)).run(fetchedAssertion, ctx)));
+                result = new ReportItems(List.of(result, new JsonLDCompactionProbe(fetchedAssertion.getCredentialType().getContextUris().get(0)).run(fetchedAssertion, ctx)));
                 if (!result.contains(Outcome.FATAL, Outcome.EXCEPTION)) {
-                    JsonLdGeneratedObject fetched = (JsonLdGeneratedObject) ctx.getGeneratedObject(JsonLDCompactionProve.getId(fetchedAssertion));
+                    JsonLdGeneratedObject fetched = (JsonLdGeneratedObject) ctx.getGeneratedObject(JsonLDCompactionProbe.getId(fetchedAssertion));
                     JsonNode fetchedNode = ((ObjectMapper) ctx.get(Key.JACKSON_OBJECTMAPPER)).readTree(fetched.getJson());
 
                     // recursive call
@@ -166,7 +166,7 @@ public class GraphFetcherProbe extends Probe<JsonNode> {
     }
 
     private void updateNode(Validation validation, JsonNode idNode, RunContext ctx) throws IOException {
-        JsonLdGeneratedObject jsonLdGeneratedObject = ctx.getGeneratedObject(JsonLDCompactionProve.getId(assertion));
+        JsonLdGeneratedObject jsonLdGeneratedObject = ctx.getGeneratedObject(JsonLDCompactionProbe.getId(assertion));
         JsonNode merged = createNewJson(ctx, jsonLdGeneratedObject.getJson(), "{\"" + validation.getName() + "\": \"" + idNode.asText().strip() + "\"}");
         jsonLdGeneratedObject.setJson(merged.toString());
 
