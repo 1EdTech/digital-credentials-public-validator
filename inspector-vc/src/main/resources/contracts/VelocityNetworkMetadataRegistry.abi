@@ -1,0 +1,693 @@
+[
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "sender",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "bytes",
+          "name": "issuerVc",
+          "type": "bytes"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "listId",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "bytes2",
+          "name": "credentialType",
+          "type": "bytes2"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint32",
+          "name": "index",
+          "type": "uint32"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "traceId",
+          "type": "string"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "caoDid",
+          "type": "string"
+        }
+      ],
+      "name": "AddedCredentialMetadata",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "sender",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "bytes",
+          "name": "issuerVc",
+          "type": "bytes"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "listId",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "traceId",
+          "type": "string"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "caoDid",
+          "type": "string"
+        }
+      ],
+      "name": "CreatedMetadataList",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "components": [
+            {
+              "internalType": "bytes2",
+              "name": "version",
+              "type": "bytes2"
+            },
+            {
+              "internalType": "bytes2",
+              "name": "credentialType",
+              "type": "bytes2"
+            },
+            {
+              "internalType": "bytes2",
+              "name": "algType",
+              "type": "bytes2"
+            },
+            {
+              "internalType": "bytes",
+              "name": "encryptedPublicKey",
+              "type": "bytes"
+            },
+            {
+              "internalType": "bytes",
+              "name": "issuerVc",
+              "type": "bytes"
+            }
+          ],
+          "indexed": false,
+          "internalType": "struct MetadataRegistry.CredentialMetadata[]",
+          "name": "credentialMetadataList",
+          "type": "tuple[]"
+        }
+      ],
+      "name": "GotCredentialMetadata",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint8",
+          "name": "version",
+          "type": "uint8"
+        }
+      ],
+      "name": "Initialized",
+      "type": "event"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes2[]",
+          "name": "freeCredentialTypesList",
+          "type": "bytes2[]"
+        }
+      ],
+      "name": "addFreeTypes",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "operator",
+          "type": "address"
+        },
+        {
+          "internalType": "bytes2",
+          "name": "credentialType",
+          "type": "bytes2"
+        }
+      ],
+      "name": "checkOperatorWithCredentialType",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes2",
+          "name": "",
+          "type": "bytes2"
+        }
+      ],
+      "name": "freeCredentialTypes",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "components": [
+            {
+              "internalType": "address",
+              "name": "accountId",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "listId",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint32",
+              "name": "index",
+              "type": "uint32"
+            }
+          ],
+          "internalType": "struct MetadataRegistry.CredentialIdentifier[]",
+          "name": "_entryIndexes",
+          "type": "tuple[]"
+        }
+      ],
+      "name": "getFreeEntries",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "bytes2",
+              "name": "version",
+              "type": "bytes2"
+            },
+            {
+              "internalType": "bytes2",
+              "name": "credentialType",
+              "type": "bytes2"
+            },
+            {
+              "internalType": "bytes2",
+              "name": "algType",
+              "type": "bytes2"
+            },
+            {
+              "internalType": "bytes",
+              "name": "encryptedPublicKey",
+              "type": "bytes"
+            },
+            {
+              "internalType": "bytes",
+              "name": "issuerVc",
+              "type": "bytes"
+            }
+          ],
+          "internalType": "struct MetadataRegistry.CredentialMetadata[]",
+          "name": "",
+          "type": "tuple[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "components": [
+            {
+              "internalType": "address",
+              "name": "accountId",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "listId",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint32",
+              "name": "index",
+              "type": "uint32"
+            }
+          ],
+          "internalType": "struct MetadataRegistry.CredentialIdentifier[]",
+          "name": "_entryIndexes",
+          "type": "tuple[]"
+        },
+        {
+          "internalType": "string",
+          "name": "traceId",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "caoDid",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "burnerDid",
+          "type": "string"
+        }
+      ],
+      "name": "getPaidEntries",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "components": [
+            {
+              "internalType": "address",
+              "name": "accountId",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "listId",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint32",
+              "name": "index",
+              "type": "uint32"
+            }
+          ],
+          "internalType": "struct MetadataRegistry.CredentialIdentifier[]",
+          "name": "_entryIndexes",
+          "type": "tuple[]"
+        },
+        {
+          "internalType": "string",
+          "name": "traceId",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "caoDid",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "burnerDid",
+          "type": "string"
+        },
+        {
+          "internalType": "bytes",
+          "name": "signature",
+          "type": "bytes"
+        }
+      ],
+      "name": "getPaidEntriesSigned",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getPermissionsAddress",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_coupon",
+          "type": "address"
+        },
+        {
+          "internalType": "bytes2[]",
+          "name": "freeCredentialTypesList",
+          "type": "bytes2[]"
+        }
+      ],
+      "name": "initialize",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "a",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "b",
+          "type": "string"
+        }
+      ],
+      "name": "isEqual",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "accountId",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "listId",
+          "type": "uint256"
+        }
+      ],
+      "name": "isExistMetadataList",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes2",
+          "name": "credentialType",
+          "type": "bytes2"
+        }
+      ],
+      "name": "isFreeCredentialType",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "lists",
+      "outputs": [
+        {
+          "internalType": "bytes2",
+          "name": "version",
+          "type": "bytes2"
+        },
+        {
+          "internalType": "bytes2",
+          "name": "algType",
+          "type": "bytes2"
+        },
+        {
+          "internalType": "bytes",
+          "name": "issuerVc",
+          "type": "bytes"
+        },
+        {
+          "internalType": "bool",
+          "name": "used",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "listId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bytes2",
+          "name": "algType",
+          "type": "bytes2"
+        },
+        {
+          "internalType": "bytes2",
+          "name": "version",
+          "type": "bytes2"
+        },
+        {
+          "internalType": "bytes",
+          "name": "issuerVc",
+          "type": "bytes"
+        },
+        {
+          "internalType": "string",
+          "name": "traceId",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "caoDid",
+          "type": "string"
+        }
+      ],
+      "name": "newMetadataList",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "listId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bytes2",
+          "name": "algType",
+          "type": "bytes2"
+        },
+        {
+          "internalType": "bytes2",
+          "name": "version",
+          "type": "bytes2"
+        },
+        {
+          "internalType": "bytes",
+          "name": "issuerVc",
+          "type": "bytes"
+        },
+        {
+          "internalType": "string",
+          "name": "traceId",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "caoDid",
+          "type": "string"
+        },
+        {
+          "internalType": "bytes",
+          "name": "signature",
+          "type": "bytes"
+        }
+      ],
+      "name": "newMetadataListSigned",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes2[]",
+          "name": "freeCredentialTypesList",
+          "type": "bytes2[]"
+        }
+      ],
+      "name": "removeFreeTypes",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_coupon",
+          "type": "address"
+        }
+      ],
+      "name": "setCouponAddress",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes2",
+          "name": "credentialType",
+          "type": "bytes2"
+        },
+        {
+          "internalType": "bytes",
+          "name": "encryptedPublicKey",
+          "type": "bytes"
+        },
+        {
+          "internalType": "uint256",
+          "name": "listId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint32",
+          "name": "index",
+          "type": "uint32"
+        },
+        {
+          "internalType": "string",
+          "name": "traceId",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "caoDid",
+          "type": "string"
+        }
+      ],
+      "name": "setEntry",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes2",
+          "name": "credentialType",
+          "type": "bytes2"
+        },
+        {
+          "internalType": "bytes",
+          "name": "encryptedPublicKey",
+          "type": "bytes"
+        },
+        {
+          "internalType": "uint256",
+          "name": "listId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint32",
+          "name": "index",
+          "type": "uint32"
+        },
+        {
+          "internalType": "string",
+          "name": "traceId",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "caoDid",
+          "type": "string"
+        },
+        {
+          "internalType": "bytes",
+          "name": "signature",
+          "type": "bytes"
+        }
+      ],
+      "name": "setEntrySigned",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_permissions",
+          "type": "address"
+        }
+      ],
+      "name": "setPermissionsAddress",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ]

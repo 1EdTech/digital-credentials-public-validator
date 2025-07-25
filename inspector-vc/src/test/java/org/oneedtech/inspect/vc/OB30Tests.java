@@ -123,6 +123,15 @@ public class OB30Tests {
 	}
 
 	@Test
+	void testVelocityJWTValid() {
+		assertDoesNotThrow(()->{
+			Report report = validator.run(Samples.OB30.JWT.VELOCITY_JWT.asFileResource());
+			if(verbose) PrintHelper.print(report, true);
+			assertValid(report);
+		});
+	}
+
+	@Test
 	void testSimpleV1PNGJWTValid() {
 		assertDoesNotThrow(()->{
 			Report report = validator.run(Samples.OB30.PNG.SIMPLE_V1_JWT_PNG.asFileResource());
