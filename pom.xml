@@ -7,7 +7,7 @@
 
   <groupId>org.1edtech</groupId>
   <artifactId>vc-public-validator</artifactId>
-  <version>1.4.0</version>
+  <version>1.4.1</version>
   <name>vc-public-validator</name>
   <packaging>pom</packaging>
   <developers>
@@ -239,7 +239,7 @@
       <dependency>
         <groupId>com.networknt</groupId>
         <artifactId>json-schema-validator</artifactId>
-        <version>1.4.0</version>
+        <version>1.4.1</version>
       </dependency>
 
       <!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-api -->

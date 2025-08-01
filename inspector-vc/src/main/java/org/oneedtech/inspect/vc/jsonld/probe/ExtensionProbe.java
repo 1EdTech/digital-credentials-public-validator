@@ -77,6 +77,10 @@ public class ExtensionProbe extends Probe<JsonNode> {
 					.options(options)
 					.get();
 				JsonNode context = mapper.readTree(compactedContext.toString());
+				// validation is an optional property
+				if (!context.has("validation")) {
+					continue;
+				}
 				List<JsonNode> validations = JsonNodeUtil.asNodeList(context.get("validation"));
 				for (JsonNode validation : validations) {
 					if (isLdTermInList(validation.get("validatesType"), options)) {
@@ -96,11 +100,6 @@ public class ExtensionProbe extends Probe<JsonNode> {
 				}
 			}
 		}
-
-		if (reportItems.size() == 0) {
-			return error("Could not determine extension type to test", ctx);
-		}
-
 		return reportItems;
     }
 
