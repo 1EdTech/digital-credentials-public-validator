@@ -3,8 +3,6 @@ package org.oneedtech.inspect.vc.probe.validation;
 import static org.oneedtech.inspect.util.code.Defensives.checkNotNull;
 
 import org.oneedtech.inspect.vc.Assertion.ValueType;
-import org.oneedtech.inspect.vc.Credential.CredentialEnum;
-import org.oneedtech.inspect.vc.Assertion;
 import org.oneedtech.inspect.vc.Validation;
 
 /**
