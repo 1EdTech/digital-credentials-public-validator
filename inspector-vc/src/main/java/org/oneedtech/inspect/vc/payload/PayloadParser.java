@@ -2,6 +2,7 @@ package org.oneedtech.inspect.vc.payload;
 
 import static com.apicatalog.jsonld.StringUtils.isBlank;
 
+import java.net.URI;
 import java.util.Base64;
 import java.util.Base64.Decoder;
 import java.util.List;
@@ -10,6 +11,7 @@ import org.oneedtech.inspect.core.probe.RunContext;
 import org.oneedtech.inspect.core.probe.RunContext.Key;
 import org.oneedtech.inspect.util.resource.Resource;
 import org.oneedtech.inspect.util.resource.ResourceType;
+import org.oneedtech.inspect.util.resource.UriResource;
 import org.oneedtech.inspect.vc.Credential;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -62,6 +64,25 @@ public abstract class PayloadParser {
 		}
 
 		return vcNode;
+	}
+
+	/**
+	 * Parses a JSON payload from the specified URI and returns it as a {@link JsonNode}.
+	 *
+	 * <p>This method creates a {@link Resource} of type JSON from the given URI,
+	 * uses a {@link PayloadParserFactory} to obtain a parser, and parses the resource
+	 * within the provided {@link RunContext}. The resulting {@link Credential} object
+	 * is then used to retrieve the JSON representation.</p>
+	 *
+	 * @param uri the URI pointing to the JSON resource to be parsed
+	 * @param context the execution context for the parsing operation
+	 * @return the parsed JSON payload as a {@link JsonNode}
+	 * @throws Exception if an error occurs during parsing or resource retrieval
+	 */
+	protected static JsonNode fromUri(URI uri, RunContext context) throws Exception {
+		Resource res = new UriResource(uri, ResourceType.JSON);
+		Credential crd = PayloadParserFactory.of(res).parse(res, context);
+		return crd.getJson();
 	}
 
 }
