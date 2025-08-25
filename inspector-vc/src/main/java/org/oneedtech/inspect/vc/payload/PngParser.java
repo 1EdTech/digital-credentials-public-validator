@@ -65,6 +65,7 @@ public final class PngParser extends PayloadParser {
 			vcString = vcString.trim();
 			if(vcString.charAt(0) != '{'){
 				// check if the content is an URI and we allow URI location in value
+				boolean isJwt = true;
 				if (credentialKey.allowsUriLocationInValue()) {
 					try {
 						/** Legacy PNGs in OB 2.0
@@ -76,13 +77,15 @@ public final class PngParser extends PayloadParser {
 						 */
 						URI uri = new URI(vcString);
 						vcNode = fromUri(uri, ctx);
+						isJwt = false;
 					} catch (URISyntaxException ignored) {
-						//This is a jwt.  Fetch either the 'vc' out of the payload and save the string for signature verification.
-						jwtString = vcString;
-						vcNode = fromJwt(vcString, ctx);
 					}
 				}
-
+				if (isJwt) {
+					//This is a jwt.  Fetch either the 'vc' out of the payload and save the string for signature verification.
+					jwtString = vcString;
+					vcNode = fromJwt(vcString, ctx);
+				}
 			}
 			else {
 				vcNode = fromString(vcString, ctx);
