@@ -206,6 +206,11 @@
         <artifactId>inspector-vc</artifactId>
         <version>${project.version}</version>
       </dependency>
+      <dependency>
+        <groupId>org.1edtech</groupId>
+        <artifactId>inspector-clr</artifactId>
+        <version>${project.version}</version>
+      </dependency>
 
       <!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
       <dependency>
