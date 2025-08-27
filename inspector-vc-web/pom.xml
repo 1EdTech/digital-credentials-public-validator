@@ -14,66 +14,9 @@
 		<spring-boot-starter-parent.version>2.6.7</spring-boot-starter-parent.version>
 		<spring-boot-maven-plugin.version>2.6.7</spring-boot-maven-plugin.version>
 		<maven-deploy-plugin.version>2.8.2</maven-deploy-plugin.version>
-		<imageName>gcr.io/staging-1edtech/ims/inspector-vc-public</imageName>
 	</properties>
 
 
-	<profiles>
-		<profile>
-			<id>docker</id>
-			<activation>
-				<activeByDefault>false</activeByDefault>
-			</activation>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>io.fabric8</groupId>
-						<artifactId>docker-maven-plugin</artifactId>
-						<version>0.40.2</version>
-						<configuration>
-							<images>
-								<image>
-									<name>${imageName}</name>
-									<build>
-										<dockerFile>${project.basedir}/Dockerfile</dockerFile>
-										<tags>
-											<tag>${project.version}</tag>
-										</tags>
-										<buildx>
-											<platforms>
-											  <platform>linux/amd64</platform>
-											  <platform>linux/arm64</platform>
-											  <platform>windows/amd64</platform>
-											</platforms>
-										  </buildx>
-									</build>
-								</image>
-							</images>
-						</configuration>
-						<executions>
-							<execution>
-								<id>build-docker.image</id>
-								<goals>
-									<goal>build</goal>
-									<goal>tag</goal>
-								</goals>
-							</execution>
-							<execution>
-								<id>push-docker-image</id>
-								<goals>
-									<goal>push</goal>
-								</goals>
-								<phase>install</phase>
-								<configuration>
-									<pushRegistry>gcr.io</pushRegistry>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
 	<dependencies>
 
 		<dependency>
