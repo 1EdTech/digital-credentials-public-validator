@@ -10,7 +10,7 @@
 	<artifactId>inspector-vc</artifactId>
 
 	<properties>
-		<web3j.version>4.14.0</web3j.version>
+		<web3j.version>4.13.0</web3j.version>
 	</properties>
 
 	<dependencies>
