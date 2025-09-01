@@ -10,6 +10,7 @@ import static org.oneedtech.inspect.test.Assertions.assertInvalid;
 import static org.oneedtech.inspect.test.Assertions.assertValid;
 import static org.oneedtech.inspect.test.Assertions.assertWarning;
 
+import java.util.Map;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeAll;
@@ -124,6 +125,19 @@ public class OB30Tests {
 
 	@Test
 	void testVelocityJWTValid() {
+		// custom setup with velocity values
+		validator = new OB30Inspector.Builder()
+				.set(Behavior.TEST_INCLUDE_SUCCESS, true)
+				.set(Behavior.VALIDATOR_FAIL_FAST, true)
+				.inject(Inspector.InjectionKeys.DID_RESOLUTION_SERVICE_URL, "http://dev.uniresolver.io/1.0/identifiers/")
+				.inject(VCInspector.InjectionKeys.VNF_CONFIG, Map.of(
+					VCInspector.InjectionKeys.VNF_RPC_URL, "https://stagingmember.velocitycareerlabs.io",
+					VCInspector.InjectionKeys.VNF_PRIVATE_KEY, "TestPrivateKey",
+					VCInspector.InjectionKeys.VNF_CONTACT_ADDRESS, "0x1550b4f24368c8Eb839073ac04673777D9dda60A",
+					VCInspector.InjectionKeys.VNF_BURNER_DID, "BurnerDID"
+				))
+				.build();
+
 		assertDoesNotThrow(()->{
 			Report report = validator.run(Samples.OB30.JWT.VELOCITY_JWT.asFileResource());
 			if(verbose) PrintHelper.print(report, true);
