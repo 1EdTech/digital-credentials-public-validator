@@ -9,6 +9,7 @@ import static org.oneedtech.inspect.util.json.ObjectMapperCache.Config.DEFAULT;
 import static org.oneedtech.inspect.vc.Credential.CREDENTIAL_KEY;
 import static org.oneedtech.inspect.vc.VerifiableCredential.REFRESH_SERVICE_MIME_TYPES;
 import static org.oneedtech.inspect.vc.VerifiableCredential.ProofType.EXTERNAL;
+import static org.velocitynetwork.contracts.VelocityNetworkDidResolver.VELOCITY_NETWORK_METADATA_REGISTRY;
 import static org.oneedtech.inspect.vc.payload.PayloadParser.fromJwt;
 import static org.oneedtech.inspect.vc.util.JsonNodeUtil.asNodeList;
 
@@ -59,6 +60,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableList;
 import org.velocitynetwork.contracts.VelocityNetworkDidResolver;
+import org.velocitynetwork.contracts.VelocityNetworkMetadataRegistryFacade;
+import org.velocitynetwork.contracts.VelocityNetworkMetadataRegistryFacadeImpl;
 
 /**
  * A verifier for Open Badges 3.0.
@@ -67,6 +70,7 @@ import org.velocitynetwork.contracts.VelocityNetworkDidResolver;
 public class OB30Inspector extends VCInspector implements SubInspector {
 	protected final List<Probe<VerifiableCredential>> userProbes;
 	protected final String didResolutionUrl;
+	private Optional<VelocityNetworkMetadataRegistryFacade> velocityNetworkMetadataRegistryFacade;
 
 	private Map<String, Map<String, String>> velocityNetworkConfigs = Map.of(
 			"staging", Map.of(
@@ -88,6 +92,7 @@ public class OB30Inspector extends VCInspector implements SubInspector {
 		this.userProbes = ImmutableList.copyOf(builder.probes);
 		Optional<Object> didResolutionServiceUrl = builder.getInjected(DID_RESOLUTION_SERVICE_URL);
 		this.didResolutionUrl = didResolutionServiceUrl.isPresent() ? didResolutionServiceUrl.get().toString(): null;
+		this.velocityNetworkMetadataRegistryFacade = builder.getInjected(VELOCITY_NETWORK_METADATA_REGISTRY);
 	}
 
 	//https://docs.google.com/document/d/1_imUl2K-5tMib0AUxwA9CWb0Ap1b3qif0sXydih68J0/edit#
@@ -163,7 +168,9 @@ public class OB30Inspector extends VCInspector implements SubInspector {
 		ObjectMapper mapper = ObjectMapperCache.get(DEFAULT);
 		JsonPathEvaluator jsonPath = new JsonPathEvaluator(mapper);
 		Map<String, String> velocityNetworkConfig = velocityNetworkConfigs.get("localhost");
-		VelocityNetworkDidResolver velocityNetworkDidResolver = new VelocityNetworkDidResolver(velocityNetworkConfig.get("rpcUrl"), velocityNetworkConfig.get("privateKey"), velocityNetworkConfig.get("metadataContractAddress"), velocityNetworkConfig.get("verifierDid"));
+		VelocityNetworkDidResolver velocityNetworkDidResolver = velocityNetworkMetadataRegistryFacade.isPresent()
+				? new VelocityNetworkDidResolver(this.velocityNetworkMetadataRegistryFacade.get(), velocityNetworkConfig.get("verifierDid"))
+				: new VelocityNetworkDidResolver(new VelocityNetworkMetadataRegistryFacadeImpl(velocityNetworkConfig.get("rpcUrl"), velocityNetworkConfig.get("privateKey"), velocityNetworkConfig.get("metadataContractAddress")), velocityNetworkConfig.get("verifierDid"));
 		DidResolver didResolver = new SimpleDidResolver(this.didResolutionUrl, velocityNetworkDidResolver);
 		VerifiableCredential.Builder credentialBuilder = new VerifiableCredential.Builder();
 		RunContext ctx = new RunContext.Builder()
