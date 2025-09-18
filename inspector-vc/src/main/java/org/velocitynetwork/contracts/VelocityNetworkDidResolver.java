@@ -24,6 +24,7 @@ import java.util.stream.IntStream;
 import static java.util.UUID.randomUUID;
 
 public class VelocityNetworkDidResolver {
+    public static final String VELOCITY_NETWORK_METADATA_REGISTRY = "VELOCITY_NETWORK_METADATA_REGISTRY";
 
     static class IssuerVc {
         public static JWT deserializeIssuerVc(VelocityNetworkMetadataRegistry.CredentialMetadata metadataEntry) throws ParseException {
@@ -33,8 +34,8 @@ public class VelocityNetworkDidResolver {
     }
 
     public static class PublicKeyResolver {
-        private static final String VERSION = CryptoUtils.get2BytesHash("1");
-        private static final String ALG_TYPE = CryptoUtils.get2BytesHash("cosekey:aes-256-gcm");
+        public static final String VERSION = CryptoUtils.get2BytesHash("1");
+        public static final String ALG_TYPE = CryptoUtils.get2BytesHash("cosekey:aes-256-gcm");
 
         public static JsonObject resolvePublicKey(String id, VelocityNetworkMetadataRegistry.CredentialMetadata entry, String secret) {
             if (!CryptoUtils.bytesToHex(entry.version).equals((VERSION))) {
@@ -61,15 +62,12 @@ public class VelocityNetworkDidResolver {
         }
     }
 
-    private VelocityNetworkMetadataRegistry metadataRegistryContract;
+    private VelocityNetworkMetadataRegistryFacade metadataRegistryContractFacade;
     private String burnerDid;
-    private Credentials credentials;
 
-    public VelocityNetworkDidResolver(String rpcUrl, String privateKey, String contractAddress, String burnerDid) {
-        Web3j web3 = Web3j.build(new HttpService(rpcUrl));
+    public VelocityNetworkDidResolver(VelocityNetworkMetadataRegistryFacade velocityNetworkMetadataRegistryFacade, String burnerDid) {
+        this.metadataRegistryContractFacade = velocityNetworkMetadataRegistryFacade;
         this.burnerDid = burnerDid;
-        this.credentials = Credentials.create(privateKey);
-        this.metadataRegistryContract = org.velocitynetwork.contracts.VelocityNetworkMetadataRegistry.load(contractAddress, web3, credentials, new StaticGasProvider(BigInteger.ZERO, BigInteger.valueOf(9_000_000)));
     }
 
     public JsonObject resolveDid(String didUrl) throws Exception {
@@ -77,10 +75,7 @@ public class VelocityNetworkDidResolver {
             String[] didParts = didUrl.split("#");
             String did = didParts[0];
             List<Tuple<VelocityNetworkMetadataRegistry.CredentialIdentifier, String>> parsedDid = parseVelocityV2Did(did);
-            TransactionReceipt transactionReceipt = this.metadataRegistryContract.getPaidEntries(parsedDid.stream().map(tuple -> tuple.t1).toList(), randomUUID().toString(), burnerDid, burnerDid).send();
-            List<VelocityNetworkMetadataRegistry.GotCredentialMetadataEventResponse> credentialMetadataEvents = VelocityNetworkMetadataRegistry.getGotCredentialMetadataEvents(transactionReceipt);
-            List<VelocityNetworkMetadataRegistry.CredentialMetadata> metadataEntries =
-                    credentialMetadataEvents.get(credentialMetadataEvents.size() - 1).credentialMetadataList;
+            List<VelocityNetworkMetadataRegistry.CredentialMetadata> metadataEntries = this.metadataRegistryContractFacade.getPaidEntries(parsedDid.stream().map(tuple -> tuple.t1).toList(), randomUUID().toString(), burnerDid, burnerDid);
 
             List<JsonObject> verificationMethods =
                     IntStream
@@ -95,7 +90,7 @@ public class VelocityNetworkDidResolver {
                             .toList();
 
             // Should verify issuerVc for every metadataEntry, by using a SimpleDidResolver and running verify on the jwt.
-            // If the entry does not verify then the public key should not be added to the verficationMethod. It should be part of
+            // If the entry does not verify then the public key should not be added to the verificationMethod. It should be part of
             // establishing the controller of the verificationMethod.
             return Json.createObjectBuilder()
                     .add("id", did)
