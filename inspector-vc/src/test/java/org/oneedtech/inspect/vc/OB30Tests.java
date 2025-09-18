@@ -13,6 +13,7 @@ import static org.velocitynetwork.contracts.CryptoUtils.hexToBytes;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeAll;
@@ -52,7 +53,6 @@ public class OB30Tests {
 				.set(Behavior.TEST_INCLUDE_SUCCESS, true)
 				.set(Behavior.VALIDATOR_FAIL_FAST, true)
 				.inject(Inspector.InjectionKeys.DID_RESOLUTION_SERVICE_URL, "http://dev.uniresolver.io/1.0/identifiers/")
-				.inject(VelocityNetworkDidResolver.VELOCITY_NETWORK_METADATA_REGISTRY, new MockVelocityNetworkMetadataRegistry())
 				.build();
 	}
 
@@ -140,7 +140,8 @@ public class OB30Tests {
 					VCInspector.InjectionKeys.VNF_RPC_URL, "https://stagingmember.velocitycareerlabs.io",
 					VCInspector.InjectionKeys.VNF_PRIVATE_KEY, "TestPrivateKey",
 					VCInspector.InjectionKeys.VNF_CONTACT_ADDRESS, "0x1550b4f24368c8Eb839073ac04673777D9dda60A",
-					VCInspector.InjectionKeys.VNF_BURNER_DID, "BurnerDID"
+					VCInspector.InjectionKeys.VNF_BURNER_DID, "BurnerDID",
+					VCInspector.InjectionKeys.VNF_REGISTRY, new MockVelocityNetworkMetadataRegistry()
 				))
 				.build();
 

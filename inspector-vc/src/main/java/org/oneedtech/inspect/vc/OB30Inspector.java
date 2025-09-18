@@ -11,10 +11,10 @@ import static org.oneedtech.inspect.vc.VCInspector.InjectionKeys.VNF_BURNER_DID;
 import static org.oneedtech.inspect.vc.VCInspector.InjectionKeys.VNF_CONFIG;
 import static org.oneedtech.inspect.vc.VCInspector.InjectionKeys.VNF_CONTACT_ADDRESS;
 import static org.oneedtech.inspect.vc.VCInspector.InjectionKeys.VNF_PRIVATE_KEY;
+import static org.oneedtech.inspect.vc.VCInspector.InjectionKeys.VNF_REGISTRY;
 import static org.oneedtech.inspect.vc.VCInspector.InjectionKeys.VNF_RPC_URL;
 import static org.oneedtech.inspect.vc.VerifiableCredential.REFRESH_SERVICE_MIME_TYPES;
 import static org.oneedtech.inspect.vc.VerifiableCredential.ProofType.EXTERNAL;
-import static org.velocitynetwork.contracts.VelocityNetworkDidResolver.VELOCITY_NETWORK_METADATA_REGISTRY;
 import static org.oneedtech.inspect.vc.payload.PayloadParser.fromJwt;
 import static org.oneedtech.inspect.vc.util.JsonNodeUtil.asNodeList;
 
@@ -76,17 +76,15 @@ import org.velocitynetwork.contracts.VelocityNetworkMetadataRegistryFacadeImpl;
 public class OB30Inspector extends VCInspector implements SubInspector {
 	protected final List<Probe<VerifiableCredential>> userProbes;
 	protected final String didResolutionUrl;
-	private Optional<VelocityNetworkMetadataRegistryFacade> velocityNetworkMetadataRegistryFacade;
-	protected final Map<String, String> vnConfig;
+	protected final Map<String, Object> vnConfig;
 
 	protected OB30Inspector(OB30Inspector.Builder builder) {
 		super(builder);
 		this.userProbes = ImmutableList.copyOf(builder.probes);
 		Optional<Object> didResolutionServiceUrl = builder.getInjected(DID_RESOLUTION_SERVICE_URL);
 		this.didResolutionUrl = didResolutionServiceUrl.isPresent() ? didResolutionServiceUrl.get().toString(): null;
-		Optional<Map<String, String>> vnConfig = builder.getInjected(VNF_CONFIG);
+		Optional<Map<String, Object>> vnConfig = builder.getInjected(VNF_CONFIG);
 		this.vnConfig = vnConfig.orElseGet(HashMap::new);
-		this.velocityNetworkMetadataRegistryFacade = builder.getInjected(VELOCITY_NETWORK_METADATA_REGISTRY);
 	}
 
 	//https://docs.google.com/document/d/1_imUl2K-5tMib0AUxwA9CWb0Ap1b3qif0sXydih68J0/edit#
@@ -161,10 +159,23 @@ public class OB30Inspector extends VCInspector implements SubInspector {
 
 		ObjectMapper mapper = ObjectMapperCache.get(DEFAULT);
 		JsonPathEvaluator jsonPath = new JsonPathEvaluator(mapper);
-		VelocityNetworkDidResolver velocityNetworkDidResolver = !this.vnConfig.isEmpty() ? (velocityNetworkMetadataRegistryFacade.isPresent()
-			? new VelocityNetworkDidResolver(this.velocityNetworkMetadataRegistryFacade.get(), this.vnConfig.get(VNF_BURNER_DID))
-			: new VelocityNetworkDidResolver(new VelocityNetworkMetadataRegistryFacadeImpl(this.vnConfig.get(VNF_RPC_URL), this.vnConfig.get(VNF_PRIVATE_KEY), this.vnConfig.get(VNF_CONTACT_ADDRESS)), this.vnConfig.get(VNF_BURNER_DID));
-		) : null;
+		VelocityNetworkDidResolver velocityNetworkDidResolver = null;
+
+		if(!this.vnConfig.isEmpty()) {
+			// registry impl
+			VelocityNetworkMetadataRegistryFacade velocityNetworkMetadataRegistryFacade = null;
+			if (this.vnConfig.containsKey(VNF_REGISTRY)) {
+				velocityNetworkMetadataRegistryFacade = (VelocityNetworkMetadataRegistryFacade) this.vnConfig.get(VNF_REGISTRY);
+			} else {
+				velocityNetworkMetadataRegistryFacade = new VelocityNetworkMetadataRegistryFacadeImpl(
+						this.vnConfig.getOrDefault(VNF_RPC_URL, "").toString(),
+						this.vnConfig.getOrDefault(VNF_PRIVATE_KEY, "").toString(),
+						this.vnConfig.getOrDefault(VNF_CONTACT_ADDRESS, "").toString()
+				);
+			}
+			velocityNetworkDidResolver = new VelocityNetworkDidResolver(velocityNetworkMetadataRegistryFacade, this.vnConfig.getOrDefault(VNF_BURNER_DID, "").toString());
+		}
+
 		DidResolver didResolver = new SimpleDidResolver(this.didResolutionUrl, velocityNetworkDidResolver);
 		VerifiableCredential.Builder credentialBuilder = new VerifiableCredential.Builder();
 		RunContext ctx = new RunContext.Builder()

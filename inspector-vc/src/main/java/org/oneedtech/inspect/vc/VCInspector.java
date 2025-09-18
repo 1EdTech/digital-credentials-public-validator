@@ -148,6 +148,7 @@ public abstract class VCInspector extends Inspector {
 
 	public static class InjectionKeys {
    		public static final String VNF_CONFIG = "VNF_CONFIG";
+		public static final String VNF_REGISTRY = "VNF_REGISTRY";
 		public static final String VNF_RPC_URL = "VNF_RPC_URL";
 		public static final String VNF_PRIVATE_KEY = "VNF_PRIVATE_KEY";
 		public static final String VNF_CONTACT_ADDRESS = "VNF_CONTACT_ADDRESS";

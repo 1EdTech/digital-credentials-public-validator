@@ -14,6 +14,7 @@ import static org.oneedtech.inspect.vc.VCInspector.InjectionKeys.VNF_BURNER_DID;
 import static org.oneedtech.inspect.vc.VCInspector.InjectionKeys.VNF_CONFIG;
 import static org.oneedtech.inspect.vc.VCInspector.InjectionKeys.VNF_CONTACT_ADDRESS;
 import static org.oneedtech.inspect.vc.VCInspector.InjectionKeys.VNF_PRIVATE_KEY;
+import static org.oneedtech.inspect.vc.VCInspector.InjectionKeys.VNF_REGISTRY;
 import static org.oneedtech.inspect.vc.VCInspector.InjectionKeys.VNF_RPC_URL;
 import static org.oneedtech.inspect.vc.VerifiableCredential.REFRESH_SERVICE_MIME_TYPES;
 import static org.oneedtech.inspect.vc.VerifiableCredential.ProofType.EXTERNAL;
@@ -55,6 +56,8 @@ import org.oneedtech.inspect.vc.probe.did.DidResolver;
 import org.oneedtech.inspect.vc.probe.did.SimpleDidResolver;
 import org.oneedtech.inspect.vc.util.CachingDocumentLoader;
 import org.velocitynetwork.contracts.VelocityNetworkDidResolver;
+import org.velocitynetwork.contracts.VelocityNetworkMetadataRegistryFacade;
+import org.velocitynetwork.contracts.VelocityNetworkMetadataRegistryFacadeImpl;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -68,14 +71,14 @@ public class EndorsementInspector extends VCInspector implements SubInspector {
 
 	protected final List<Probe<VerifiableCredential>> userProbes;
 	protected final String didResolutionUrl;
-	protected final Map<String, String> vnConfig;
+	protected final Map<String, Object> vnConfig;
 
 	protected EndorsementInspector(EndorsementInspector.Builder builder) {
 		super(builder);
 		this.userProbes = ImmutableList.copyOf(builder.probes);
 		Optional<Object> didResolutionServiceUrl = builder.getInjected(DID_RESOLUTION_SERVICE_URL);
 		this.didResolutionUrl = didResolutionServiceUrl.isPresent() ? didResolutionServiceUrl.get().toString(): null;
-		Optional<Map<String, String>> vnConfig = builder.getInjected(VNF_CONFIG);
+		Optional<Map<String, Object>> vnConfig = builder.getInjected(VNF_CONFIG);
 		this.vnConfig = vnConfig.orElseGet(HashMap::new);
 	}
 
@@ -95,13 +98,23 @@ public class EndorsementInspector extends VCInspector implements SubInspector {
 
 		ObjectMapper mapper = ObjectMapperCache.get(DEFAULT);
 		JsonPathEvaluator jsonPath = new JsonPathEvaluator(mapper);
-		VelocityNetworkDidResolver velocityNetworkDidResolver = !this.vnConfig.isEmpty() ? new VelocityNetworkDidResolver(
-			this.vnConfig.get(VNF_RPC_URL),
-			this.vnConfig.get(VNF_PRIVATE_KEY),
-			this.vnConfig.get(VNF_CONTACT_ADDRESS),
-			this.vnConfig.get(VNF_BURNER_DID)
-		) : null;
-      	DidResolver didResolver = new SimpleDidResolver(this.didResolutionUrl, velocityNetworkDidResolver);
+		VelocityNetworkDidResolver velocityNetworkDidResolver = null;
+
+		if(!this.vnConfig.isEmpty()) {
+			// registry impl
+			VelocityNetworkMetadataRegistryFacade velocityNetworkMetadataRegistryFacade = null;
+			if (this.vnConfig.containsKey(VNF_REGISTRY)) {
+				velocityNetworkMetadataRegistryFacade = (VelocityNetworkMetadataRegistryFacade) this.vnConfig.get(VNF_REGISTRY);
+			} else {
+				velocityNetworkMetadataRegistryFacade = new VelocityNetworkMetadataRegistryFacadeImpl(
+						this.vnConfig.getOrDefault(VNF_RPC_URL, "").toString(),
+						this.vnConfig.getOrDefault(VNF_PRIVATE_KEY, "").toString(),
+						this.vnConfig.getOrDefault(VNF_CONTACT_ADDRESS, "").toString()
+				);
+			}
+			velocityNetworkDidResolver = new VelocityNetworkDidResolver(velocityNetworkMetadataRegistryFacade, this.vnConfig.getOrDefault(VNF_BURNER_DID, "").toString());
+		}
+		DidResolver didResolver = new SimpleDidResolver(this.didResolutionUrl, velocityNetworkDidResolver);
 
 		RunContext ctx = new RunContext.Builder()
 				.put(this)
