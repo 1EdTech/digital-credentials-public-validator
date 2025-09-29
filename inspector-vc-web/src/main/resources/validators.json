@@ -15,6 +15,7 @@
 			"instr": "This validator supports Open Badges 3.0 files.",
 			"spec": "ob",
 			"group": "vc",
+			"status": "FINAL",
 			"initParams": {
 				"DID_RESOLUTION_SERVICE_URL": "http://dev.uniresolver.io/1.0/identifiers/"
 			},
@@ -40,6 +41,7 @@
 			"instr": "This validator supports Comprehensive Learner Record (CLR) 2.0 files.",
 			"spec": "spec-pid-todo",
 			"group": "vc",
+			"status": "FINAL",
 			"initParams": {
 				"DID_RESOLUTION_SERVICE_URL": "http://dev.uniresolver.io/1.0/identifiers/"
 			},
