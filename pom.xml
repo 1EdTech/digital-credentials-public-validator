@@ -216,7 +216,14 @@
       <dependency>
         <groupId>com.google.guava</groupId>
         <artifactId>guava</artifactId>
-        <version>30.1-jre</version>
+				<version>33.2.0-jre</version>
+				<exclusions>
+					<!-- this dep is also included in spring-boot-starter-web -->
+					<exclusion>
+						<groupId>com.google.errorprone</groupId>
+						<artifactId>error_prone_annotations</artifactId>
+					</exclusion>
+				</exclusions>
       </dependency>
 
       <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
