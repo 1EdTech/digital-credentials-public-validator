@@ -211,14 +211,16 @@ public class OB30Inspector extends VCInspector implements SubInspector {
 			if(broken(accumulator)) return abort(ctx, accumulator, probeCount);
 
 			//check refresh service if we are not already refreshed
-			probeCount++;
-			if(resource.getContext().get(REFRESHED) != TRUE) {
-				Optional<String> newID = checkRefreshService(ob, ctx);
-				if(newID.isPresent()) {
-					// If the refresh is not successful, continue the verification process using the original OpenBadgeCredential.
-					UriResource uriResource = new UriResource(new URI(newID.get()), null, REFRESH_SERVICE_MIME_TYPES);
-					if (uriResource.exists()) {
-						return this.run(uriResource.setContext(new ResourceContext(REFRESHED, TRUE)));
+			if (!error(accumulator)) {
+				probeCount++;
+				if(resource.getContext().get(REFRESHED) != TRUE) {
+					Optional<String> newID = checkRefreshService(ob, ctx);
+					if(newID.isPresent()) {
+						// If the refresh is not successful, continue the verification process using the original OpenBadgeCredential.
+						UriResource uriResource = new UriResource(new URI(newID.get()), null, REFRESH_SERVICE_MIME_TYPES);
+						if (uriResource.exists()) {
+							return this.run(uriResource.setContext(new ResourceContext(REFRESHED, TRUE)));
+						}
 					}
 				}
 			}
