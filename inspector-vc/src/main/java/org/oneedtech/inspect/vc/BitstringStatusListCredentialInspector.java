@@ -23,12 +23,17 @@ import org.oneedtech.inspect.vc.probe.ContextPropertyProbe;
 import org.oneedtech.inspect.vc.probe.CredentialParseProbe;
 import org.oneedtech.inspect.vc.probe.CredentialSubjectProbe;
 import org.oneedtech.inspect.vc.probe.EmbeddedProofProbe;
+import org.oneedtech.inspect.vc.probe.RunContextKey;
 import org.oneedtech.inspect.vc.probe.TypePropertyProbe;
+import org.oneedtech.inspect.vc.probe.did.DidResolver;
 
 public class BitstringStatusListCredentialInspector extends VCInspector {
+  private DidResolver didResolver;
+
   protected BitstringStatusListCredentialInspector(
       BitstringStatusListCredentialInspector.Builder builder) {
     super(builder);
+    this.didResolver = (DidResolver) builder.getInjected(RunContextKey.DID_RESOLVER).orElse(null);
   }
 
   @Override
@@ -45,6 +50,7 @@ public class BitstringStatusListCredentialInspector extends VCInspector {
             .put(Key.JACKSON_OBJECTMAPPER, mapper)
             .put(Key.JSONPATH_EVALUATOR, jsonPath)
             .put(Key.GENERATED_OBJECT_BUILDER, new VerifiableCredential.Builder())
+            .put(RunContextKey.DID_RESOLVER, didResolver)
             .build();
 
     List<ReportItems> accumulator = new ArrayList<>();
@@ -71,7 +77,8 @@ public class BitstringStatusListCredentialInspector extends VCInspector {
       // credentialSubject
       probeCount++;
       accumulator.add(
-          new CredentialSubjectProbe("BitstringStatusList", false).run(bslCred.getJson(), ctx));
+          new CredentialSubjectProbe("BitstringStatusList", false, false)
+              .run(bslCred.getJson(), ctx));
 
       // proof
       probeCount++;

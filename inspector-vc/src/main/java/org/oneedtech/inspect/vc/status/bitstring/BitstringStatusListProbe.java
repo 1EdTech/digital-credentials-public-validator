@@ -18,6 +18,7 @@ import org.oneedtech.inspect.util.resource.MimeType;
 import org.oneedtech.inspect.util.resource.UriResource;
 import org.oneedtech.inspect.vc.BitstringStatusListCredentialInspector;
 import org.oneedtech.inspect.vc.VerifiableCredential;
+import org.oneedtech.inspect.vc.probe.RunContextKey;
 
 /**
  * Follows algorithm defined at https://w3c.github.io/vc-bitstring-status-list/#validate-algorithm
@@ -53,7 +54,10 @@ public class BitstringStatusListProbe extends Probe<JsonNode> {
         new UriResource(statusListCredentialUrl, null, List.of(MimeType.JSON, MimeType.JSON_LD));
 
     BitstringStatusListCredentialInspector inspector =
-        new BitstringStatusListCredentialInspector.Builder().build();
+        new BitstringStatusListCredentialInspector.Builder()
+            .inject(RunContextKey.DID_RESOLVER, ctx.get(RunContextKey.DID_RESOLVER))
+            .build();
+
     Report report = inspector.run(uriResource);
     if (report.getOutcome() != Outcome.VALID) {
       // the credential is not valid, return inspector report
@@ -118,10 +122,15 @@ public class BitstringStatusListProbe extends Probe<JsonNode> {
 
       // printl bytevalue in hexadecimal
       System.out.println("Byte value in hexadecimal: " + Integer.toHexString(byteValue));
-      // find the position in revocationBitString where its value is different than zero and print it
+      // find the position in revocationBitString where its value is different than zero and print
+      // it
       for (int i = 0; i < revocationBitString.length; i++) {
         if (revocationBitString[i] != 0) {
-          System.out.println("Position in revocationBitString where its value is different than zero: " + i + " = " + revocationBitString[i]);
+          System.out.println(
+              "Position in revocationBitString where its value is different than zero: "
+                  + i
+                  + " = "
+                  + revocationBitString[i]);
           break;
         }
       }
