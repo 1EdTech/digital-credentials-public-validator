@@ -10,8 +10,8 @@ import static org.oneedtech.inspect.test.Assertions.assertInvalid;
 import static org.oneedtech.inspect.test.Assertions.assertValid;
 import static org.oneedtech.inspect.test.Assertions.assertWarning;
 
+import com.google.common.collect.Iterables;
 import java.util.Optional;
-
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -34,19 +34,20 @@ import org.oneedtech.inspect.vc.probe.RevocationListProbe;
 import org.oneedtech.inspect.vc.probe.TypePropertyProbe;
 import org.oneedtech.inspect.vc.status.bitstring.BitstringStatusListProbe;
 
-import com.google.common.collect.Iterables;
-
 public class OB30Tests {
 	private static OB30Inspector validator;
 	private static boolean verbose = true;
 
 	@BeforeAll
 	static void setup() {
-		validator = new OB30Inspector.Builder()
-				.set(Behavior.TEST_INCLUDE_SUCCESS, true)
-				.set(Behavior.VALIDATOR_FAIL_FAST, true)
-				.inject(Inspector.InjectionKeys.DID_RESOLUTION_SERVICE_URL, "http://dev.uniresolver.io/1.0/identifiers/")
-				.build();
+    validator =
+        new OB30Inspector.Builder()
+            .set(Behavior.TEST_INCLUDE_SUCCESS, true)
+            .set(Behavior.VALIDATOR_FAIL_FAST, true)
+            .inject(
+                Inspector.InjectionKeys.DID_RESOLUTION_SERVICE_URL,
+                "http://dev.uniresolver.io/1.0/identifiers/")
+            .build();
 	}
 
 	@Test
@@ -178,17 +179,17 @@ public class OB30Tests {
 
 	@Test
 	void testSimpleJsonInvalidProofMethod() {
-		// add some garbage chars to the verification method fragment
-		// it will be treated a URL to a verification key, but the URL will not be found
-		assertDoesNotThrow(()->{
-			Report report = validator.run(Samples.OB30.JSON.SIMPLE_JSON_PROOF_METHOD_ERROR.asFileResource());
-			if(verbose) PrintHelper.print(report, true);
-			assertInvalid(report);
-			// Changed to two until we publish new schemas
-			// assertErrorCount(report, 1);
-			assertErrorCount(report, 2);
-			assertHasProbeID(report, EmbeddedProofProbe.ID, true);
-		});
+    // add some garbage chars to the verification method fragment
+    // it will be treated a URL to a verification key, but the URL will not be found
+    assertDoesNotThrow(
+        () -> {
+          Report report =
+              validator.run(Samples.OB30.JSON.SIMPLE_JSON_PROOF_METHOD_ERROR.asFileResource());
+          if (verbose) PrintHelper.print(report, true);
+          assertInvalid(report);
+          assertErrorCount(report, 1);
+          assertHasProbeID(report, EmbeddedProofProbe.ID, true);
+        });
 	}
 
 	@Test
