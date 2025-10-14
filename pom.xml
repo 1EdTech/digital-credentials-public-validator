@@ -7,7 +7,7 @@
 
   <groupId>org.1edtech</groupId>
   <artifactId>vc-public-validator</artifactId>
-  <version>1.4.5</version>
+  <version>1.4.6</version>
   <name>vc-public-validator</name>
   <packaging>pom</packaging>
   <developers>
@@ -218,7 +218,7 @@
         <artifactId>guava</artifactId>
 				<version>33.2.0-jre</version>
 				<exclusions>
-					<!-- this dep is also included in spring-boot-starter-web -->
+          <!-- this dep is also included in spring-boot-starter-web -->
 					<exclusion>
 						<groupId>com.google.errorprone</groupId>
 						<artifactId>error_prone_annotations</artifactId>
