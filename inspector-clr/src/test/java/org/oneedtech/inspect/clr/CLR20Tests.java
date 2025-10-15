@@ -18,11 +18,14 @@ public class CLR20Tests {
 
 	@BeforeAll
 	static void setup() {
-		validator = new CLR20Inspector.Builder()
-				.set(Behavior.TEST_INCLUDE_SUCCESS, true)
-				.set(Behavior.VALIDATOR_FAIL_FAST, false)
-				.inject(Inspector.InjectionKeys.DID_RESOLUTION_SERVICE_URL, "http://dev.uniresolver.io/1.0/identifiers/")
-				.build();
+    validator =
+        new CLR20Inspector.Builder()
+            .set(Behavior.TEST_INCLUDE_SUCCESS, true)
+            .set(Behavior.VALIDATOR_FAIL_FAST, false)
+            .inject(
+                Inspector.InjectionKeys.DID_RESOLUTION_SERVICE_URL,
+                "http://dev.uniresolver.io/1.0/identifiers/")
+            .build();
 	}
 
     @Test
@@ -36,12 +39,14 @@ public class CLR20Tests {
 
 	@Test
 	void testSimpleV1JsonValid() {
-		assertDoesNotThrow(()->{
-			Report report = validator.run(Samples.CLR20.JSON.SIMPLE_V1_JSON.asFileResource());
-			if(verbose) PrintHelper.print(report, true);
-			// warning due to outdated context versions
-			assertWarning(report);
-		});
+    assertDoesNotThrow(
+        () -> {
+          Report report = validator.run(Samples.CLR20.JSON.SIMPLE_V1_JSON.asFileResource());
+          if (verbose) PrintHelper.print(report, true);
+          // warning due to outdated context versions
+          // TODO: missing "name" in endorsement
+          assertWarning(report);
+        });
 	}
 
 	// commented out due that https://western.riverwell.k12.or.us/ is not accessible
