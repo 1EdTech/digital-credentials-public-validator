@@ -22,10 +22,10 @@ import jakarta.json.JsonObject;
  * Maps to "JSONLD_COMPACT_DATA" task in python implementation
  * @author xaracil
  */
-public class JsonLDCompactionProve extends Probe<Credential> {
+public class JsonLDCompactionProbe extends Probe<Credential> {
     private final String context;
 
-    public JsonLDCompactionProve(String context) {
+    public JsonLDCompactionProbe(String context) {
         super(ID);
         this.context = context;
     }
@@ -65,5 +65,5 @@ public class JsonLDCompactionProve extends Probe<Credential> {
       return "json-ld-compact:" + id;
     }
 
-	public static final String ID = JsonLDCompactionProve.class.getSimpleName();
+	public static final String ID = JsonLDCompactionProbe.class.getSimpleName();
 }

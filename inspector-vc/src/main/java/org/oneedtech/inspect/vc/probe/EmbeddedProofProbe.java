@@ -1,6 +1,7 @@
 package org.oneedtech.inspect.vc.probe;
 
 import java.net.URI;
+import java.security.spec.InvalidKeySpecException;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,21 +14,20 @@ import org.oneedtech.inspect.vc.W3CVCHolder;
 import org.oneedtech.inspect.vc.probe.did.DidResolution;
 import org.oneedtech.inspect.vc.probe.did.DidResolutionException;
 import org.oneedtech.inspect.vc.probe.did.DidResolver;
+import org.oneedtech.inspect.vc.verification.EcdsaSd2023LdVerifier;
 import org.oneedtech.inspect.vc.verification.Ed25519Signature2022LdVerifier;
 import org.oneedtech.inspect.vc.verification.Ed25519Signature2022VCDM20LdVerifier;
-import org.oneedtech.inspect.vc.verification.URDNA2015Canonicalizer;
 
 import com.apicatalog.jsonld.StringUtils;
 import com.apicatalog.jsonld.document.Document;
 import com.apicatalog.jsonld.loader.DocumentLoaderOptions;
 import com.apicatalog.multibase.MultibaseDecoder;
+import com.apicatalog.multicodec.Multicodec;
 import com.apicatalog.multicodec.MulticodecDecoder;
 import com.apicatalog.multicodec.codec.KeyCodec;
+import com.danubetech.dataintegrity.DataIntegrityProof;
+import com.danubetech.dataintegrity.verifier.LdVerifier;
 
-import info.weboftrust.ldsignatures.LdProof;
-import info.weboftrust.ldsignatures.canonicalizer.Canonicalizer;
-import info.weboftrust.ldsignatures.verifier.Ed25519Signature2020LdVerifier;
-import info.weboftrust.ldsignatures.verifier.LdVerifier;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonStructure;
 
@@ -38,10 +38,15 @@ import jakarta.json.JsonStructure;
  */
 public class EmbeddedProofProbe extends Probe<VerifiableCredential> {
 
-  private static final List<String> ALLOWED_CRYPTOSUITES = List.of("eddsa-2022", "eddsa-rdfc-2022");
+  private static final List<String> ALLOWED_CRYPTOSUITES =
+      List.of("eddsa-2022", "eddsa-rdfc-2022", "ecdsa-sd-2023");
+  private MulticodecDecoder multicodecDecoder;
 
   public EmbeddedProofProbe() {
     super(ID);
+    this.multicodecDecoder =
+        MulticodecDecoder.getInstance(
+            KeyCodec.ED25519_PUBLIC_KEY, KeyCodec.P256_PUBLIC_KEY, KeyCodec.P384_PUBLIC_KEY);
   }
 
   /*
@@ -53,13 +58,13 @@ public class EmbeddedProofProbe extends Probe<VerifiableCredential> {
 
     W3CVCHolder credentialHolder = new W3CVCHolder(crd);
 
-    List<LdProof> proofs = credentialHolder.getProofs();
+    List<DataIntegrityProof> proofs = credentialHolder.getProofs();
     if (proofs == null || proofs.size() == 0) {
       return error("The verifiable credential is missing a proof.", ctx);
     }
 
     // get proof of standard type and purpose
-    Optional<LdProof> selectedProof =
+    Optional<DataIntegrityProof> selectedProof =
         proofs.stream()
             .filter(proof -> proof.getProofPurpose().equals("assertionMethod"))
             .filter(
@@ -79,7 +84,7 @@ public class EmbeddedProofProbe extends Probe<VerifiableCredential> {
           ctx);
     }
 
-    LdProof proof = selectedProof.get();
+    DataIntegrityProof proof = selectedProof.get();
 
     URI method = proof.getVerificationMethod();
 
@@ -110,7 +115,8 @@ public class EmbeddedProofProbe extends Probe<VerifiableCredential> {
       } else if (method.getScheme().equals("did")) {
         DidResolver didResolver = ctx.get(RunContextKey.DID_RESOLVER);
         try {
-          DidResolution didResolution = didResolver.resolve(method, credentialHolder.getCredential().getDocumentLoader());
+          DidResolution didResolution =
+              didResolver.resolve(method, credentialHolder.getCredential().getDocumentLoader());
           publicKeyMultibase = didResolution.getPublicKeyMultibase();
           controller = didResolution.getController();
         } catch (DidResolutionException e) {
@@ -153,73 +159,77 @@ public class EmbeddedProofProbe extends Probe<VerifiableCredential> {
       }
     }
 
-    // Decode the Multibase to Multicodec and check that it is an Ed25519 public key
-    // https://w3c-ccg.github.io/di-eddsa-2020/#ed25519verificationkey2020
-    byte[] publicKeyMulticodec;
-    try {
-      publicKeyMulticodec = MultibaseDecoder.getInstance().decode(publicKeyMultibase);
-      if (publicKeyMulticodec[0] != (byte) 0xed || publicKeyMulticodec[1] != (byte) 0x01) {
-        return error("Verification method does not contain an Ed25519 public key", ctx);
-      }
-    } catch (Exception e) {
-      return error("Invalid public key: " + e.getMessage(), ctx);
+    // Decode the Multibase to Multicodec and check that it is an Ed25519, P256 or P384 public key
+    // https://www.w3.org/TR/vc-di-eddsa/#multikey && https://www.w3.org/TR/vc-di-ecdsa/#multikey
+    if (!IsValidPublicKeyMultibase(publicKeyMultibase)) {
+      return error(
+          "Verification method does not contain either an Ed25519, P256 or P384 public key", ctx);
     }
 
-    if (controller != null && credentialHolder.getCredential().getIssuer() != null) {
-      if (!controller.equals(credentialHolder.getCredential().getIssuer().toString())) {
-        return error(
-            "Key controller does not match issuer: " + credentialHolder.getCredential().getIssuer(),
-            ctx);
+    byte[] publicKeyMulticodec = MultibaseDecoder.getInstance().decode(publicKeyMultibase);
+    Multicodec codec = multicodecDecoder.getCodec(publicKeyMulticodec).get();
+
+    URI credentialIssuer = credentialHolder.getIssuer();
+    if (controller != null && credentialIssuer != null) {
+      if (!controller.equals(credentialIssuer.toString())) {
+        return error("Key controller does not match issuer: " + credentialIssuer, ctx);
       }
     }
 
     // Extract the publicKey bytes from the Multicodec
-    byte[] publicKey = MulticodecDecoder.getInstance(KeyCodec.ED25519_PUBLIC_KEY).decode(publicKeyMulticodec);
-
-    // choose verifier
-    LdVerifier<?> verifier = getVerifier(proof, publicKey, crd);
+    byte[] publicKey = multicodecDecoder.decode(publicKeyMulticodec);
 
     try {
+      // choose verifier
+      LdVerifier<?> verifier = getVerifier(proof, publicKey, crd, codec);
+
       boolean verify = verifier.verify(credentialHolder.getCredential(), proof);
       if (!verify) {
-        // add proof calculations to the report
-        Canonicalizer canonicalizer = verifier.getCanonicalizer();
-        if (canonicalizer != null) {
-          URDNA2015Canonicalizer urdna2015Canonicalizer = null;
-          if (canonicalizer instanceof URDNA2015Canonicalizer) {
-            urdna2015Canonicalizer = (URDNA2015Canonicalizer) canonicalizer;
-          } else if (canonicalizer instanceof info.weboftrust.ldsignatures.canonicalizer.URDNA2015Canonicalizer) {
-            urdna2015Canonicalizer = new URDNA2015Canonicalizer(info.weboftrust.ldsignatures.LdProof.builder());
-            urdna2015Canonicalizer.canonicalize(proof, credentialHolder.getCredential());
-          }
-          if (urdna2015Canonicalizer != null) {
-            EmbeddedProofModelGenerator modelGenerator =
-                new EmbeddedProofModelGenerator(urdna2015Canonicalizer);
-            return error("Embedded proof verification failed. You can see intermediate results for proof calculations by downloading the report.", modelGenerator.getGeneratedObject(), ctx);
-          }
+        if (verifier instanceof EmbeddedProofModelGenerator) {
+          // if the verifier is an EmbeddedProofModelGenerator, we can generate a report
+          return error(
+              "Embedded proof verification failed. You can see intermediate results for proof"
+                  + " calculations by downloading the report.",
+              ((EmbeddedProofModelGenerator) verifier).getGeneratedObject(),
+              ctx);
         }
         return error("Embedded proof verification failed.", ctx);
       }
-    } catch (Exception e) {
+    } catch (Throwable e) {
       return fatal("Embedded proof verification failed: " + e.getMessage(), ctx);
     }
 
     return success(ctx);
   }
 
-  private LdVerifier<?> getVerifier(LdProof proof, byte[] publicKey, VerifiableCredential crd) {
-    return proof.isType("Ed25519Signature2020")
-        ? new Ed25519Signature2020LdVerifier(publicKey)
-        : crd.getVersion() == VerifiableCredential.VCVersion.VCDMv1p1
-            ? new Ed25519Signature2022LdVerifier(publicKey)
-            : new Ed25519Signature2022VCDM20LdVerifier(publicKey);
+  private LdVerifier<?> getVerifier(
+      DataIntegrityProof proof, byte[] publicKey, VerifiableCredential crd, Multicodec codec)
+      throws Throwable, InvalidKeySpecException {
+    // backwards compatibility for Ed25519Signature2020
+    if (proof.isType("Ed25519Signature2020")) {
+      return new EmbeddedProofModelGeneratorAwareEd25519Signature2020LdVerifier(publicKey);
+    }
+    if (proof.isType("DataIntegrityProof")) {
+      // get cryptosuite from proof
+      String cryptosuite = proof.getJsonObject().get("cryptosuite").toString();
+      if ("ecdsa-sd-2023".equals(cryptosuite)) {
+        return new EcdsaSd2023LdVerifier(publicKey, codec);
+      }
+      if (crd.getVersion() == VerifiableCredential.VCVersion.VCDMv1p1) {
+        return new Ed25519Signature2022LdVerifier(publicKey);
+      }
+      return new Ed25519Signature2022VCDM20LdVerifier(publicKey);
+    }
+    throw new IllegalArgumentException(
+        "Unsupported proof type: "
+            + proof.getType()
+            + ". Supported types are: Ed25519Signature2020, DataIntegrityProof");
   }
 
   private Boolean IsValidPublicKeyMultibase(String publicKeyMultibase) {
     try {
       byte[] publicKeyMulticodec = MultibaseDecoder.getInstance().decode(publicKeyMultibase);
-      byte[] publicKey = MulticodecDecoder.getInstance(KeyCodec.ED25519_PUBLIC_KEY).decode(publicKeyMulticodec);
-      return publicKey.length == 32;
+      return multicodecDecoder.getCodec(publicKeyMulticodec).isPresent();
     } catch (Exception e) {
       return false;
     }

@@ -184,7 +184,7 @@ public class CLR20Inspector extends VCInspector {
 					// If the refresh is not successful, continue the verification process using the original OpenBadgeCredential.
 					UriResource uriResource = new UriResource(new URI(newID.get()), null, REFRESH_SERVICE_MIME_TYPES);
 					if (uriResource.exists()) {
-						return this.run(uriResource.setContext(new ResourceContext(REFRESHED, TRUE)));
+						accumulator.add(this.run(uriResource.setContext(new ResourceContext(REFRESHED, TRUE))));
 					}
 				}
 			}

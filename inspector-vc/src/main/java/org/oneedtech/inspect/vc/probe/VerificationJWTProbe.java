@@ -14,7 +14,7 @@ import org.oneedtech.inspect.core.probe.RunContext.Key;
 import org.oneedtech.inspect.core.report.ReportItems;
 import org.oneedtech.inspect.util.resource.UriResource;
 import org.oneedtech.inspect.vc.jsonld.JsonLdGeneratedObject;
-import org.oneedtech.inspect.vc.jsonld.probe.JsonLDCompactionProve;
+import org.oneedtech.inspect.vc.jsonld.probe.JsonLDCompactionProbe;
 import org.oneedtech.inspect.vc.resource.UriResourceFactory;
 import org.oneedtech.inspect.vc.util.CachingDocumentLoader;
 import org.oneedtech.inspect.vc.util.JsonNodeUtil;
@@ -50,7 +50,7 @@ public class VerificationJWTProbe extends Probe<JsonLdGeneratedObject> {
         // get badge from assertion
         UriResource badgeUriResource = uriResourceFactory.of(assertionNode.get("badge").asText().strip());
         JsonLdGeneratedObject badgeObject = (JsonLdGeneratedObject) ctx.getGeneratedObject(
-            JsonLDCompactionProve.getId(badgeUriResource));
+            JsonLDCompactionProbe.getId(badgeUriResource));
         JsonNode badgeNode = ((ObjectMapper) ctx.get(Key.JACKSON_OBJECTMAPPER))
             .readTree(badgeObject.getJson());
 
@@ -58,7 +58,7 @@ public class VerificationJWTProbe extends Probe<JsonLdGeneratedObject> {
         UriResource issuerUriResource = uriResourceFactory.of(badgeNode.get("issuer").asText().strip());
 
         JsonLdGeneratedObject issuerObject = (JsonLdGeneratedObject) ctx.getGeneratedObject(
-            JsonLDCompactionProve.getId(issuerUriResource));
+            JsonLDCompactionProbe.getId(issuerUriResource));
         JsonNode issuerNode = ((ObjectMapper) ctx.get(Key.JACKSON_OBJECTMAPPER))
             .readTree(issuerObject.getJson());
 
@@ -75,7 +75,7 @@ public class VerificationJWTProbe extends Probe<JsonLdGeneratedObject> {
         // get creator from id
         UriResource creatorUriResource = uriResourceFactory.of(creatorId);
         JsonLdGeneratedObject creatorObject = (JsonLdGeneratedObject) ctx.getGeneratedObject(
-            JsonLDCompactionProve.getId(creatorUriResource));
+            JsonLDCompactionProbe.getId(creatorUriResource));
         JsonNode creatorNode = ((ObjectMapper) ctx.get(Key.JACKSON_OBJECTMAPPER))
             .readTree(creatorObject.getJson());
 

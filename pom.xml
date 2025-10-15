@@ -7,7 +7,7 @@
 
   <groupId>org.1edtech</groupId>
   <artifactId>vc-public-validator</artifactId>
-  <version>1.3.7</version>
+  <version>1.4.6</version>
   <name>vc-public-validator</name>
   <packaging>pom</packaging>
   <developers>
@@ -22,8 +22,11 @@
     <java.version>17</java.version>
     <log4j.version>2.17.2</log4j.version>
     <skipTests>false</skipTests>
-    <public.core.version>1.1.4</public.core.version>
 		<web3j.version>4.13.0</web3j.version>
+    <public.core.version>1.1.10</public.core.version>
+    <com.danubetech.verifiable.credentials.version>1.18.0</com.danubetech.verifiable.credentials.version>
+    <cbor-java.version>0.9</cbor-java.version>
+    <!-- <iron.verifiable.credentials.version>0.14.0</iron.verifiable.credentials.version> -->
   </properties>
 
   <modules>
@@ -151,10 +154,6 @@
       <artifactId>log4j-core</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.networknt</groupId>
-      <artifactId>json-schema-validator</artifactId>
-    </dependency>
-    <dependency>
       <!-- ? needed? getting syser prints from slf4j if not here -->
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-slf4j-impl</artifactId>
@@ -208,12 +207,24 @@
         <artifactId>inspector-vc</artifactId>
         <version>${project.version}</version>
       </dependency>
+      <dependency>
+        <groupId>org.1edtech</groupId>
+        <artifactId>inspector-clr</artifactId>
+        <version>${project.version}</version>
+      </dependency>
 
       <!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
       <dependency>
         <groupId>com.google.guava</groupId>
         <artifactId>guava</artifactId>
-        <version>30.1-jre</version>
+				<version>33.2.0-jre</version>
+				<exclusions>
+          <!-- this dep is also included in spring-boot-starter-web -->
+					<exclusion>
+						<groupId>com.google.errorprone</groupId>
+						<artifactId>error_prone_annotations</artifactId>
+					</exclusion>
+				</exclusions>
       </dependency>
 
       <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
@@ -241,7 +252,7 @@
       <dependency>
         <groupId>com.networknt</groupId>
         <artifactId>json-schema-validator</artifactId>
-        <version>1.4.0</version>
+        <version>1.4.2</version>
       </dependency>
 
       <!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-api -->
@@ -332,6 +343,21 @@
         <artifactId>bcprov-jdk18on</artifactId>
         <version>1.80</version>
       </dependency>
+
+      <!-- https://github.com/danubetech/verifiable-credentials-java -->
+      <dependency>
+			  <groupId>com.danubetech</groupId>
+			  <artifactId>verifiable-credentials-java</artifactId>
+        <version>${com.danubetech.verifiable.credentials.version}</version>
+		  </dependency>
+
+      <!-- https://github.com/c-rack/cbor-java/tree/master -->
+      <dependency>
+        <groupId>co.nstant.in</groupId>
+        <artifactId>cbor</artifactId>
+        <version>${cbor-java.version}</version>
+      </dependency>
+
     </dependencies>
   </dependencyManagement>
 

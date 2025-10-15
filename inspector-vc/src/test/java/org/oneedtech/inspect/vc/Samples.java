@@ -59,6 +59,9 @@ public class Samples {
 			public final static Sample CREDENTIAL_STATUS_REVOKED = new Sample("ob30/bit-string-list/credential-status-revoked.json", false);
 			public final static Sample CREDENTIAL_STATUS_REVOKED_WITH_BLANK_NODES = new Sample("ob30/bit-string-list/credential-status-revoked-blank-nodes.json", true);
 		}
+		public static final class SD {
+			public final static Sample DERIVED_CREDENTIAL = new Sample("ob30/sd/derivedcredential.json", true);
+		}
 	}
 
 	public static final class OB20 {

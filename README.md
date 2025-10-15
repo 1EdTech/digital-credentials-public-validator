@@ -30,6 +30,41 @@ If you want to use the validator via API, point the browser to `http://localhost
 
 This tool is (unfortunately) not a repair tool, though if you are the issuer, you may find the error messages the validator reports essential in identifying the errors. Errors are typically fixed by modifying one or more of the objects that make up the badge.
 
+#### Embedded Proofs errors
+
+The validator will add to the report all intermediate values it calculates to verify the embedded proof:
+
+| Proof Type | Cryptosuite | Field Name | Description |
+|------------|-------------|------------|-------------|
+| Ed25519Signature2020 | N.A. | ldProofWithoutProofValues |  `proofConfig` as defined in https://www.w3.org/TR/vc-di-eddsa/#hashing-ed25519signature2020 |
+| Ed25519Signature2020 | N.A. | jsonLdObjectWithoutProof | `unsecuredDocument` as defined in https://www.w3.org/TR/vc-di-eddsa/#transformation-ed25519signature2020 |
+| Ed25519Signature2020 | N.A. | canonicalizedLdProofWithoutProofValues | `canonicalProofConfig` as defined in https://www.w3.org/TR/vc-di-eddsa/#proof-configuration-ed25519signature2020 |
+| Ed25519Signature2020 | N.A. | canonicalizedJsonLdObjectWithoutProof | `canonicalDocument` as defined in https://www.w3.org/TR/vc-di-eddsa/#transformation-ed25519signature2020 |
+| Ed25519Signature2020 | N.A. | canonicalizationResult | `hashData` as defined in https://www.w3.org/TR/vc-di-eddsa/#hashing-ed25519signature2020 |
+| DataIntegrityProof | eddsa-rdfc-2022 | ldProofWithoutProofValues | `proofOptions` as defined in https://www.w3.org/TR/vc-di-eddsa/#verify-proof-eddsa-rdfc-2022 |
+| DataIntegrityProof | eddsa-rdfc-2022 | jsonLdObjectWithoutProof | `unsecuredDocument` as defined in https://www.w3.org/TR/vc-di-eddsa/#verify-proof-eddsa-rdfc-2022 |
+| DataIntegrityProof | eddsa-rdfc-2022 | canonicalizedLdProofWithoutProofValues | `canonicalProofConfig` as defined in https://www.w3.org/TR/vc-di-eddsa/#proof-configuration-eddsa-rdfc-2022 |
+| DataIntegrityProof | eddsa-rdfc-2022 | canonicalizedJsonLdObjectWithoutProof | `canonicalDocument` as defined in https://www.w3.org/TR/vc-di-eddsa/#transformation-eddsa-rdfc-2022 |
+| DataIntegrityProof | eddsa-rdfc-2022 | canonicalizationResult | `hashData` as defined in https://www.w3.org/TR/vc-di-eddsa/#verify-proof-eddsa-rdfc-2022 |
+| DataIntegrityProof | ecdsa-sd-2023 | unsecuredDocument | `unsecuredDocument` as defined in step 1 of https://w3c.github.io/vc-di-ecdsa/#verify-derived-proof-ecdsa-sd-2023 |
+| DataIntegrityProof | ecdsa-sd-2023 | disclosureData | Result of the `createVerifyData` algorithm as defined in https://w3c.github.io/vc-di-ecdsa/#createverifydata (fields separated with `\n`)|
+| DataIntegrityProof | ecdsa-sd-2023 | disclosureData.baseSignature | `baseSignature` as defined in step 2 of https://w3c.github.io/vc-di-ecdsa/#createverifydata |
+| DataIntegrityProof | ecdsa-sd-2023 | disclosureData.publicKey | `publicKey` as defined in step 2 of https://w3c.github.io/vc-di-ecdsa/#createverifydata |
+| DataIntegrityProof | ecdsa-sd-2023 | disclosureData.signatures | `signatures` as defined in step 2 of https://w3c.github.io/vc-di-ecdsa/#createverifydata, separated with `\n` |
+| DataIntegrityProof | ecdsa-sd-2023 | disclosureData.labelMap | `labelMap` as defined in step 2 of https://w3c.github.io/vc-di-ecdsa/#createverifydata, entries separated with `\n`, entry displayed as "_key_:_value_" |
+| DataIntegrityProof | ecdsa-sd-2023 | disclosureData.mandatoryIndexes | `mandatoryIndexes` as defined in step 7 of https://w3c.github.io/vc-di-ecdsa/#createverifydata, separated with `\n` |
+| DataIntegrityProof | ecdsa-sd-2023 | baseSignature | `baseSignature` as defined in step 2 of https://w3c.github.io/vc-di-ecdsa/#verify-derived-proof-ecdsa-sd-2023 |
+| DataIntegrityProof | ecdsa-sd-2023 | proofHash | `proofHash` as defined in step 2 of https://w3c.github.io/vc-di-ecdsa/#verify-derived-proof-ecdsa-sd-2023 |
+| DataIntegrityProof | ecdsa-sd-2023 | publicKey | `publicKey` as defined in step 2 of https://w3c.github.io/vc-di-ecdsa/#verify-derived-proof-ecdsa-sd-2023 |
+| DataIntegrityProof | ecdsa-sd-2023 | signatures | `signatures` as defined in step 2 of https://w3c.github.io/vc-di-ecdsa/#verify-derived-proof-ecdsa-sd-2023, separated with `\n` |
+| DataIntegrityProof | ecdsa-sd-2023 | nonMandatory | `nonMandatory` as defined in step 2 of https://w3c.github.io/vc-di-ecdsa/#verify-derived-proof-ecdsa-sd-2023, separated by `\n` |
+| DataIntegrityProof | ecdsa-sd-2023 | mandatoryHash | `mandatoryHash` as defined in step 2 of https://w3c.github.io/vc-di-ecdsa/#verify-derived-proof-ecdsa-sd-2023 |
+| DataIntegrityProof | ecdsa-sd-2023 | toVerify | `toVerify` as defined in step 5 of https://w3c.github.io/vc-di-ecdsa/#verify-derived-proof-ecdsa-sd-2023 |
+| DataIntegrityProof | ecdsa-sd-2023 | baseVerification | `verificationCheck` with the result of the verification of `toVerify` with `baseSignature`, as defined in step 7 of https://w3c.github.io/vc-di-ecdsa/#verify-derived-proof-ecdsa-sd-2023 |
+| DataIntegrityProof | ecdsa-sd-2023 | nonMandatory *i* data | data to verify for mandatory index *i*, as defined in step 8.1 of https://w3c.github.io/vc-di-ecdsa/#verify-derived-proof-ecdsa-sd-2023 |
+| DataIntegrityProof | ecdsa-sd-2023 | nonMandatory *i* signature | siganture to verify for mandatory index *i*, as defined in step 8.1 of https://w3c.github.io/vc-di-ecdsa/#verify-derived-proof-ecdsa-sd-2023 |
+| DataIntegrityProof | ecdsa-sd-2023 | nonMandatory *i* verification | `verificationCheck` with the result of the verification of the mandatory index *i*, as defined in step 8.1 of https://w3c.github.io/vc-di-ecdsa/#verify-derived-proof-ecdsa-sd-2023 |
+
 ### Support
 
 If you run into problems after following the installation and running instructions above, or if you have other kinds of questions relating to the use of the tool and/or the interpretation of results, please use the [1EdTech Open Badges Community forum](https://www.imsglobal.org/forums/open-badges-community-forum/open-badges-community-discussion), the [Comprehensive Learner Record Public Forum](https://www.imsglobal.org/forums/ims-glc-public-forums-and-resources/comprehensive-learner-record-public-forum) to ask your questions (and/or help others).

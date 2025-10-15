@@ -3,6 +3,8 @@ package org.oneedtech.inspect.vc.payload;
 import static org.oneedtech.inspect.util.code.Defensives.checkTrue;
 
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
@@ -62,9 +64,28 @@ public final class PngParser extends PayloadParser {
 
 			vcString = vcString.trim();
 			if(vcString.charAt(0) != '{'){
-				//This is a jwt.  Fetch either the 'vc' out of the payload and save the string for signature verification.
-				jwtString = vcString;
-				vcNode = fromJwt(vcString, ctx);
+				// check if the content is an URI and we allow URI location in value
+				boolean isJwt = true;
+				if (credentialKey.allowsUriLocationInValue()) {
+					try {
+						/** Legacy PNGs in OB 2.0
+						 * The pre-specified behavior of badge baking worked differently.
+						 * Instead of baking the whole assertion or signature into an iTXt:openbadges chunk,
+						 * the URL pointing to the hosted assertion was baked into a tEXt:openbadges chunk.
+						 * In order to get the full assertion, an additional HTTP request must be made after
+						 * extracting the URL from the tEXt chunk.
+						 */
+						URI uri = new URI(vcString);
+						vcNode = fromUri(uri, ctx);
+						isJwt = false;
+					} catch (URISyntaxException ignored) {
+					}
+				}
+				if (isJwt) {
+					//This is a jwt.  Fetch either the 'vc' out of the payload and save the string for signature verification.
+					jwtString = vcString;
+					vcNode = fromJwt(vcString, ctx);
+				}
 			}
 			else {
 				vcNode = fromString(vcString, ctx);
@@ -105,18 +126,24 @@ public final class PngParser extends PayloadParser {
 	}
 
 	public enum Keys {
-		OB20("openbadges"),
-		OB30("openbadgecredential"),
-		CLR20("clrcredential");
+		OB20("openbadges", true),
+		OB30("openbadgecredential", false),
+		CLR20("clrcredential", false);
 
 		private String nodeName;
+		private boolean allowUriLocationInValue;
 
-		private Keys(String nodeName) {
+		private Keys(String nodeName, boolean allowUriLocationInValue) {
 			this.nodeName = nodeName;
+			this.allowUriLocationInValue = allowUriLocationInValue;
 		}
 
 		public String getNodeName() {
 			return nodeName;
+		}
+
+		public boolean allowsUriLocationInValue() {
+			return allowUriLocationInValue;
 		}
 	}
 }
