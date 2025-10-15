@@ -3,7 +3,6 @@ package org.velocitynetwork.contracts;
 import com.authlete.cose.COSEKey;
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
-import jakarta.json.JsonObjectBuilder;
 
 import java.util.Map;
 

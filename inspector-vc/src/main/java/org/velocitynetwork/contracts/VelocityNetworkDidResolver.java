@@ -8,11 +8,6 @@ import com.nimbusds.jwt.SignedJWT;
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
 import org.oneedtech.inspect.util.code.Tuple;
-import org.web3j.crypto.Credentials;
-import org.web3j.protocol.Web3j;
-import org.web3j.protocol.core.methods.response.TransactionReceipt;
-import org.web3j.protocol.http.HttpService;
-import org.web3j.tx.gas.StaticGasProvider;
 
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
