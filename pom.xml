@@ -22,6 +22,7 @@
     <java.version>17</java.version>
     <log4j.version>2.17.2</log4j.version>
     <skipTests>false</skipTests>
+		<web3j.version>4.13.0</web3j.version>
     <public.core.version>1.1.10</public.core.version>
     <com.danubetech.verifiable.credentials.version>1.18.0</com.danubetech.verifiable.credentials.version>
     <cbor-java.version>0.9</cbor-java.version>
@@ -322,6 +323,26 @@
         <scope>test</scope>
       </dependency>
 
+      <!-- Web3j core -->
+      <dependency>
+        <groupId>org.web3j</groupId>
+        <artifactId>core</artifactId>
+        <version>${web3j.version}</version>
+      </dependency>
+
+      <!-- Web3j crypto utils -->
+      <dependency>
+        <groupId>org.web3j</groupId>
+        <artifactId>crypto</artifactId>
+        <version>${web3j.version}</version>
+      </dependency>
+
+      <!-- Bouncy Castle -->
+      <dependency>
+        <groupId>org.bouncycastle</groupId>
+        <artifactId>bcprov-jdk18on</artifactId>
+        <version>1.80</version>
+      </dependency>
 
       <!-- https://github.com/danubetech/verifiable-credentials-java -->
       <dependency>
@@ -336,15 +357,6 @@
         <artifactId>cbor</artifactId>
         <version>${cbor-java.version}</version>
       </dependency>
-
-      <!-- https://github.com/filip26/iron-verifiable-credentials -->
-      <!-- <dependency>
-          <groupId>com.apicatalog</groupId>
-          <artifactId>iron-verifiable-credentials</artifactId>
-          <version>${iron.verifiable.credentials.version}</version>
-      </dependency> -->
-
-
 
     </dependencies>
   </dependencyManagement>

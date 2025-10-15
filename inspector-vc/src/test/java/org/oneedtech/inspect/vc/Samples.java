@@ -52,6 +52,7 @@ public class Samples {
 		}
 		public static final class JWT {
 			public final static Sample SIMPLE_JWT = new Sample("ob30/simple.jwt", true);
+			public final static Sample VELOCITY_JWT = new Sample("ob30/velocity.jwt", true);
 		}
 		public static final class BSL {
 			public final static Sample SIMPLE_JSON = new Sample("ob30/bit-string-list/testlist", true);

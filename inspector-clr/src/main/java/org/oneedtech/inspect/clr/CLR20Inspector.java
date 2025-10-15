@@ -6,6 +6,12 @@ import static org.oneedtech.inspect.core.Inspector.InjectionKeys.DID_RESOLUTION_
 import static org.oneedtech.inspect.core.report.ReportUtil.onProbeException;
 import static org.oneedtech.inspect.util.json.ObjectMapperCache.Config.DEFAULT;
 import static org.oneedtech.inspect.vc.Credential.CREDENTIAL_KEY;
+import static org.oneedtech.inspect.vc.VCInspector.InjectionKeys.VNF_BURNER_DID;
+import static org.oneedtech.inspect.vc.VCInspector.InjectionKeys.VNF_CONFIG;
+import static org.oneedtech.inspect.vc.VCInspector.InjectionKeys.VNF_CONTACT_ADDRESS;
+import static org.oneedtech.inspect.vc.VCInspector.InjectionKeys.VNF_PRIVATE_KEY;
+import static org.oneedtech.inspect.vc.VCInspector.InjectionKeys.VNF_REGISTRY;
+import static org.oneedtech.inspect.vc.VCInspector.InjectionKeys.VNF_RPC_URL;
 import static org.oneedtech.inspect.vc.VerifiableCredential.REFRESH_SERVICE_MIME_TYPES;
 import static org.oneedtech.inspect.vc.VerifiableCredential.ProofType.EXTERNAL;
 import static org.oneedtech.inspect.vc.payload.PayloadParser.fromJwt;
@@ -13,6 +19,7 @@ import static org.oneedtech.inspect.vc.util.JsonNodeUtil.asNodeList;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -55,6 +62,9 @@ import org.oneedtech.inspect.vc.probe.TypePropertyProbe;
 import org.oneedtech.inspect.vc.probe.did.DidResolver;
 import org.oneedtech.inspect.vc.probe.did.SimpleDidResolver;
 import org.oneedtech.inspect.vc.util.CachingDocumentLoader;
+import org.velocitynetwork.contracts.VelocityNetworkDidResolver;
+import org.velocitynetwork.contracts.VelocityNetworkMetadataRegistryFacade;
+import org.velocitynetwork.contracts.VelocityNetworkMetadataRegistryFacadeImpl;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -68,12 +78,15 @@ import com.google.common.io.CharSource;
 public class CLR20Inspector extends VCInspector {
 	protected final List<Probe<VerifiableCredential>> userProbes;
 	protected final String didResolutionUrl;
+	protected final Map<String, Object> vnConfig;
 
 	protected CLR20Inspector(CLR20Inspector.Builder builder) {
 		super(builder);
 		this.userProbes = ImmutableList.copyOf(builder.getProbes());
 		Optional<Object> didResolutionServiceUrl = builder.getInjected(DID_RESOLUTION_SERVICE_URL);
 		this.didResolutionUrl = didResolutionServiceUrl.isPresent() ? didResolutionServiceUrl.get().toString(): null;
+		Optional<Map<String, Object>> vnConfig = builder.getInjected(VNF_CONFIG);
+		this.vnConfig = vnConfig.orElseGet(HashMap::new);
 	}
 
     @Override
@@ -87,7 +100,23 @@ public class CLR20Inspector extends VCInspector {
 
 		ObjectMapper mapper = ObjectMapperCache.get(DEFAULT);
 		JsonPathEvaluator jsonPath = new JsonPathEvaluator(mapper);
-      	DidResolver didResolver = new SimpleDidResolver(this.didResolutionUrl);
+		VelocityNetworkDidResolver velocityNetworkDidResolver = null;
+
+		if(!this.vnConfig.isEmpty()) {
+			// registry impl
+			VelocityNetworkMetadataRegistryFacade velocityNetworkMetadataRegistryFacade = null;
+			if (this.vnConfig.containsKey(VNF_REGISTRY)) {
+				velocityNetworkMetadataRegistryFacade = (VelocityNetworkMetadataRegistryFacade) this.vnConfig.get(VNF_REGISTRY);
+			} else {
+				velocityNetworkMetadataRegistryFacade = new VelocityNetworkMetadataRegistryFacadeImpl(
+						this.vnConfig.getOrDefault(VNF_RPC_URL, "").toString(),
+						this.vnConfig.getOrDefault(VNF_PRIVATE_KEY, "").toString(),
+						this.vnConfig.getOrDefault(VNF_CONTACT_ADDRESS, "").toString()
+				);
+			}
+			velocityNetworkDidResolver = new VelocityNetworkDidResolver(velocityNetworkMetadataRegistryFacade, this.vnConfig.getOrDefault(VNF_BURNER_DID, "").toString());
+		}
+      	DidResolver didResolver = new SimpleDidResolver(this.didResolutionUrl, velocityNetworkDidResolver);
 
 		VerifiableCredential.Builder credentialBuilder = new VerifiableCredential.Builder();
 		RunContext ctx = new RunContext.Builder()
