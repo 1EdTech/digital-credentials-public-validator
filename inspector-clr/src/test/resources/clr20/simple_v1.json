@@ -140,36 +140,33 @@
                   "id": "urn:uuid:319b0e91-9fb2-4f41-aff8-810f24aff284",
                   "email": "oregon.bn.info@osbn.oregon.gov"
                 },
+                "name": "Oregon State Board of Nursing - Certified Nursing Assistant",
                 "issuanceDate": "2012-08-01T00:00:00Z",
                 "credentialSubject": {
                   "id": "urn:uuid:3314c2c0-2ee9-4183-838b-470c15ddfb08",
                   "type": ["EndorsementSubject"],
                   "endorsementComment": "The Oregon State Board of Nursing endorses this program as preparation for the Nursing Assistant Certification."
                 },
-                "proof": [
-                  {
-                    "type": "Ed25519Signature2020",
-                    "proofValue": "z54HHCDQuALNt6Wu7PzjXzWibQ3bC4882THG9V6v6SzyALaMEhMzBYgv2L49riQZraQUEMwFgTm9D4fb9xpjFJgGa",
-                    "created": "2022-12-29T17:59:13Z",
-                    "proofPurpose": "assertionMethod",
-                    "verificationMethod": "did:key:z6MkkskrScNZZ2Gw9y6gLXfo7dDr61v3upfa8acp9nbF8bc2"
-                  }
-                ]
+                "proof": {
+                  "type": "Ed25519Signature2020",
+                  "created": "2010-01-01T19:23:24Z",
+                  "verificationMethod": "urn:uuid:319b0e91-9fb2-4f41-aff8-810f24aff284#z6MkjZRZv3aez3r18pB1RBFJR1kwUVJ5jHt92JmQwXbd5hwi",
+                  "proofPurpose": "assertionMethod",
+                  "proofValue": "z4n5KtSZ8e82sETGaURmVCksz97ZTnMQCVnm6UfTobPKsm3Nn6UaenmB3mTTyEXetHq5GbRAbR4PrYnnzCggPik3X"
+                }
               }
             ]
           },
           "type": ["AchievementSubject"]
         },
-        "proof": [
-          {
-            "type": "Ed25519Signature2020",
-            "proofValue": "z3rPi1neYSzGEZNnG16irpj2VwE3tzvMxnEXkNaCrGgXDKj7Xf2xDVKxmXgSrorQfLfe6QjAQJNRg34jDWdABM9Te",
-            "created": "2022-12-29T20:49:07Z",
-            "proofPurpose": "assertionMethod",
-            "verificationMethod": "did:key:z6Mks4vZNz8Jwyb85odUeZrissHSY7JeJcXkNTDCcXLhYAZ4"
-          }
-        ],
-        "name": "Nurse Assistant 1 Program with Licensure"
+        "name": "Nurse Assistant 1 Program with Licensure",
+        "proof": {
+          "type": "Ed25519Signature2020",
+          "created": "2010-01-01T19:23:24Z",
+          "verificationMethod": "urn:uuid:4ca4a241-fc3b-4d92-978e-f56fa96ae795#z6MkjZRZv3aez3r18pB1RBFJR1kwUVJ5jHt92JmQwXbd5hwi",
+          "proofPurpose": "assertionMethod",
+          "proofValue": "z4uKdV34cwPtjFFC69xnksKgRTKMJXPuzZs4GEkyz9uxgZpV6eSJF5jSBNmJgACxS8HtXufD9vU269iwqo7yAhZ1y"
+        }
       },
       {
         "@context": [
@@ -522,13 +519,11 @@
       }
     ]
   },
-  "proof": [
-    {
-      "type": "Ed25519Signature2020",
-      "created": "2022-12-29T20:49:14Z",
-      "proofPurpose": "assertionMethod",
-      "verificationMethod": "did:key:z6Mks4vZNz8Jwyb85odUeZrissHSY7JeJcXkNTDCcXLhYAZ4",
-      "proofValue": "z4AHu9NxGTTuM3gkcoMjMyTnzizf1NQPy3GcQeZ5ZgZo9ct5PUhoXJJ8n1DCcL9FP1Bd2GMvM1uNB4Usf4WfMBhcb"
-    }
-  ]
+  "proof": {
+    "type": "Ed25519Signature2020",
+    "created": "2010-01-01T19:23:24Z",
+    "verificationMethod": "urn:uuid:4ca4a241-fc3b-4d92-978e-f56fa96ae795#z6MkjZRZv3aez3r18pB1RBFJR1kwUVJ5jHt92JmQwXbd5hwi",
+    "proofPurpose": "assertionMethod",
+    "proofValue": "z4maZWmWCmKf8RPy5KUeLHUCHDQwX9LTX1sHfQGvNY4aBJhEEhrw7qCNnC4BggJPyAHpT5YnUc87fChZqu1QSbHLw"
+  }
 }
