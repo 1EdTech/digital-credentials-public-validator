@@ -84,9 +84,9 @@ public class EndorsementInspector extends VCInspector implements SubInspector {
     VerifiableCredential endorsement =
         (VerifiableCredential) checkNotNull(parentObjects.get(CREDENTIAL_KEY));
 
-		ObjectMapper mapper = ObjectMapperCache.get(DEFAULT);
-		JsonPathEvaluator jsonPath = new JsonPathEvaluator(mapper);
-		DidResolver didResolver = new SimpleDidResolver(this.didResolutionUrl, null);
+	ObjectMapper mapper = ObjectMapperCache.get(DEFAULT);
+	JsonPathEvaluator jsonPath = new JsonPathEvaluator(mapper);
+	DidResolver didResolver = new SimpleDidResolver(this.didResolutionUrl, null);
 
     RunContext ctx =
         new RunContext.Builder()
