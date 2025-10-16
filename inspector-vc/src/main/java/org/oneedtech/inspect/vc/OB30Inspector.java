@@ -13,7 +13,6 @@ import static org.oneedtech.inspect.vc.VCInspector.InjectionKeys.VNF_CONTACT_ADD
 import static org.oneedtech.inspect.vc.VCInspector.InjectionKeys.VNF_PRIVATE_KEY;
 import static org.oneedtech.inspect.vc.VCInspector.InjectionKeys.VNF_REGISTRY;
 import static org.oneedtech.inspect.vc.VCInspector.InjectionKeys.VNF_RPC_URL;
-import static org.oneedtech.inspect.vc.VerifiableCredential.REFRESH_SERVICE_MIME_TYPES;
 import static org.oneedtech.inspect.vc.VerifiableCredential.ProofType.EXTERNAL;
 import static org.oneedtech.inspect.vc.VerifiableCredential.REFRESH_SERVICE_MIME_TYPES;
 import static org.oneedtech.inspect.vc.payload.PayloadParser.fromJwt;
@@ -64,10 +63,6 @@ import org.oneedtech.inspect.vc.probe.TypePropertyProbe;
 import org.oneedtech.inspect.vc.probe.did.DidResolver;
 import org.oneedtech.inspect.vc.probe.did.SimpleDidResolver;
 import org.oneedtech.inspect.vc.util.CachingDocumentLoader;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.ImmutableList;
 import org.velocitynetwork.contracts.VelocityNetworkDidResolver;
 import org.velocitynetwork.contracts.VelocityNetworkMetadataRegistryFacade;
 import org.velocitynetwork.contracts.VelocityNetworkMetadataRegistryFacadeImpl;
@@ -176,13 +171,16 @@ public class OB30Inspector extends VCInspector implements SubInspector {
 			if (this.vnConfig.containsKey(VNF_REGISTRY)) {
 				velocityNetworkMetadataRegistryFacade = (VelocityNetworkMetadataRegistryFacade) this.vnConfig.get(VNF_REGISTRY);
 			} else {
-				velocityNetworkMetadataRegistryFacade = new VelocityNetworkMetadataRegistryFacadeImpl(
-						this.vnConfig.getOrDefault(VNF_RPC_URL, "").toString(),
-						this.vnConfig.getOrDefault(VNF_PRIVATE_KEY, "").toString(),
-						this.vnConfig.getOrDefault(VNF_CONTACT_ADDRESS, "").toString()
-				);
+        velocityNetworkMetadataRegistryFacade =
+            new VelocityNetworkMetadataRegistryFacadeImpl(
+                this.vnConfig.getOrDefault(VNF_RPC_URL, "").toString(),
+                this.vnConfig.getOrDefault(VNF_PRIVATE_KEY, "").toString(),
+                this.vnConfig.getOrDefault(VNF_CONTACT_ADDRESS, "").toString());
 			}
-			velocityNetworkDidResolver = new VelocityNetworkDidResolver(velocityNetworkMetadataRegistryFacade, this.vnConfig.getOrDefault(VNF_BURNER_DID, "").toString());
+      velocityNetworkDidResolver =
+          new VelocityNetworkDidResolver(
+              velocityNetworkMetadataRegistryFacade,
+              this.vnConfig.getOrDefault(VNF_BURNER_DID, "").toString());
 		}
 
 		DidResolver didResolver = new SimpleDidResolver(this.didResolutionUrl, velocityNetworkDidResolver);
