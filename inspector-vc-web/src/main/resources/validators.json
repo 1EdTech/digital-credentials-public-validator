@@ -17,7 +17,12 @@
 			"group": "vc",
 			"status": "FINAL",
 			"initParams": {
-				"DID_RESOLUTION_SERVICE_URL": "http://dev.uniresolver.io/1.0/identifiers/"
+				"DID_RESOLUTION_SERVICE_URL": "http://dev.uniresolver.io/1.0/identifiers/",
+				"VNF_CONFIG": {
+					"VNF_RPC_URL": "https://stagingmember.velocitycareerlabs.io",
+					"VNF_PRIVATE_KEY": "46650bf0af045930ad9778a9e528c22b76b9e31be794e8040baa13247342c944",
+					"VNF_CONTACT_ADDRESS": "BurnerDID"
+				}
 			},
 			"supportsCertification": false,
 			"submissionTypes": ["upload","uri"]
@@ -43,7 +48,12 @@
 			"group": "vc",
 			"status": "FINAL",
 			"initParams": {
-				"DID_RESOLUTION_SERVICE_URL": "http://dev.uniresolver.io/1.0/identifiers/"
+				"DID_RESOLUTION_SERVICE_URL": "http://dev.uniresolver.io/1.0/identifiers/",
+				"VNF_CONFIG": {
+					"VNF_RPC_URL": "https://stagingmember.velocitycareerlabs.io",
+					"VNF_PRIVATE_KEY": "46650bf0af045930ad9778a9e528c22b76b9e31be794e8040baa13247342c944",
+					"VNF_CONTACT_ADDRESS": "BurnerDID"
+				}
 			},
 			"supportsCertification": false,
 			"submissionTypes": ["upload","uri"]
