@@ -7,12 +7,7 @@ import static org.oneedtech.inspect.core.report.ReportUtil.onProbeException;
 import static org.oneedtech.inspect.util.code.Defensives.checkNotNull;
 import static org.oneedtech.inspect.util.json.ObjectMapperCache.Config.DEFAULT;
 import static org.oneedtech.inspect.vc.Credential.CREDENTIAL_KEY;
-import static org.oneedtech.inspect.vc.VCInspector.InjectionKeys.VNF_BURNER_DID;
-import static org.oneedtech.inspect.vc.VCInspector.InjectionKeys.VNF_CONFIG;
-import static org.oneedtech.inspect.vc.VCInspector.InjectionKeys.VNF_CONTACT_ADDRESS;
-import static org.oneedtech.inspect.vc.VCInspector.InjectionKeys.VNF_PRIVATE_KEY;
-import static org.oneedtech.inspect.vc.VCInspector.InjectionKeys.VNF_REGISTRY;
-import static org.oneedtech.inspect.vc.VCInspector.InjectionKeys.VNF_RPC_URL;
+import static org.oneedtech.inspect.vc.VCInspector.InjectionKeys.*;
 import static org.oneedtech.inspect.vc.VerifiableCredential.ProofType.EXTERNAL;
 import static org.oneedtech.inspect.vc.VerifiableCredential.REFRESH_SERVICE_MIME_TYPES;
 import static org.oneedtech.inspect.vc.payload.PayloadParser.fromJwt;
@@ -75,7 +70,7 @@ import org.velocitynetwork.contracts.VelocityNetworkMetadataRegistryFacadeImpl;
 public class OB30Inspector extends VCInspector implements SubInspector {
   protected final List<Probe<VerifiableCredential>> userProbes;
   protected final String didResolutionUrl;
-	protected final Map<String, Object> vnConfig;
+  protected final Map<String, Object> vnConfig;
 
   protected OB30Inspector(OB30Inspector.Builder builder) {
     super(builder);
@@ -163,27 +158,32 @@ public class OB30Inspector extends VCInspector implements SubInspector {
 
     ObjectMapper mapper = ObjectMapperCache.get(DEFAULT);
     JsonPathEvaluator jsonPath = new JsonPathEvaluator(mapper);
-		VelocityNetworkDidResolver velocityNetworkDidResolver = null;
+    VelocityNetworkDidResolver velocityNetworkDidResolver = null;
 
-		if(!this.vnConfig.isEmpty()) {
-			// registry impl
-			VelocityNetworkMetadataRegistryFacade velocityNetworkMetadataRegistryFacade = null;
-			if (this.vnConfig.containsKey(VNF_REGISTRY)) {
-				velocityNetworkMetadataRegistryFacade = (VelocityNetworkMetadataRegistryFacade) this.vnConfig.get(VNF_REGISTRY);
-			} else {
-        velocityNetworkMetadataRegistryFacade =
-            new VelocityNetworkMetadataRegistryFacadeImpl(
-                this.vnConfig.getOrDefault(VNF_RPC_URL, "").toString(),
-                this.vnConfig.getOrDefault(VNF_PRIVATE_KEY, "").toString(),
-                this.vnConfig.getOrDefault(VNF_CONTACT_ADDRESS, "").toString());
-			}
-      velocityNetworkDidResolver =
-          new VelocityNetworkDidResolver(
-              velocityNetworkMetadataRegistryFacade,
-              this.vnConfig.getOrDefault(VNF_BURNER_DID, "").toString());
-		}
+    if(!this.vnConfig.isEmpty()) {
+        // registry impl
+        VelocityNetworkMetadataRegistryFacade velocityNetworkMetadataRegistryFacade = null;
+        if (this.vnConfig.containsKey(VNF_REGISTRY)) {
+            velocityNetworkMetadataRegistryFacade = (VelocityNetworkMetadataRegistryFacade) this.vnConfig.get(VNF_REGISTRY);
+        } else {
+            velocityNetworkMetadataRegistryFacade =
+                new VelocityNetworkMetadataRegistryFacadeImpl(
+                    this.vnConfig.getOrDefault(VNF_RPC_URL, "").toString(),
+                    this.vnConfig.getOrDefault(VNF_PRIVATE_KEY, "").toString(),
+                    this.vnConfig.getOrDefault(VNF_CONTACT_ADDRESS, "").toString(),
+                    this.vnConfig.getOrDefault(VNF_RPC_OAUTH_ENDPOINT, null).toString(),
+                    this.vnConfig.getOrDefault(VNF_RPC_OAUTH_CLIENT_ID, null).toString(),
+                    this.vnConfig.getOrDefault(VNF_RPC_OAUTH_CLIENT_SECRET, null).toString()
+                );
+        }
+        velocityNetworkDidResolver =
+            new VelocityNetworkDidResolver(
+                velocityNetworkMetadataRegistryFacade,
+                this.vnConfig.getOrDefault(VNF_BURNER_DID, "").toString()
+            );
+    }
 
-		DidResolver didResolver = new SimpleDidResolver(this.didResolutionUrl, velocityNetworkDidResolver);
+    DidResolver didResolver = new SimpleDidResolver(this.didResolutionUrl, velocityNetworkDidResolver);
     VerifiableCredential.Builder credentialBuilder = new VerifiableCredential.Builder();
     RunContext ctx =
         new RunContext.Builder()
