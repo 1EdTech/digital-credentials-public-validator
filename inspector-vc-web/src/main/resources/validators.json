@@ -17,8 +17,16 @@
 			"group": "vc",
 			"status": "FINAL",
 			"initParams": {
-        "DID_RESOLUTION_SERVICE_URL": "http://dev.uniresolver.io/1.0/identifiers/"
-      },
+		        "DID_RESOLUTION_SERVICE_URL": "http://dev.uniresolver.io/1.0/identifiers/",
+				"VNF_CONFIG": {
+					"VNF_RPC_URL": "https://qamember.velocitycareerlabs.io",
+					"VNF_PRIVATE_KEY": "c12f4224097989fbee5eabe112f444c6f7e391003c85c11dc8ddfa20814982b0",
+					"VNF_CONTACT_ADDRESS": "did:web:qaregistrar.velocitynetwork.foundation:d:www.velocitycareerlabs.com-7e63644e",
+					"VNF_RPC_OAUTH_ENDPOINT": "https://vnf-dev.us.auth0.com/oauth/token",
+					"VNF_RPC_OAUTH_CLIENT_ID": "rtwWsJOZWQ0WlOjTix6UGV5Lva6X77zF",
+					"VNF_RPC_OAUTH_CLIENT_SECRET": "COvAsQLFrtBJFVbc7l7_TMzhPPKwPtZ5y8pAIFBOjn-6E7SXkLaVJ8N6x3wurF9Q"
+				}
+			},
 			"supportsCertification": false,
 			"submissionTypes": ["upload","uri"]
 		},
