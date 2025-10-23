@@ -19,12 +19,17 @@ import static java.util.UUID.randomUUID;
 
 public class VelocityNetworkMetadataRegistryFacadeImpl implements VelocityNetworkMetadataRegistryFacade {
     private VelocityNetworkMetadataRegistry metadataRegistryContract;
+    private final String contractAddress;
+    private final Web3j web3;
+    private final Credentials credentials;
 
     public VelocityNetworkMetadataRegistryFacadeImpl(String rpcUrl, String privateKey, String contractAddress) {
         this(rpcUrl, privateKey, contractAddress, null, null, null);
     }
 
     public VelocityNetworkMetadataRegistryFacadeImpl(String rpcUrl, String privateKey, String contractAddress, String tokenEndpoint, String clientId, String clientSecret) {
+        this.contractAddress = contractAddress;
+
         OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder();
 
         if (tokenEndpoint !=null && clientId != null && clientSecret != null) {
@@ -68,18 +73,24 @@ public class VelocityNetworkMetadataRegistryFacadeImpl implements VelocityNetwor
 
         OkHttpClient client = clientBuilder.build();
         HttpService ethRpcService = new HttpService(rpcUrl, client);
-        Web3j web3 = Web3j.build(ethRpcService);
-        Credentials credentials = Credentials.create(privateKey);
-        this.metadataRegistryContract = org.velocitynetwork.contracts.VelocityNetworkMetadataRegistry.load(
-                contractAddress,
-                web3,
-                credentials,
-                new StaticGasProvider(BigInteger.ZERO, BigInteger.valueOf(9_000_000))
-        );
+        this.web3 = Web3j.build(ethRpcService);
+        this.credentials = Credentials.create(privateKey);
+    }
+
+    public VelocityNetworkMetadataRegistry getMetadataRegistryContract() {
+        if (this.metadataRegistryContract == null) {
+            this.metadataRegistryContract = org.velocitynetwork.contracts.VelocityNetworkMetadataRegistry.load(
+                    contractAddress,
+                    web3,
+                    credentials,
+                    new StaticGasProvider(BigInteger.ZERO, BigInteger.valueOf(9_000_000))
+            );
+        }
+        return this.metadataRegistryContract;
     }
 
     public List<VelocityNetworkMetadataRegistry.CredentialMetadata> getPaidEntries(List<VelocityNetworkMetadataRegistry.CredentialIdentifier> _entryIndexes, String traceId, String caoDid, String burnerDid) throws Exception {
-        TransactionReceipt transactionReceipt = this.metadataRegistryContract.getPaidEntries(
+        TransactionReceipt transactionReceipt = getMetadataRegistryContract().getPaidEntries(
                 _entryIndexes,
                 randomUUID().toString(),
                 burnerDid,
