@@ -151,6 +151,9 @@ public abstract class VCInspector extends Inspector {
    		public static final String VNF_CONFIG = "VNF_CONFIG";
 		public static final String VNF_REGISTRY = "VNF_REGISTRY";
 		public static final String VNF_RPC_URL = "VNF_RPC_URL";
+		public static final String VNF_RPC_OAUTH_ENDPOINT = "VNF_RPC_OAUTH_ENDPOINT";
+		public static final String VNF_RPC_OAUTH_CLIENT_ID = "VNF_RPC_OAUTH_CLIENT_ID";
+		public static final String VNF_RPC_OAUTH_CLIENT_SECRET = "VNF_RPC_OAUTH_CLIENT_SECRET";
 		public static final String VNF_PRIVATE_KEY = "VNF_PRIVATE_KEY";
 		public static final String VNF_CONTACT_ADDRESS = "VNF_CONTACT_ADDRESS";
 		public static final String VNF_BURNER_DID = "VNF_BURNER_DID";
