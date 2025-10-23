@@ -56,7 +56,7 @@
 				"VNF_CONFIG": {
 					"VNF_RPC_URL": "https://qamember.velocitycareerlabs.io",
 					"VNF_PRIVATE_KEY": "c12f4224097989fbee5eabe112f444c6f7e391003c85c11dc8ddfa20814982b0",
-					"VNF_CONTACT_ADDRESS": "0x6a1d5677cBc9C6683ab420025889580d56A2efCd",
+                    "VNF_CONTACT_ADDRESS": "0x6a1d5677cBc9C6683ab420025889580d56A2efCd",
                     "VNF_BURNER_DID": "did:web:qaregistrar.velocitynetwork.foundation:d:www.velocitycareerlabs.com-7e63644e",
 					"VNF_RPC_OAUTH_ENDPOINT": "https://vnf-dev.us.auth0.com/oauth/token",
 					"VNF_RPC_OAUTH_CLIENT_ID": "rtwWsJOZWQ0WlOjTix6UGV5Lva6X77zF",
