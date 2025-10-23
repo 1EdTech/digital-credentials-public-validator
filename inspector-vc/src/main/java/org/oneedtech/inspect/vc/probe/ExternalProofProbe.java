@@ -103,10 +103,12 @@ public class ExternalProofProbe extends Probe<VerifiableCredential> {
 			//Load jwk JsonNode from url and do the rest the same below.
 			//TODO Consider additional testing.
 			String kidUrl = kid.textValue();
-			String jwkResponse = fetchJwk(kidUrl, ctx);
-			if(jwkResponse == null) { throw new Exception("Unable to retrieve jwk value from url specified in kid."); }
-
-			jwk = mapper.readTree(jwkResponse);
+			try {
+				String jwkResponse = fetchJwk(kidUrl, ctx);
+				jwk = mapper.readTree(jwkResponse);
+			} catch (Exception e) {
+				throw new Exception("Unable to retrieve jwk value from url specified in kid.", e);
+			}
 		}
 
 		String kty = jwk.get("kty").asText();
@@ -168,34 +170,28 @@ public class ExternalProofProbe extends Probe<VerifiableCredential> {
 		}
 	}
 
-	private String fetchJwk(String fetchUrl, RunContext ctx){
+	private String fetchJwk(String fetchUrl, RunContext ctx) throws Exception{
         String responseString = null;
 
-        try {
-			URI kidUri = new URI(fetchUrl);
-			if (kidUri.getScheme() == null || kidUri.getScheme().equals("did")) {
-				DidResolver didResolver = ctx.get(RunContextKey.DID_RESOLVER);
-				DidResolution didResolution = didResolver.resolve(kidUri, new CachingDocumentLoader()); // Not using the default document loader options
-				responseString = didResolution.getPublicKeyJwk();
-			} else {
-				CloseableHttpClient client = HttpClients.createDefault();
-				HttpGet httpGet = new HttpGet(fetchUrl);
+		URI kidUri = new URI(fetchUrl);
+		if (kidUri.getScheme() == null || kidUri.getScheme().equals("did")) {
+			DidResolver didResolver = ctx.get(RunContextKey.DID_RESOLVER);
+			DidResolution didResolution = didResolver.resolve(kidUri, new CachingDocumentLoader()); // Not using the default document loader options
+			responseString = didResolution.getPublicKeyJwk();
+		} else {
+			CloseableHttpClient client = HttpClients.createDefault();
+			HttpGet httpGet = new HttpGet(fetchUrl);
 
-				CloseableHttpResponse response = client.execute(httpGet);
+			CloseableHttpResponse response = client.execute(httpGet);
 
-				if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-					HttpEntity entity = response.getEntity();
-					responseString = EntityUtils.toString(entity, "UTF-8");
-				}
-
-				client.close();
+			if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+				HttpEntity entity = response.getEntity();
+				responseString = EntityUtils.toString(entity, "UTF-8");
 			}
-        }
-        catch(Exception ex){
-            responseString = null;
-        }
 
-        return responseString;
+			client.close();
+		}
+		return responseString;
     }
 
 	// Maps curve name from JWK to ECParameterSpec

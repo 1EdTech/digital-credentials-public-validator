@@ -123,7 +123,7 @@ public class SimpleDidResolver implements DidResolver {
         JsonObject didDocument = velocityNetworkDidResolver.resolveDid(did.toString());
         this.extractFromVerificationMethod(did, didDocument, builder);
       } catch (Exception e) {
-        throw new DidResolutionException("Error resolving did: " + did, e);
+        throw new DidResolutionException("Error resolving did: " + did + ": " + e.getLocalizedMessage(), e);
       }
     }
     else {
