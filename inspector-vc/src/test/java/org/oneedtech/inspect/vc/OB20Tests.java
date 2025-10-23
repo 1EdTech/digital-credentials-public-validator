@@ -296,7 +296,7 @@ public class OB20Tests {
 	}
 
 	@Nested
-	static class WarningTests {
+    class WarningTests {
 		@BeforeAll
 		static void setup() throws URISyntaxException {
 			TestBuilder builder = new TestBuilder();
