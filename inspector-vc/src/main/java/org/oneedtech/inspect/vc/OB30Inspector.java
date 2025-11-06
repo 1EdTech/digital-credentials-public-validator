@@ -209,7 +209,7 @@ public class OB30Inspector extends VCInspector implements SubInspector {
 
       // JSON-LD validation
       probeCount++;
-      accumulator.add(new JsonLDValidationProbe().run(ob.getJson().toString(), ctx));
+      accumulator.add(new JsonLDValidationProbe(new CachingDocumentLoader()).run(ob.getJson().toString(), ctx));
       if (broken(accumulator)) return abort(ctx, accumulator, probeCount);
 
       // context and type properties
