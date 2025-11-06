@@ -121,7 +121,7 @@ public class OB20Inspector extends VCInspector {
 
 			// validate JSON LD
 			JsonLdGeneratedObject jsonLdGeneratedObject = ctx.getGeneratedObject(JsonLDCompactionProbe.getId(assertion));
-			accumulator.add(new JsonLDValidationProbe(jsonLdGeneratedObject).run(assertion, ctx));
+			accumulator.add(new JsonLDValidationProbe().run(jsonLdGeneratedObject.getJson(), ctx));
 			if(broken(accumulator, true)) return abort(ctx, accumulator, probeCount);
 
 			// validation the Open Badge, from the compacted form
