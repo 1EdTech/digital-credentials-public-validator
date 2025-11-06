@@ -7,7 +7,7 @@
 
   <groupId>org.1edtech</groupId>
   <artifactId>vc-public-validator</artifactId>
-  <version>1.5.6</version>
+  <version>1.5.7</version>
   <name>vc-public-validator</name>
   <packaging>pom</packaging>
   <developers>
@@ -23,7 +23,7 @@
     <log4j.version>2.17.2</log4j.version>
     <skipTests>false</skipTests>
 		<web3j.version>4.13.0</web3j.version>
-    <public.core.version>1.1.13</public.core.version>
+    <public.core.version>1.1.14</public.core.version>
     <com.danubetech.verifiable.credentials.version>1.18.0</com.danubetech.verifiable.credentials.version>
     <cbor-java.version>0.9</cbor-java.version>
     <!-- <iron.verifiable.credentials.version>0.14.0</iron.verifiable.credentials.version> -->

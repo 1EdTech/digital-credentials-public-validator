@@ -39,6 +39,7 @@ import org.oneedtech.inspect.util.resource.UriResource;
 import org.oneedtech.inspect.util.resource.context.ResourceContext;
 import org.oneedtech.inspect.util.spec.Specification;
 import org.oneedtech.inspect.vc.VerifiableCredential.Type;
+import org.oneedtech.inspect.vc.jsonld.probe.JsonLDValidationProbe;
 import org.oneedtech.inspect.vc.payload.PngParser;
 import org.oneedtech.inspect.vc.payload.SvgParser;
 import org.oneedtech.inspect.vc.probe.ContextPropertyProbe;
@@ -205,6 +206,11 @@ public class OB30Inspector extends VCInspector implements SubInspector {
     int probeCount = 0;
 
     try {
+
+      // JSON-LD validation
+      probeCount++;
+      accumulator.add(new JsonLDValidationProbe(new CachingDocumentLoader()).run(ob.getJson().toString(), ctx));
+      if (broken(accumulator)) return abort(ctx, accumulator, probeCount);
 
       // context and type properties
       VerifiableCredential.Type type = Type.OpenBadgeCredential;

@@ -25,6 +25,7 @@ import org.oneedtech.inspect.core.probe.GeneratedObject;
 import org.oneedtech.inspect.core.probe.json.JsonSchemaProbe;
 import org.oneedtech.inspect.core.report.Report;
 import org.oneedtech.inspect.test.PrintHelper;
+import org.oneedtech.inspect.vc.jsonld.probe.JsonLDValidationProbe;
 import org.oneedtech.inspect.vc.probe.ContextPropertyProbe;
 import org.oneedtech.inspect.vc.probe.CredentialSubjectProbe;
 import org.oneedtech.inspect.vc.probe.EmbeddedProofModel;
@@ -113,7 +114,9 @@ public class OB30Tests {
 		assertDoesNotThrow(()->{
 			Report report = validator.run(Samples.OB30.JSON.SIMPLE_MULTIPLE_PROOF_JSON.asFileResource());
 			if(verbose) PrintHelper.print(report, true);
-			assertValid(report);
+			// the only error is due to the lack of JSON-LD context for "SomeProofType"
+			assertErrorCount(report, 1);
+			assertHasProbeID(report, JsonLDValidationProbe.ID, true);
 		});
 	}
 
@@ -141,7 +144,8 @@ public class OB30Tests {
         () -> {
           Report report = validator.run(Samples.OB30.JWT.VELOCITY_JWT.asFileResource());
           if (verbose) PrintHelper.print(report, true);
-          assertWarning(report);
+		  assertInvalid(report); // due to the lack of ob's extension context
+        //   assertWarning(report); // due to the use of VC DM v1.1 context
         });
   }
 
