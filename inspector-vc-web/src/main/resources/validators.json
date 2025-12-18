@@ -29,7 +29,8 @@
 				}
 			},
 			"supportsCertification": false,
-			"submissionTypes": ["upload","uri"]
+			"submissionTypes": ["upload","uri"],
+			"uriMimeTypes": ["application/json","application/ld+json","application/vc+ld+json","text/jwt","text/plain","image/svg+xml","image/png"]
 		},
 		{
 			"id": "OB20Inspector",
@@ -40,7 +41,8 @@
 			"spec": "ob",
 			"group": "vc",
 			"supportsCertification": false,
-			"submissionTypes": ["upload","uri"]
+			"submissionTypes": ["upload","uri"],
+			"uriMimeTypes": ["application/json","application/ld+json","image/svg+xml","image/png"]
 		},
 		{
 			"id": "CLR20Inspector",
@@ -64,7 +66,8 @@
 				}
 			},
 			"supportsCertification": false,
-			"submissionTypes": ["upload","uri"]
+			"submissionTypes": ["upload","uri"],
+			"uriMimeTypes": ["application/json","application/ld+json","application/vc+ld+json","text/jwt","text/plain","image/svg+xml","image/png"]
 		}
 	]
 
