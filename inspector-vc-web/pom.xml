@@ -11,8 +11,8 @@
 	<artifactId>inspector-vc-web</artifactId>
 	<properties>
 		<mainClass>org.oneedtech.inspect.vc.web.ValidatorApplication</mainClass>
-		<spring-boot-starter-parent.version>2.6.7</spring-boot-starter-parent.version>
-		<spring-boot-maven-plugin.version>2.6.7</spring-boot-maven-plugin.version>
+		<spring-boot-starter-parent.version>3.3.2</spring-boot-starter-parent.version>
+		<spring-boot-maven-plugin.version>3.3.2</spring-boot-maven-plugin.version>
 		<maven-deploy-plugin.version>2.8.2</maven-deploy-plugin.version>
 	</properties>
 
