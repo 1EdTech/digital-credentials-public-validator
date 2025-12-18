@@ -319,7 +319,7 @@ public class OB30Inspector extends VCInspector implements SubInspector {
     @SuppressWarnings("unchecked")
     @Override
     public OB30Inspector build() {
-      set(Specification.OB30);
+      set(Specification.OB_30);
       set(ResourceType.OPENBADGE);
       return new OB30Inspector(this);
     }

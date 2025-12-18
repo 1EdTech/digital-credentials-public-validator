@@ -13,7 +13,11 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @SpringBootApplication // == @SpringBootConfiguration @EnableAutoConfiguration @ComponentScan
 @Configuration
 @Import(InspectorWebConfig.class)
-@ComponentScan("org.oneedtech.inspect.web")
+@ComponentScan(basePackages = {
+	"org.oneedtech.inspect.web.controller",
+	"org.oneedtech.inspect.web.storage",
+	"org.oneedtech.inspect.web.validator"
+})
 public class ValidatorApplication implements WebMvcConfigurer {
 
 	public static void main(String[] args) {

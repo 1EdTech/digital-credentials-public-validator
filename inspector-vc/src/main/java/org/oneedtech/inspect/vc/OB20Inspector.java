@@ -235,7 +235,7 @@ public class OB20Inspector extends VCInspector {
 		@SuppressWarnings("unchecked")
 		@Override
 		public OB20Inspector build() {
-			set(Specification.OB20);
+			set(Specification.OB_20);
 			set(ResourceType.OPENBADGE);
 			return new OB20Inspector(this);
 		}
