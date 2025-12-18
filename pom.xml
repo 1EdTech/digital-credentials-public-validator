@@ -23,7 +23,7 @@
     <log4j.version>2.23.1</log4j.version>
     <skipTests>false</skipTests>
 		<web3j.version>4.13.0</web3j.version>
-    <public.core.version>1.2.0</public.core.version>
+    <public.core.version>1.2.1</public.core.version>
     <com.danubetech.verifiable.credentials.version>1.18.0</com.danubetech.verifiable.credentials.version>
     <cbor-java.version>0.9</cbor-java.version>
     <!-- <iron.verifiable.credentials.version>0.14.0</iron.verifiable.credentials.version> -->
@@ -282,44 +282,12 @@
         <version>9.5.1-5</version>
       </dependency>
 
-      <!-- https://mvnrepository.com/artifact/com.fasterxml.woodstox/woodstox-core -->
-      <dependency>
-        <groupId>com.fasterxml.woodstox</groupId>
-        <artifactId>woodstox-core</artifactId>
-        <version>6.2.6</version>
-      </dependency>
-
-      <!-- https://mvnrepository.com/artifact/xerces/xercesImpl -->
-      <dependency>
-        <groupId>xerces</groupId>
-        <artifactId>xercesImpl</artifactId>
-        <version>2.12.2</version>
-        <exclusions>
-          <exclusion>
-            <groupId>xml-apis</groupId>
-            <artifactId>xml-apis</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-
-      <!-- https://mvnrepository.com/artifact/org.relaxng/jing -->
-      <dependency>
-        <groupId>org.relaxng</groupId>
-        <artifactId>jing</artifactId>
-        <version>20181204</version>
-        <exclusions>
-          <exclusion>
-            <groupId>xml-apis</groupId>
-            <artifactId>xml-apis</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
 
       <!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api -->
       <dependency>
         <groupId>org.junit.jupiter</groupId>
         <artifactId>junit-jupiter-api</artifactId>
-        <version>5.8.2</version>
+        <version>5.11.4</version>
         <scope>test</scope>
       </dependency>
 
