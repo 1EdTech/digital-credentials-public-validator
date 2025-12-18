@@ -99,7 +99,7 @@ public class BitstringStatusListCredentialInspector extends VCInspector {
     @SuppressWarnings("unchecked")
     @Override
     public BitstringStatusListCredentialInspector build() {
-      set(Specification.OB30);
+      set(Specification.OB_30);
       set(ResourceType.OPENBADGE);
       return new BitstringStatusListCredentialInspector(this);
     }

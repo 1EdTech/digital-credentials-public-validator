@@ -56,7 +56,7 @@ public class TestOB20Inspector extends OB20Inspector {
 
 		@Override
 		public TestOB20Inspector build() {
-			set(Specification.OB20);
+			set(Specification.OB_20);
 			set(ResourceType.OPENBADGE);
 			return new TestOB20Inspector(this);
 		}

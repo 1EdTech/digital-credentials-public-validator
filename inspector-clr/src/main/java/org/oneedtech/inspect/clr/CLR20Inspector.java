@@ -267,7 +267,7 @@ public class CLR20Inspector extends VCInspector {
 		@SuppressWarnings("unchecked")
 		@Override
 		public CLR20Inspector build() {
-			set(Specification.CLR20);
+			set(Specification.CLR_20);
 			set(ResourceType.CLR);
 			return new CLR20Inspector(this);
 		}
