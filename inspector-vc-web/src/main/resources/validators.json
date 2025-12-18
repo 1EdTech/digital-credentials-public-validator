@@ -17,7 +17,7 @@
 			"group": "vc",
 			"status": "FINAL",
 			"initParams": {
-		        "DID_RESOLUTION_SERVICE_URL": "http://dev.uniresolver.io/1.0/identifiers/",
+		        "DID_RESOLUTION_SERVICE_URL": "https://dev.uniresolver.io/1.0/identifiers/",
 				"VNF_CONFIG": {
 					"VNF_RPC_URL": "https://qamember.velocitycareerlabs.io",
 					"VNF_PRIVATE_KEY": "c12f4224097989fbee5eabe112f444c6f7e391003c85c11dc8ddfa20814982b0",
@@ -52,7 +52,7 @@
 			"group": "vc",
 			"status": "FINAL",
 			"initParams": {
-				"DID_RESOLUTION_SERVICE_URL": "http://dev.uniresolver.io/1.0/identifiers/",
+				"DID_RESOLUTION_SERVICE_URL": "https://dev.uniresolver.io/1.0/identifiers/",
 				"VNF_CONFIG": {
 					"VNF_RPC_URL": "https://qamember.velocitycareerlabs.io",
 					"VNF_PRIVATE_KEY": "c12f4224097989fbee5eabe112f444c6f7e391003c85c11dc8ddfa20814982b0",
