@@ -1,10 +1,21 @@
 package org.oneedtech.inspect.vc.probe;
 
+import com.apicatalog.jsonld.StringUtils;
+import com.apicatalog.jsonld.document.Document;
+import com.apicatalog.jsonld.loader.DocumentLoaderOptions;
+import com.apicatalog.multibase.MultibaseDecoder;
+import com.apicatalog.multicodec.Multicodec;
+import com.apicatalog.multicodec.MulticodecDecoder;
+import com.apicatalog.multicodec.codec.KeyCodec;
+import com.danubetech.dataintegrity.DataIntegrityProof;
+import com.danubetech.dataintegrity.verifier.LdVerifier;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonStructure;
+import jakarta.json.JsonValue;
 import java.net.URI;
 import java.security.spec.InvalidKeySpecException;
 import java.util.List;
 import java.util.Optional;
-
 import org.oneedtech.inspect.core.probe.GeneratedObject;
 import org.oneedtech.inspect.core.probe.Probe;
 import org.oneedtech.inspect.core.probe.RunContext;
@@ -17,19 +28,6 @@ import org.oneedtech.inspect.vc.probe.did.DidResolver;
 import org.oneedtech.inspect.vc.verification.EcdsaSd2023LdVerifier;
 import org.oneedtech.inspect.vc.verification.Ed25519Signature2022LdVerifier;
 import org.oneedtech.inspect.vc.verification.Ed25519Signature2022VCDM20LdVerifier;
-
-import com.apicatalog.jsonld.StringUtils;
-import com.apicatalog.jsonld.document.Document;
-import com.apicatalog.jsonld.loader.DocumentLoaderOptions;
-import com.apicatalog.multibase.MultibaseDecoder;
-import com.apicatalog.multicodec.Multicodec;
-import com.apicatalog.multicodec.MulticodecDecoder;
-import com.apicatalog.multicodec.codec.KeyCodec;
-import com.danubetech.dataintegrity.DataIntegrityProof;
-import com.danubetech.dataintegrity.verifier.LdVerifier;
-
-import jakarta.json.JsonObject;
-import jakarta.json.JsonStructure;
 
 /**
  * A Probe that verifies a credential's embedded proof.
@@ -85,6 +83,8 @@ public class EmbeddedProofProbe extends Probe<VerifiableCredential> {
     }
 
     DataIntegrityProof proof = selectedProof.get();
+    String expectedVerifactionMethodType =
+        proof.isType("Ed25519Signature2020") ? "Ed25519VerificationKey2020" : "MultiKey";
 
     URI method = proof.getVerificationMethod();
 
@@ -140,13 +140,53 @@ public class EmbeddedProofProbe extends Probe<VerifiableCredential> {
             // Then look for a controller document (e.g. DID Document) with a
             // 'verificationMethod'
             // that is a Ed25519VerificationKey2020 document
-            JsonObject keyVerificationMethod =
-                keyStructure.get().asJsonObject().getJsonObject("verificationMethod");
-            if (keyVerificationMethod.isEmpty()) {
-              return error("Cannot parse key document from " + method, ctx);
+
+            // get verificationMethod json node. It can be either an array or an object, so check
+            // accordingly
+            JsonValue verificationMethodJson =
+                keyStructure.get().asJsonObject().get("verificationMethod");
+            if (verificationMethodJson == null) {
+              return error("Cannot find verificationMethod in key document from " + method, ctx);
             }
-            controller = keyVerificationMethod.getString("controller");
-            publicKeyMultibase = keyVerificationMethod.getString("publicKeyMultibase");
+            // check if verificationMethodJson is an array
+            if (verificationMethodJson.getValueType() == JsonValue.ValueType.ARRAY) {
+              for (JsonValue vm : verificationMethodJson.asJsonArray()) {
+                JsonObject vmObject = vm.asJsonObject();
+                if (vmObject.getString("type").equals(expectedVerifactionMethodType)) {
+                  controller = vmObject.getString("controller");
+                  publicKeyMultibase = vmObject.getString("publicKeyMultibase");
+                  break;
+                }
+              }
+              if (keyStructure.isEmpty()
+                  || !keyStructure
+                      .get()
+                      .asJsonObject()
+                      .getString("type")
+                      .equals(expectedVerifactionMethodType)) {
+                return error(
+                    "Cannot find "
+                        + expectedVerifactionMethodType
+                        + " in verificationMethod from "
+                        + method,
+                    ctx);
+              }
+            } else if (verificationMethodJson.getValueType() == JsonValue.ValueType.OBJECT) {
+              JsonObject vmObject = verificationMethodJson.asJsonObject();
+              if (!vmObject.getString("type").equals(expectedVerifactionMethodType)) {
+                return error(
+                    "verificationMethod is not of type "
+                        + expectedVerifactionMethodType
+                        + " in key document from "
+                        + method,
+                    ctx);
+              }
+              controller = vmObject.getString("controller");
+              publicKeyMultibase = vmObject.getString("publicKeyMultibase");
+
+            } else {
+              return error("Invalid verificationMethod format in key document from " + method, ctx);
+            }
           } else {
             publicKeyMultibase = keyStructure.get().asJsonObject().getString("publicKeyMultibase");
           }
