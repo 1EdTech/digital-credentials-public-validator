@@ -1,13 +1,14 @@
 package org.oneedtech.inspect.vc.probe;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import java.util.List;
 import java.util.Optional;
+
 import org.oneedtech.inspect.core.probe.Probe;
 import org.oneedtech.inspect.core.probe.RunContext;
 import org.oneedtech.inspect.core.report.ReportItems;
 import org.oneedtech.inspect.vc.util.JsonNodeUtil;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * A Probe that checks credential subject specifics not capturable by schemata.
