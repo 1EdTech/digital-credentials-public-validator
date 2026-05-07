@@ -11,17 +11,15 @@ import com.apicatalog.jsonld.loader.DocumentLoader;
 import com.apicatalog.multicodec.Multicodec;
 import com.apicatalog.multicodec.codec.KeyCodec;
 import com.apicatalog.rdf.RdfDataset;
-import com.apicatalog.rdf.RdfNQuad;
-import com.apicatalog.rdf.io.nquad.NQuadsWriter;
+import com.apicatalog.rdf.api.RdfConsumerException;
+import com.apicatalog.rdf.api.RdfQuadConsumer;
+import com.apicatalog.rdf.canon.RdfCanon;
+import com.apicatalog.rdf.nquads.NQuadsWriter;
 import com.danubetech.dataintegrity.DataIntegrityProof;
 import com.danubetech.dataintegrity.canonicalizer.Canonicalizer;
 import foundation.identity.jsonld.JsonLDException;
 import foundation.identity.jsonld.JsonLDObject;
-import io.setl.rdf.normalization.InputMappings;
-import io.setl.rdf.normalization.RdfNormalizationResult;
-import io.setl.rdf.normalization.RdfNormalize;
 import java.io.IOException;
-import java.io.StringWriter;
 import java.security.GeneralSecurityException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -184,81 +182,60 @@ public class SDFunctions {
       Function<Map<String, String>, Map<String, String>> labelMapFactoryFunction,
       DocumentLoader documentLoader)
       throws IOException, NoSuchAlgorithmException {
-    // 1. Run the RDF Dataset Canonicalization Algorithm [RDF-CANON] on the joined nquads, passing
-    // any custom options, and as output, get the canonicalized dataset, which includes a canonical
-    // bnode identifier map, canonicalIdMap.
+    // 1. Run the RDF Dataset Canonicalization Algorithm using RDFC 1.0 [RDF-CANON].
+    // Pass 1: collect canonical quads and populate the blank-node ID mapping.
+    RdfCanon rdfCanon = RdfCanon.create("SHA-256");
+    RDFC10Canonicalizer.feedDataset(rdfDataset, rdfCanon);
 
-    RdfNormalizationResult normalizeResult =
-        RdfNormalize.normalizeFull(rdfDataset, new InputMappings(), null);
-    RdfDataset canonicalizedDataset = normalizeResult.getNormalized();
+    List<String[]> canonicalQuads = new ArrayList<>();
+    try {
+      rdfCanon.provide(new RdfQuadConsumer() {
+        @Override
+        public RdfQuadConsumer quad(
+            String subject, String predicate, String object,
+            String datatype, String language, String direction, String graph)
+            throws RdfConsumerException {
+          canonicalQuads.add(new String[]{subject, predicate, object, datatype, language, direction, graph});
+          return this;
+        }
+      });
+    } catch (RdfConsumerException e) {
+      throw new IOException("RDFC 1.0 canonicalization failed", e);
+    }
 
-    // generate a map of canonical identifiers to N-Quad strings
-    // This map will be used to replace blank node identifiers in the N-Quad strings with
-    // their corresponding labels from the labelMap.
+    // mapping() is populated after provide(); strip _: prefix from both keys and values.
+    Map<String, String> canonicalIdMap = rdfCanon.mapping().entrySet().stream()
+        .collect(Collectors.toMap(
+            e -> e.getKey().replaceFirst("^_:", ""),
+            e -> e.getValue().replaceFirst("^_:", "")));
 
-    Map<String, String> canonicalIdMap =
-        normalizeResult.getIssuedMappings().entrySet().stream()
-            .map(e -> new Tuple<>(e.getKey().getValue(), e.getValue().getValue()))
-            .map(
-                t ->
-                    new Tuple<>(
-                        t.t1.replaceFirst("^_:", ""),
-                        t.t2.replaceFirst(
-                            "^_:", ""))) // ensure labels in map do not include `_:` prefix
-            .collect(Collectors.toMap(t -> t.t1, t -> t.t2));
-
-    // 2. Pass canonicalIdMap to labelMapFactoryFunction to produce a new bnode identifier map,
-    // labelMap.
+    // 2. Pass canonicalIdMap to labelMapFactoryFunction to produce a new bnode identifier map.
     Map<String, String> labelMap = labelMapFactoryFunction.apply(canonicalIdMap);
 
-    // 3. Use the canonicalized dataset and labelMap to produce the canonical N-Quads representation
-    // as an array of N-Quad strings, canonicalNQuads.
+    // 3. Build c14n→label map and apply label replacement to the canonical N-Quads.
+    Map<String, String> c14nToNewLabelMap = labelMap.entrySet().stream()
+        .collect(Collectors.toMap(e -> canonicalIdMap.get(e.getKey()), e -> e.getValue()));
+
     List<String> canonicalNQuads = new ArrayList<>();
-
-    // In this current implementation, the replacement label map is
-    // replaced with one that maps the C14N labels to the new labels instead of
-    // the input labels to the new labels. This is because the C14N labels are
-    // already in use in the N-Quads that are updated.
-    Map<String, String> c14nToNewLabelMap =
-        labelMap.entrySet().stream()
-            .collect(Collectors.toMap(e -> canonicalIdMap.get(e.getKey()), e -> e.getValue()));
-
-    for (RdfNQuad nQuad : canonicalizedDataset.toList()) {
-      StringWriter stringWriter = new StringWriter();
-      NQuadsWriter nQuadsWriter = new NQuadsWriter(stringWriter);
-      nQuadsWriter.write(nQuad);
-
-      String canonicalNQuad = stringWriter.toString();
-
-      List<String> nodeIds = new ArrayList<>();
-
-      // Replace blank node identifiers in the N-Quad with their corresponding labels from labelMap.
-      if (nQuad.getSubject().isBlankNode()) {
-        nodeIds.add(nQuad.getSubject().getValue());
-      }
-      if (nQuad.getPredicate().isBlankNode()) {
-        nodeIds.add(nQuad.getPredicate().getValue());
-      }
-      if (nQuad.getObject().isBlankNode()) {
-        nodeIds.add(nQuad.getObject().getValue());
-      }
-
-      if (!nodeIds.isEmpty()) {
-        for (String nodeId : nodeIds) {
-          // Remove the `_:` prefix from the nodeId
-          nodeId = nodeId.replaceFirst("^_:", "");
-          String label = c14nToNewLabelMap.get(nodeId);
-          if (label != null) {
-            canonicalNQuad = canonicalNQuad.replace(nodeId, label);
-          }
-        }
-      }
-
-      canonicalNQuads.add(canonicalNQuad);
+    for (String[] params : canonicalQuads) {
+      String subject  = replaceBlankLabel(params[0], c14nToNewLabelMap);
+      String object   = replaceBlankLabel(params[2], c14nToNewLabelMap);
+      String graph    = replaceBlankLabel(params[6], c14nToNewLabelMap);
+      canonicalNQuads.add(NQuadsWriter.nquad(subject, params[1], object, params[3], params[4], params[5], graph));
     }
 
     // 4. Return an object containing labelMap and canonicalNQuads.
     return new Tuple<>(labelMap, canonicalNQuads);
+  }
+
+  private static String replaceBlankLabel(String value, Map<String, String> c14nToLabelMap) {
+    if (value != null && value.startsWith("_:")) {
+      String label = c14nToLabelMap.get(value.substring(2));
+      if (label != null) {
+        return "_:" + label;
+      }
+    }
+    return value;
   }
 
   private Function<Map<String, String>, Map<String, String>> createLabelMapFunction(
