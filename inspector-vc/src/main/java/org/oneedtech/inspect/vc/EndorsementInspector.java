@@ -176,7 +176,7 @@ public class EndorsementInspector extends VCInspector implements SubInspector {
       }
 
     } catch (Exception e) {
-      accumulator.add(onProbeException(Probe.ID.NO_UNCAUGHT_EXCEPTIONS, resource, e));
+      accumulator.add(onProbeException(Probe.ID.NO_UNCAUGHT_EXCEPTIONS, resource, "EndorsementInspector validation", e));
     }
 
     return new Report(ctx, new ReportItems(accumulator), probeCount);
@@ -276,7 +276,7 @@ public class EndorsementInspector extends VCInspector implements SubInspector {
       }
 
     } catch (Exception e) {
-      accumulator.add(onProbeException(Probe.ID.NO_UNCAUGHT_EXCEPTIONS, resource, e));
+      accumulator.add(onProbeException(Probe.ID.NO_UNCAUGHT_EXCEPTIONS, resource, "EndorsementInspector validation", e));
     }
 
     return new Report(ctx, new ReportItems(accumulator), probeCount);

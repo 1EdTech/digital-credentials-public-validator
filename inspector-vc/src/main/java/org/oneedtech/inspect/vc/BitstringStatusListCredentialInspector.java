@@ -102,7 +102,7 @@ public class BitstringStatusListCredentialInspector extends VCInspector {
       accumulator.add(new ReportItems(Collections.emptyList(), List.of(bslCred)));
 
     } catch (Exception e) {
-      accumulator.add(onProbeException(Probe.ID.NO_UNCAUGHT_EXCEPTIONS, resource, e));
+      accumulator.add(onProbeException(Probe.ID.NO_UNCAUGHT_EXCEPTIONS, resource, "BitstringStatusListCredential validation", e));
     }
 
     return new Report(ctx, new ReportItems(accumulator), probeCount);

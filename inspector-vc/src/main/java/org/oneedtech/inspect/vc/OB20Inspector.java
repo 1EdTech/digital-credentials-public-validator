@@ -218,7 +218,7 @@ public class OB20Inspector extends VCInspector {
 			}
 
 		} catch (Exception e) {
-			accumulator.add(onProbeException(Probe.ID.NO_UNCAUGHT_EXCEPTIONS, resource, e));
+			accumulator.add(onProbeException(Probe.ID.NO_UNCAUGHT_EXCEPTIONS, resource, "OB20Inspector validation", e));
 		}
 
 		return new Report(ctx, new ReportItems(accumulator), probeCount);

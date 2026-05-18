@@ -194,7 +194,7 @@ public class TCPInspector extends VCInspector {
       }
 
     } catch (Exception e) {
-      accumulator.add(onProbeException(Probe.ID.NO_UNCAUGHT_EXCEPTIONS, resource, e));
+      accumulator.add(onProbeException(Probe.ID.NO_UNCAUGHT_EXCEPTIONS, resource, "TCPInspector validation", e));
     }
 
     return new Report(ctx, new ReportItems(accumulator), probeCount);

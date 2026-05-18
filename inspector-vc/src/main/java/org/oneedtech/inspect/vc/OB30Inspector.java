@@ -145,7 +145,7 @@ public class OB30Inspector extends VCInspector implements SubInspector {
       }
 
     } catch (Exception e) {
-      accumulator.add(onProbeException(Probe.ID.NO_UNCAUGHT_EXCEPTIONS, resource, e));
+      accumulator.add(onProbeException(Probe.ID.NO_UNCAUGHT_EXCEPTIONS, resource, "OB30Inspector validation", e));
     }
 
     return new Report(ctx, new ReportItems(accumulator), probeCount);
@@ -309,7 +309,7 @@ public class OB30Inspector extends VCInspector implements SubInspector {
       }
 
     } catch (Exception e) {
-      accumulator.add(onProbeException(Probe.ID.NO_UNCAUGHT_EXCEPTIONS, resource, e));
+      accumulator.add(onProbeException(Probe.ID.NO_UNCAUGHT_EXCEPTIONS, resource, "OB30Inspector validation", e));
     }
 
     return new Report(ctx, new ReportItems(accumulator), probeCount);
