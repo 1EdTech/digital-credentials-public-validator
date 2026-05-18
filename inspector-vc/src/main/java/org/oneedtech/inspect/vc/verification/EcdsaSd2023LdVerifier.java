@@ -6,8 +6,6 @@ import com.apicatalog.multicodec.Multicodec;
 import com.apicatalog.multicodec.codec.KeyCodec;
 import com.danubetech.dataintegrity.DataIntegrityProof;
 import com.danubetech.dataintegrity.canonicalizer.Canonicalizer;
-import com.danubetech.dataintegrity.canonicalizer.URDNA2015SHA256Canonicalizer;
-import com.danubetech.dataintegrity.canonicalizer.URDNA2015SHA384Canonicalizer;
 import com.danubetech.dataintegrity.verifier.LdVerifier;
 import com.danubetech.keyformats.crypto.impl.P_256_ES256_PublicKeyVerifier;
 import com.danubetech.keyformats.crypto.impl.P_384_ES384_PublicKeyVerifier;
@@ -58,12 +56,7 @@ public class EcdsaSd2023LdVerifier extends LdVerifier<EcdsaSd2023SignatureSuite>
   }
 
   public Canonicalizer getCanonicalizer(DataIntegrityProof dataIntegrityProof) {
-    if (codec == KeyCodec.P256_PUBLIC_KEY) {
-      return new URDNA2015SHA256Canonicalizer();
-    } else if (codec == KeyCodec.P384_PUBLIC_KEY) {
-      return new URDNA2015SHA384Canonicalizer();
-    }
-    throw new IllegalArgumentException("Unsupported codec: " + codec);
+    return new RDFC10Canonicalizer();
   }
 
   public boolean verify(JsonLDObject jsonLdObject, DataIntegrityProof dataIntegrityProof)

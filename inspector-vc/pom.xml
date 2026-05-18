@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.1edtech</groupId>
 		<artifactId>vc-public-validator</artifactId>
-		<version>1.9.0</version>
+		<version>1.9.1</version>
 	</parent>
 	<artifactId>inspector-vc</artifactId>
 
@@ -42,6 +42,13 @@
           <groupId>com.apicatalog</groupId>
           <artifactId>iron-verifiable-credentials</artifactId>
       </dependency> -->
+
+	  <!-- https://github.com/filip26/titanium-rdf-canon -->
+	  	<dependency>
+		  <groupId>com.apicatalog</groupId>
+		  <artifactId>titanium-rdfc</artifactId>
+		  <version>2.0.0</version>
+		</dependency>
 
 		<!-- https://github.com/filip26/copper-multibase -->
 		<dependency>

@@ -156,7 +156,7 @@ public class ValidationPropertyProbe extends PropertyProbe {
             try {
                 return probe.run(node, ctx);
             } catch (Exception e) {
-                return ReportUtil.onProbeException(Probe.ID.NO_UNCAUGHT_EXCEPTIONS, null, e);
+                return ReportUtil.onProbeException(Probe.ID.NO_UNCAUGHT_EXCEPTIONS, null, "ValidationPropertyProbe validation", e);
             }
         })
         .collect(Collectors.toList());
@@ -172,7 +172,7 @@ public class ValidationPropertyProbe extends PropertyProbe {
             try {
                 return probe.run(node, ctx);
             } catch (Exception e) {
-                return ReportUtil.onProbeException(Probe.ID.NO_UNCAUGHT_EXCEPTIONS, null, e);
+                return ReportUtil.onProbeException(Probe.ID.NO_UNCAUGHT_EXCEPTIONS, null, "ValidationPropertyProbe validation", e);
             }
         })
         .collect(Collectors.toList());

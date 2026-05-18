@@ -114,7 +114,7 @@ public class OB20EndorsementInspector extends VCInspector implements SubInspecto
 				if(broken(accumulator)) return abort(ctx, accumulator, probeCount);
 			}
 		} catch (Exception e) {
-			accumulator.add(onProbeException(Probe.ID.NO_UNCAUGHT_EXCEPTIONS, resource, e));
+			accumulator.add(onProbeException(Probe.ID.NO_UNCAUGHT_EXCEPTIONS, resource, "OB20EndorsementInspector validation", e));
 		}
 
 		return new Report(ctx, new ReportItems(accumulator), probeCount);
