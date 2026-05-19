@@ -20,7 +20,7 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <java.version>17</java.version>
-    <log4j.version>2.25.3</log4j.version>
+    <log4j.version>2.25.4</log4j.version>
     <skipTests>false</skipTests>
 		<web3j.version>4.13.0</web3j.version>
     <public.core.version>1.7.5</public.core.version>
