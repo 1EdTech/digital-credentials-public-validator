@@ -25,6 +25,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -223,6 +224,11 @@ public class SDFunctions {
       String graph    = replaceBlankLabel(params[6], c14nToNewLabelMap);
       canonicalNQuads.add(NQuadsWriter.nquad(subject, params[1], object, params[3], params[4], params[5], graph));
     }
+
+    // Sort after HMAC label replacement: mandatoryIndexes in the CBOR proof are positional indexes
+    // into the post-sort array, so skipping this sort produces a wrong mandatoryHash and fails all
+    // signature verifications when the credential has more than one blank node.
+    Collections.sort(canonicalNQuads);
 
     // 4. Return an object containing labelMap and canonicalNQuads.
     return new Tuple<>(labelMap, canonicalNQuads);
