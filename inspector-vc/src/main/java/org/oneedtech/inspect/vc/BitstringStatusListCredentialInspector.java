@@ -56,7 +56,8 @@ public class BitstringStatusListCredentialInspector extends VCInspector {
             .put(Key.JACKSON_OBJECTMAPPER, mapper)
             .put(Key.JSONPATH_EVALUATOR, jsonPath)
             .put(Key.GENERATED_OBJECT_BUILDER, new VerifiableCredential.Builder())
-            .put(Key.JWT_CREDENTIAL_NODE_NAME, "vc")
+            .put(Key.JWT_CREDENTIAL_NODE_NAME, VerifiableCredential.JWT_NODE_NAME)
+            .put(Key.JWT_CREDENTIAL_ALLOW_WHOLE_PAYLOAD, VerifiableCredential.JWT_ALLOW_WHOLE_PAYLOAD)
             .put(RunContextKey.DID_RESOLVER, didResolver)
             .build();
 
