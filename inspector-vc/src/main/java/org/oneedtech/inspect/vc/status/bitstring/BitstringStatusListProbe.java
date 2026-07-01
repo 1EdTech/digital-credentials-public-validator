@@ -117,7 +117,7 @@ public class BitstringStatusListProbe extends Probe<JsonNode> {
       // multiplied by the size. If the credentialIndex multiplied by the size is a value outside of
       // the range of the bitstring, a RANGE_ERROR MUST be raised.
       int index = credentialIndex * statusSize;
-      if (index >= revocationBitString.length) {
+      if (index >= revocationBitString.length * 8L) {
         return error(
             "credentialIndex multiplied by the size is a value outside of the range of the"
                 + " bitstring",

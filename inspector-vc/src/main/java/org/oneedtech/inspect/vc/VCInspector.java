@@ -1,5 +1,6 @@
 package org.oneedtech.inspect.vc;
 
+import static java.lang.Boolean.TRUE;
 import static java.util.stream.Collectors.toList;
 import static org.oneedtech.inspect.vc.util.JsonNodeUtil.asStringList;
 
@@ -19,7 +20,6 @@ import org.oneedtech.inspect.core.report.ReportItems;
 import org.oneedtech.inspect.util.code.Tuple;
 import org.oneedtech.inspect.vc.jsonld.probe.ExtensionProbe;
 import org.oneedtech.inspect.vc.resource.DefaultJsonLDUriResourceFactory;
-import org.oneedtech.inspect.vc.resource.DefaultUriResourceFactory;
 import org.oneedtech.inspect.vc.resource.UriResourceFactory;
 import org.oneedtech.inspect.vc.util.CachingDocumentLoader;
 import org.oneedtech.inspect.vc.util.JsonNodeUtil;
@@ -135,6 +135,8 @@ public abstract class VCInspector extends Inspector {
 		public Builder() {
 			super();
 			this.probes = new ArrayList<>();
+			// default to fail fast on json schema validation errors
+			this.set(Inspector.Behavior.JsonSchema.VALIDATOR_FAIL_FAST, TRUE);
 		}
 
 		public VCInspector.Builder<B> add(Probe<VerifiableCredential> probe) {
