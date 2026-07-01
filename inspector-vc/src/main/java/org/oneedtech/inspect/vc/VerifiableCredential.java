@@ -58,14 +58,14 @@ public class VerifiableCredential extends Credential {
     return version;
   }
 
-  private static final Map<CredentialEnum, SchemaKey> schemas =
-      new ImmutableMap.Builder<CredentialEnum, SchemaKey>()
-          .put(AchievementCredential, Catalog.OB_30_ANY_ACHIEVEMENTCREDENTIAL_JSON)
-          .put(OpenBadgeCredential, Catalog.OB_30_ANY_ACHIEVEMENTCREDENTIAL_JSON)
-          .put(ClrCredential, Catalog.CLR_20_ANY_CLRCREDENTIAL_JSON)
-          .put(VerifiablePresentation, Catalog.CLR_20_ANY_CLRCREDENTIAL_JSON)
-          .put(EndorsementCredential, Catalog.OB_30_ANY_ENDORSEMENTCREDENTIAL_JSON)
-          .build();
+  // private static final Map<CredentialEnum, SchemaKey> schemas =
+  //     new ImmutableMap.Builder<CredentialEnum, SchemaKey>()
+  //         .put(AchievementCredential, Catalog.OB_30_ANY_ACHIEVEMENTCREDENTIAL_JSON)
+  //         .put(OpenBadgeCredential, Catalog.OB_30_ANY_ACHIEVEMENTCREDENTIAL_JSON)
+  //         .put(ClrCredential, Catalog.CLR_20_ANY_CLRCREDENTIAL_JSON)
+  //         .put(VerifiablePresentation, Catalog.CLR_20_ANY_CLRCREDENTIAL_JSON)
+  //         .put(EndorsementCredential, Catalog.OB_30_ANY_ENDORSEMENTCREDENTIAL_JSON)
+  //         .build();
 
   private static final Map<CredentialEnum, List<String>> proofTypes =
       new ImmutableMap.Builder<CredentialEnum, List<String>>()
@@ -226,15 +226,33 @@ public class VerifiableCredential extends Credential {
   }
 
   public static enum VCVersion {
-    VCDMv2p0(ISSUED_ON_PROPERTY_NAME_V20, EXPIRES_AT_PROPERTY_NAME_V20),
-    VCDMv1p1(ISSUED_ON_PROPERTY_NAME_V11, EXPIRES_AT_PROPERTY_NAME_V11);
+    VCDMv2p0(
+        ISSUED_ON_PROPERTY_NAME_V20,
+        EXPIRES_AT_PROPERTY_NAME_V20,
+        new ImmutableMap.Builder<CredentialEnum, SchemaKey>()
+            .put(AchievementCredential, Catalog.OB_30_ACHIEVEMENTCREDENTIAL_JSON)
+            .put(ClrCredential, Catalog.CLR_20_CLRCREDENTIAL_JSON)
+            .put(VerifiablePresentation, Catalog.CLR_20_CLRCREDENTIAL_JSON)
+            .put(EndorsementCredential, Catalog.OB_30_ENDORSEMENTCREDENTIAL_JSON)
+            .build()),
+    VCDMv1p1(
+        ISSUED_ON_PROPERTY_NAME_V11,
+        EXPIRES_AT_PROPERTY_NAME_V11,
+        new ImmutableMap.Builder<CredentialEnum, SchemaKey>()
+            .put(AchievementCredential, Catalog.OB_30_ANY_ACHIEVEMENTCREDENTIAL_JSON)
+            .put(ClrCredential, Catalog.CLR_20_ANY_CLRCREDENTIAL_JSON)
+            .put(VerifiablePresentation, Catalog.CLR_20_ANY_CLRCREDENTIAL_JSON)
+            .put(EndorsementCredential, Catalog.OB_30_ANY_ENDORSEMENTCREDENTIAL_JSON)
+            .build());
 
     final String issuanceDateField;
     final String expirationDateField;
+    final Map<CredentialEnum, SchemaKey> schemas;
 
-    VCVersion(String issuanceDateField, String expirationDateField) {
+    VCVersion(String issuanceDateField, String expirationDateField, Map<CredentialEnum, SchemaKey> schemas) {
       this.issuanceDateField = issuanceDateField;
       this.expirationDateField = expirationDateField;
+      this.schemas = schemas;
     }
 
     public static VCVersion of(JsonNode context) {
@@ -260,7 +278,7 @@ public class VerifiableCredential extends Credential {
     public VerifiableCredential build() {
       VCVersion version = VCVersion.of(getJsonData().get("@context"));
 
-      return new VerifiableCredential(getResource(), getJsonData(), getJwt(), schemas, version);
+      return new VerifiableCredential(getResource(), getJsonData(), getJwt(), version.schemas, version);
     }
   }
 
