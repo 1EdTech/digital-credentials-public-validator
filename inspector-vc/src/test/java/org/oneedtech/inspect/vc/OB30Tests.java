@@ -346,6 +346,17 @@ public class OB30Tests {
 	}
 
 	@Test
+	void testSimpleJsonCredentialSubjectWithoutIdOrIdentifier() {
+		//remove .id and .identifier, either of which the spec requires
+		assertDoesNotThrow(()->{
+			Report report = validator.run(Samples.OB30.JSON.SIMPLE_JSON_CREDENTIAL_SUBJECT_NO_ID_NO_IDENTIFIER.asFileResource());
+			if(verbose) PrintHelper.print(report, true);
+			assertInvalid(report);
+			assertHasProbeID(report, CredentialSubjectProbe.ID, true);
+		});
+	}
+
+	@Test
 	void testSimpleJsonInvalidCredentialSubjectResultType() {
 		//add a dumb value to .type and remove the ob type
 		assertDoesNotThrow(()->{
