@@ -46,6 +46,8 @@ import org.oneedtech.inspect.vc.probe.TypePropertyProbe;
 import org.oneedtech.inspect.vc.probe.VerificationDependenciesProbe;
 import org.oneedtech.inspect.vc.probe.VerificationJWTProbe;
 import org.oneedtech.inspect.vc.probe.validation.ValidationPropertyProbeFactory;
+import org.oneedtech.inspect.vc.resource.DefaultJsonLDUriResourceFactory;
+import org.oneedtech.inspect.vc.resource.OB20JsonLDUriResourceFactory;
 import org.oneedtech.inspect.vc.resource.UriResourceFactory;
 import org.oneedtech.inspect.vc.util.CachingDocumentLoader;
 
@@ -223,6 +225,12 @@ public class OB20Inspector extends VCInspector {
 
 		return new Report(ctx, new ReportItems(accumulator), probeCount);
     }
+
+	@Override
+	protected UriResourceFactory getUriResourceFactory(DocumentLoader documentLoader) {
+		return new OB20JsonLDUriResourceFactory();
+	}
+
 
 	public static class Builder extends VCInspector.Builder<OB20Inspector.Builder> {
 
