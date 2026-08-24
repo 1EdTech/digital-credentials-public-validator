@@ -32,4 +32,12 @@ public class TestUriResourceFactory implements UriResourceFactory {
 		return new UriResource(uri);
 	}
 
+	@Override
+	public UriResource of(URI uri) throws URISyntaxException {
+		if (documentLoader instanceof CachingDocumentLoader) {
+			URI resolvedUri = ((CachingDocumentLoader.HttpLoader) ConfigurableDocumentLoader.getDefaultHttpLoader()).resolve(uri);
+			uri = resolvedUri;
+		}
+		return new UriResource(uri);
+	}
 }

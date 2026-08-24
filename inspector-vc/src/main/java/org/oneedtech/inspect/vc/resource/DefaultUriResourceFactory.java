@@ -16,4 +16,8 @@ public class DefaultUriResourceFactory implements UriResourceFactory {
 		return new UriResource(new URI(uri));
 	}
 
+	@Override
+	public UriResource of(URI uri) throws URISyntaxException {
+		return new UriResource(uri);
+	}
 }

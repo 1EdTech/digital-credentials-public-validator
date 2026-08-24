@@ -14,4 +14,8 @@ public class DefaultJsonLDUriResourceFactory implements UriResourceFactory {
         return new UriResource(new URI(uri), ResourceType.JSON, List.of(ResourceType.VC_JSON_LD, ResourceType.JSON_LD, ResourceType.JSON));
     }
 
+    @Override
+    public UriResource of(URI uri) throws URISyntaxException {
+        return new UriResource(uri, ResourceType.JSON, List.of(ResourceType.VC_JSON_LD, ResourceType.JSON_LD, ResourceType.JSON));
+    }
 }
