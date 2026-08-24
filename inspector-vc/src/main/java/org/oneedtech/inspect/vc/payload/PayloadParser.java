@@ -11,8 +11,8 @@ import org.oneedtech.inspect.core.probe.RunContext;
 import org.oneedtech.inspect.core.probe.RunContext.Key;
 import org.oneedtech.inspect.util.resource.Resource;
 import org.oneedtech.inspect.util.resource.ResourceType;
-import org.oneedtech.inspect.util.resource.UriResource;
 import org.oneedtech.inspect.vc.Credential;
+import org.oneedtech.inspect.vc.resource.UriResourceFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -80,7 +80,8 @@ public abstract class PayloadParser {
 	 * @throws Exception if an error occurs during parsing or resource retrieval
 	 */
 	protected static JsonNode fromUri(URI uri, RunContext context) throws Exception {
-		Resource res = new UriResource(uri, ResourceType.JSON);
+		UriResourceFactory uriResourceFactory = (UriResourceFactory) context.get(Key.URI_RESOURCE_FACTORY);
+		Resource res = uriResourceFactory.of(uri);
 		Credential crd = PayloadParserFactory.of(res).parse(res, context);
 		return crd.getJson();
 	}
