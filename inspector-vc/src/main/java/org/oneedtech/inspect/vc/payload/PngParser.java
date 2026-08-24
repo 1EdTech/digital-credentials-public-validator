@@ -2,20 +2,21 @@ package org.oneedtech.inspect.vc.payload;
 
 import static org.oneedtech.inspect.util.code.Defensives.checkTrue;
 
+import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
+import java.io.EOFException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
-
-import javax.imageio.ImageIO;
-import javax.imageio.ImageReader;
-import javax.imageio.metadata.IIOMetadata;
+import java.nio.charset.StandardCharsets;
+import java.util.zip.DataFormatException;
+import java.util.zip.Inflater;
 
 import org.oneedtech.inspect.core.probe.RunContext;
 import org.oneedtech.inspect.util.resource.Resource;
 import org.oneedtech.inspect.util.resource.ResourceType;
 import org.oneedtech.inspect.vc.Credential;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -38,27 +39,12 @@ public final class PngParser extends PayloadParser {
 		try(InputStream is = resource.asByteSource().openStream()) {
 			final Keys credentialKey = (Keys) ctx.get(RunContext.Key.PNG_CREDENTIAL_KEY);
 
-			ImageReader imageReader = ImageIO.getImageReadersByFormatName("png").next();
-			imageReader.setInput(ImageIO.createImageInputStream(is), true);
-			IIOMetadata metadata = imageReader.getImageMetadata(0);
-
-			String vcString = null;
+			TextChunkResult textChunkResult = readTextChunk(is, credentialKey.getNodeName(), credentialKey.allowsInconsistentItXt(), credentialKey.allowsTeXT());
+			String vcString = textChunkResult != null ? textChunkResult.text : null;
 			String jwtString = null;
-			String formatSearch = null;
 			JsonNode vcNode = null;
 
-			String[] names = metadata.getMetadataFormatNames();
-			int length = names.length;
-			for (int i = 0; i < length; i++) {
-				//Check all names rather than limiting to PNG format to remain malleable through any library changes.  (Could limit to "javax_imageio_png_1.0")
-				formatSearch = getOpenBadgeCredentialNodeText(metadata.getAsTree(names[i]), credentialKey);
-				if(formatSearch != null) {
-					vcString = formatSearch;
-					break;
-				}
-			}
-
-			if(vcString == null) {
+			if(textChunkResult == null || vcString == null) {
 				throw new IllegalArgumentException("No credential inside PNG");
 			}
 
@@ -66,7 +52,7 @@ public final class PngParser extends PayloadParser {
 			if(vcString.charAt(0) != '{'){
 				// check if the content is an URI and we allow URI location in value
 				boolean isJwt = true;
-				if (credentialKey.allowsUriLocationInValue()) {
+				if (credentialKey.allowsUriLocationInValue() || textChunkResult.needHttpFetch) {
 					try {
 						/** Legacy PNGs in OB 2.0
 						 * The pre-specified behavior of badge baking worked differently.
@@ -99,43 +85,144 @@ public final class PngParser extends PayloadParser {
 		}
 	}
 
-	private String getOpenBadgeCredentialNodeText(Node node, Keys credentialKey){
-        NamedNodeMap attributes = node.getAttributes();
+	/**
+	 * Scans PNG text chunks (tEXt, iTXt) directly at the byte level and returns the text of
+	 * the first chunk whose keyword matches, skipping every other chunk by its declared length.
+	 * javax.imageio's PNGImageReader parses every chunk in the file up front and aborts entirely if
+	 * any one of them is malformed, even when it has nothing to do with the credential we're after.
+	 * Reading chunks manually means a broken, unrelated chunk elsewhere in the file can't prevent us
+	 * from finding the one we actually need.
+	 */
+	private TextChunkResult readTextChunk(InputStream is, String keyword, boolean allowInconsistentItXt, boolean allowTeXT) throws IOException {
+		DataInputStream dis = new DataInputStream(is);
+		dis.readFully(new byte[8]); //PNG signature, already validated by ResourceType detection
 
-		//If this node is labeled with the attribute keyword: 'openbadgecredential' it is the right one.
-        Node keyword = attributes.getNamedItem("keyword");
-		if(keyword != null && keyword.getNodeValue().equals(credentialKey.getNodeName())){
-			Node textAttribute = attributes.getNamedItem("text");
-			if(textAttribute != null) {
-				return textAttribute.getNodeValue();
+		while (true) {
+			int length;
+			try {
+				length = dis.readInt();
+			} catch (EOFException e) {
+				return null;
+			}
+			byte[] type = new byte[4];
+			dis.readFully(type);
+			String typeName = new String(type, StandardCharsets.US_ASCII);
+			byte[] data = new byte[length];
+			dis.readFully(data);
+			dis.skipBytes(4); //CRC
+
+			if ("IEND".equals(typeName)) {
+				return null;
+			}
+
+			if (typeName.equals("iTXt")) {
+				String text = parseITXt(data, keyword, allowInconsistentItXt);
+				if (text != null) {
+					return new TextChunkResult(false, text);
+				}
+			}
+			if (allowTeXT && typeName.equals("tEXt")) {
+				String text = parseTEXt(data, keyword);
+				if (text != null) {
+					return new TextChunkResult(true, text);
+				}
 			}
 		}
+	}
 
-		//iterate over all children depth first and search for the credential node.
-		Node child = node.getFirstChild();
-		while (child != null) {
-            String nodeValue = getOpenBadgeCredentialNodeText(child, credentialKey);
-			if(nodeValue != null) {
-				return nodeValue;
+	private String parseITXt(byte[] data, String keyword, boolean allowInconsistentItXt) {
+		int nul = indexOf(data, 0, data.length);
+		if (nul < 0 || !matchesKeyword(data, nul, keyword)) {
+			return null;
+		}
+		//A well-formed iTXt chunk has a compression flag (0 or 1) and method (0) right after the
+		//keyword, followed by null-terminated language-tag and translated-keyword fields. Some
+		//badge-baking tools write plain text directly after the keyword instead, so the byte we'd
+		//read as the compression flag is really the start of the text. Only trust the strict
+		//structure when it actually looks like one.
+		if (nul + 2 < data.length) {
+			byte flag = data[nul + 1];
+			byte method = data[nul + 2];
+			if ((flag == 0 || flag == 1) && method == 0) {
+				int langEnd = indexOf(data, nul + 3, data.length);
+				if (langEnd >= 0) {
+					int translatedEnd = indexOf(data, langEnd + 1, data.length);
+					if (translatedEnd >= 0) {
+						int textStart = translatedEnd + 1;
+						int textLength = data.length - textStart;
+						if (flag == 0) {
+							return new String(data, textStart, textLength, StandardCharsets.UTF_8);
+						}
+						byte[] inflated = inflate(data, textStart, textLength);
+						return inflated == null ? null : new String(inflated, StandardCharsets.UTF_8);
+					}
+				}
 			}
-            child = child.getNextSibling();
-        }
+		}
+		//Malformed/legacy chunk: treat everything after the keyword as raw text, like a tEXt chunk.
+		if (!allowInconsistentItXt) {
+			return null;
+		}
+		return new String(data, nul + 1, data.length - nul - 1, StandardCharsets.UTF_8);
+	}
 
-		//Return null if we haven't found anything at this recursive depth.
-		return null;
+	private String parseTEXt(byte[] data, String keyword) {
+		int nul = indexOf(data, 0, data.length);
+		if (nul < 0 || !matchesKeyword(data, nul, keyword)) {
+			return null;
+		}
+		return new String(data, nul + 1, data.length - nul - 1, StandardCharsets.ISO_8859_1);
+	}
+
+	private boolean matchesKeyword(byte[] data, int nul, String keyword) {
+		return new String(data, 0, nul, StandardCharsets.ISO_8859_1).equals(keyword);
+	}
+
+	private int indexOf(byte[] data, int from, int to) {
+		for (int i = from; i < to; i++) {
+			if (data[i] == 0) {
+				return i;
+			}
+		}
+		return -1;
+	}
+
+	private byte[] inflate(byte[] data, int offset, int length) {
+		Inflater inflater = new Inflater();
+		inflater.setInput(data, offset, length);
+		ByteArrayOutputStream out = new ByteArrayOutputStream(Math.max(length * 2, 64));
+		byte[] buffer = new byte[4096];
+		try {
+			while (!inflater.finished()) {
+				int count = inflater.inflate(buffer);
+				if (count == 0 && (inflater.needsInput() || inflater.needsDictionary())) {
+					break;
+				}
+				out.write(buffer, 0, count);
+			}
+			return out.toByteArray();
+		} catch (DataFormatException e) {
+			return null;
+		} finally {
+			inflater.end();
+		}
 	}
 
 	public enum Keys {
-		OB20("openbadges", true),
-		OB30("openbadgecredential", false),
-		CLR20("clrcredential", false);
+		OB20("openbadges", true, true, true),
+		OB30("openbadgecredential", false, false, false),
+		CLR20("clrcredential", false, false, false);
 
 		private String nodeName;
 		private boolean allowUriLocationInValue;
+		private boolean allowInconsistentItXt;
+		private boolean allowTeXT;
 
-		private Keys(String nodeName, boolean allowUriLocationInValue) {
+		private Keys(String nodeName, boolean allowUriLocationInValue, boolean allowInconsistentItXt, boolean allowTeXT) {
 			this.nodeName = nodeName;
 			this.allowUriLocationInValue = allowUriLocationInValue;
+			this.allowInconsistentItXt = allowInconsistentItXt;
+			this.allowTeXT = allowTeXT;
 		}
 
 		public String getNodeName() {
@@ -144,6 +231,24 @@ public final class PngParser extends PayloadParser {
 
 		public boolean allowsUriLocationInValue() {
 			return allowUriLocationInValue;
+		}
+
+		public boolean allowsInconsistentItXt() {
+			return allowInconsistentItXt;
+		}
+
+		public boolean allowsTeXT() {
+			return allowTeXT;
+		}
+	}
+
+	private static class TextChunkResult {
+		boolean needHttpFetch;
+		String text;
+
+		public TextChunkResult(boolean needHttpFetch, String text) {
+			this.needHttpFetch = needHttpFetch;
+			this.text = text;
 		}
 	}
 }
