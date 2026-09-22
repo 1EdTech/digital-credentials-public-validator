@@ -228,14 +228,18 @@ public class BbsFunctions {
       if (components[1].getMajorType() != MajorType.MAP) {
         throw new GeneralSecurityException("Invalid proofValue: labelMap is not a map.");
       }
-      Map<Integer, byte[]> compressedLabelMap = new HashMap<>();
+      Map<Integer, Integer> compressedLabelMap = new HashMap<>();
       co.nstant.in.cbor.model.Map labelMapCbor = (co.nstant.in.cbor.model.Map) components[1];
       for (DataItem key : labelMapCbor.getKeys()) {
         if (key.getMajorType() != MajorType.UNSIGNED_INTEGER) {
           throw new GeneralSecurityException("Invalid proofValue: labelMap key is not an integer.");
         }
         int intKey = ((UnsignedInteger) key).getValue().intValue();
-        byte[] value = expectByteString(labelMapCbor.get(key), "labelMap value");
+        DataItem valueItem = labelMapCbor.get(key);
+        if (valueItem.getMajorType() != MajorType.UNSIGNED_INTEGER) {
+          throw new GeneralSecurityException("Invalid proofValue: labelMap value is not an integer.");
+        }
+        int value = ((UnsignedInteger) valueItem).getValue().intValue();
         compressedLabelMap.put(intKey, value);
       }
       Map<String, String> labelMap = decompressLabelMap(compressedLabelMap);
@@ -278,11 +282,16 @@ public class BbsFunctions {
     return result;
   }
 
-  private Map<String, String> decompressLabelMap(Map<Integer, byte[]> compressedLabelMap) {
+  /**
+   * bbs-2023 compresses its (HMAC-shuffled) label map to plain small integers -- "c14nK" -> "bV" --
+   * unlike ecdsa-sd-2023's compressLabelMap/decompressLabelMap (SDFunctions), which uses full
+   * 32-byte HMAC digests as the label values. See the vc-di-bbs spec's own worked example
+   * (Appendix A, "Disclosure Data"): {@code "labelMap":{"...":[["c14n0","b0"],["c14n1","b2"]]}}.
+   */
+  private Map<String, String> decompressLabelMap(Map<Integer, Integer> compressedLabelMap) {
     Map<String, String> map = new HashMap<>();
-    for (Map.Entry<Integer, byte[]> entry : compressedLabelMap.entrySet()) {
-      String base64UrlEncoded = Base64.getUrlEncoder().withoutPadding().encodeToString(entry.getValue());
-      map.put("c14n" + entry.getKey(), "u" + base64UrlEncoded);
+    for (Map.Entry<Integer, Integer> entry : compressedLabelMap.entrySet()) {
+      map.put("c14n" + entry.getKey(), "b" + entry.getValue());
     }
     return map;
   }
