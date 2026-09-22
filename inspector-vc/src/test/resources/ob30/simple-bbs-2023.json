@@ -1,0 +1,44 @@
+{
+  "@context": [
+    "https://www.w3.org/ns/credentials/v2",
+    "https://purl.imsglobal.org/spec/ob/v3p0/context-3.0.3.json"
+  ],
+  "id": "http://example.com/credentials/3527",
+  "type": [
+    "VerifiableCredential",
+    "OpenBadgeCredential"
+  ],
+  "issuer": {
+    "id": "https://example.com/issuers/876543",
+    "type": [
+      "Profile"
+    ],
+    "name": "Example Corp"
+  },
+  "validFrom": "2010-01-01T00:00:00Z",
+  "name": "Teamwork Badge",
+  "credentialSubject": {
+    "id": "did:example:ebfeb1f712ebc6f1c276e12ec21",
+    "type": [
+      "AchievementSubject"
+    ],
+    "achievement": {
+      "id": "https://example.com/achievements/21st-century-skills/teamwork",
+      "type": [
+        "Achievement"
+      ],
+      "name": "Teamwork",
+      "description": "This badge recognizes the development of the capacity to collaborate within a group environment.",
+      "criteria": {
+        "narrative": "Team members are nominated for this badge by their peers and recognized upon review by Example Corp management."
+      }
+    }
+  },
+  "proof": {
+    "type": "DataIntegrityProof",
+    "verificationMethod": "https://example.com/issuers/876543#zUC7HyYSwfDLXwJB8DYfRZproGZ7oSEMQtpQTJnbPauAZYTULXsc2N1iAEa5mco11WM6JVKy9JBvUrNfQyYWSec5Nv5mFhvTsiztATSFixrxtD7pDNAbvZhBPZGZNjGpCnv41kA",
+    "cryptosuite": "bbs-2023",
+    "proofPurpose": "assertionMethod",
+    "proofValue": "u2V0DhVkBELGJmyDL13O8LWxN4X1T5THSdy_DClm8LJWxyAIC6xTBTeZoazMWz7-BG6jTXtRZqrjcvpOrBs_1K405ugaIOW9KceH79ZTn1mJhlIkiV2I5eikwFgBN3jj_CB7yiMYjzKyQhadx25VSagKEzFL-UQJRVQq4b5u-_cDK4_-6Spl7m04U9uDtO_a8rHBCqseRdmqzwNeegjGFpnE-0529GLiI6mLUEPD7EIGjkNH4obsgQJTKD6yWAmYd1E4Ry1WsbG-UWoi_e1AGT_FZwrUQhl8I8WF3JGV_BijizqwOUafDbesXisXbiqRMey9eJWu9lkB0nthCsfpoDEcN7zZ_YeCApcoaKl11kf972VasZf1DoQAAhgIDBgcMDYkAAQIDBAUGBwhA"
+  }
+}
