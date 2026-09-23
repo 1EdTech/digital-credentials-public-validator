@@ -526,6 +526,46 @@ public class OB30Tests {
 		});
 	}
 
+	@Test
+	void testBbs2023FullDisclosureValid() {
+		assertDoesNotThrow(()->{
+			Report report = validator.run(Samples.OB30.JSON.SIMPLE_BBS_2023_JSON.asFileResource());
+			if(verbose) PrintHelper.print(report, true);
+			assertValid(report);
+		});
+	}
+
+	@Test
+	void testBbs2023PartialDisclosureValid() {
+		assertDoesNotThrow(()->{
+			Report report = validator.run(Samples.OB30.SD.DERIVED_CREDENTIAL_BBS_2023.asFileResource());
+			if(verbose) PrintHelper.print(report, true);
+			assertValid(report);
+		});
+	}
+
+	@Test
+	void testBbs2023TamperedMessageRejected() {
+		// a disclosed field was modified post-signing without re-deriving the proof.
+		assertDoesNotThrow(()->{
+			Report report = validator.run(Samples.OB30.SD.DERIVED_CREDENTIAL_BBS_2023_TAMPERED.asFileResource());
+			if(verbose) PrintHelper.print(report, true);
+			assertInvalid(report);
+			assertHasProbeID(report, EmbeddedProofProbe.ID, true);
+		});
+	}
+
+	@Test
+	void testBbs2023RejectedOnVCDMv1p1() {
+		// bbs-2023 is only supported for VC Data Model 2.0 credentials.
+		assertDoesNotThrow(()->{
+			Report report = validator.run(Samples.OB30.JSON.SIMPLE_BBS_2023_VCDM1P1_JSON.asFileResource());
+			if(verbose) PrintHelper.print(report, true);
+			assertInvalid(report);
+			assertHasProbeID(report, EmbeddedProofProbe.ID, true);
+		});
+	}
+
   static class MockVelocityNetworkMetadataRegistry
       implements VelocityNetworkMetadataRegistryFacade {
     public List<VelocityNetworkMetadataRegistry.CredentialMetadata> getPaidEntries(

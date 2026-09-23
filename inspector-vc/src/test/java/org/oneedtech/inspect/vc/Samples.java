@@ -16,6 +16,8 @@ public class Samples {
 			public final static Sample SIMPLE_V1_JSON = new Sample("ob30/simple_v1.json", true);
 			public final static Sample SIMPLE_1OB = new Sample("ob30/simple.1ob", true);
 			public final static Sample SIMPLE_EDDSA_20222_JSON = new Sample("ob30/simple-eddsa-2022.json", true);
+			public final static Sample SIMPLE_BBS_2023_JSON = new Sample("ob30/simple-bbs-2023.json", true);
+			public final static Sample SIMPLE_BBS_2023_VCDM1P1_JSON = new Sample("ob30/simple-bbs-2023-vcdm1p1.json", false);
 			public final static Sample SIMPLE_DID_KEY_METHOD_JSON = new Sample("ob30/simple-did-key-method.json", true);
 			public final static Sample SIMPLE_DID_WEB_METHOD_JSON = new Sample("ob30/simple-did-web-method.json", true);
 			public final static Sample SIMPLE_MULTIPLE_PROOF_JSON = new Sample("ob30/simple-multiple-proofs.json", true);
@@ -61,6 +63,8 @@ public class Samples {
 		}
 		public static final class SD {
 			public final static Sample DERIVED_CREDENTIAL = new Sample("ob30/sd/derivedcredential.json", true);
+			public final static Sample DERIVED_CREDENTIAL_BBS_2023 = new Sample("ob30/sd/derivedcredential-bbs-2023.json", true);
+			public final static Sample DERIVED_CREDENTIAL_BBS_2023_TAMPERED = new Sample("ob30/sd/derivedcredential-bbs-2023-tampered.json", false);
 		}
 	}
 
