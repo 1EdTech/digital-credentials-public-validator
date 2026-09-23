@@ -132,7 +132,7 @@ public class CredentialSubjectProbe extends Probe<JsonNode> {
     if (id != null && id.textValue().strip().length() > 0) return false;
 
     List<JsonNode> identifiers = JsonNodeUtil.asNodeList(root.get("identifier"));
-    if (identifiers == null || identifiers.size() > 0) return false;
+    if (identifiers != null && identifiers.size() > 0) return false;
 
     return true;
   }
