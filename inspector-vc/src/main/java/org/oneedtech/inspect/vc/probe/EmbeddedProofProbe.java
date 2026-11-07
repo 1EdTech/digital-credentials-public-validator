@@ -33,6 +33,7 @@ import org.oneedtech.inspect.vc.W3CVCHolder;
 import org.oneedtech.inspect.vc.probe.did.DidResolution;
 import org.oneedtech.inspect.vc.probe.did.DidResolutionException;
 import org.oneedtech.inspect.vc.probe.did.DidResolver;
+import org.oneedtech.inspect.vc.verification.Bbs2023LdVerifier;
 import org.oneedtech.inspect.vc.verification.EcdsaSd2023LdVerifier;
 import org.oneedtech.inspect.vc.verification.Ed25519Signature2022LdVerifier;
 import org.oneedtech.inspect.vc.verification.Ed25519Signature2022VCDM20LdVerifier;
@@ -45,7 +46,7 @@ import org.oneedtech.inspect.vc.verification.Ed25519Signature2022VCDM20LdVerifie
 public class EmbeddedProofProbe extends Probe<VerifiableCredential> {
 
   private static final List<String> ALLOWED_CRYPTOSUITES =
-      List.of("eddsa-2022", "eddsa-rdfc-2022", "ecdsa-sd-2023");
+      List.of("eddsa-2022", "eddsa-rdfc-2022", "ecdsa-sd-2023", "bbs-2023");
   private MulticodecDecoder multicodecDecoder;
   private CredentialEnum type;
 
@@ -54,7 +55,10 @@ public class EmbeddedProofProbe extends Probe<VerifiableCredential> {
     this.type = type;
     this.multicodecDecoder =
         MulticodecDecoder.getInstance(
-            KeyCodec.ED25519_PUBLIC_KEY, KeyCodec.P256_PUBLIC_KEY, KeyCodec.P384_PUBLIC_KEY);
+            KeyCodec.ED25519_PUBLIC_KEY,
+            KeyCodec.P256_PUBLIC_KEY,
+            KeyCodec.P384_PUBLIC_KEY,
+            KeyCodec.BLS12_381_G2_PUBLIC_KEY);
   }
 
   /*
@@ -95,6 +99,16 @@ public class EmbeddedProofProbe extends Probe<VerifiableCredential> {
     }
 
     DataIntegrityProof proof = selectedProof.get();
+
+    if (proof.isType("DataIntegrityProof")
+        && "bbs-2023".equals(proof.getJsonObject().get("cryptosuite"))
+        && crd.getVersion() != VerifiableCredential.VCVersion.VCDMv2p0) {
+      return error(
+          "The bbs-2023 cryptosuite is only supported for Verifiable Credentials Data Model 2.0"
+              + " credentials.",
+          ctx);
+    }
+
     String expectedVerifactionMethodType =
         proof.isType("Ed25519Signature2020") ? "Ed25519VerificationKey2020" : "MultiKey";
 
@@ -211,11 +225,15 @@ public class EmbeddedProofProbe extends Probe<VerifiableCredential> {
       }
     }
 
-    // Decode the Multibase to Multicodec and check that it is an Ed25519, P256 or P384 public key
+    // Decode the Multibase to Multicodec and check that it is an Ed25519, P256, P384 or
+    // BLS12-381 (G2) public key
     // https://www.w3.org/TR/vc-di-eddsa/#multikey && https://www.w3.org/TR/vc-di-ecdsa/#multikey
+    // && https://www.w3.org/TR/vc-di-bbs/#multikey
     if (!IsValidPublicKeyMultibase(publicKeyMultibase)) {
       return error(
-          "Verification method does not contain either an Ed25519, P256 or P384 public key", ctx);
+          "Verification method does not contain either an Ed25519, P256, P384 or BLS12-381 public"
+              + " key",
+          ctx);
     }
 
     byte[] publicKeyMulticodec = MultibaseDecoder.getInstance().decode(publicKeyMultibase);
@@ -272,6 +290,9 @@ public class EmbeddedProofProbe extends Probe<VerifiableCredential> {
       String cryptosuite = proof.getJsonObject().get("cryptosuite").toString();
       if ("ecdsa-sd-2023".equals(cryptosuite)) {
         return new EcdsaSd2023LdVerifier(publicKey, codec);
+      }
+      if ("bbs-2023".equals(cryptosuite)) {
+        return new Bbs2023LdVerifier(publicKey);
       }
       if (crd.getVersion() == VerifiableCredential.VCVersion.VCDMv1p1) {
         return new Ed25519Signature2022LdVerifier(publicKey);
