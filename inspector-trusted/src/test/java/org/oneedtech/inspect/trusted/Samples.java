@@ -5,12 +5,8 @@ import org.oneedtech.inspect.test.Sample;
 public class Samples {
   public static final class TRUSTED {
     public static final Sample VALID = new Sample("trusted/valid.json", true);
-    /**
-     * valid.json without result.resultDate: resultDate is required by the TrustEd Schema but not
-     * defined by any JSON-LD context, so it is removed to isolate the extension contexts.
-     */
-    public static final Sample JSONLD_EXTENSION_CONTEXTS =
-        new Sample("trusted/jsonld-extension-contexts.json", false);
+    public static final Sample ERR_REQUIRED_CONTEXTS =
+        new Sample("trusted/err-required-contexts.json", false);
     public static final Sample ERR_SCHEMA_MISSING = new Sample("trusted/err-schema-missing.json", false);
     public static final Sample ERR_SCHEMA_VIOLATION =
         new Sample("trusted/err-schema-violation.json", false);

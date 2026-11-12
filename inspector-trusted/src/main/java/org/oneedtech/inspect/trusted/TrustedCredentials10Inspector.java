@@ -5,7 +5,7 @@ import org.oneedtech.inspect.core.probe.Probe;
 import org.oneedtech.inspect.trusted.probe.AchievedLevelProbe;
 import org.oneedtech.inspect.trusted.probe.AlignmentFrameworkProbe;
 import org.oneedtech.inspect.trusted.probe.CreditsProbe;
-import org.oneedtech.inspect.trusted.probe.ExtensionContextProbe;
+import org.oneedtech.inspect.trusted.probe.ContextPresenceProbe;
 import org.oneedtech.inspect.trusted.probe.TrustedSchemaProbe;
 import org.oneedtech.inspect.trusted.schema.TrustedCatalog;
 import org.oneedtech.inspect.util.resource.ResourceType;
@@ -34,12 +34,14 @@ public class TrustedCredentials10Inspector extends OB30Inspector {
   /** The profile probes, in the order they run after OB 3.0 verification. */
   static List<Probe<VerifiableCredential>> profileProbes() {
     return List.of(
+        ContextPresenceProbe.trusted(),
+        ContextPresenceProbe.obExtensions(),
         new TrustedSchemaProbe(),
         new AlignmentFrameworkProbe(),
         new AchievedLevelProbe(),
         new CreditsProbe(),
-        ExtensionContextProbe.assessment(),
-        ExtensionContextProbe.accreditation());
+        ContextPresenceProbe.assessment(),
+        ContextPresenceProbe.accreditation());
   }
 
   public static class Builder extends OB30Inspector.Builder {

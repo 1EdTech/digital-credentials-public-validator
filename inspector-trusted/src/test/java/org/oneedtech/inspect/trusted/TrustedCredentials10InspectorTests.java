@@ -17,7 +17,7 @@ import org.oneedtech.inspect.test.PrintHelper;
 import org.oneedtech.inspect.trusted.probe.AchievedLevelProbe;
 import org.oneedtech.inspect.trusted.probe.AlignmentFrameworkProbe;
 import org.oneedtech.inspect.trusted.probe.CreditsProbe;
-import org.oneedtech.inspect.trusted.probe.ExtensionContextProbe;
+import org.oneedtech.inspect.trusted.probe.ContextPresenceProbe;
 import org.oneedtech.inspect.trusted.probe.TrustedSchemaProbe;
 import org.oneedtech.inspect.trusted.schema.TrustedCatalog;
 import org.oneedtech.inspect.test.Sample;
@@ -73,12 +73,14 @@ public class TrustedCredentials10InspectorTests {
   @Test
   void validCredentialPassesAllProfileProbes() throws Exception {
     Report report = run(Samples.TRUSTED.VALID);
+    assertOutcome(report, ContextPresenceProbe.TRUSTED_ID, Outcome.VALID);
+    assertOutcome(report, ContextPresenceProbe.OB_EXTENSIONS_ID, Outcome.VALID);
     assertOutcome(report, TrustedSchemaProbe.ID, Outcome.VALID);
     assertOutcome(report, AlignmentFrameworkProbe.ID, Outcome.VALID);
     assertOutcome(report, AchievedLevelProbe.ID, Outcome.VALID);
     assertOutcome(report, CreditsProbe.ID, Outcome.VALID);
-    assertOutcome(report, ExtensionContextProbe.ASSESSMENT_ID, Outcome.VALID);
-    assertOutcome(report, ExtensionContextProbe.ACCREDITATION_ID, Outcome.VALID);
+    assertOutcome(report, ContextPresenceProbe.ASSESSMENT_ID, Outcome.VALID);
+    assertOutcome(report, ContextPresenceProbe.ACCREDITATION_ID, Outcome.VALID);
   }
 
   @Test
@@ -111,9 +113,17 @@ public class TrustedCredentials10InspectorTests {
   }
 
   @Test
-  void extensionContextsDoNotBreakJsonLd() throws Exception {
-    Report report = run(Samples.TRUSTED.JSONLD_EXTENSION_CONTEXTS);
+  void validCredentialPassesJsonLd() throws Exception {
+    // the TrustEd context defines resultDate; the extension contexts must not clash with OB 3.0
+    Report report = run(Samples.TRUSTED.VALID);
     assertNoFailures(report, JsonLDValidationProbe.ID);
+  }
+
+  @Test
+  void missingRequiredContextsAreErrors() throws Exception {
+    Report report = run(Samples.TRUSTED.ERR_REQUIRED_CONTEXTS);
+    assertOutcome(report, ContextPresenceProbe.TRUSTED_ID, Outcome.ERROR);
+    assertOutcome(report, ContextPresenceProbe.OB_EXTENSIONS_ID, Outcome.ERROR);
   }
 
   @Test
@@ -138,7 +148,7 @@ public class TrustedCredentials10InspectorTests {
   void missingCreditsAndExtensionContextsAreWarnings() throws Exception {
     Report report = run(Samples.TRUSTED.WARN_NO_CREDITS_NO_EXTENSIONS);
     assertOutcome(report, CreditsProbe.ID, Outcome.WARNING);
-    assertOutcome(report, ExtensionContextProbe.ASSESSMENT_ID, Outcome.WARNING);
-    assertOutcome(report, ExtensionContextProbe.ACCREDITATION_ID, Outcome.WARNING);
+    assertOutcome(report, ContextPresenceProbe.ASSESSMENT_ID, Outcome.WARNING);
+    assertOutcome(report, ContextPresenceProbe.ACCREDITATION_ID, Outcome.WARNING);
   }
 }

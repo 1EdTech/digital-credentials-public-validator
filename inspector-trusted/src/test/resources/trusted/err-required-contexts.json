@@ -2,7 +2,6 @@
   "@context": [
     "https://www.w3.org/ns/credentials/v2",
     "https://purl.imsglobal.org/spec/ob/v3p0/context-3.0.3.json",
-    "https://purl.imsglobal.org/spec/ob/v3p0/extensions.json",
     "https://purl.imsglobal.org/spec/ob-assessment/v2p0/context",
     "https://purl.imsglobal.org/spec/ob-accred/v2p0/context"
   ],
@@ -108,6 +107,7 @@
           "Result"
         ],
         "resultDescription": "urn:uuid:f6ab24cd-86e8-4eaf-b8c6-ded74e8fd41c",
+        "resultDate": "2010-01-01T00:00:00Z",
         "achievedLevel": "urn:uuid:d05a0867-d0ad-4b03-bdb5-28fb5d2aab7a",
         "alignment": [
           {
