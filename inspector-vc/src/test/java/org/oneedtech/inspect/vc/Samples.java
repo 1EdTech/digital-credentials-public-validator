@@ -27,6 +27,8 @@ public class Samples {
 			public final static Sample SIMPLE_JSON_UNKNOWN_CREDENTIAL_SUBJECT_RESULT_TYPE = new Sample("ob30/simple-err-credential-subject-result-type.json", false);
 			public final static Sample SIMPLE_JSON_UNKNOWN_CREDENTIAL_SUBJECT_ACHIEVEMENT_RESULT_DESCRIPTION_TYPE = new Sample("ob30/simple-err-credential-subject-achievement-result-description-type.json", false);
 			public final static Sample SIMPLE_JSON_UNKNOWN_CREDENTIAL_SUBJECT_PROFILE_TYPE = new Sample("ob30/simple-err-credential-subject-profile-type.json", false);
+			public final static Sample SIMPLE_JSON_UNRESOLVED_RESULT_DESCRIPTION_REFERENCE = new Sample("ob30/simple-err-result-description-reference.json", false);
+			public final static Sample SIMPLE_JSON_UNRESOLVED_RESULT_DESCRIPTION_REFERENCE_NO_DESCRIPTIONS = new Sample("ob30/simple-err-result-description-reference-no-descriptions.json", false);
 			public final static Sample SIMPLE_JSON_UNKNOWN_EVIDENCE_TYPE = new Sample("ob30/simple-err-evidence-type.json", false);
 			public final static Sample SIMPLE_JSON_UNKNOWN_ISSUER_TYPE = new Sample("ob30/simple-err-issuer-type.json", false);
 			public final static Sample SIMPLE_JSON_UNKNOWN_ISSUER_OTHERIDENTIFIER_TYPE = new Sample("ob30/simple-err-issuer-otheridentifier-type.json", false);
