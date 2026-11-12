@@ -36,6 +36,7 @@ import org.oneedtech.inspect.vc.probe.InlineJsonSchemaProbe;
 import org.oneedtech.inspect.vc.probe.IssuanceProbe;
 import org.oneedtech.inspect.vc.probe.IssuerProbe;
 import org.oneedtech.inspect.vc.probe.RevocationListProbe;
+import org.oneedtech.inspect.vc.probe.ResultDescriptionReferenceProbe;
 import org.oneedtech.inspect.vc.probe.TypePropertyProbe;
 import org.oneedtech.inspect.vc.status.bitstring.BitstringStatusListProbe;
 import org.velocitynetwork.contracts.VelocityNetworkDidResolver;
@@ -377,6 +378,28 @@ public class OB30Tests {
 			assertInvalid(report);
 			// assertFatalCount(report, 1);
 			assertHasProbeID(report, CredentialSubjectProbe.ID, true);
+		});
+	}
+
+	@Test
+	void testSimpleJsonUnresolvedResultDescriptionReference() {
+		//a result references a resultDescription id not present in the achievement
+		assertDoesNotThrow(()->{
+			Report report = validator.run(Samples.OB30.JSON.SIMPLE_JSON_UNRESOLVED_RESULT_DESCRIPTION_REFERENCE.asFileResource());
+			if(verbose) PrintHelper.print(report, true);
+			assertInvalid(report);
+			assertHasProbeID(report, ResultDescriptionReferenceProbe.ID, true);
+		});
+	}
+
+	@Test
+	void testSimpleJsonUnresolvedResultDescriptionReferenceNoDescriptions() {
+		//results reference a resultDescription but the achievement has none
+		assertDoesNotThrow(()->{
+			Report report = validator.run(Samples.OB30.JSON.SIMPLE_JSON_UNRESOLVED_RESULT_DESCRIPTION_REFERENCE_NO_DESCRIPTIONS.asFileResource());
+			if(verbose) PrintHelper.print(report, true);
+			assertInvalid(report);
+			assertHasProbeID(report, ResultDescriptionReferenceProbe.ID, true);
 		});
 	}
 
