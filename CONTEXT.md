@@ -33,3 +33,18 @@ _Avoid_: Result description (when meaning the reference rather than the object)
 **Unresolved Result Description Reference**:
 A Result Description Reference that matches no Result Description `id` in the asserted Achievement, including when the Achievement has no Result Descriptions at all.
 _Avoid_: Dangling reference, broken link
+
+**Rubric Criterion Level**:
+An entry in a Result Description's `rubricCriterionLevel` list describing one level of achievement, identified by its `id`.
+
+**Achieved Level**:
+The `achievedLevel` value on a Result: a URI that must equal the `id` of a Rubric Criterion Level in the Result's referenced Result Description.
+
+### TrustEd Credentials 1.0
+
+**TrustEd Credential**:
+An Open Badges 3.0 AchievementCredential that conforms to the TrustEd Credentials 1.0 profile: it must first be a valid OB 3.0 credential, then satisfy the profile's additional rules.
+_Avoid_: OBTC, trusted badge
+
+**TrustEd Schema**:
+The JSON Schema a TrustEd Credential declares in its `credentialSchema` to claim conformance to the profile.

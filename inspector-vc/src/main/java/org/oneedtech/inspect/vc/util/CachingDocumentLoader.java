@@ -115,6 +115,8 @@ public class CachingDocumentLoader extends ConfigurableDocumentLoader {
 			.put("https://purl.imsglobal.org/spec/ob/v3p0/context-3.0.2.json",Resources.getResource("contexts/ob-v3p0-3.0.2.json"))
 			.put("https://purl.imsglobal.org/spec/ob/v3p0/context-3.0.3.json",Resources.getResource("contexts/ob-v3p0-3.0.3.json"))
 			.put("https://purl.imsglobal.org/spec/ob/v3p0/extensions.json",Resources.getResource("contexts/ob-v3p0-extensions.json"))
+			.put("https://purl.imsglobal.org/spec/ob-assessment/v2p0/context",Resources.getResource("contexts/ob-assessment-v2p0.json"))
+			.put("https://purl.imsglobal.org/spec/ob-accred/v2p0/context",Resources.getResource("contexts/ob-accred-v2p0.json"))
 			.put("https://www.w3.org/ns/did/v1", Resources.getResource("contexts/did-v1.jsonld"))
 			.put("https://www.w3.org/ns/odrl.jsonld", Resources.getResource("contexts/odrl.jsonld"))
 			.put("https://w3id.org/security/suites/ed25519-2020/v1",Resources.getResource("contexts/security-suites-ed25519-2020-v1.jsonld"))

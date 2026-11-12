@@ -1,0 +1,132 @@
+{
+  "@context": [
+    "https://www.w3.org/ns/credentials/v2",
+    "https://purl.imsglobal.org/spec/ob/v3p0/context-3.0.3.json",
+    "https://purl.imsglobal.org/spec/ob/v3p0/extensions.json"
+  ],
+  "id": "http://example.com/credentials/3527",
+  "type": [
+    "VerifiableCredential",
+    "OpenBadgeCredential"
+  ],
+  "issuer": {
+    "id": "https://example.com/issuers/876543",
+    "type": [
+      "Profile"
+    ],
+    "name": "Example Corp"
+  },
+  "validFrom": "2010-01-01T00:00:00Z",
+  "awardedDate": "2010-01-01T00:00:00Z",
+  "name": "Teamwork Badge",
+  "credentialSchema": [
+    {
+      "id": "https://purl.1edtech.org/spec/ob/v3p0/obtc/v1p0/schema/json/ob_v3p0_obtc_v1p0_achievementcredential-jsonschema1.json",
+      "type": "1EdTechJsonSchemaValidator2019"
+    }
+  ],
+  "evidence": [
+    {
+      "type": [
+        "Evidence"
+      ],
+      "name": "Final project",
+      "description": "Final project submitted for review"
+    }
+  ],
+  "credentialSubject": {
+    "id": "did:example:ebfeb1f712ebc6f1c276e12ec21",
+    "type": [
+      "AchievementSubject"
+    ],
+    "achievement": {
+      "id": "https://example.com/achievements/21st-century-skills/teamwork",
+      "type": [
+        "Achievement"
+      ],
+      "achievementType": "Course",
+      "name": "Teamwork",
+      "description": "This badge recognizes the development of the capacity to collaborate within a group environment.",
+      "criteria": {
+        "narrative": "Team members are nominated for this badge by their peers and recognized upon review by Example Corp management."
+      },
+      "alignment": [
+        {
+          "type": [
+            "Alignment"
+          ],
+          "targetName": "Collaboration",
+          "targetFramework": "Example Skills Framework",
+          "targetType": "CFItem",
+          "targetUrl": "https://example.org/frameworks/skills/collaboration"
+        }
+      ],
+      "resultDescription": [
+        {
+          "id": "urn:uuid:f6ab24cd-86e8-4eaf-b8c6-ded74e8fd41c",
+          "type": [
+            "ResultDescription"
+          ],
+          "name": "Final Project Rubric",
+          "resultType": "RubricCriterionLevel",
+          "alignment": [
+            {
+              "type": [
+                "Alignment"
+              ],
+              "targetName": "Final Project",
+              "targetFramework": "Example Course Catalog",
+              "targetUrl": "https://example.org/catalog/project"
+            }
+          ],
+          "rubricCriterionLevel": [
+            {
+              "id": "urn:uuid:d05a0867-d0ad-4b03-bdb5-28fb5d2aab7a",
+              "type": [
+                "RubricCriterionLevel"
+              ],
+              "name": "Proficient"
+            },
+            {
+              "id": "urn:uuid:5b3a1b4e-9f22-4c10-8c2c-1a2b3c4d5e6f",
+              "type": [
+                "RubricCriterionLevel"
+              ],
+              "name": "Developing"
+            }
+          ]
+        }
+      ]
+    },
+    "result": [
+      {
+        "type": [
+          "Result"
+        ],
+        "resultDescription": "urn:uuid:f6ab24cd-86e8-4eaf-b8c6-ded74e8fd41c",
+        "resultDate": "2010-01-01T00:00:00Z",
+        "achievedLevel": "urn:uuid:d05a0867-d0ad-4b03-bdb5-28fb5d2aab7a",
+        "alignment": [
+          {
+            "type": [
+              "Alignment"
+            ],
+            "targetName": "Final Project",
+            "targetFramework": "Example Course Catalog",
+            "targetUrl": "https://example.org/catalog/project"
+          }
+        ]
+      }
+    ]
+  },
+  "proof": [
+    {
+      "type": "DataIntegrityProof",
+      "created": "2010-01-01T19:23:24Z",
+      "verificationMethod": "https://example.com/issuers/876543#z6MkjZRZv3aez3r18pB1RBFJR1kwUVJ5jHt92JmQwXbd5hwi",
+      "cryptosuite": "eddsa-rdfc-2022",
+      "proofPurpose": "assertionMethod",
+      "proofValue": "z5YBoPB9tjivuKpRyj9GknLKkReBcpjHxmeR4fGbAppoUpGC2GhbEC8eFdtrnk97ToRPYoQKdtFYDdixGqWXtRpsm"
+    }
+  ]
+}
