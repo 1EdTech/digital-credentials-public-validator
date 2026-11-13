@@ -5,12 +5,13 @@ import org.oneedtech.inspect.core.probe.Probe;
 import org.oneedtech.inspect.trusted.probe.AchievedLevelProbe;
 import org.oneedtech.inspect.trusted.probe.AlignmentFrameworkProbe;
 import org.oneedtech.inspect.trusted.probe.CreditsProbe;
-import org.oneedtech.inspect.trusted.probe.ContextPresenceProbe;
+import org.oneedtech.inspect.trusted.probe.RecommendedContextProbe;
 import org.oneedtech.inspect.trusted.probe.TrustedSchemaProbe;
 import org.oneedtech.inspect.trusted.schema.TrustedCatalog;
 import org.oneedtech.inspect.util.resource.ResourceType;
 import org.oneedtech.inspect.util.spec.Specification;
 import org.oneedtech.inspect.util.version.Version;
+import org.oneedtech.inspect.vc.Credential.CredentialEnum;
 import org.oneedtech.inspect.vc.OB30Inspector;
 import org.oneedtech.inspect.vc.VerifiableCredential;
 
@@ -19,6 +20,8 @@ import org.oneedtech.inspect.vc.VerifiableCredential;
  *
  * <p>Runs the full Open Badges 3.0 verification, then the TrustEd profile probes. The profile
  * probes run whenever the credential could be parsed, even if OB 3.0 verification reported errors.
+ * The OB 3.0 context check is run against {@link TrustedCredentialType}, so it also requires the
+ * TrustEd contexts in order.
  */
 public class TrustedCredentials10Inspector extends OB30Inspector {
 
@@ -31,17 +34,20 @@ public class TrustedCredentials10Inspector extends OB30Inspector {
     super(builder);
   }
 
+  @Override
+  protected CredentialEnum credentialType() {
+    return TrustedCredentialType.INSTANCE;
+  }
+
   /** The profile probes, in the order they run after OB 3.0 verification. */
   static List<Probe<VerifiableCredential>> profileProbes() {
     return List.of(
-        ContextPresenceProbe.trusted(),
-        ContextPresenceProbe.obExtensions(),
         new TrustedSchemaProbe(),
         new AlignmentFrameworkProbe(),
         new AchievedLevelProbe(),
         new CreditsProbe(),
-        ContextPresenceProbe.assessment(),
-        ContextPresenceProbe.accreditation());
+        RecommendedContextProbe.assessment(),
+        RecommendedContextProbe.accreditation());
   }
 
   public static class Builder extends OB30Inspector.Builder {

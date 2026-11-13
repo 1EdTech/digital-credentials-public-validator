@@ -17,11 +17,12 @@ import org.oneedtech.inspect.test.PrintHelper;
 import org.oneedtech.inspect.trusted.probe.AchievedLevelProbe;
 import org.oneedtech.inspect.trusted.probe.AlignmentFrameworkProbe;
 import org.oneedtech.inspect.trusted.probe.CreditsProbe;
-import org.oneedtech.inspect.trusted.probe.ContextPresenceProbe;
+import org.oneedtech.inspect.trusted.probe.RecommendedContextProbe;
 import org.oneedtech.inspect.trusted.probe.TrustedSchemaProbe;
 import org.oneedtech.inspect.trusted.schema.TrustedCatalog;
 import org.oneedtech.inspect.test.Sample;
 import org.oneedtech.inspect.vc.jsonld.probe.JsonLDValidationProbe;
+import org.oneedtech.inspect.vc.probe.ContextPropertyProbe;
 import org.oneedtech.inspect.vc.probe.InlineJsonSchemaProbe;
 
 /**
@@ -31,6 +32,9 @@ import org.oneedtech.inspect.vc.probe.InlineJsonSchemaProbe;
 public class TrustedCredentials10InspectorTests {
   private static Inspector validator;
   private static final boolean verbose = true;
+  /** Generator of the OB 3.0 context check when run against the TrustEd credential type. */
+  private static final String CONTEXT_CHECK =
+      ContextPropertyProbe.ID + "|" + TrustedCredentialType.INSTANCE + "|@context";
 
   @BeforeAll
   static void setup() {
@@ -73,14 +77,13 @@ public class TrustedCredentials10InspectorTests {
   @Test
   void validCredentialPassesAllProfileProbes() throws Exception {
     Report report = run(Samples.TRUSTED.VALID);
-    assertOutcome(report, ContextPresenceProbe.TRUSTED_ID, Outcome.VALID);
-    assertOutcome(report, ContextPresenceProbe.OB_EXTENSIONS_ID, Outcome.VALID);
+    assertOutcome(report, CONTEXT_CHECK, Outcome.VALID);
     assertOutcome(report, TrustedSchemaProbe.ID, Outcome.VALID);
     assertOutcome(report, AlignmentFrameworkProbe.ID, Outcome.VALID);
     assertOutcome(report, AchievedLevelProbe.ID, Outcome.VALID);
     assertOutcome(report, CreditsProbe.ID, Outcome.VALID);
-    assertOutcome(report, ContextPresenceProbe.ASSESSMENT_ID, Outcome.VALID);
-    assertOutcome(report, ContextPresenceProbe.ACCREDITATION_ID, Outcome.VALID);
+    assertOutcome(report, RecommendedContextProbe.ASSESSMENT_ID, Outcome.VALID);
+    assertOutcome(report, RecommendedContextProbe.ACCREDITATION_ID, Outcome.VALID);
   }
 
   @Test
@@ -122,8 +125,15 @@ public class TrustedCredentials10InspectorTests {
   @Test
   void missingRequiredContextsAreErrors() throws Exception {
     Report report = run(Samples.TRUSTED.ERR_REQUIRED_CONTEXTS);
-    assertOutcome(report, ContextPresenceProbe.TRUSTED_ID, Outcome.ERROR);
-    assertOutcome(report, ContextPresenceProbe.OB_EXTENSIONS_ID, Outcome.ERROR);
+    assertOutcome(report, CONTEXT_CHECK, Outcome.ERROR);
+    // a context error does not stop the profile probes
+    assertOutcome(report, TrustedSchemaProbe.ID, Outcome.VALID);
+  }
+
+  @Test
+  void misorderedRequiredContextsAreErrors() throws Exception {
+    Report report = run(Samples.TRUSTED.ERR_CONTEXT_ORDER);
+    assertOutcome(report, CONTEXT_CHECK, Outcome.ERROR);
   }
 
   @Test
@@ -148,7 +158,7 @@ public class TrustedCredentials10InspectorTests {
   void missingCreditsAndExtensionContextsAreWarnings() throws Exception {
     Report report = run(Samples.TRUSTED.WARN_NO_CREDITS_NO_EXTENSIONS);
     assertOutcome(report, CreditsProbe.ID, Outcome.WARNING);
-    assertOutcome(report, ContextPresenceProbe.ASSESSMENT_ID, Outcome.WARNING);
-    assertOutcome(report, ContextPresenceProbe.ACCREDITATION_ID, Outcome.WARNING);
+    assertOutcome(report, RecommendedContextProbe.ASSESSMENT_ID, Outcome.WARNING);
+    assertOutcome(report, RecommendedContextProbe.ACCREDITATION_ID, Outcome.WARNING);
   }
 }

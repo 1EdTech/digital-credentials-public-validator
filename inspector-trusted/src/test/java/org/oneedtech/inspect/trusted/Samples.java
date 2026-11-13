@@ -7,6 +7,8 @@ public class Samples {
     public static final Sample VALID = new Sample("trusted/valid.json", true);
     public static final Sample ERR_REQUIRED_CONTEXTS =
         new Sample("trusted/err-required-contexts.json", false);
+    public static final Sample ERR_CONTEXT_ORDER =
+        new Sample("trusted/err-context-order.json", false);
     public static final Sample ERR_SCHEMA_MISSING = new Sample("trusted/err-schema-missing.json", false);
     public static final Sample ERR_SCHEMA_VIOLATION =
         new Sample("trusted/err-schema-violation.json", false);
