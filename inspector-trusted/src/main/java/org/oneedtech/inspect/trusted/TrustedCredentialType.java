@@ -17,7 +17,7 @@ public final class TrustedCredentialType implements CredentialEnum {
   public static final String OB_EXTENSIONS_CONTEXT =
       "https://purl.imsglobal.org/spec/ob/v3p0/extensions.json";
   public static final String TRUSTED_CONTEXT =
-      "https://purl.1edtech.org/spec/ob/v3p0/obtc/v1p0/context.json";
+      "https://purl.imsglobal.org/spec/ob/v3p0/obtc/v1p0/context.json";
 
   private static final CredentialEnum BASE = VerifiableCredential.Type.OpenBadgeCredential;
 

@@ -8,7 +8,7 @@ import org.oneedtech.inspect.core.probe.Outcome;
 
 public class TrustedSchemaProbeTests {
   private static final String URI =
-      "https://purl.1edtech.org/spec/ob/v3p0/obtc/v1p0/schema/json/ob_v3p0_obtc_v1p0_achievementcredential-jsonschema1.json";
+      "https://purl.imsglobal.org/spec/ob/v3p0/obtc/v1p0/schema/json/ob_v3p0_obtc_v1p0_achievementcredential-jsonschema1.json";
 
   private Outcome run(String credentialSchema) throws Exception {
     return ProbeTestSupport.run(new TrustedSchemaProbe(), "{'credentialSchema':" + credentialSchema + "}");

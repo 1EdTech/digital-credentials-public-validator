@@ -21,9 +21,9 @@ public class TrustedCatalog extends Catalog {
       new SchemaKey.Builder()
           .type(JSON)
           .uri(
-              "https://purl.1edtech.org/spec/ob/v3p0/obtc/v1p0/schema/json/ob_v3p0_obtc_v1p0_achievementcredential-jsonschema1.json")
+              "https://purl.imsglobal.org/spec/ob/v3p0/obtc/v1p0/schema/json/ob_v3p0_obtc_v1p0_achievementcredential-jsonschema1.json")
           .path(
-              "catalog/purl.1edtech.org/spec/ob/v3p0/obtc/v1p0/schema/json/ob_v3p0_obtc_v1p0_achievementcredential-jsonschema1.json")
+              "catalog/purl.imsglobal.org/spec/ob/v3p0/obtc/v1p0/schema/json/ob_v3p0_obtc_v1p0_achievementcredential-jsonschema1.json")
           .build();
 
   static {
