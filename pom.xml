@@ -35,6 +35,7 @@
     <module>inspector-vc</module>
     <module>inspector-clr</module>
     <module>inspector-tcp-vc</module>
+    <module>inspector-trusted</module>
 
     <!-- apps, services -->
     <module>inspector-vc-web</module>
@@ -197,6 +198,11 @@
       <dependency>
         <groupId>org.1edtech</groupId>
         <artifactId>inspector-clr</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.1edtech</groupId>
+        <artifactId>inspector-trusted</artifactId>
         <version>${project.version}</version>
       </dependency>
 

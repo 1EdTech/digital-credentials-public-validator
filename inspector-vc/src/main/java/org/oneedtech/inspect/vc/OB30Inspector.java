@@ -214,7 +214,7 @@ public class OB30Inspector extends VCInspector implements SubInspector {
       if (broken(accumulator)) return abort(ctx, accumulator, probeCount);
 
       // context and type properties
-      VerifiableCredential.Type type = Type.OpenBadgeCredential;
+      Credential.CredentialEnum type = credentialType();
       for (Probe<JsonNode> probe :
           List.of(new ContextPropertyProbe(type), new TypePropertyProbe(type))) {
         probeCount++;
@@ -318,6 +318,14 @@ public class OB30Inspector extends VCInspector implements SubInspector {
     }
 
     return new Report(ctx, new ReportItems(accumulator), probeCount);
+  }
+
+  /**
+   * The credential type whose {@code @context} and {@code type} expectations this inspector checks.
+   * Profiles of Open Badges 3.0 override it to require additional contexts.
+   */
+  protected Credential.CredentialEnum credentialType() {
+    return Type.OpenBadgeCredential;
   }
 
   public static class Builder extends VCInspector.Builder<OB30Inspector.Builder> {

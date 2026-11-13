@@ -3,7 +3,9 @@ package org.oneedtech.inspect.vc.probe;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.oneedtech.inspect.core.probe.Probe;
 import org.oneedtech.inspect.core.probe.RunContext;
@@ -20,6 +22,7 @@ import com.fasterxml.jackson.databind.JsonNode;
  */
 public class InlineJsonSchemaProbe extends Probe<JsonNode> {
 	private static final Set<String> types = Set.of("1EdTechJsonSchemaValidator2019");
+	private static final Map<String, SchemaKey> localSchemas = new ConcurrentHashMap<>();
 	private SchemaKey skip;
 
 	public InlineJsonSchemaProbe() {
@@ -51,7 +54,9 @@ public class InlineJsonSchemaProbe extends Probe<JsonNode> {
 			if(ioErrors.contains(id)) continue;
 			if(equals(skip, id)) continue;
 			try {
-				accumulator.add(new JsonSchemaProbe(id).run(root, ctx));
+				SchemaKey local = localSchemas.get(id);
+				JsonSchemaProbe probe = local != null ? new JsonSchemaProbe(local) : new JsonSchemaProbe(id);
+				accumulator.add(probe.run(root, ctx));
 			} catch (Exception e) {
 				if(!ioErrors.contains(id)) {
 					ioErrors.add(id);
@@ -61,6 +66,14 @@ public class InlineJsonSchemaProbe extends Probe<JsonNode> {
 		}
 
 		return new ReportItems(accumulator);
+	}
+
+	/**
+	 * Register a locally bundled schema, so that inline references to its canonical URI are
+	 * validated against the bundled copy instead of being fetched over the network.
+	 */
+	public static void registerLocalSchema(SchemaKey key) {
+		localSchemas.put(key.getCanonicalURI(), key);
 	}
 
 	private boolean equals(SchemaKey key, String id) {
